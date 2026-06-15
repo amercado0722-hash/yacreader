@@ -65,6 +65,7 @@ public:
     QAction *colapseAllNodesAction;
 
     QAction *openContainingFolderAction;
+    QAction *organizeFilesAction;
     QAction *saveCoversToAction;
     //--
     QAction *setFolderAsNotCompletedAction;
