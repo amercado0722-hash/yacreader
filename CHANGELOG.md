@@ -4,6 +4,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10.2.0
 
+### YACReader
+* Change default shortcuts for modifying the magnifying glass size to avoid conflicts with the page zoom shortcuts, `[`, `]`.
+
 ### YACReaderLibrary
 * Add a library repair function to restore missing covers and rescan files that previously failed to be added.
 * Add actions to create and restore library database backups.
