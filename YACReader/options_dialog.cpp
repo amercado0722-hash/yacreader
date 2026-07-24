@@ -131,6 +131,32 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     mouseModeBox->setLayout(mouseModeLayout);
 
+    auto escapeKeyBox = new QGroupBox(tr("Escape key"));
+    auto escapeKeyLayout = new QVBoxLayout();
+
+    escapeQuitsRadioButton = new QRadioButton(tr("Quit the reader"));
+    escapeCancelsModeRadioButton = new QRadioButton(tr("Cancel the active mode"));
+
+    escapeQuitsRadioButton->setToolTip(tr("Escape closes the reader, even while a mode is active."));
+
+    // Keep this list in sync with MainWindowViewer::cancelActiveMode(), which implements the order.
+    //: Tooltip listing the order in which modes are cancelled. Only the first
+    //: active mode in the list is cancelled per Escape keypress.
+    escapeCancelsModeRadioButton->setToolTip(tr("Escape cancels the first of these that is active:\n"
+                                                "\n"
+                                                "1. Magnifying glass\n"
+                                                "2. Dictionary\n"
+                                                "3. Go to page bar\n"
+                                                "4. Fullscreen\n"
+                                                "\n"
+                                                "If none is active, Escape does nothing."));
+
+    escapeKeyLayout->addWidget(escapeQuitsRadioButton);
+    escapeKeyLayout->addWidget(escapeCancelsModeRadioButton);
+
+    escapeKeyBox->setLayout(escapeKeyLayout);
+    addShortcutsSection(escapeKeyBox);
+
     layoutGeneral->addWidget(pathBox);
     layoutGeneral->addWidget(languageBox);
     layoutGeneral->addWidget(displayBox);
@@ -354,6 +380,9 @@ void OptionsDialog::saveOptions()
     }
     Configuration::getConfiguration().setMouseMode(mouseMode);
 
+    Configuration::getConfiguration().setEscapeKeyBehavior(
+            escapeCancelsModeRadioButton->isChecked() ? EscapeCancelsMode : EscapeQuits);
+
     Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(scalingMethodCombo->currentIndex()));
     emit changedImageOptions();
 
@@ -431,6 +460,11 @@ void OptionsDialog::restoreOptions(QSettings *settings)
         hotAreasMouseModeRadioButton->setChecked(true);
         break;
     }
+
+    if (Configuration::getConfiguration().getEscapeKeyBehavior() == EscapeCancelsMode)
+        escapeCancelsModeRadioButton->setChecked(true);
+    else
+        escapeQuitsRadioButton->setChecked(true);
 }
 
 void OptionsDialog::updateColor(const QColor &color)

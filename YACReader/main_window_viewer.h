@@ -81,6 +81,10 @@ public slots:
 
     void toggleFitToWidthSlider();
 
+    // Escape key handling: either quits (default) or cancels the topmost active mode,
+    // depending on the EscapeKeyBehavior setting.
+    void onEscapePressed();
+
     /*void viewComic();
                 void prev();
                 void next();
@@ -135,7 +139,12 @@ private:
     QAction *leftRotationAction;
     QAction *rightRotationAction;
     QAction *showInfoAction;
-    QAction *closeAction;
+    QAction *closeAction; // owns the Escape key; dispatches quit vs. cancel-mode
+    QAction *exitAction; // File▸Close menu command, always quits
+
+    // Cancels the topmost active mode (magnifier, translator, go-to-flow, fullscreen).
+    // Returns true if a mode was cancelled, false if none was active.
+    bool cancelActiveMode();
     QAction *doublePageAction;
     QAction *doubleMangaPageAction;
     QAction *continuousScrollAction;

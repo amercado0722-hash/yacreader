@@ -32,6 +32,11 @@ enum MouseMode {
     HotAreas
 };
 
+enum EscapeKeyBehavior {
+    EscapeQuits = 0,
+    EscapeCancelsMode = 1
+};
+
 class Configuration : public QObject
 {
     Q_OBJECT
@@ -122,6 +127,9 @@ public:
 
     MouseMode getMouseMode() { return static_cast<MouseMode>(settings->value(MOUSE_MODE, MouseMode::Normal).toInt()); }
     void setMouseMode(MouseMode mouseMode) { settings->setValue(MOUSE_MODE, static_cast<int>(mouseMode)); }
+
+    EscapeKeyBehavior getEscapeKeyBehavior() { return static_cast<EscapeKeyBehavior>(settings->value(ESCAPE_KEY_BEHAVIOR, EscapeKeyBehavior::EscapeQuits).toInt()); }
+    void setEscapeKeyBehavior(EscapeKeyBehavior behavior) { settings->setValue(ESCAPE_KEY_BEHAVIOR, static_cast<int>(behavior)); }
 
     ScaleMethod getScalingMethod() { return static_cast<ScaleMethod>(settings->value(SCALING_METHOD, static_cast<int>(ScaleMethod::Lanczos)).toInt()); }
     void setScalingMethod(ScaleMethod method) { settings->setValue(SCALING_METHOD, static_cast<int>(method)); }

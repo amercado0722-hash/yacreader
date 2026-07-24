@@ -75,6 +75,9 @@ private:
     QRadioButton *leftRightNavigationMouseModeRadioButton;
     QRadioButton *hotAreasMouseModeRadioButton;
 
+    QRadioButton *escapeQuitsRadioButton;
+    QRadioButton *escapeCancelsModeRadioButton;
+
 public slots:
     void saveOptions() override;
     void restoreOptions(QSettings *settings) override;

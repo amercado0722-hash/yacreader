@@ -1308,6 +1308,16 @@ void Viewer::translatorSwitch()
     translator->isVisible() ? animateHideTranslator() : animateShowTranslator();
 }
 
+bool Viewer::translatorIsVisible() const
+{
+    return translator->isVisible();
+}
+
+bool Viewer::goToFlowIsVisible() const
+{
+    return goToFlow->isVisible();
+}
+
 void Viewer::showGoToFlow()
 {
     if (render->hasLoadedComic()) {

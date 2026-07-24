@@ -85,6 +85,8 @@ public slots:
     void rotateLeft();
     void rotateRight();
     bool magnifyingGlassIsVisible() const { return magnifyingGlassShown; }
+    bool translatorIsVisible() const;
+    bool goToFlowIsVisible() const;
     void setBookmark(bool);
     void save();
     void doublePageSwitch();
