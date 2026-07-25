@@ -59,6 +59,8 @@ public:
     void setMagnifyingGlassCircular(bool circular) { settings->setValue(MAG_GLASS_CIRCULAR, circular); }
     bool getMagnifyingGlassRing() { return settings->value(MAG_GLASS_RING, true).toBool(); }
     void setMagnifyingGlassRing(bool ring) { settings->setValue(MAG_GLASS_RING, ring); }
+    bool getMagnifyingGlassEdgeEase() { return settings->value(MAG_GLASS_EDGE_EASE, true).toBool(); }
+    void setMagnifyingGlassEdgeEase(bool ease) { settings->setValue(MAG_GLASS_EDGE_EASE, ease); }
     QSize getGotoSlideSize() { return settings->value(GO_TO_FLOW_SIZE).toSize(); }
     void setGotoSlideSize(const QSize &gss) { settings->setValue(GO_TO_FLOW_SIZE, gss); }
     float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat(); }

@@ -22,6 +22,8 @@
 #include <QPropertyAnimation>
 #include <QScrollBar>
 
+#include <cmath>
+
 Viewer::Viewer(QWidget *parent)
     : QScrollArea(parent),
       fullscreen(false),
@@ -81,6 +83,8 @@ Viewer::Viewer(QWidget *parent)
             Configuration::getConfiguration().getMagnifyingGlassCircular(),
             Configuration::getConfiguration().getMagnifyingGlassRing(),
             this);
+
+    magnifierEdgeEase = Configuration::getConfiguration().getMagnifyingGlassEdgeEase();
 
     connect(mglass, &MagnifyingGlass::sizeChanged, this, [](QSize size) {
         Configuration::getConfiguration().setMagnifyingGlassSize(size);
@@ -924,8 +928,115 @@ QList<int> Viewer::currentVisiblePages()
     return pages;
 }
 
+namespace {
+// The magnifier edge easing pushes the loupe's sampled center outward toward the viewport
+// edges so edge content is reachable with less cursor travel. Crucially the push is bounded
+// by the loupe's own half-size, which (a) keeps the cursor's true point inside the loupe
+// view and (b) scales the effect with loupe size: a minimum-size loupe is nearly linear, a
+// large one eases strongly.
+
+// Fraction of the half-axis at which the easing reaches full displacement. Smaller = the
+// effect ramps in sooner and saturates before the cursor reaches the edge, so edge content
+// is reachable well before the pointer is jammed against the border; beyond this the loupe
+// is already at full reach (still capped at the loupe half-size, so the cursor point stays
+// in view). 1.0 would only reach full push exactly at the edge.
+constexpr double edgeReach = 0.4;
+
+// Overall strength of the push, as a fraction of the loupe half-extent (its natural cap). 1.0
+// pushes the sampled center by up to a full half-loupe at the edge; lower values keep the
+// content swim gentler so it tracks the cursor more closely. The cursor's point stays in view
+// for any value in (0, 1].
+constexpr double edgeStrength = 0.3;
+
+// Smoothstep ramp: 0 at the viewport center (1:1 there, and zero slope so it stays linear
+// near the middle), rising to 1 by edgeReach (and held there to the edge). Multiplied by the
+// loupe half-extent to give the outward displacement.
+double edgeRamp(double u) // u = |normalized cursor offset from center|, in [0, 1]
+{
+    u = qBound(0.0, u / edgeReach, 1.0);
+    return u * u * (3.0 - 2.0 * u);
+}
+
+// The edge easing is canceled on an axis only once the page is letterboxed by at least this
+// fraction of its own size on that axis. Below it — a thin margin, an exact fit, or a page
+// that overflows the viewport — the curve still applies, so the effect stays visible for
+// pages that nearly fill the view instead of vanishing the instant the page is a hair smaller
+// than the viewport. Above it the background beside the page is wide enough that easing would
+// mostly reveal that background, so the axis is left at 1:1.
+constexpr double minLetterboxFraction = 0.10;
+}
+
+QPoint Viewer::easeViewerPos(const QPoint &viewerPos, const QSize &glassSize, bool circular) const
+{
+    if (!magnifierEdgeEase) {
+        return viewerPos;
+    }
+    // Reference frame = the viewport (the visible scroll region the page is drawn in), not the
+    // top-level window. The window includes the toolbar/chrome, whose height inflates the
+    // frame well beyond the page and pushes the "center" off, so the loupe eases too hard. In
+    // fullscreen the viewport already fills the screen, so this matches the old behavior there.
+    const double vpW = viewport()->width();
+    const double vpH = viewport()->height();
+    if (vpW <= 1.0 || vpH <= 1.0) {
+        return viewerPos;
+    }
+
+    // Normalized cursor offset from the viewport center, per axis in [-1, 1].
+    const double tx = qBound(-1.0, (viewerPos.x() - vpW / 2.0) / (vpW / 2.0), 1.0);
+    const double ty = qBound(-1.0, (viewerPos.y() - vpH / 2.0) / (vpH / 2.0), 1.0);
+
+    // Easing helps on an axis where there is off-page content to bring toward the cursor. A page
+    // that overflows the viewport always qualifies; a letterboxed page qualifies until the
+    // margin beside it grows large enough that easing would mostly reveal background. Cancel the
+    // curve on an axis only once the letterbox reaches minLetterboxFraction of the page's size on
+    // that axis, so a page that nearly fills the viewport (thin margin or exact fit) still eases
+    // instead of dropping the effect the instant the page is a hair smaller than the view.
+    bool easeX = true;
+    bool easeY = true;
+    if (const QWidget *w = widget()) {
+        double pageW = w->width();
+        const double pageH = w->height();
+        if (continuousScroll && w == continuousWidget && continuousViewModel != nullptr) {
+            // The continuous widget fills the viewport width with each page centered inside it,
+            // so the page under the cursor — not the widget — is the horizontal extent. The
+            // document is contiguous vertically, so the widget height is the vertical extent.
+            const int cwY = viewerPos.y() + verticalScrollBar()->sliderPosition();
+            const int idx = qBound(0, continuousViewModel->pageAtY(cwY), continuousViewModel->numPages() - 1);
+            pageW = continuousViewModel->scaledPageSize(idx).width();
+        }
+        // Letterbox = how far the viewport exceeds the page on the axis; keep easing until it
+        // reaches minLetterboxFraction of the page dimension (overflow and exact fit stay on the
+        // "ease" side).
+        easeX = (vpW - pageW) < minLetterboxFraction * pageW;
+        easeY = (vpH - pageH) < minLetterboxFraction * pageH;
+    }
+
+    // Outward displacement, capped per axis at the loupe half-extent (the loupe's "reach") and
+    // scaled by edgeStrength. The cap is what guarantees the cursor's point never leaves the
+    // loupe view, and what makes a small loupe nearly linear while a large loupe eases hard.
+    double dx = easeX ? edgeStrength * (glassSize.width() / 2.0) * edgeRamp(qAbs(tx)) * (tx < 0.0 ? -1.0 : 1.0) : 0.0;
+    double dy = easeY ? edgeStrength * (glassSize.height() / 2.0) * edgeRamp(qAbs(ty)) * (ty < 0.0 ? -1.0 : 1.0) : 0.0;
+
+    if (circular) {
+        // A round loupe's limit is radial (Pythagorean): the displacement vector may not
+        // exceed the radius, rather than being capped independently on each axis.
+        const double radius = qMax(glassSize.width(), glassSize.height()) / 2.0;
+        const double mag = std::sqrt(dx * dx + dy * dy);
+        if (mag > radius && mag > 0.0) {
+            dx *= radius / mag;
+            dy *= radius / mag;
+        }
+    }
+
+    // The displacement is a translation, so add it back in the caller's (viewport) frame.
+    return QPoint(qRound(viewerPos.x() + dx), qRound(viewerPos.y() + dy));
+}
+
 QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const
 {
+    // viewerPos is expected already eased (see MagnifyingGlass::updateImage / easeViewerPos):
+    // this samples the loupe's *content*, which swims a little toward the edge relative to the
+    // loupe widget (which itself follows the cursor).
     const int glassW = glassSize.width();
     const int glassH = glassSize.height();
     const int zoomW = static_cast<int>(glassW * zoomLevel);
@@ -1705,6 +1816,7 @@ void Viewer::updateConfig(QSettings *settings)
 
     mglass->setCircular(Configuration::getConfiguration().getMagnifyingGlassCircular());
     mglass->setRing(Configuration::getConfiguration().getMagnifyingGlassRing());
+    magnifierEdgeEase = Configuration::getConfiguration().getMagnifyingGlassEdgeEase();
 
     QPalette palette;
     palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor(theme.viewer.defaultBackgroundColor));

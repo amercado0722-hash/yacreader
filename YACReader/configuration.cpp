@@ -32,6 +32,8 @@ void Configuration::load(QSettings *settings)
         settings->setValue(MAG_GLASS_CIRCULAR, false);
     if (!settings->contains(MAG_GLASS_RING))
         settings->setValue(MAG_GLASS_RING, true);
+    if (!settings->contains(MAG_GLASS_EDGE_EASE))
+        settings->setValue(MAG_GLASS_EDGE_EASE, true);
     if (!settings->contains(FLOW_TYPE))
         settings->setValue(FLOW_TYPE, 0);
     if (!settings->contains(FULLSCREEN))

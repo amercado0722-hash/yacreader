@@ -67,8 +67,10 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     magnifyingGlassRing = new QCheckBox(tr("Draw a ring around the circular magnifying glass"));
     // The ring only applies to the circular loupe, so it is enabled only when circular is on.
     connect(circularMagnifyingGlass, &QCheckBox::toggled, magnifyingGlassRing, &QWidget::setEnabled);
+    magnifyingGlassEdgeEase = new QCheckBox(tr("Ease cursor movement toward the edges"));
     magnifyingGlassLayout->addWidget(circularMagnifyingGlass);
     magnifyingGlassLayout->addWidget(magnifyingGlassRing);
+    magnifyingGlassLayout->addWidget(magnifyingGlassEdgeEase);
     magnifyingGlassBox->setLayout(magnifyingGlassLayout);
 
     connect(pathFindButton, &QAbstractButton::clicked, this, &OptionsDialog::findFolder);
@@ -325,6 +327,7 @@ void OptionsDialog::saveOptions()
 
     Configuration::getConfiguration().setMagnifyingGlassCircular(circularMagnifyingGlass->isChecked());
     Configuration::getConfiguration().setMagnifyingGlassRing(magnifyingGlassRing->isChecked());
+    Configuration::getConfiguration().setMagnifyingGlassEdgeEase(magnifyingGlassEdgeEase->isChecked());
 
     if (!backgroundColorFollowsTheme) {
         settings->setValue(BACKGROUND_COLOR, currentColor);
@@ -382,6 +385,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     circularMagnifyingGlass->setChecked(Configuration::getConfiguration().getMagnifyingGlassCircular());
     magnifyingGlassRing->setChecked(Configuration::getConfiguration().getMagnifyingGlassRing());
     magnifyingGlassRing->setEnabled(circularMagnifyingGlass->isChecked());
+    magnifyingGlassEdgeEase->setChecked(Configuration::getConfiguration().getMagnifyingGlassEdgeEase());
 
     backgroundColorFollowsTheme = !settings->contains(BACKGROUND_COLOR);
     updateColor(backgroundColorFollowsTheme

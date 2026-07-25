@@ -35,6 +35,7 @@ private:
 
     QCheckBox *circularMagnifyingGlass;
     QCheckBox *magnifyingGlassRing;
+    QCheckBox *magnifyingGlassEdgeEase;
 
     QCheckBox *quickNavi;
     QCheckBox *disableShowOnMouseOver;

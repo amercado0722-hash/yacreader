@@ -125,7 +125,12 @@ void MagnifyingGlass::mouseMoveEvent(QMouseEvent *event)
 void MagnifyingGlass::updateImage(int x, int y)
 {
     auto *const viewer = qobject_cast<const Viewer *>(parentWidget());
-    QImage img = viewer->grabMagnifiedRegion(QPoint(x, y), size(), zoomLevel);
+    // The loupe widget follows the cursor (and may overhang the window edge, as before). Its
+    // *content* is sampled at the eased center, so the zoomed image swims a little toward the
+    // edges within the loupe — bounded by the loupe's own half-size so the cursor's point
+    // never leaves the view.
+    const QPoint sampleCenter = viewer->easeViewerPos(QPoint(x, y), size(), circular);
+    QImage img = viewer->grabMagnifiedRegion(sampleCenter, size(), zoomLevel);
     setPixmap(QPixmap::fromImage(img));
     move(static_cast<int>(x - float(width()) / 2), static_cast<int>(y - float(height()) / 2));
 }
