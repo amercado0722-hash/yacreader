@@ -55,6 +55,10 @@ public:
     void setMagnifyingGlassSize(const QSize &mgs) { settings->setValue(MAG_GLASS_SIZE, mgs); }
     float getMagnifyingGlassZoom() { return settings->value(MAG_GLASS_ZOOM, 0.5).toFloat(); }
     void setMagnifyingGlassZoom(float mgz) { settings->setValue(MAG_GLASS_ZOOM, mgz); }
+    bool getMagnifyingGlassCircular() { return settings->value(MAG_GLASS_CIRCULAR, false).toBool(); }
+    void setMagnifyingGlassCircular(bool circular) { settings->setValue(MAG_GLASS_CIRCULAR, circular); }
+    bool getMagnifyingGlassRing() { return settings->value(MAG_GLASS_RING, true).toBool(); }
+    void setMagnifyingGlassRing(bool ring) { settings->setValue(MAG_GLASS_RING, ring); }
     QSize getGotoSlideSize() { return settings->value(GO_TO_FLOW_SIZE).toSize(); }
     void setGotoSlideSize(const QSize &gss) { settings->setValue(GO_TO_FLOW_SIZE, gss); }
     float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat(); }

@@ -78,6 +78,8 @@ Viewer::Viewer(QWidget *parent)
     mglass = new MagnifyingGlass(
             Configuration::getConfiguration().getMagnifyingGlassSize(),
             Configuration::getConfiguration().getMagnifyingGlassZoom(),
+            Configuration::getConfiguration().getMagnifyingGlassCircular(),
+            Configuration::getConfiguration().getMagnifyingGlassRing(),
             this);
 
     connect(mglass, &MagnifyingGlass::sizeChanged, this, [](QSize size) {
@@ -1700,6 +1702,9 @@ bool Viewer::getIsMangaMode()
 void Viewer::updateConfig(QSettings *settings)
 {
     goToFlow->updateConfig(settings);
+
+    mglass->setCircular(Configuration::getConfiguration().getMagnifyingGlassCircular());
+    mglass->setRing(Configuration::getConfiguration().getMagnifyingGlassRing());
 
     QPalette palette;
     palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor(theme.viewer.defaultBackgroundColor));

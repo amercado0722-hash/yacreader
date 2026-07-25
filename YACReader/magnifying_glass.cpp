@@ -2,24 +2,118 @@
 
 #include "viewer.h"
 
-MagnifyingGlass::MagnifyingGlass(int w, int h, float zoomLevel, QWidget *parent)
-    : QLabel(parent), zoomLevel(zoomLevel)
+#include <QPainter>
+#include <QPainterPath>
+
+MagnifyingGlass::MagnifyingGlass(int w, int h, float zoomLevel, bool circular, bool ring, QWidget *parent)
+    : QLabel(parent), zoomLevel(zoomLevel), circular(circular), ring(ring)
 {
     setup(QSize(w, h));
 }
 
-MagnifyingGlass::MagnifyingGlass(const QSize &size, float zoomLevel, QWidget *parent)
-    : QLabel(parent), zoomLevel(zoomLevel)
+MagnifyingGlass::MagnifyingGlass(const QSize &size, float zoomLevel, bool circular, bool ring, QWidget *parent)
+    : QLabel(parent), zoomLevel(zoomLevel), circular(circular), ring(ring)
 {
     setup(size);
 }
 
 void MagnifyingGlass::setup(const QSize &size)
 {
-    resize(size);
+    logicalSize = size;
+    resize(displaySize());
     setScaledContents(true);
     setMouseTracking(true);
     setCursor(QCursor(QBitmap(1, 1), QBitmap(1, 1)));
+    applyShape();
+}
+
+QSize MagnifyingGlass::displaySize() const
+{
+    if (circular) {
+        const int side = qMax(logicalSize.width(), logicalSize.height());
+        return QSize(side, side);
+    }
+    return logicalSize;
+}
+
+void MagnifyingGlass::applyShape()
+{
+    if (circular)
+        setMask(QRegion(rect(), QRegion::Ellipse));
+    else
+        clearMask();
+}
+
+void MagnifyingGlass::setCircular(bool circular)
+{
+    if (this->circular == circular)
+        return;
+    this->circular = circular;
+    // Only the display geometry and mask change; logicalSize (and thus the saved
+    // MAG_GLASS_SIZE) must not be touched, so do not emit sizeChanged here.
+    resize(displaySize());
+    applyShape();
+    updateImage();
+}
+
+void MagnifyingGlass::setRing(bool ring)
+{
+    if (this->ring == ring)
+        return;
+    this->ring = ring;
+    if (circular)
+        update(); // ring only affects the circular rendering; repaint, no geometry change
+}
+
+void MagnifyingGlass::paintEvent(QPaintEvent *event)
+{
+    if (!circular) {
+        QLabel::paintEvent(event);
+        return;
+    }
+
+    const QPixmap pm = pixmap();
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+
+    const QRectF fullRect(rect());
+
+    if (!ring) {
+        QPainterPath clip;
+        clip.addEllipse(fullRect);
+        painter.setClipPath(clip);
+        if (!pm.isNull())
+            painter.drawPixmap(rect(), pm); // mirrors setScaledContents: scale to fill
+        return;
+    }
+
+    // Circular + ring. The widget mask (setMask) is a hard-edged ellipse, so anything
+    // drawn out to the widget boundary keeps that aliased silhouette. Instead, inset the
+    // whole loupe a couple of pixels inside the mask and let the bezel's own antialiased
+    // outer edge be the silhouette: the thin margin between bezel and mask stays unpainted
+    // (transparent) so the page shows through and the antialiased edge blends into it.
+    const qreal bezelWidth = qMax(2.0, width() / 80.0);
+    const qreal outerInset = 1.5; // transparent margin left for the antialiased blend
+    const QRectF outerRect = fullRect.adjusted(outerInset, outerInset, -outerInset, -outerInset);
+    const QRectF innerRect = outerRect.adjusted(bezelWidth, bezelWidth, -bezelWidth, -bezelWidth);
+
+    // Content clipped to just past the bezel's inner edge, so the content's own (hard)
+    // clip edge is hidden underneath the opaque part of the bezel.
+    QPainterPath contentClip;
+    contentClip.addEllipse(innerRect.adjusted(-0.5, -0.5, 0.5, 0.5));
+    painter.setClipPath(contentClip);
+    if (!pm.isNull())
+        painter.drawPixmap(rect(), pm);
+    painter.setClipping(false);
+
+    // Bezel as a filled annulus so both edges are antialiased: the inner edge blends onto
+    // the content, the outer edge blends onto the page.
+    QPainterPath bezel;
+    bezel.setFillRule(Qt::OddEvenFill);
+    bezel.addEllipse(outerRect);
+    bezel.addEllipse(innerRect);
+    painter.fillPath(bezel, QColor(30, 30, 30));
 }
 
 void MagnifyingGlass::mouseMoveEvent(QMouseEvent *event)
@@ -100,46 +194,46 @@ void MagnifyingGlass::zoomOut()
 
 void MagnifyingGlass::sizeUp()
 {
-    auto w = width();
-    auto h = height();
+    auto w = logicalSize.width();
+    auto h = logicalSize.height();
     if (growWidth(w) | growHeight(h)) // bitwise OR prevents short-circuiting
         resizeAndUpdate(w, h);
 }
 
 void MagnifyingGlass::sizeDown()
 {
-    auto w = width();
-    auto h = height();
+    auto w = logicalSize.width();
+    auto h = logicalSize.height();
     if (shrinkWidth(w) | shrinkHeight(h)) // bitwise OR prevents short-circuiting
         resizeAndUpdate(w, h);
 }
 
 void MagnifyingGlass::heightUp()
 {
-    auto h = height();
+    auto h = logicalSize.height();
     if (growHeight(h))
-        resizeAndUpdate(width(), h);
+        resizeAndUpdate(logicalSize.width(), h);
 }
 
 void MagnifyingGlass::heightDown()
 {
-    auto h = height();
+    auto h = logicalSize.height();
     if (shrinkHeight(h))
-        resizeAndUpdate(width(), h);
+        resizeAndUpdate(logicalSize.width(), h);
 }
 
 void MagnifyingGlass::widthUp()
 {
-    auto w = width();
+    auto w = logicalSize.width();
     if (growWidth(w))
-        resizeAndUpdate(w, height());
+        resizeAndUpdate(w, logicalSize.height());
 }
 
 void MagnifyingGlass::widthDown()
 {
-    auto w = width();
+    auto w = logicalSize.width();
     if (shrinkWidth(w))
-        resizeAndUpdate(w, height());
+        resizeAndUpdate(w, logicalSize.height());
 }
 
 void MagnifyingGlass::reset()
@@ -151,8 +245,10 @@ void MagnifyingGlass::reset()
 
 void MagnifyingGlass::resizeAndUpdate(int w, int h)
 {
-    resize(w, h);
-    emit sizeChanged(size());
+    logicalSize = QSize(w, h);
+    resize(displaySize());
+    applyShape();
+    emit sizeChanged(logicalSize); // persist the rectangle, never the circular square
     updateImage();
 }
 
