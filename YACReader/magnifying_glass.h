@@ -1,6 +1,7 @@
 #ifndef __MAGNIFYING_GLASS
 #define __MAGNIFYING_GLASS
 
+#include <QElapsedTimer>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QSize>
@@ -22,6 +23,17 @@ private:
     // When true (and circular), a bezel ring is drawn along the circle boundary to hide
     // the aliased edge left by the circular mask. Has no effect in rectangular mode.
     bool ring;
+
+    // Wheel/scroll accumulation for the resize & zoom gestures. Rather than stepping on the
+    // mere sign of each wheel event (which makes a trackpad's many tiny high-resolution
+    // events each fire a full step), we sum the signed angle delta of the active gesture and
+    // only take a step once it crosses scrollStepThreshold. A real mouse wheel delivers 120
+    // units per notch in a single event, so it still steps once per notch; a light trackpad
+    // brush no longer does anything.
+    int scrollAccumulator = 0;
+    Qt::KeyboardModifiers lastScrollModifiers = Qt::NoModifier;
+    QElapsedTimer scrollTimer;
+
     void setup(const QSize &size);
     void resizeAndUpdate(int w, int h);
     // The widget geometry to use for the current mode: a max(w, h) square when circular,

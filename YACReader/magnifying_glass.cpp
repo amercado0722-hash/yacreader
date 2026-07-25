@@ -145,38 +145,67 @@ void MagnifyingGlass::updateImage()
 }
 void MagnifyingGlass::wheelEvent(QWheelEvent *event)
 {
-    switch (event->modifiers()) {
-    // size
-    case Qt::NoModifier:
-        if (event->angleDelta().y() < 0)
-            sizeUp();
-        else
-            sizeDown();
-        break;
-    // size height
-    case Qt::ControlModifier:
-        if (event->angleDelta().y() < 0)
-            heightUp();
-        else
-            heightDown();
-        break;
-    // size width
-    case Qt::AltModifier: // alt modifier can actually modify the behavior of the event delta, so let's check both x & y
-        if (event->angleDelta().y() < 0 || event->angleDelta().x() < 0)
-            widthUp();
-        else
-            widthDown();
-        break;
-    // zoom level
-    case Qt::ShiftModifier:
-        if (event->angleDelta().y() < 0)
-            zoomIn();
-        else
-            zoomOut();
-        break;
-    default:
-        break; // Never propagate a wheel event to the parent widget, even if we ignore it.
+    // One notch of a real mouse wheel is 120 angle-delta units in a single event, so this
+    // threshold makes a mouse still step once per notch while a trackpad's tiny events must
+    // sum to 120 before stepping — the "intent" that stops a faint brush from resizing.
+    static constexpr int scrollStepThreshold = 120;
+    // Drop a partial accumulation that has gone stale, so an old half-finished gesture can't
+    // leak into an unrelated later one.
+    static constexpr qint64 scrollResetMs = 400;
+
+    const Qt::KeyboardModifiers modifiers = event->modifiers();
+
+    // The active gesture reads a single signed axis. Alt (width) can swap the delta onto the
+    // x axis, so for it take whichever axis carries the larger movement.
+    int delta = 0;
+    if (modifiers == Qt::AltModifier) {
+        const int dy = event->angleDelta().y();
+        const int dx = event->angleDelta().x();
+        delta = (qAbs(dx) > qAbs(dy)) ? dx : dy;
+    } else {
+        delta = event->angleDelta().y();
     }
+
+    // Only the four handled gestures accumulate; anything else is swallowed (never propagated
+    // to the parent) without touching the accumulator.
+    const bool handled = modifiers == Qt::NoModifier || modifiers == Qt::ControlModifier || modifiers == Qt::AltModifier || modifiers == Qt::ShiftModifier;
+    if (!handled || delta == 0) {
+        event->setAccepted(true);
+        return;
+    }
+
+    // Reset the running total when the gesture changes (different modifier) or when too much
+    // time has passed since the last wheel event of this gesture.
+    if (modifiers != lastScrollModifiers || !scrollTimer.isValid() || scrollTimer.elapsed() > scrollResetMs)
+        scrollAccumulator = 0;
+    lastScrollModifiers = modifiers;
+    scrollTimer.restart();
+
+    scrollAccumulator += delta;
+
+    // A fast, high-magnitude event may cross the threshold several times over; step once per
+    // crossing and keep the remainder so accumulation stays smooth.
+    while (qAbs(scrollAccumulator) >= scrollStepThreshold) {
+        const bool up = scrollAccumulator < 0; // convention: negative delta grows the loupe
+        switch (modifiers) {
+        case Qt::NoModifier:
+            up ? sizeUp() : sizeDown();
+            break;
+        case Qt::ControlModifier:
+            up ? heightUp() : heightDown();
+            break;
+        case Qt::AltModifier:
+            up ? widthUp() : widthDown();
+            break;
+        case Qt::ShiftModifier:
+            up ? zoomIn() : zoomOut();
+            break;
+        default:
+            break;
+        }
+        scrollAccumulator -= up ? -scrollStepThreshold : scrollStepThreshold;
+    }
+
     event->setAccepted(true);
 }
 void MagnifyingGlass::zoomIn()
