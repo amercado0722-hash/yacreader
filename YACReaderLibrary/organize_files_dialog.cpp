@@ -106,7 +106,7 @@ void OrganizeFilesDialog::updatePreview()
     previewLabel->setText(tr("Example: %1").arg(example));
 }
 
-static QString sanitizeSegment(QString segment)
+QString OrganizeFilesDialog::sanitizeSegment(QString segment)
 {
     static const QString invalid = QStringLiteral("<>:\"/\\|?*");
     for (QChar &c : segment) {
@@ -119,6 +119,26 @@ static QString sanitizeSegment(QString segment)
     return segment;
 }
 
+QString OrganizeFilesDialog::padNumber(const QString &number, int width)
+{
+    const QString trimmed = number.trimmed();
+    if (width <= 0 || trimmed.isEmpty())
+        return trimmed;
+
+    int digits = 0;
+    while (digits < trimmed.size() && trimmed.at(digits).isDigit())
+        ++digits;
+
+    if (digits == 0)
+        return trimmed;
+
+    QString leading = trimmed.left(digits);
+    while (leading.size() < width)
+        leading.prepend(QLatin1Char('0'));
+
+    return leading + trimmed.mid(digits);
+}
+
 QString OrganizeFilesDialog::buildRelativePath(const QString &pattern,
                                                const QString &publisher,
                                                const QString &series,
@@ -126,7 +146,8 @@ QString OrganizeFilesDialog::buildRelativePath(const QString &pattern,
                                                const QString &title,
                                                const QString &volume,
                                                const QString &year,
-                                               const QString &extension)
+                                               const QString &extension,
+                                               int numberPadding)
 {
     const QString safeSeries = series.trimmed().isEmpty() ? tr("Unknown Series") : series.trimmed();
     const QString safePublisher = publisher.trimmed().isEmpty() ? tr("Unknown Publisher") : publisher.trimmed();
@@ -135,7 +156,7 @@ QString OrganizeFilesDialog::buildRelativePath(const QString &pattern,
     QString result = pattern;
     result.replace(QStringLiteral("{publisher}"), safePublisher);
     result.replace(QStringLiteral("{series}"), safeSeries);
-    result.replace(QStringLiteral("{number}"), number.trimmed());
+    result.replace(QStringLiteral("{number}"), padNumber(number, numberPadding));
     result.replace(QStringLiteral("{title}"), effectiveTitle);
     result.replace(QStringLiteral("{volume}"), volume.trimmed());
     result.replace(QStringLiteral("{year}"), year.trimmed());

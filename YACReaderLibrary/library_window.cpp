@@ -11,6 +11,7 @@
 #include <QFileIconProvider>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QHash>
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QLabel>
@@ -19,6 +20,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QProgressDialog>
+#include <QSet>
 #include <QSettings>
 #include <QShowEvent>
 #include <QSplitter>
@@ -67,6 +69,7 @@
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
 #include "organize_files_dialog.h"
+#include "organize_files_preview_dialog.h"
 #include "package_manager.h"
 #include "properties_dialog.h"
 #include "reading_list_item.h"
@@ -1689,6 +1692,7 @@ void LibraryWindow::showComicsContextMenu(const QPoint &point, bool showFullScre
     menu->addAction(actions.saveCoversToAction);
     menu->addSeparator();
     menu->addAction(actions.openContainingFolderComicAction);
+    menu->addAction(actions.organizeComicsFilesAction);
     menu->addAction(actions.updateCurrentFolderAction);
     menu->addSeparator();
     menu->addAction(actions.editSelectedComicsAction);
@@ -2827,6 +2831,23 @@ static void removeEmptyDirs(const QString &basePath)
     }
 }
 
+static QString uniqueDestination(const QString &destination, const QSet<QString> &taken)
+{
+    if (!QFileInfo::exists(destination) && !taken.contains(destination))
+        return destination;
+
+    const QFileInfo destInfo(destination);
+    const QString dir = destInfo.absolutePath();
+    const QString base = destInfo.completeBaseName();
+    const QString suffix = destInfo.suffix().isEmpty() ? QString() : QStringLiteral(".") + destInfo.suffix();
+    int counter = 1;
+    QString candidate;
+    do {
+        candidate = QDir::cleanPath(dir + QStringLiteral("/") + base + QStringLiteral(" (") + QString::number(counter++) + QStringLiteral(")") + suffix);
+    } while (QFileInfo::exists(candidate) || taken.contains(candidate));
+    return candidate;
+}
+
 void LibraryWindow::organizeFiles()
 {
     const QModelIndex sourceIndex = getCurrentFolderIndex();
@@ -2835,16 +2856,7 @@ void LibraryWindow::organizeFiles()
 
     const auto libraryId = libraries.getId(selectedLibrary->currentText());
     const auto folder = foldersModel->getFolder(sourceIndex);
-    const QString libraryRoot = QDir::cleanPath(currentPath());
     const QString folderAbsolutePath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(sourceIndex));
-
-    OrganizeFilesDialog dialog(libraryRoot, folderAbsolutePath, settings, this);
-    if (dialog.exec() != QDialog::Accepted)
-        return;
-
-    const QString pattern = dialog.formatPattern();
-    if (pattern.trimmed().isEmpty())
-        return;
 
     QList<ComicDB> comics;
     collectComicsRecursively(libraryId, folder.id, comics);
@@ -2854,12 +2866,61 @@ void LibraryWindow::organizeFiles()
         return;
     }
 
-    struct Move {
-        QString source;
-        QString destination;
-    };
+    if (runOrganizeFilesFlow(comics, folderAbsolutePath))
+        updateFolder(sourceIndex);
+}
+
+void LibraryWindow::organizeComicsFiles()
+{
+    const QModelIndexList indexList = getSelectedComics();
+    if (indexList.isEmpty())
+        return;
+
+    const QList<ComicDB> comics = comicsModel->getComics(indexList);
+    if (comics.isEmpty())
+        return;
+
+    const QModelIndex folderIndex = getCurrentFolderIndex();
+    const QString folderAbsolutePath = folderIndex.isValid()
+            ? QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderIndex))
+            : QDir::cleanPath(currentPath());
+
+    if (runOrganizeFilesFlow(comics, folderAbsolutePath)) {
+        if (folderIndex.isValid())
+            updateFolder(folderIndex);
+        else
+            reloadCurrentFolderComicsContent();
+    }
+}
+
+bool LibraryWindow::runOrganizeFilesFlow(const QList<ComicDB> &comics, const QString &cleanupPath)
+{
+    const QString libraryRoot = QDir::cleanPath(currentPath());
+
+    OrganizeFilesDialog dialog(libraryRoot, cleanupPath, settings, this);
+    if (dialog.exec() != QDialog::Accepted)
+        return false;
+
+    const QString pattern = dialog.formatPattern();
+    if (pattern.trimmed().isEmpty())
+        return false;
+
+    using Move = OrganizeFilesPreviewDialog::Move;
     QList<Move> moves;
-    const QDir destinationRoot(dialog.relativeToRoot() ? libraryRoot : folderAbsolutePath);
+    QSet<QString> takenDestinations;
+    const QDir destinationRoot(dialog.relativeToRoot() ? libraryRoot : cleanupPath);
+
+    QHash<QString, int> seriesNumberWidth;
+    for (const ComicDB &comic : comics) {
+        const QString series = comic.info.series.toString().trimmed();
+        bool ok = false;
+        const int value = comic.info.number.toString().trimmed().toInt(&ok);
+        if (!ok)
+            continue;
+        const int width = QString::number(value).size();
+        int &current = seriesNumberWidth[series];
+        current = std::max(current, width);
+    }
 
     for (const ComicDB &comic : comics) {
         const QString source = QDir::cleanPath(libraryRoot + comic.path);
@@ -2869,6 +2930,8 @@ void LibraryWindow::organizeFiles()
 
         const QString extension = sourceInfo.suffix().isEmpty() ? QString() : QStringLiteral(".") + sourceInfo.suffix();
 
+        const int numberPadding = seriesNumberWidth.value(comic.info.series.toString().trimmed(), 0);
+
         const QString relative = OrganizeFilesDialog::buildRelativePath(pattern,
                                                                         comic.info.publisher.toString(),
                                                                         comic.info.series.toString(),
@@ -2876,44 +2939,44 @@ void LibraryWindow::organizeFiles()
                                                                         comic.info.title.toString(),
                                                                         comic.info.volume.toString(),
                                                                         comic.info.year.toString(),
-                                                                        extension);
+                                                                        extension,
+                                                                        numberPadding);
 
         QString destination = QDir::cleanPath(destinationRoot.absoluteFilePath(relative));
         if (destination == QDir::cleanPath(source))
             continue;
 
-        if (QFileInfo::exists(destination)) {
-            const QFileInfo destInfo(destination);
-            const QString dir = destInfo.absolutePath();
-            const QString base = destInfo.completeBaseName();
-            const QString suffix = destInfo.suffix().isEmpty() ? QString() : QStringLiteral(".") + destInfo.suffix();
-            int counter = 1;
-            QString candidate;
-            do {
-                candidate = QDir::cleanPath(dir + QStringLiteral("/") + base + QStringLiteral(" (") + QString::number(counter++) + QStringLiteral(")") + suffix);
-            } while (QFileInfo::exists(candidate));
-            destination = candidate;
-        }
+        destination = uniqueDestination(destination, takenDestinations);
+        takenDestinations.insert(destination);
 
         moves.append({ source, destination });
     }
 
     if (moves.isEmpty()) {
         QMessageBox::information(this, tr("Organize files"), tr("All files are already organized according to this format."));
-        return;
+        return false;
     }
 
-    const auto answer = QMessageBox::question(this, tr("Organize files"),
-                                              tr("%1 file(s) will be moved inside \"%2\" according to the chosen format. Continue?")
-                                                      .arg(moves.size())
-                                                      .arg(folder.name),
-                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-    if (answer != QMessageBox::Yes)
-        return;
+    OrganizeFilesPreviewDialog preview(destinationRoot.absolutePath(), libraryRoot, moves, this);
+    if (preview.exec() != QDialog::Accepted)
+        return false;
+
+    QList<Move> finalMoves;
+    QSet<QString> finalTaken;
+    for (const Move &move : preview.moves()) {
+        if (QDir::cleanPath(move.destination) == QDir::cleanPath(move.source))
+            continue;
+        const QString destination = uniqueDestination(move.destination, finalTaken);
+        finalTaken.insert(destination);
+        finalMoves.append({ move.source, destination });
+    }
+
+    if (finalMoves.isEmpty())
+        return false;
 
     int moved = 0;
     QStringList failures;
-    for (const Move &move : moves) {
+    for (const Move &move : finalMoves) {
         const QString targetDir = QFileInfo(move.destination).absolutePath();
         if (!QDir().mkpath(targetDir)) {
             failures << move.source;
@@ -2925,17 +2988,17 @@ void LibraryWindow::organizeFiles()
             failures << move.source;
     }
 
-    removeEmptyDirs(folderAbsolutePath);
+    removeEmptyDirs(cleanupPath);
 
     if (!failures.isEmpty()) {
         QMessageBox::warning(this, tr("Organize files"),
                              tr("%1 of %2 file(s) were moved. %3 file(s) could not be moved.")
                                      .arg(moved)
-                                     .arg(moves.size())
+                                     .arg(finalMoves.size())
                                      .arg(failures.size()));
     }
 
-    updateFolder(sourceIndex);
+    return moved > 0;
 }
 
 void LibraryWindow::setFolderAsNotCompleted()

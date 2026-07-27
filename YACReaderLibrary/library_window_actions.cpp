@@ -297,6 +297,9 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderComicAction->setData(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL);
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
 
+    organizeComicsFilesAction = new QAction(window);
+    organizeComicsFilesAction->setText(tr("Organize files"));
+
     resetComicRatingAction = new QAction(window);
     resetComicRatingAction->setText(tr("Reset rating"));
     resetComicRatingAction->setData(RESET_COMIC_RATING_ACTION_YL);
@@ -425,6 +428,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     window->addAction(deleteMetadataAction);
     window->addAction(rescanXMLFromCurrentFolderAction);
     window->addAction(openContainingFolderComicAction);
+    window->addAction(organizeComicsFilesAction);
 #ifndef Q_OS_MACOS
     window->addAction(toggleFullScreenAction);
 #endif
@@ -483,6 +487,7 @@ void LibraryWindowActions::createConnections(
 
     // ContextMenus
     QObject::connect(openContainingFolderComicAction, &QAction::triggered, window, &LibraryWindow::openContainingFolderComic);
+    QObject::connect(organizeComicsFilesAction, &QAction::triggered, window, &LibraryWindow::organizeComicsFiles);
     QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsNotCompleted);
     QObject::connect(setFolderAsCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsCompleted);
     QObject::connect(setFolderAsReadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsRead);
@@ -601,6 +606,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << setMangaAction
                                                  << setNormalAction
                                                  << openContainingFolderComicAction
+                                                 << organizeComicsFilesAction
                                                  << resetComicRatingAction
                                                  << selectAllComicsAction
                                                  << editSelectedComicsAction
@@ -720,6 +726,7 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
     deleteMetadataAction->setEnabled(enabled);
     deleteComicsAction->setEnabled(enabled);
     openContainingFolderComicAction->setEnabled(enabled);
+    organizeComicsFilesAction->setEnabled(enabled);
     resetComicRatingAction->setEnabled(enabled);
     getInfoAction->setEnabled(enabled);
     addToMenuAction->setEnabled(enabled);

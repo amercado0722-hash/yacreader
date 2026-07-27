@@ -30,7 +30,12 @@ public:
                                      const QString &title,
                                      const QString &volume,
                                      const QString &year,
-                                     const QString &extension);
+                                     const QString &extension,
+                                     int numberPadding = 0);
+
+    static QString sanitizeSegment(QString segment);
+
+    static QString padNumber(const QString &number, int width);
 
 private slots:
     void updatePreview();

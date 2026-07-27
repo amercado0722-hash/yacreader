@@ -260,6 +260,7 @@ public slots:
     // void deleteLibrary();
     void openContainingFolder();
     void organizeFiles();
+    void organizeComicsFiles();
     void setFolderAsNotCompleted();
     void setFolderAsCompleted();
     void setFolderAsRead();
@@ -339,6 +340,7 @@ public slots:
     void reloadCurrentFolderComicsContent();
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
+    bool runOrganizeFilesFlow(const QList<ComicDB> &comics, const QString &cleanupPath);
     void enableNeededActions();
     void setComicActionsDisabled(bool disabled);
     void setComicToolbarEntriesVisible(bool visible);

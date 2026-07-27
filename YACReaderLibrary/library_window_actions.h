@@ -84,6 +84,7 @@ public:
     QAction *deleteCustomFolderCoverAction;
 
     QAction *openContainingFolderComicAction;
+    QAction *organizeComicsFilesAction;
     QAction *setAsReadAction;
     QAction *setAsNonReadAction;
 
