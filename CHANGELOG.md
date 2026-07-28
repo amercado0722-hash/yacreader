@@ -25,6 +25,10 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### WebUI
 * Add a very basic web reader.
 
+### All apps
+* Unify comics sorting to use the string based universal number everywhere.
+* Experimental support for image based comics in epub format.
+
 ## 10.1.0
 
 ### YACReader
