@@ -4,6 +4,7 @@
 #include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
 #include "comic_db.h"
 #include "compressed_archive.h"
+#include "epub_page_index.h"
 #include "pdf_render_size.h"
 #include "qnaturalsorting.h"
 
@@ -17,6 +18,10 @@
 
 #include <algorithm>
 #include <utility>
+
+#ifdef use_unarr
+#include <unarr.h>
+#endif
 
 enum YACReaderPageSortingMode {
     YACReaderNumericalSorting,
@@ -66,6 +71,7 @@ const QStringList Comic::literalImageExtensions = QStringList() << "jpg"
 #ifndef use_unarr
 const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"
                                                          << "*.cbz"
+                                                         << "*.epub"
                                                          << "*.rar"
                                                          << "*.zip"
                                                          << "*.tar"
@@ -75,6 +81,7 @@ const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"
                                                          << "*.cbt";
 const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "cbz"
+                                                                << "epub"
                                                                 << "rar"
                                                                 << "zip"
                                                                 << "tar"
@@ -85,19 +92,25 @@ const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
 #else
 const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"
                                                          << "*.cbz"
+                                                         << "*.epub"
                                                          << "*.rar"
                                                          << "*.zip"
                                                          << "*.tar"
+#if (UNARR_API_VERSION >= 110)
                                                          << "*.7z"
                                                          << "*.cb7"
+#endif
                                                          << "*.cbt";
 const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "cbz"
+                                                                << "epub"
                                                                 << "rar"
                                                                 << "zip"
                                                                 << "tar"
+#if (UNARR_API_VERSION >= 110)
                                                                 << "7z"
                                                                 << "cb7"
+#endif
                                                                 << "cbt";
 #endif // use_unarr
 #ifndef NO_PDF
@@ -298,7 +311,12 @@ bool Comic::hasBeenAnErrorOpening()
 bool Comic::fileIsComic(const QString &path)
 {
     QFileInfo info(path);
-    return literalComicExtensions.contains(info.suffix());
+    return literalComicExtensions.contains(info.suffix(), Qt::CaseInsensitive);
+}
+
+bool Comic::fileIsEpub(const QString &path)
+{
+    return QFileInfo(path).suffix().compare(QStringLiteral("epub"), Qt::CaseInsensitive) == 0;
 }
 
 QList<QString> Comic::findValidComicFiles(const QList<QUrl> &list)
@@ -362,9 +380,8 @@ FileComic::~FileComic()
 {
     _pages.clear();
     _loadedPages.clear();
-    _fileNames.clear();
-    _newOrder.clear();
-    _order.clear();
+    _pageArchiveIndexes.clear();
+    _archiveIndexToPages.clear();
 }
 
 bool FileComic::load(const QString &path, int atPage)
@@ -413,21 +430,11 @@ bool FileComic::load(const QString &path, const ComicDB &comic)
 
 QList<QString> FileComic::filter(const QList<QString> &src)
 {
-    QList<QString> extensions = getSupportedImageLiteralFormats();
+    const QStringList extensions = getSupportedImageLiteralFormats();
     QList<QString> filtered;
-    bool fileAccepted = false;
 
     for (const QString &fileName : std::as_const(src)) {
-        fileAccepted = false;
-        if (!fileName.contains("__MACOSX")) {
-            for (const QString &extension : std::as_const(extensions)) {
-                if (fileName.endsWith(extension, Qt::CaseInsensitive)) {
-                    fileAccepted = true;
-                    break;
-                }
-            }
-        }
-        if (fileAccepted) {
+        if (isSupportedImage(fileName, extensions)) {
             filtered.append(fileName);
         }
     }
@@ -435,26 +442,75 @@ QList<QString> FileComic::filter(const QList<QString> &src)
     return filtered;
 }
 
+bool FileComic::isSupportedImage(const QString &fileName, const QStringList &supportedExtensions)
+{
+    if (fileName.contains("__MACOSX")) {
+        return false;
+    }
+    for (const QString &extension : supportedExtensions) {
+        if (fileName.endsWith(extension, Qt::CaseInsensitive)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+YACReaderEpub::PageIndex FileComic::epubPageIndex(const QStringList &fileNames, CompressedArchive &archive)
+{
+    auto result = YACReaderEpub::readPageIndex(fileNames, [&archive](int index) { return archive.getRawDataAtIndex(index); });
+    if (!result.isValid()) {
+        return result;
+    }
+
+    QStringList pageNames;
+    for (const YACReaderEpub::Page &page : std::as_const(result.pages)) {
+        pageNames.append(page.fileName);
+    }
+    QSet<QString> supportedPageNames;
+    for (const QString &pageName : filter(pageNames)) {
+        supportedPageNames.insert(pageName);
+    }
+
+    QVector<YACReaderEpub::Page> supportedPages;
+    for (const YACReaderEpub::Page &page : std::as_const(result.pages)) {
+        if (supportedPageNames.contains(page.fileName)) {
+            supportedPages.append(page);
+        }
+    }
+    result.pages = std::move(supportedPages);
+    if (result.pages.isEmpty()) {
+        result.error = QStringLiteral("Package spine contains no supported image pages");
+    }
+    return result;
+}
+
+YACReaderEpub::ScanInfo FileComic::epubScanInfo(const QStringList &fileNames, CompressedArchive &archive, int coverPage)
+{
+    const QStringList supportedExtensions = Comic::getSupportedImageLiteralFormats();
+    return YACReaderEpub::readScanInfo(fileNames, [&archive](int index) { return archive.getRawDataAtIndex(index); }, coverPage, [&supportedExtensions](const QString &fileName) { return isSupportedImage(fileName, supportedExtensions); });
+}
+
 // DELEGATE methods
 void FileComic::fileExtracted(int index, const QByteArray &rawData)
 {
-    /*QFile f("c:/temp/out2.txt");
-        f.open(QIODevice::Append);
-        QTextStream out(&f);*/
-    int sortedIndex = _fileNames.indexOf(_order.at(index));
-    // out << sortedIndex << " , ";
-    // f.close();
-    if (sortedIndex == -1) {
-        return;
+    const QVector<int> pages = _archiveIndexToPages.value(index);
+    for (int page : pages) {
+        _pages[page] = rawData;
+        emit imageLoaded(page);
+        emit imageLoaded(page, _pages[page]);
     }
-    _pages[sortedIndex] = rawData;
-    emit imageLoaded(sortedIndex);
-    emit imageLoaded(sortedIndex, _pages[sortedIndex]);
 }
 
 void FileComic::crcError(int index)
 {
-    emit crcErrorFound(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(index + 1));
+    const QVector<int> pages = _archiveIndexToPages.value(index);
+    QStringList pageNumbers;
+    for (int page : pages) {
+        pageNumbers.append(QString::number(page + 1));
+    }
+
+    const QString affectedPages = pageNumbers.isEmpty() ? QString::number(index + 1) : pageNumbers.join(QStringLiteral(", "));
+    emit crcErrorFound(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(affectedPages));
 }
 
 // TODO: comprobar que si se produce uno de estos errores, la carga del c�mic es irrecuperable
@@ -474,10 +530,16 @@ bool FileComic::isCancelled()
 
 QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
 {
-    QVector<quint32> sortedIndexes;
-    for (const QString &name : std::as_const(_fileNames)) {
-        sortedIndexes.append(_order.indexOf(name));
+    QVector<quint32> archiveIndexes;
+    QSet<quint32> seenIndexes;
+    for (quint32 archiveIndex : std::as_const(_pageArchiveIndexes)) {
+        if (!seenIndexes.contains(archiveIndex)) {
+            archiveIndexes.append(archiveIndex);
+            seenIndexes.insert(archiveIndex);
+        }
     }
+    const int firstArchiveIndex = archiveIndexes.indexOf(_pageArchiveIndexes.at(_firstPage));
+
     QList<QVector<quint32>> sections;
     quint32 previous = 0;
     sectionIndex = -1;
@@ -485,9 +547,9 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
     QVector<quint32> section;
     int idx = 0;
     unsigned int realIdx;
-    for (const quint32 i : std::as_const(sortedIndexes)) {
+    for (const quint32 i : std::as_const(archiveIndexes)) {
 
-        if (_firstPage == idx) {
+        if (firstArchiveIndex == idx) {
             sectionIndex = sectionCount;
             realIdx = i;
         }
@@ -573,30 +635,48 @@ void FileComic::process()
     }
 
     // se filtran para obtener s�lo los formatos soportados
-    _order = archive.getFileNames();
-    _fileNames = filter(_order);
+    const QStringList archiveFileNames = archive.getFileNames();
+    QStringList pageFileNames;
+    _pageArchiveIndexes.clear();
+    _archiveIndexToPages.clear();
 
-    if (_fileNames.size() == 0) {
+    if (Comic::fileIsEpub(_path)) {
+        const auto epub = epubPageIndex(archiveFileNames, archive);
+        if (!epub.isValid()) {
+            moveToThread(QCoreApplication::instance()->thread());
+            emit errorOpening(tr("Unsupported EPUB: %1").arg(epub.error));
+            return;
+        }
+
+        for (const YACReaderEpub::Page &page : epub.pages) {
+            pageFileNames.append(page.fileName);
+            _pageArchiveIndexes.append(page.archiveIndex);
+        }
+    } else {
+        pageFileNames = filter(archiveFileNames);
+        comic_pages_sort(pageFileNames, YACReaderHeuristicSorting);
+        for (const QString &fileName : std::as_const(pageFileNames)) {
+            _pageArchiveIndexes.append(archiveFileNames.indexOf(fileName));
+        }
+    }
+
+    if (pageFileNames.isEmpty()) {
         // QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return;
     }
 
-    // TODO, cambiar por listas
-    //_order = _fileNames;
-
-    _pages.resize(_fileNames.size());
-    _loadedPages = QVector<bool>(_fileNames.size(), false);
+    _pages.resize(pageFileNames.size());
+    _loadedPages = QVector<bool>(pageFileNames.size(), false);
 
     emit pageChanged(0); // this indicates new comic, index=0
     emit numPages(_pages.size());
     _loaded = true;
 
-    _cfi = 0;
-
-    // TODO, add a setting for choosing the type of page sorting used.
-    comic_pages_sort(_fileNames, YACReaderHeuristicSorting);
+    for (int page = 0; page < _pageArchiveIndexes.size(); ++page) {
+        _archiveIndexToPages[_pageArchiveIndexes.at(page)].append(page);
+    }
 
     if (_firstPage == -1) {
         _firstPage = bm->getLastPage();
@@ -626,16 +706,6 @@ void FileComic::process()
         }
         archive.getAllData(sections.at(i), this);
     }
-    // archive.getAllData(QVector<quint32>(),this);
-    /*
-        for (const auto &name : _fileNames)
-        {
-                index = _order.indexOf(name);
-                sortedIndex = _fileNames.indexOf(name);
-                _pages[sortedIndex] = allData.at(index);
-                emit imageLoaded(sortedIndex);
-                emit imageLoaded(sortedIndex,_pages[sortedIndex]);
-        }*/
     moveToThread(QCoreApplication::instance()->thread());
     emit imagesLoaded();
 }

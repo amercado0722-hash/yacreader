@@ -46,7 +46,7 @@ Folder rootFolder(QSqlDatabase &db)
 LibraryCreator::LibraryCreator(QSettings *settings)
     : creation(false), partialUpdate(false), settings(settings)
 {
-    _nameFilter << Comic::comicExtensions;
+    _nameFilter = Comic::comicExtensions;
 }
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)

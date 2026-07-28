@@ -39,10 +39,6 @@
 #include <algorithm>
 #include <utility>
 
-#ifdef use_unarr
-#include "unarr.h"
-#endif
-
 namespace {
 
 QString comicBaseName(const QString &path)
@@ -938,13 +934,8 @@ void MainWindowViewer::updateContextMenuPolicy()
 void MainWindowViewer::open()
 {
     QFileDialog openDialog;
-#ifndef use_unarr
-    QString pathFile = openDialog.getOpenFileName(this, tr("Open Comic"), currentDirectory, tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.7z *.cb7 *.arj *.cbt)");
-#elif (UNARR_API_VERSION < 110)
-    QString pathFile = openDialog.getOpenFileName(this, tr("Open Comic"), currentDirectory, tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.cbt)");
-#else
-    QString pathFile = openDialog.getOpenFileName(this, tr("Open Comic"), currentDirectory, tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.cbt *.7z *.cb7)");
-#endif
+    const QString fileFilter = tr("Comic files") + " (" + Comic::comicExtensions.join(' ') + ')';
+    QString pathFile = openDialog.getOpenFileName(this, tr("Open Comic"), currentDirectory, fileFilter);
     if (!pathFile.isEmpty()) {
         openComicFromPath(pathFile);
     }
@@ -1607,30 +1598,7 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
 {
     QDir d(path);
     d.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-#ifndef use_unarr
-    d.setNameFilters(QStringList() << "*.cbr"
-                                   << "*.cbz"
-                                   << "*.rar"
-                                   << "*.zip"
-                                   << "*.tar"
-                                   << "*.pdf"
-                                   << "*.7z"
-                                   << "*.cb7"
-                                   << "*.arj"
-                                   << "*.cbt");
-#else
-    d.setNameFilters(QStringList() << "*.cbr"
-                                   << "*.cbz"
-                                   << "*.rar"
-                                   << "*.zip"
-                                   << "*.tar"
-                                   << "*.pdf"
-#if (UNARR_API_VERSION >= 110)
-                                   << "*.7z"
-                                   << "*.cb7"
-#endif
-                                   << "*.cbt");
-#endif
+    d.setNameFilters(Comic::comicExtensions);
     d.setSorting(QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
     QStringList list = d.entryList();
     std::sort(list.begin(), list.end(), naturalSortLessThanCI);

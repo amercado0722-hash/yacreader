@@ -7,10 +7,17 @@
 #include <QImage>
 #include <QMap>
 #include <QtCore>
+
 #ifndef NO_PDF
 #include "pdf_comic.h"
 #endif // NO_PDF
 class ComicDB;
+class CompressedArchive;
+
+namespace YACReaderEpub {
+struct PageIndex;
+struct ScanInfo;
+}
 
 // #define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
 class Comic : public QObject
@@ -22,14 +29,9 @@ protected:
     QVector<QByteArray> _pages;
     QVector<bool> _loadedPages;
     // QVector<uint> _sizes;
-    QStringList _fileNames;
-    QMap<QString, int> _newOrder;
-    QList<QString> _order;
     int _index;
     QString _path;
     bool _loaded;
-
-    int _cfi;
 
     // open the comic at this point
     int _firstPage;
@@ -79,6 +81,7 @@ public:
     static QStringList getSupportedImageLiteralFormats();
 
     static bool fileIsComic(const QString &path);
+    static bool fileIsEpub(const QString &path);
     static QList<QString> findValidComicFiles(const QList<QUrl> &list);
     static QList<QString> findValidComicFilesInFolder(const QString &path);
 
@@ -117,6 +120,8 @@ class FileComic : public Comic, public ExtractDelegate
 
 private:
     QList<QVector<quint32>> getSections(int &sectionIndex);
+    QVector<quint32> _pageArchiveIndexes;
+    QHash<quint32, QVector<int>> _archiveIndexToPages;
 
 public:
     FileComic();
@@ -125,6 +130,9 @@ public:
     bool load(const QString &path, int atPage = -1);
     bool load(const QString &path, const ComicDB &comic);
     static QList<QString> filter(const QList<QString> &src);
+    static bool isSupportedImage(const QString &fileName, const QStringList &supportedExtensions);
+    static YACReaderEpub::PageIndex epubPageIndex(const QStringList &fileNames, CompressedArchive &archive);
+    static YACReaderEpub::ScanInfo epubScanInfo(const QStringList &fileNames, CompressedArchive &archive, int coverPage);
 
     // ExtractDelegate
     void fileExtracted(int index, const QByteArray &rawData);
