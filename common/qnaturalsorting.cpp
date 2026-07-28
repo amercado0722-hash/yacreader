@@ -33,6 +33,18 @@ bool naturalSortLessThanCI(const QString &left, const QString &right)
     return (naturalCompare(left, right, Qt::CaseInsensitive) < 0);
 }
 
+bool comicNumberLessThan(const QVariant &leftNumber, const QString &leftName,
+                         const QVariant &rightNumber, const QString &rightName)
+{
+    if (leftNumber.isNull() && rightNumber.isNull())
+        return naturalSortLessThanCI(leftName, rightName);
+
+    if (!leftNumber.isNull() && !rightNumber.isNull())
+        return naturalSortLessThanCI(leftNumber.toString(), rightNumber.toString());
+
+    return rightNumber.isNull();
+}
+
 bool naturalSortLessThanCIFileInfo(const QFileInfo &left, const QFileInfo &right)
 {
     return naturalSortLessThanCI(left.fileName(), right.fileName());

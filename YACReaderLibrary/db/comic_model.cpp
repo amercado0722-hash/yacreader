@@ -22,15 +22,8 @@
 #include "QsLog.h"
 
 auto defaultFolderContentSortFunction = [](const ComicItem *c1, const ComicItem *c2) {
-    if (c1->data(ComicModel::Number).isNull() && c2->data(ComicModel::Number).isNull()) {
-        return naturalSortLessThanCI(c1->data(ComicModel::FileName).toString(), c2->data(ComicModel::FileName).toString());
-    } else {
-        if (c1->data(ComicModel::Number).isNull() == false && c2->data(ComicModel::Number).isNull() == false) {
-            return naturalSortLessThanCI(c1->data(ComicModel::Number).toString(), c2->data(ComicModel::Number).toString());
-        } else {
-            return c2->data(ComicModel::Number).isNull();
-        }
-    }
+    return comicNumberLessThan(c1->data(ComicModel::Number), c1->data(ComicModel::FileName).toString(),
+                               c2->data(ComicModel::Number), c2->data(ComicModel::FileName).toString());
 };
 
 ComicModel::ComicModel(QObject *parent)

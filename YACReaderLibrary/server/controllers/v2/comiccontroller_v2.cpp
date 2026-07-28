@@ -5,7 +5,6 @@
 #include "comic.h"
 #include "comic_db.h"
 #include "db_helper.h"
-#include "qnaturalsorting.h"
 #include "yacreader_http_session.h"
 #include "yacreader_libraries.h"
 
@@ -91,9 +90,10 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
         response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
         if (remoteComic) // send previous and next comics id
         {
-            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, false);
-
-            std::sort(siblings.begin(), siblings.end(), LibraryItemSorter());
+            // Same reading order the desktop reader walks with next/previous, and the
+            // one the iOS client sorts a folder's comics with, so previousComic/nextComic
+            // agree with what the user sees listed.
+            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibraryForReading(libraryId, comic.parentId);
 
             bool found = false;
             int i;
