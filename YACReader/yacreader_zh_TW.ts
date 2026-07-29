@@ -188,24 +188,29 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="457"/>
+        <location filename="../common/comic.cpp" line="513"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>第 %1 頁 CRC 校驗失敗: 部分頁面將無法正確顯示</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="464"/>
+        <location filename="../common/comic.cpp" line="520"/>
         <source>Unknown error opening the file</source>
         <translation>打開檔時出現未知錯誤</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="565"/>
+        <location filename="../common/comic.cpp" line="627"/>
         <source>7z not found</source>
         <translation>未找到 7z</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="571"/>
+        <location filename="../common/comic.cpp" line="633"/>
         <source>Format not supported</source>
         <translation>不支持的檔格式</translation>
+    </message>
+    <message>
+        <location filename="../common/comic.cpp" line="647"/>
+        <source>Unsupported EPUB: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -271,7 +276,7 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="66"/>
+        <location filename="options_dialog.cpp" line="78"/>
         <source>&quot;Go to flow&quot; size</source>
         <translation>「前往 Comic Flow」大小</translation>
     </message>
@@ -281,57 +286,57 @@
         <translation>我的漫畫路徑</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="84"/>
+        <location filename="options_dialog.cpp" line="96"/>
         <source>Background color</source>
         <translation>背景顏色</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="87"/>
+        <location filename="options_dialog.cpp" line="99"/>
         <source>Choose</source>
         <translation>選擇</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="140"/>
+        <location filename="options_dialog.cpp" line="153"/>
         <source>Quick Navigation Mode</source>
         <translation>快速導航模式</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="141"/>
+        <location filename="options_dialog.cpp" line="154"/>
         <source>Disable mouse over activation</source>
         <translation>禁用滑鼠啟動</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Scaling</source>
         <translation>縮放</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="234"/>
         <source>Scaling method</source>
         <translation>縮放方法</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="223"/>
+        <location filename="options_dialog.cpp" line="236"/>
         <source>Nearest (fast, low quality)</source>
         <translation>最近（快速，低品質）</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="224"/>
+        <location filename="options_dialog.cpp" line="237"/>
         <source>Bilinear</source>
         <translation>雙線性</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="225"/>
+        <location filename="options_dialog.cpp" line="238"/>
         <source>Lanczos (better quality)</source>
         <translation>Lanczos（品質更好）</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="263"/>
+        <location filename="options_dialog.cpp" line="276"/>
         <source>Restart is needed</source>
         <translation>需要重啟</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="178"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>Brightness</source>
         <translation>亮度</translation>
     </message>
@@ -346,92 +351,112 @@
         <translation>在目前頁面資訊標籤中顯示時間</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="96"/>
+        <location filename="options_dialog.cpp" line="64"/>
+        <source>Magnifying glass</source>
+        <translation>放大鏡</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="66"/>
+        <source>Circular magnifying glass</source>
+        <translation>圓形放大鏡</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="67"/>
+        <source>Draw a ring around the circular magnifying glass</source>
+        <translation>在圓形放大鏡周圍繪製邊框</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="70"/>
+        <source>Ease cursor movement toward the edges</source>
+        <translation>平滑游標移向邊緣的移動</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="108"/>
         <source>Scroll behaviour</source>
         <translation>滾動效果</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="99"/>
+        <location filename="options_dialog.cpp" line="111"/>
         <source>Disable scroll animations and smooth scrolling</source>
         <translation>停用滾動動畫和平滑滾動</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="100"/>
+        <location filename="options_dialog.cpp" line="112"/>
         <source>Do not turn page using scroll</source>
         <translation>滾動時不翻頁</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="101"/>
+        <location filename="options_dialog.cpp" line="113"/>
         <source>Use single scroll step to turn page</source>
         <translation>使用單滾動步驟翻頁</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="109"/>
+        <location filename="options_dialog.cpp" line="121"/>
         <source>Mouse mode</source>
         <translation>滑鼠模式</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="112"/>
+        <location filename="options_dialog.cpp" line="124"/>
         <source>Only Back/Forward buttons can turn pages</source>
         <translation>只有後退/前進按鈕可以翻頁</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="113"/>
+        <location filename="options_dialog.cpp" line="125"/>
         <source>Use the Left/Right buttons to turn pages.</source>
         <translation>使用向左/向右按鈕翻頁。</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="114"/>
+        <location filename="options_dialog.cpp" line="126"/>
         <source>Click left or right half of the screen to turn pages.</source>
         <translation>點擊螢幕的左半部或右半部即可翻頁。</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="179"/>
+        <location filename="options_dialog.cpp" line="192"/>
         <source>Contrast</source>
         <translation>對比度</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="180"/>
+        <location filename="options_dialog.cpp" line="193"/>
         <source>Gamma</source>
         <translation>Gamma值</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="184"/>
+        <location filename="options_dialog.cpp" line="197"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="189"/>
+        <location filename="options_dialog.cpp" line="202"/>
         <source>Image options</source>
         <translation>圖片選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="206"/>
         <source>Fit options</source>
         <translation>適應項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="195"/>
+        <location filename="options_dialog.cpp" line="208"/>
         <source>Enlarge images to fit width/height</source>
         <translation>放大圖片以適應寬度/高度</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="219"/>
         <source>Double Page options</source>
         <translation>雙頁選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="208"/>
+        <location filename="options_dialog.cpp" line="221"/>
         <source>Show covers as single page</source>
         <translation>顯示封面為單頁</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="254"/>
+        <location filename="options_dialog.cpp" line="267"/>
         <source>General</source>
         <translation>常規</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="257"/>
+        <location filename="options_dialog.cpp" line="270"/>
         <source>Appearance</source>
         <translation>外貌</translation>
     </message>
@@ -451,27 +476,27 @@
         <translation>系統預設</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="88"/>
+        <location filename="options_dialog.cpp" line="100"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="255"/>
+        <location filename="options_dialog.cpp" line="268"/>
         <source>Page Flow</source>
         <translation>頁面流</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="256"/>
+        <location filename="options_dialog.cpp" line="269"/>
         <source>Image adjustment</source>
         <translation>圖像調整</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="272"/>
+        <location filename="options_dialog.cpp" line="285"/>
         <source>Options</source>
         <translation>選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="290"/>
+        <location filename="options_dialog.cpp" line="303"/>
         <source>Comics directory</source>
         <translation>漫畫目錄</translation>
     </message>
@@ -709,48 +734,48 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="61"/>
-        <location filename="viewer.cpp" line="1517"/>
+        <location filename="viewer.cpp" line="63"/>
+        <location filename="viewer.cpp" line="1634"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>按下 &apos;O&apos; 以打開漫畫.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="282"/>
+        <location filename="viewer.cpp" line="288"/>
         <source>Not found</source>
         <translation>未找到</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="282"/>
+        <location filename="viewer.cpp" line="288"/>
         <source>Comic not found</source>
         <translation>未找到漫畫</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="294"/>
         <source>Error opening comic</source>
         <translation>打開漫畫時發生錯誤</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="294"/>
+        <location filename="viewer.cpp" line="300"/>
         <source>CRC Error</source>
         <translation>CRC 校驗失敗</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1534"/>
+        <location filename="viewer.cpp" line="1651"/>
         <source>Loading...please wait!</source>
         <translation>載入中... 請稍候!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1545"/>
+        <location filename="viewer.cpp" line="1662"/>
         <source>Page not available!</source>
         <translation>頁面不可用!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1764"/>
+        <location filename="viewer.cpp" line="1885"/>
         <source>Cover!</source>
         <translation>封面!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1778"/>
+        <location filename="viewer.cpp" line="1899"/>
         <source>Last page!</source>
         <translation>尾頁!</translation>
     </message>
@@ -876,545 +901,541 @@
 <context>
     <name>YACReader::MainWindowViewer</name>
     <message>
-        <location filename="main_window_viewer.cpp" line="329"/>
+        <location filename="main_window_viewer.cpp" line="325"/>
         <source>&amp;Open</source>
         <translation>打開(&amp;O)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="330"/>
+        <location filename="main_window_viewer.cpp" line="326"/>
         <source>Open a comic</source>
         <translation>打開漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="336"/>
+        <location filename="main_window_viewer.cpp" line="332"/>
         <source>New instance</source>
         <translation>新建實例</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="355"/>
+        <location filename="main_window_viewer.cpp" line="351"/>
         <source>Open Folder</source>
         <translation>打開檔夾</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="356"/>
+        <location filename="main_window_viewer.cpp" line="352"/>
         <source>Open image folder</source>
         <translation>打開圖片檔夾</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="361"/>
+        <location filename="main_window_viewer.cpp" line="357"/>
         <source>Open latest comic</source>
         <translation>打開最近的漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="362"/>
+        <location filename="main_window_viewer.cpp" line="358"/>
         <source>Open the latest comic opened in the previous reading session</source>
         <translation>打開最近閱讀漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="374"/>
+        <location filename="main_window_viewer.cpp" line="370"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="375"/>
+        <location filename="main_window_viewer.cpp" line="371"/>
         <source>Clear open recent list</source>
         <translation>清空最近訪問列表</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="378"/>
+        <location filename="main_window_viewer.cpp" line="374"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="379"/>
-        <location filename="main_window_viewer.cpp" line="1093"/>
+        <location filename="main_window_viewer.cpp" line="375"/>
+        <location filename="main_window_viewer.cpp" line="1084"/>
         <source>Save current page</source>
         <translation>保存當前頁面</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="384"/>
-        <location filename="main_window_viewer.cpp" line="1117"/>
-        <location filename="main_window_viewer.cpp" line="1140"/>
-        <location filename="main_window_viewer.cpp" line="1158"/>
+        <location filename="main_window_viewer.cpp" line="380"/>
+        <location filename="main_window_viewer.cpp" line="1108"/>
+        <location filename="main_window_viewer.cpp" line="1131"/>
+        <location filename="main_window_viewer.cpp" line="1149"/>
         <source>Extract page(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="385"/>
+        <location filename="main_window_viewer.cpp" line="381"/>
         <source>Extract page(s) from the original source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="390"/>
+        <location filename="main_window_viewer.cpp" line="386"/>
         <source>Previous Comic</source>
         <translation>上一個漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="391"/>
-        <location filename="main_window_viewer.cpp" line="1889"/>
-        <location filename="main_window_viewer.cpp" line="1893"/>
+        <location filename="main_window_viewer.cpp" line="387"/>
+        <location filename="main_window_viewer.cpp" line="1857"/>
+        <location filename="main_window_viewer.cpp" line="1861"/>
         <source>Open previous comic</source>
         <translation>打開上一個漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="396"/>
+        <location filename="main_window_viewer.cpp" line="392"/>
         <source>Next Comic</source>
         <translation>下一個漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="397"/>
-        <location filename="main_window_viewer.cpp" line="1888"/>
-        <location filename="main_window_viewer.cpp" line="1894"/>
+        <location filename="main_window_viewer.cpp" line="393"/>
+        <location filename="main_window_viewer.cpp" line="1856"/>
+        <location filename="main_window_viewer.cpp" line="1862"/>
         <source>Open next comic</source>
         <translation>打開下一個漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="402"/>
+        <location filename="main_window_viewer.cpp" line="398"/>
         <source>&amp;Previous</source>
         <translation>上一頁(&amp;P)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="404"/>
-        <location filename="main_window_viewer.cpp" line="1891"/>
-        <location filename="main_window_viewer.cpp" line="1895"/>
+        <location filename="main_window_viewer.cpp" line="400"/>
+        <location filename="main_window_viewer.cpp" line="1859"/>
+        <location filename="main_window_viewer.cpp" line="1863"/>
         <source>Go to previous page</source>
         <translation>轉至上一頁</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="409"/>
+        <location filename="main_window_viewer.cpp" line="405"/>
         <source>&amp;Next</source>
         <translation>下一頁(&amp;N)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="411"/>
-        <location filename="main_window_viewer.cpp" line="1890"/>
-        <location filename="main_window_viewer.cpp" line="1896"/>
+        <location filename="main_window_viewer.cpp" line="407"/>
+        <location filename="main_window_viewer.cpp" line="1858"/>
+        <location filename="main_window_viewer.cpp" line="1864"/>
         <source>Go to next page</source>
         <translation>轉至下一頁</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="416"/>
+        <location filename="main_window_viewer.cpp" line="412"/>
         <source>Fit Height</source>
         <translation>適應高度</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="417"/>
+        <location filename="main_window_viewer.cpp" line="413"/>
         <source>Fit image to height</source>
         <translation>縮放圖片以適應高度</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="423"/>
+        <location filename="main_window_viewer.cpp" line="419"/>
         <source>Fit Width</source>
         <translation>適合寬度</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="424"/>
+        <location filename="main_window_viewer.cpp" line="420"/>
         <source>Fit image to width</source>
         <translation>縮放圖片以適應寬度</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="430"/>
+        <location filename="main_window_viewer.cpp" line="426"/>
         <source>Show full size</source>
         <translation>顯示全尺寸</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="437"/>
+        <location filename="main_window_viewer.cpp" line="433"/>
         <source>Fit to page</source>
         <translation>適應頁面</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="443"/>
+        <location filename="main_window_viewer.cpp" line="439"/>
         <source>Continuous scroll</source>
         <translation>連續滾動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="444"/>
+        <location filename="main_window_viewer.cpp" line="440"/>
         <source>Switch to continuous scroll mode</source>
         <translation>切換到連續滾動模式</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="476"/>
+        <location filename="main_window_viewer.cpp" line="472"/>
         <source>Reset zoom</source>
         <translation>重置縮放</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="481"/>
+        <location filename="main_window_viewer.cpp" line="477"/>
         <source>Show zoom slider</source>
         <translation>顯示縮放滑塊</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="483"/>
+        <location filename="main_window_viewer.cpp" line="479"/>
         <source>Zoom+</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="488"/>
+        <location filename="main_window_viewer.cpp" line="484"/>
         <source>Zoom-</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="493"/>
+        <location filename="main_window_viewer.cpp" line="489"/>
         <source>Rotate image to the left</source>
         <translation>向左旋轉圖片</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="498"/>
+        <location filename="main_window_viewer.cpp" line="494"/>
         <source>Rotate image to the right</source>
         <translation>向右旋轉圖片</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="503"/>
+        <location filename="main_window_viewer.cpp" line="499"/>
         <source>Double page mode</source>
         <translation>雙頁模式</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="504"/>
+        <location filename="main_window_viewer.cpp" line="500"/>
         <source>Switch to double page mode</source>
         <translation>切換至雙頁模式</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="512"/>
+        <location filename="main_window_viewer.cpp" line="508"/>
         <source>Double page manga mode</source>
         <translation>雙頁漫畫模式</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="513"/>
+        <location filename="main_window_viewer.cpp" line="509"/>
         <source>Reverse reading order in double page mode</source>
         <translation>雙頁模式 (逆序閱讀)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="521"/>
+        <location filename="main_window_viewer.cpp" line="517"/>
         <source>Go To</source>
         <translation>跳轉</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="522"/>
+        <location filename="main_window_viewer.cpp" line="518"/>
         <source>Go to page ...</source>
         <translation>跳轉至頁面 ...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="527"/>
+        <location filename="main_window_viewer.cpp" line="523"/>
         <source>Options</source>
         <translation>選項</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="528"/>
+        <location filename="main_window_viewer.cpp" line="524"/>
         <source>YACReader options</source>
         <translation>YACReader 選項</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="534"/>
-        <location filename="main_window_viewer.cpp" line="832"/>
+        <location filename="main_window_viewer.cpp" line="530"/>
+        <location filename="main_window_viewer.cpp" line="828"/>
         <source>Help</source>
         <translation>幫助</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="535"/>
+        <location filename="main_window_viewer.cpp" line="531"/>
         <source>Help, About YACReader</source>
         <translation>幫助, 關於 YACReader</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="536"/>
         <source>Magnifying glass</source>
         <translation>放大鏡</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="541"/>
+        <location filename="main_window_viewer.cpp" line="537"/>
         <source>Switch Magnifying glass</source>
         <translation>切換放大鏡</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="547"/>
+        <location filename="main_window_viewer.cpp" line="543"/>
         <source>Set bookmark</source>
         <translation>設置書簽</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="548"/>
+        <location filename="main_window_viewer.cpp" line="544"/>
         <source>Set a bookmark on the current page</source>
         <translation>在當前頁面設置書簽</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="556"/>
+        <location filename="main_window_viewer.cpp" line="552"/>
         <source>Show bookmarks</source>
         <translation>顯示書簽</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="557"/>
+        <location filename="main_window_viewer.cpp" line="553"/>
         <source>Show the bookmarks of the current comic</source>
         <translation>顯示當前漫畫的書簽</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="562"/>
+        <location filename="main_window_viewer.cpp" line="558"/>
         <source>Show keyboard shortcuts</source>
         <translation>顯示鍵盤快捷鍵</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="563"/>
         <source>Show Info</source>
         <translation>顯示資訊</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="572"/>
+        <location filename="main_window_viewer.cpp" line="568"/>
         <source>Close</source>
         <translation>關閉</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="577"/>
+        <location filename="main_window_viewer.cpp" line="573"/>
         <source>Show Dictionary</source>
         <translation>顯示字典</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="583"/>
+        <location filename="main_window_viewer.cpp" line="579"/>
         <source>Show go to flow</source>
         <translation>顯示「前往 Comic Flow」</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="588"/>
+        <location filename="main_window_viewer.cpp" line="584"/>
         <source>Edit shortcuts</source>
         <translation>編輯快捷鍵</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="609"/>
+        <location filename="main_window_viewer.cpp" line="605"/>
         <source>&amp;File</source>
         <translation>檔(&amp;F)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="624"/>
-        <location filename="main_window_viewer.cpp" line="786"/>
+        <location filename="main_window_viewer.cpp" line="620"/>
+        <location filename="main_window_viewer.cpp" line="782"/>
         <source>Open recent</source>
         <translation>最近打開的檔</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="774"/>
+        <location filename="main_window_viewer.cpp" line="770"/>
         <source>File</source>
         <translation>檔</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="796"/>
+        <location filename="main_window_viewer.cpp" line="792"/>
         <source>Edit</source>
         <translation>編輯</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="800"/>
+        <location filename="main_window_viewer.cpp" line="796"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="817"/>
+        <location filename="main_window_viewer.cpp" line="813"/>
         <source>Go</source>
         <translation>轉到</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="825"/>
+        <location filename="main_window_viewer.cpp" line="821"/>
         <source>Window</source>
         <translation>窗口</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="942"/>
-        <location filename="main_window_viewer.cpp" line="944"/>
-        <location filename="main_window_viewer.cpp" line="946"/>
+        <location filename="main_window_viewer.cpp" line="938"/>
         <source>Open Comic</source>
         <translation>打開漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="942"/>
-        <location filename="main_window_viewer.cpp" line="944"/>
-        <location filename="main_window_viewer.cpp" line="946"/>
+        <location filename="main_window_viewer.cpp" line="937"/>
         <source>Comic files</source>
         <translation>漫畫檔</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1034"/>
+        <location filename="main_window_viewer.cpp" line="1025"/>
         <source>Open folder</source>
         <translation>打開檔夾</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1303"/>
-        <location filename="main_window_viewer.cpp" line="1316"/>
+        <location filename="main_window_viewer.cpp" line="1294"/>
+        <location filename="main_window_viewer.cpp" line="1307"/>
         <source>Comics</source>
         <translation>漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1327"/>
+        <location filename="main_window_viewer.cpp" line="1318"/>
         <source>Toggle fullscreen mode</source>
         <translation>切換全屏模式</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1330"/>
+        <location filename="main_window_viewer.cpp" line="1321"/>
         <source>Hide/show toolbar</source>
         <translation>隱藏/顯示 工具欄</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1304"/>
-        <location filename="main_window_viewer.cpp" line="1333"/>
+        <location filename="main_window_viewer.cpp" line="1295"/>
+        <location filename="main_window_viewer.cpp" line="1324"/>
         <source>General</source>
         <translation>常規</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1352"/>
+        <location filename="main_window_viewer.cpp" line="1343"/>
         <source>Size up magnifying glass</source>
         <translation>增大放大鏡尺寸</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1355"/>
+        <location filename="main_window_viewer.cpp" line="1346"/>
         <source>Size down magnifying glass</source>
         <translation>減小放大鏡尺寸</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1358"/>
+        <location filename="main_window_viewer.cpp" line="1349"/>
         <source>Zoom in magnifying glass</source>
         <translation>增大縮放級別</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1361"/>
+        <location filename="main_window_viewer.cpp" line="1352"/>
         <source>Zoom out magnifying glass</source>
         <translation>減小縮放級別</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1364"/>
+        <location filename="main_window_viewer.cpp" line="1355"/>
         <source>Reset magnifying glass</source>
         <translation>重置放大鏡</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1305"/>
-        <location filename="main_window_viewer.cpp" line="1371"/>
+        <location filename="main_window_viewer.cpp" line="1296"/>
+        <location filename="main_window_viewer.cpp" line="1362"/>
         <source>Magnifiying glass</source>
         <translation>放大鏡</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1378"/>
+        <location filename="main_window_viewer.cpp" line="1369"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>切換顯示為&quot;適應寬度&quot;或&quot;適應高度&quot;</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1306"/>
-        <location filename="main_window_viewer.cpp" line="1382"/>
+        <location filename="main_window_viewer.cpp" line="1297"/>
+        <location filename="main_window_viewer.cpp" line="1373"/>
         <source>Page adjustement</source>
         <translation>頁面調整</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1104"/>
+        <location filename="main_window_viewer.cpp" line="1095"/>
         <source>Overwrite file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1104"/>
+        <location filename="main_window_viewer.cpp" line="1095"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1140"/>
+        <location filename="main_window_viewer.cpp" line="1131"/>
         <source>The current page could not be extracted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1145"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
         <source>Overwrite files?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1145"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1158"/>
+        <location filename="main_window_viewer.cpp" line="1149"/>
         <source>Some pages could not be extracted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1400"/>
+        <location filename="main_window_viewer.cpp" line="1391"/>
         <source>Autoscroll down</source>
         <translation>向下自動滾動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1403"/>
+        <location filename="main_window_viewer.cpp" line="1394"/>
         <source>Autoscroll up</source>
         <translation>向上自動滾動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1406"/>
+        <location filename="main_window_viewer.cpp" line="1397"/>
         <source>Autoscroll forward, horizontal first</source>
         <translation>向前自動滾動，水準優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1410"/>
+        <location filename="main_window_viewer.cpp" line="1401"/>
         <source>Autoscroll backward, horizontal first</source>
         <translation>向後自動滾動，水準優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1414"/>
+        <location filename="main_window_viewer.cpp" line="1405"/>
         <source>Autoscroll forward, vertical first</source>
         <translation>向前自動滾動，垂直優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1418"/>
+        <location filename="main_window_viewer.cpp" line="1409"/>
         <source>Autoscroll backward, vertical first</source>
         <translation>向後自動滾動，垂直優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1422"/>
+        <location filename="main_window_viewer.cpp" line="1413"/>
         <source>Move down</source>
         <translation>向下移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1425"/>
+        <location filename="main_window_viewer.cpp" line="1416"/>
         <source>Move up</source>
         <translation>向上移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1428"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Move left</source>
         <translation>向左移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1431"/>
+        <location filename="main_window_viewer.cpp" line="1422"/>
         <source>Move right</source>
         <translation>向右移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1434"/>
+        <location filename="main_window_viewer.cpp" line="1425"/>
         <source>Go to the first page</source>
         <translation>轉到第一頁</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1437"/>
+        <location filename="main_window_viewer.cpp" line="1428"/>
         <source>Go to the last page</source>
         <translation>轉到最後一頁</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1440"/>
+        <location filename="main_window_viewer.cpp" line="1431"/>
         <source>Offset double page to the left</source>
         <translation>雙頁向左偏移</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1442"/>
+        <location filename="main_window_viewer.cpp" line="1433"/>
         <source>Offset double page to the right</source>
         <translation>雙頁向右偏移</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1307"/>
-        <location filename="main_window_viewer.cpp" line="1460"/>
+        <location filename="main_window_viewer.cpp" line="1298"/>
+        <location filename="main_window_viewer.cpp" line="1451"/>
         <source>Reading</source>
         <translation>閱讀</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1509"/>
+        <location filename="main_window_viewer.cpp" line="1500"/>
         <source>There is a new version available</source>
         <translation>有新版本可用</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1510"/>
+        <location filename="main_window_viewer.cpp" line="1501"/>
         <source>Do you want to download the new version?</source>
         <translation>你要下載新版本嗎?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1513"/>
+        <location filename="main_window_viewer.cpp" line="1504"/>
         <source>Remind me in 14 days</source>
         <translation>14天後提醒我</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1514"/>
+        <location filename="main_window_viewer.cpp" line="1505"/>
         <source>Not now</source>
         <translation>現在不</translation>
     </message>

@@ -293,67 +293,67 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="375"/>
+        <location filename="db/comic_model.cpp" line="369"/>
         <source>no</source>
         <translation>neen</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="375"/>
+        <location filename="db/comic_model.cpp" line="369"/>
         <source>yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="414"/>
+        <location filename="db/comic_model.cpp" line="408"/>
         <source>Read</source>
         <translation>Gelezen</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="412"/>
+        <location filename="db/comic_model.cpp" line="406"/>
         <source>Size</source>
         <translation>Grootte(MB)</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="410"/>
+        <location filename="db/comic_model.cpp" line="404"/>
         <source>Pages</source>
         <translation>Pagina&apos;s</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="406"/>
+        <location filename="db/comic_model.cpp" line="400"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="408"/>
+        <location filename="db/comic_model.cpp" line="402"/>
         <source>File Name</source>
         <translation>Bestandsnaam</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="416"/>
+        <location filename="db/comic_model.cpp" line="410"/>
         <source>Current Page</source>
         <translation>Huidige pagina</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="418"/>
+        <location filename="db/comic_model.cpp" line="412"/>
         <source>Publication Date</source>
         <translation>Publicatiedatum</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="420"/>
+        <location filename="db/comic_model.cpp" line="414"/>
         <source>Rating</source>
         <translation>Beoordeling</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="422"/>
+        <location filename="db/comic_model.cpp" line="416"/>
         <source>Series</source>
         <translation>Serie</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="424"/>
+        <location filename="db/comic_model.cpp" line="418"/>
         <source>Volume</source>
         <translation>Deel</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="426"/>
+        <location filename="db/comic_model.cpp" line="420"/>
         <source>Story Arc</source>
         <translation>Verhaalboog</translation>
     </message>
@@ -617,24 +617,29 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="565"/>
+        <location filename="../common/comic.cpp" line="627"/>
         <source>7z not found</source>
         <translation>7Z Archiefbestand niet gevonden</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="457"/>
+        <location filename="../common/comic.cpp" line="513"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>CRC-fout op pagina (%1): sommige pagina&apos;s worden niet correct weergegeven</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="464"/>
+        <location filename="../common/comic.cpp" line="520"/>
         <source>Unknown error opening the file</source>
         <translation>Onbekende fout bij het openen van het bestand</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="571"/>
+        <location filename="../common/comic.cpp" line="633"/>
         <source>Format not supported</source>
         <translation>Formaat niet ondersteund</translation>
+    </message>
+    <message>
+        <location filename="../common/comic.cpp" line="647"/>
+        <source>Unsupported EPUB: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

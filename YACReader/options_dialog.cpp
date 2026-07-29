@@ -61,6 +61,18 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     displayLayout->addWidget(showTimeInInformationLabel);
     displayBox->setLayout(displayLayout);
 
+    QGroupBox *magnifyingGlassBox = new QGroupBox(tr("Magnifying glass"));
+    auto magnifyingGlassLayout = new QVBoxLayout();
+    circularMagnifyingGlass = new QCheckBox(tr("Circular magnifying glass"));
+    magnifyingGlassRing = new QCheckBox(tr("Draw a ring around the circular magnifying glass"));
+    // The ring only applies to the circular loupe, so it is enabled only when circular is on.
+    connect(circularMagnifyingGlass, &QCheckBox::toggled, magnifyingGlassRing, &QWidget::setEnabled);
+    magnifyingGlassEdgeEase = new QCheckBox(tr("Ease cursor movement toward the edges"));
+    magnifyingGlassLayout->addWidget(circularMagnifyingGlass);
+    magnifyingGlassLayout->addWidget(magnifyingGlassRing);
+    magnifyingGlassLayout->addWidget(magnifyingGlassEdgeEase);
+    magnifyingGlassBox->setLayout(magnifyingGlassLayout);
+
     connect(pathFindButton, &QAbstractButton::clicked, this, &OptionsDialog::findFolder);
 
     QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
@@ -122,6 +134,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layoutGeneral->addWidget(pathBox);
     layoutGeneral->addWidget(languageBox);
     layoutGeneral->addWidget(displayBox);
+    layoutGeneral->addWidget(magnifyingGlassBox);
     layoutGeneral->addWidget(slideSizeBox);
     // layoutGeneral->addWidget(fitBox);
     layoutGeneral->addWidget(colorBox);
@@ -312,6 +325,10 @@ void OptionsDialog::saveOptions()
 
     Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
 
+    Configuration::getConfiguration().setMagnifyingGlassCircular(circularMagnifyingGlass->isChecked());
+    Configuration::getConfiguration().setMagnifyingGlassRing(magnifyingGlassRing->isChecked());
+    Configuration::getConfiguration().setMagnifyingGlassEdgeEase(magnifyingGlassEdgeEase->isChecked());
+
     if (!backgroundColorFollowsTheme) {
         settings->setValue(BACKGROUND_COLOR, currentColor);
     } else {
@@ -364,6 +381,11 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     languageCombo->setCurrentIndex(languageIndex);
 
     showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
+
+    circularMagnifyingGlass->setChecked(Configuration::getConfiguration().getMagnifyingGlassCircular());
+    magnifyingGlassRing->setChecked(Configuration::getConfiguration().getMagnifyingGlassRing());
+    magnifyingGlassRing->setEnabled(circularMagnifyingGlass->isChecked());
+    magnifyingGlassEdgeEase->setChecked(Configuration::getConfiguration().getMagnifyingGlassEdgeEase());
 
     backgroundColorFollowsTheme = !settings->contains(BACKGROUND_COLOR);
     updateColor(backgroundColorFollowsTheme

@@ -33,6 +33,10 @@ private:
 
     QCheckBox *showTimeInInformationLabel;
 
+    QCheckBox *circularMagnifyingGlass;
+    QCheckBox *magnifyingGlassRing;
+    QCheckBox *magnifyingGlassEdgeEase;
+
     QCheckBox *quickNavi;
     QCheckBox *disableShowOnMouseOver;
     QCheckBox *scaleCheckbox;
