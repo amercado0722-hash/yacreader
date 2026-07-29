@@ -3,10 +3,13 @@
 #include "comic.h"
 #include "compressed_archive.h"
 #include "cover_utils.h"
+#include "epub_page_index.h"
 #include "pdf_comic.h"
 #include "qnaturalsorting.h"
 
 #include <QsLog.h>
+
+#include <utility>
 
 using namespace YACReader;
 
@@ -92,12 +95,14 @@ void InitialComicInfoExtractor::extract()
     }
 
     QList<QString> order = archive.getFileNames();
+    const bool isEpub = Comic::fileIsEpub(_fileSource);
 
     if (getXMLMetadata) {
         // Try to find embeded XML info (ComicRack or ComicTagger)
         auto infoIndex = 0;
-        for (auto &fileName : order) {
-            if (fileName.endsWith(".xml", Qt::CaseInsensitive)) {
+        for (const QString &fileName : std::as_const(order)) {
+            const bool isComicInfo = QFileInfo(fileName).fileName().compare(QStringLiteral("ComicInfo.xml"), Qt::CaseInsensitive) == 0;
+            if (isComicInfo) {
                 _xmlInfoData = archive.getRawDataAtIndex(infoIndex);
                 break;
             }
@@ -113,8 +118,26 @@ void InitialComicInfoExtractor::extract()
     }
 
     // se filtran para obtener sólo los formatos soportados
-    QList<QString> fileNames = FileComic::filter(order);
-    _numPages = fileNames.size();
+    int coverArchiveIndex = -1;
+    if (isEpub) {
+        const auto epub = FileComic::epubScanInfo(order, archive, _coverPage);
+        if (!epub.isValid()) {
+            QLOG_WARN() << "Extracting cover: unsupported EPUB" << _fileSource << epub.error;
+        }
+        _numPages = epub.pageCount;
+        coverArchiveIndex = epub.coverArchiveIndex;
+    } else {
+        QList<QString> fileNames = FileComic::filter(order);
+        std::sort(fileNames.begin(), fileNames.end(), naturalSortLessThanCI);
+        _numPages = fileNames.size();
+        if (_coverPage > _numPages) {
+            _coverPage = 1;
+        }
+        if (_numPages > 0) {
+            coverArchiveIndex = order.indexOf(fileNames.at(_coverPage - 1));
+        }
+    }
+
     if (_numPages == 0) {
         QLOG_WARN() << "Extracting cover: empty comic " << _fileSource;
         _cover.load(":/images/notCover.png");
@@ -122,14 +145,14 @@ void InitialComicInfoExtractor::extract()
             _cover.save(_target);
         }
     } else {
-        if (_coverPage > _numPages) {
-            _coverPage = 1;
+        if (coverArchiveIndex < 0) {
+            QLOG_WARN() << "Extracting cover: unable to resolve cover image " << _fileSource;
+            _cover.load(":/images/notCover.png");
+            return;
         }
-        std::sort(fileNames.begin(), fileNames.end(), naturalSortLessThanCI);
-        int index = order.indexOf(fileNames.at(_coverPage - 1));
 
         if (_target == "") {
-            if (_cover.loadFromData(archive.getRawDataAtIndex(index))) {
+            if (_cover.loadFromData(archive.getRawDataAtIndex(coverArchiveIndex))) {
                 _coverSize = QPair<int, int>(_cover.width(), _cover.height());
                 _coverExtracted = true;
             } else {
@@ -138,7 +161,7 @@ void InitialComicInfoExtractor::extract()
             }
         } else {
             QImage p;
-            if (p.loadFromData(archive.getRawDataAtIndex(index))) {
+            if (p.loadFromData(archive.getRawDataAtIndex(coverArchiveIndex))) {
                 _cover = p;
                 _coverSize = QPair<int, int>(p.width(), p.height());
                 _coverExtracted = true;

@@ -64,15 +64,7 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibraryForReading(qulonglong l
         auto c1 = static_cast<ComicDB *>(i1);
         auto c2 = static_cast<ComicDB *>(i2);
 
-        if (c1->info.number.isNull() && c2->info.number.isNull()) {
-            return naturalSortLessThanCI(c1->name, c2->name);
-        } else {
-            if (c1->info.number.isNull() == false && c2->info.number.isNull() == false) {
-                return naturalSortLessThanCI(c1->info.number.toString(), c2->info.number.toString());
-            } else {
-                return c2->info.number.isNull();
-            }
-        }
+        return comicNumberLessThan(c1->info.number, c1->name, c2->info.number, c2->name);
     });
 
     return list;
@@ -1702,15 +1694,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     }
 
     std::sort(list.begin(), list.end(), [](const ComicDB &c1, const ComicDB &c2) {
-        if (c1.info.number.isNull() && c2.info.number.isNull()) {
-            return naturalSortLessThanCI(c1.name, c2.name);
-        } else {
-            if (c1.info.number.isNull() == false && c2.info.number.isNull() == false) {
-                return naturalSortLessThanCI(c1.info.number.toString(), c2.info.number.toString());
-            } else {
-                return c2.info.number.isNull();
-            }
-        }
+        return comicNumberLessThan(c1.info.number, c1.name, c2.info.number, c2.name);
     });
 
     // selectQuery.finish();

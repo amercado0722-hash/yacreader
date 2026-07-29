@@ -4,6 +4,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10.2.0
 
+### YACReader
+* Change default shortcuts for modifying the magnifying glass size to avoid conflicts with the page zoom shortcuts, `[`, `]`.
+
 ### YACReaderLibrary
 * Add a library repair function to restore missing covers and rescan files that previously failed to be added.
 * Add actions to create and restore library database backups.
@@ -18,6 +21,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add the `backup-library`, `list-backups`, and `restore-library` commands.
 * Automatically create and retain database backups in `.yacreaderlibrary/backups`.
 * Add the `repair-library-db` command to attempt to repair a damaged database. Damaged originals are preserved in `.yacreaderlibrary/recovery`.
+
+### WebUI
+* Add a very basic web reader.
+
+### All apps
+* Unify comics sorting to use the string based universal number everywhere.
+* Experimental support for image based comics in epub format.
 
 ## 10.1.0
 

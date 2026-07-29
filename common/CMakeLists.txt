@@ -34,6 +34,15 @@ target_include_directories(naturalsort PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 yacreader_apply_build_options(naturalsort)
 target_link_libraries(naturalsort PUBLIC Qt6::Core)
 
+# --- EPUB page index (metadata-only; no rendering) ---
+add_library(epub_page_index STATIC
+    epub_page_index.h
+    epub_page_index.cpp
+)
+target_include_directories(epub_page_index PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+yacreader_apply_build_options(epub_page_index)
+target_link_libraries(epub_page_index PUBLIC Qt6::Core)
+
 # --- concurrent_queue ---
 add_library(concurrent_queue STATIC
     concurrent_queue.h
@@ -104,6 +113,7 @@ target_link_libraries(comic_backend PUBLIC
     common_all
     pdf_backend_iface
     cbx_backend
+    epub_page_index
     QsLog
 )
 

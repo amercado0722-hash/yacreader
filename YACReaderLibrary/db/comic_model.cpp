@@ -1,6 +1,7 @@
 
 #include "comic_model.h"
 
+#include "comic.h"
 #include "comic_db.h"
 #include "comic_item.h"
 #include "data_base_management.h"
@@ -22,15 +23,8 @@
 #include "QsLog.h"
 
 auto defaultFolderContentSortFunction = [](const ComicItem *c1, const ComicItem *c2) {
-    if (c1->data(ComicModel::Number).isNull() && c2->data(ComicModel::Number).isNull()) {
-        return naturalSortLessThanCI(c1->data(ComicModel::FileName).toString(), c2->data(ComicModel::FileName).toString());
-    } else {
-        if (c1->data(ComicModel::Number).isNull() == false && c2->data(ComicModel::Number).isNull() == false) {
-            return naturalSortLessThanCI(c1->data(ComicModel::Number).toString(), c2->data(ComicModel::Number).toString());
-        } else {
-            return c2->data(ComicModel::Number).isNull();
-        }
-    }
+    return comicNumberLessThan(c1->data(ComicModel::Number), c1->data(ComicModel::FileName).toString(),
+                               c2->data(ComicModel::Number), c2->data(ComicModel::FileName).toString());
 };
 
 ComicModel::ComicModel(QObject *parent)
@@ -450,6 +444,8 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
         if (ext.compare("cbr", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/comicRar.png"));
         else if (ext.compare("cbz", Qt::CaseInsensitive) == 0)
+            return QVariant(QIcon(":/images/comicZip.png"));
+        else if (Comic::fileIsEpub(fileName))
             return QVariant(QIcon(":/images/comicZip.png"));
         else if (ext.compare("pdf", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/pdf.png"));
