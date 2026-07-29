@@ -27,17 +27,10 @@ void MagnifyingGlass::setup(const QSize &size)
     applyShape();
 }
 
-static constexpr auto maxRelativeDimension = 0.9;
-
 QSize MagnifyingGlass::displaySize() const
 {
     if (circular) {
-        // Squaring up a wide, short rectangle can exceed the parent on the other axis even
-        // though the rectangle itself fits: 800x175 becomes 800x800. Clamp the side to the
-        // same fraction of the parent that the grow steps enforce, on whichever axis is
-        // tighter, so the circle can never outgrow the view it magnifies.
-        const auto maxSide = qMin(parentWidget()->width(), parentWidget()->height()) * maxRelativeDimension;
-        const int side = qMin(qMax(logicalSize.width(), logicalSize.height()), static_cast<int>(maxSide));
+        const int side = qMax(logicalSize.width(), logicalSize.height());
         return QSize(side, side);
     }
     return logicalSize;
@@ -293,6 +286,7 @@ void MagnifyingGlass::resizeAndUpdate(int w, int h)
     updateImage();
 }
 
+static constexpr auto maxRelativeDimension = 0.9;
 static constexpr auto widthStep = 30;
 static constexpr auto heightStep = 15;
 
