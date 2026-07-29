@@ -6,6 +6,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReader
 * Change default shortcuts for modifying the magnifying glass size to avoid conflicts with the page zoom shortcuts, `[`, `]`.
+* Add an optional circular magnifying glass, with an optional ring drawn around it. The configured size is kept as a rectangle, so switching back and forth doesn't lose it.
+* Add optional edge easing for the magnifying glass. The magnified region is pushed toward the edges of the view, so content near the border can be inspected without pushing the cursor all the way into the corner.
+* Require a full wheel notch before the magnifying glass changes size or zoom, so a light trackpad gesture no longer resizes it.
 
 ### YACReaderLibrary
 * Add a library repair function to restore missing covers and rescan files that previously failed to be added.
