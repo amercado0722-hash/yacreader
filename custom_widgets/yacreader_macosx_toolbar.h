@@ -8,6 +8,8 @@
 
 #include <QMainWindow>
 
+class QMenu;
+
 class YACReaderMacOSXSearchLineEdit : public YACReaderSearchLineEdit
 {
 };
@@ -27,7 +29,14 @@ public:
 
     void *getSearchEditDelegate() { return searchEditDelegate; };
 
-    void emitFilterChange(const QString &filter) { emit filterChanged(filter); };
+    void setNativeSearchField(void *field);
+    void setSearchMenu(QMenu *menu);
+    void setSearchText(const QString &text, bool notify = true);
+    void clearSearchText(bool notify = true);
+    void focusSearch();
+    void setSearchEnabled(bool enabled);
+    QString searchText() const;
+    void nativeSearchTextChanged(const QString &text);
 
     QAction *actionFromIdentifier(const QString &identifier);
 signals:
@@ -37,6 +46,11 @@ private:
     void paintEvent(QPaintEvent *) override;
 
     void *searchEditDelegate;
+    void *nativeSearchField;
+    QMenu *searchMenu;
+    YACReaderMacOSXSearchLineEdit *searchEditProxy;
+    QString pendingSearchText;
+    bool searchEnabled;
 };
 
 #else

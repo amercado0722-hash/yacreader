@@ -28,6 +28,7 @@
 class QTreeView;
 class QDirModel;
 class QAction;
+class QMenu;
 class QToolBar;
 class QComboBox;
 class QThread;
@@ -199,6 +200,12 @@ public:
     void doModels();
     void setupCoordinators();
     bool hasLoadedLibraryModels() const;
+    QMenu *createSearchMenu();
+    void applySearchQuery(const QString &query);
+    void setSearchInputEnabled(bool enabled);
+    void clearSearchInput(bool notify);
+    void focusSearchInput();
+    void showSearchSyntax();
 
     QString currentPath();
     QString currentFolderPath();
@@ -222,6 +229,7 @@ protected:
 
 public:
     LibraryWindow();
+    QString searchText() const;
 
 signals:
     void libraryUpgraded(const QString &libraryName);
