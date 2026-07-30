@@ -235,7 +235,7 @@ void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsVi
     // load content into current view
     libraryWindow->loadCoversFromCurrentModel();
 
-    if (!libraryWindow->searchEdit->text().isEmpty()) {
+    if (!libraryWindow->searchText().isEmpty()) {
         comicsView->enableFilterMode(true);
     }
 }

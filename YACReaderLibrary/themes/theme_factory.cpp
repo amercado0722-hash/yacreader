@@ -816,6 +816,7 @@ Theme makeTheme(const ThemeParams &params)
                                                     sle.backgroundColor.name());
     theme.searchLineEdit.searchLabelQSS = sle.t.searchLabelQSS;
     theme.searchLineEdit.clearButtonQSS = sle.t.clearButtonQSS;
+    theme.searchLineEdit.iconColor = sle.iconColor;
 
     const qreal dpr = qApp->devicePixelRatio();
     theme.searchLineEdit.searchIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/iconSearchNew.svg", sle.iconColor, params.meta.id), 15, dpr);

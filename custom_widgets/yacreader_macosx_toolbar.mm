@@ -233,6 +233,7 @@ void bindActionToNSToolbarItem(QAction *action, NSToolbarItem *toolbarItem, cons
         searchItem.resignsFirstResponderWithCancel = true;
         searchItem.searchField.delegate = id<NSSearchFieldDelegate>(mytoolbar->getSearchEditDelegate());
         searchItem.toolTip = @"Search";
+        mytoolbar->setNativeSearchField(searchItem.searchField);
 
         return searchItem;
     }
@@ -279,6 +280,7 @@ void bindActionToNSToolbarItem(QAction *action, NSToolbarItem *toolbarItem, cons
 @public
     YACReaderMacOSXToolbar *mytoolbar;
 }
+- (IBAction)searchMenuItemClicked:(id)sender;
 @end
 
 @implementation YACReaderLibrarySearchDelegate
@@ -293,15 +295,26 @@ void bindActionToNSToolbarItem(QAction *action, NSToolbarItem *toolbarItem, cons
 - (void)controlTextDidChange:(NSNotification *)notification
 {
     NSSearchField *searchField = notification.object;
-    NSLog(@"Search text changed: %@", searchField.stringValue);
-
-    mytoolbar->emitFilterChange(QString::fromNSString(searchField.stringValue));
+    mytoolbar->nativeSearchTextChanged(QString::fromNSString(searchField.stringValue));
+}
+- (IBAction)searchMenuItemClicked:(id)sender
+{
+    NSMenuItem *item = reinterpret_cast<NSMenuItem *>(sender);
+    NSValue *actionValue = item.representedObject;
+    auto *action = static_cast<QAction *>(actionValue.pointerValue);
+    if (action)
+        action->trigger();
 }
 
 @end
 
 YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QWidget *parent)
-    : YACReaderMainToolBar(parent)
+    : YACReaderMainToolBar(parent),
+      searchEditDelegate(nullptr),
+      nativeSearchField(nullptr),
+      searchMenu(nullptr),
+      searchEditProxy(nullptr),
+      searchEnabled(true)
 {
     backButton->setIconSize(QSize(24, 24));
     forwardButton->setIconSize(QSize(24, 24));
@@ -354,11 +367,109 @@ void YACReaderMacOSXToolbar::addStretch()
 
 YACReaderMacOSXSearchLineEdit *YACReaderMacOSXToolbar::addSearchEdit()
 {
-    auto search = new YACReaderMacOSXSearchLineEdit();
+    auto *search = new YACReaderMacOSXSearchLineEdit();
+    searchEditProxy = search;
 
     setSearchWidget(search);
 
     return search;
+}
+
+void YACReaderMacOSXToolbar::setNativeSearchField(void *field)
+{
+    nativeSearchField = field;
+
+    auto *nativeField = reinterpret_cast<NSSearchField *>(nativeSearchField);
+    nativeField.stringValue = pendingSearchText.toNSString();
+    nativeField.enabled = searchEnabled;
+
+    setSearchMenu(searchMenu);
+}
+
+void YACReaderMacOSXToolbar::setSearchMenu(QMenu *menu)
+{
+    searchMenu = menu;
+    if (!nativeSearchField || !searchMenu || !searchEditDelegate)
+        return;
+
+    auto *nativeMenu = [[[NSMenu alloc] initWithTitle:@"Search filters"] autorelease];
+    for (QAction *action : searchMenu->actions()) {
+        if (action->isSeparator() && action->text().isEmpty()) {
+            [nativeMenu addItem:NSMenuItem.separatorItem];
+            continue;
+        }
+
+        auto *item = [[[NSMenuItem alloc]
+                initWithTitle:action->text().toNSString()
+                       action:action->isSeparator() ? nil : @selector(searchMenuItemClicked:)
+                keyEquivalent:@""] autorelease];
+        item.enabled = !action->isSeparator() && action->isEnabled();
+        item.target = action->isSeparator() ? nil : id(searchEditDelegate);
+        item.representedObject = [NSValue valueWithPointer:action];
+        [nativeMenu addItem:item];
+    }
+
+    auto *nativeField = reinterpret_cast<NSSearchField *>(nativeSearchField);
+    auto *cell = reinterpret_cast<NSSearchFieldCell *>(nativeField.cell);
+    cell.searchMenuTemplate = nativeMenu;
+}
+
+void YACReaderMacOSXToolbar::setSearchText(const QString &text, bool notify)
+{
+    pendingSearchText = text;
+
+    if (nativeSearchField) {
+        auto *nativeField = reinterpret_cast<NSSearchField *>(nativeSearchField);
+        nativeField.stringValue = text.toNSString();
+    }
+
+    if (searchEditProxy) {
+        const QSignalBlocker blocker(searchEditProxy);
+        searchEditProxy->setText(text);
+    }
+
+    if (notify)
+        emit filterChanged(text);
+}
+
+void YACReaderMacOSXToolbar::clearSearchText(bool notify)
+{
+    setSearchText({ }, notify);
+}
+
+void YACReaderMacOSXToolbar::focusSearch()
+{
+    if (!nativeSearchField)
+        return;
+
+    auto *nativeField = reinterpret_cast<NSSearchField *>(nativeSearchField);
+    [nativeField.window makeFirstResponder:nativeField];
+}
+
+void YACReaderMacOSXToolbar::setSearchEnabled(bool enabled)
+{
+    searchEnabled = enabled;
+    if (nativeSearchField) {
+        auto *nativeField = reinterpret_cast<NSSearchField *>(nativeSearchField);
+        nativeField.enabled = enabled;
+    }
+    if (searchEditProxy)
+        searchEditProxy->setEnabled(enabled);
+}
+
+QString YACReaderMacOSXToolbar::searchText() const
+{
+    return pendingSearchText;
+}
+
+void YACReaderMacOSXToolbar::nativeSearchTextChanged(const QString &text)
+{
+    pendingSearchText = text;
+    if (searchEditProxy) {
+        const QSignalBlocker blocker(searchEditProxy);
+        searchEditProxy->setText(text);
+    }
+    emit filterChanged(text);
 }
 
 void YACReaderMacOSXToolbar::updateViewSelectorIcon(const QIcon &icon)

@@ -342,6 +342,7 @@ struct SearchLineEditTheme {
     QString lineEditQSS;
     QString searchLabelQSS;
     QString clearButtonQSS;
+    QColor iconColor;
     QPixmap searchIcon;
     QPixmap clearIcon;
 };

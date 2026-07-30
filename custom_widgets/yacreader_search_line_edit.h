@@ -8,6 +8,7 @@
 
 class QToolButton;
 class QLabel;
+class QMenu;
 
 class YACReaderSearchLineEdit : public QLineEdit, protected Themable
 {
@@ -17,6 +18,7 @@ public:
     YACReaderSearchLineEdit(QWidget *parent = 0);
     void clearText(); // no signal emited;
     const QString text();
+    void setSearchMenu(QMenu *menu);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -31,6 +33,7 @@ private slots:
 
 private:
     QToolButton *clearButton;
+    QToolButton *menuButton;
     QLabel *searchLabel;
 
     int paddingLeft;

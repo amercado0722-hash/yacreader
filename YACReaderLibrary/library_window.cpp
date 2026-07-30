@@ -70,6 +70,7 @@
 #include "reading_list_model.h"
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
+#include "search_syntax_dialog.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "static.h"
@@ -500,6 +501,13 @@ void LibraryWindow::createToolBars()
     libraryToolBar->setSearchWidget(searchEdit);
 #endif
 
+    auto *searchMenu = createSearchMenu();
+#ifdef Y_MAC_UI
+    libraryToolBar->setSearchMenu(searchMenu);
+#else
+    searchEdit->setSearchMenu(searchMenu);
+#endif
+
     editInfoToolBar->setIconSize(QSize(18, 18));
     editInfoToolBar->addAction(actions.openComicAction);
     editInfoToolBar->addSeparator();
@@ -540,6 +548,94 @@ void LibraryWindow::createToolBars()
     editInfoToolBar->addAction(actions.toogleShowRecentIndicatorAction);
 
     contentViewsManager->comicsView->setToolBar(editInfoToolBar);
+}
+
+QMenu *LibraryWindow::createSearchMenu()
+{
+    auto *menu = new QMenu(tr("Search filters"), this);
+    menu->setMinimumWidth(190);
+
+    auto addFilter = [this, menu](const QString &label, const QString &query) {
+        auto *action = menu->addAction(label);
+        connect(action, &QAction::triggered, this, [this, query] {
+            applySearchQuery(query);
+        });
+    };
+
+    addFilter(tr("Unread"), QStringLiteral("read:false"));
+    addFilter(
+            tr("In progress"),
+            QStringLiteral("hasBeenOpened:true AND read:false"));
+    addFilter(tr("Highly rated"), QStringLiteral("rating>=4"));
+
+    auto *recentlyAdded = menu->addAction(tr("Recently added"));
+    connect(recentlyAdded, &QAction::triggered, this, [this] {
+        const int days = settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt();
+        applySearchQuery(QStringLiteral("added>%1").arg(days));
+    });
+
+    menu->addSeparator();
+    auto *syntaxAction = menu->addAction(tr("Search syntax…"));
+    connect(syntaxAction, &QAction::triggered, this, &LibraryWindow::showSearchSyntax);
+
+    return menu;
+}
+
+void LibraryWindow::applySearchQuery(const QString &query)
+{
+#ifdef Y_MAC_UI
+    libraryToolBar->setSearchText(query);
+    libraryToolBar->focusSearch();
+#else
+    searchEdit->setText(query);
+    searchEdit->setFocus(Qt::ShortcutFocusReason);
+#endif
+}
+
+void LibraryWindow::setSearchInputEnabled(bool enabled)
+{
+#ifdef Y_MAC_UI
+    libraryToolBar->setSearchEnabled(enabled);
+#else
+    searchEdit->setEnabled(enabled);
+#endif
+}
+
+void LibraryWindow::clearSearchInput(bool notify)
+{
+#ifdef Y_MAC_UI
+    libraryToolBar->clearSearchText(notify);
+#else
+    if (notify)
+        searchEdit->clear();
+    else
+        searchEdit->clearText();
+#endif
+}
+
+void LibraryWindow::focusSearchInput()
+{
+#ifdef Y_MAC_UI
+    libraryToolBar->focusSearch();
+#else
+    searchEdit->setFocus(Qt::ShortcutFocusReason);
+#endif
+}
+
+QString LibraryWindow::searchText() const
+{
+#ifdef Y_MAC_UI
+    return libraryToolBar->searchText();
+#else
+    return searchEdit->text();
+#endif
+}
+
+void LibraryWindow::showSearchSyntax()
+{
+    auto *dialog = new SearchSyntaxDialog(this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->open();
 }
 
 void LibraryWindow::createMenus()
@@ -747,7 +843,7 @@ void LibraryWindow::createConnections()
             optionsDialog,
             serverConfigDialog,
             recentVisibilityCoordinator);
-    QObject::connect(actions.focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
+    connect(actions.focusSearchLineAction, &QAction::triggered, this, &LibraryWindow::focusSearchInput);
 
     // libraryCreator connections
     connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, this, QOverload<QString, QString, QString>::of(&LibraryWindow::create));
@@ -1034,7 +1130,7 @@ void LibraryWindow::loadLibrary(const QString &name)
 
                 setRootIndex();
 
-                searchEdit->clear();
+                clearSearchInput(true);
             } else if (comparation > 0) {
                 int ret = QMessageBox::question(this, tr("Download new version"), tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"), QMessageBox::Yes, QMessageBox::No);
                 if (ret == QMessageBox::Yes)
@@ -2791,7 +2887,7 @@ void LibraryWindow::closeApp()
 void LibraryWindow::showNoLibrariesWidget()
 {
     actions.disableAllActions();
-    searchEdit->setDisabled(true);
+    setSearchInputEnabled(false);
     mainWidget->setCurrentIndex(1);
 }
 
@@ -2800,7 +2896,7 @@ void LibraryWindow::showRootWidget()
 #ifndef Y_MAC_UI
     libraryToolBar->setDisabled(false);
 #endif
-    searchEdit->setEnabled(true);
+    setSearchInputEnabled(true);
     mainWidget->setCurrentIndex(0);
 }
 
@@ -2811,7 +2907,7 @@ void LibraryWindow::showImportingWidget()
 #ifndef Y_MAC_UI
     libraryToolBar->setDisabled(true);
 #endif
-    searchEdit->setDisabled(true);
+    setSearchInputEnabled(false);
     mainWidget->setCurrentIndex(2);
 }
 
@@ -3066,7 +3162,7 @@ bool LibraryWindow::exitSearchMode()
 {
     if (status != LibraryWindow::Searching)
         return false;
-    searchEdit->clearText();
+    clearSearchInput(false);
     clearSearchFilter();
     return true;
 }

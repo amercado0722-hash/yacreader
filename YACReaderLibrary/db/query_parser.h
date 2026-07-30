@@ -2,6 +2,7 @@
 #define QUERY_PARSER_H
 
 #include "query_lexer.h"
+#include "search_field_registry.h"
 
 #include <QSqlQuery>
 
@@ -84,17 +85,7 @@ private:
 
     bool isOperatorToken(Token::Type type);
 
-    enum class FieldType { unknown,
-                           numeric,
-                           text,
-                           boolean,
-                           date,
-                           dateFolder,
-                           folder,
-                           booleanFolder,
-                           filename,
-                           enumField,
-                           enumFieldFolder };
+    using FieldType = SearchFieldType;
     static FieldType fieldType(const std::string &str);
 
     static std::string join(const QStringList &strings, const std::string &delim);
@@ -106,8 +97,6 @@ private:
     TreeNode locationExpression();
     TreeNode expression();
     TreeNode baseToken();
-
-    static const std::map<FieldType, std::vector<std::string>> fieldNames;
 };
 
 #endif // QUERY_PARSER_H

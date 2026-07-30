@@ -56,6 +56,8 @@ add_library(db_helper STATIC
     db/reading_list.cpp
     db/query_lexer.h
     db/query_lexer.cpp
+    db/search_field_registry.h
+    db/search_field_registry.cpp
     db/query_parser.h
     db/query_parser.cpp
     db/search_query.h
@@ -94,6 +96,8 @@ qt_add_executable(YACReaderLibrary WIN32
     properties_dialog.cpp
     options_dialog.h
     options_dialog.cpp
+    search_syntax_dialog.h
+    search_syntax_dialog.cpp
     export_library_dialog.h
     export_library_dialog.cpp
     import_library_dialog.h
