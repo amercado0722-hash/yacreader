@@ -808,28 +808,28 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_window.cpp" line="1956"/>
+        <location filename="library_window.cpp" line="2052"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>La carpeta seleccionada no contiene ninguna biblioteca.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="970"/>
+        <location filename="library_window.cpp" line="1066"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>Esta biblioteca fue creada con una versión anterior de YACReaderLibrary. Es necesario que se actualice. ¿Deseas hacerlo ahora?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="726"/>
+        <location filename="library_window.cpp" line="822"/>
         <source>Comic</source>
         <translation>Cómic</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2830"/>
+        <location filename="library_window.cpp" line="2926"/>
         <source>Error opening the library</source>
         <translation>Error abriendo la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1857"/>
-        <location filename="library_window.cpp" line="1859"/>
+        <location filename="library_window.cpp" line="1953"/>
+        <location filename="library_window.cpp" line="1955"/>
         <source>YACReader not found</source>
         <translation>YACReader no encontrado</translation>
     </message>
@@ -838,346 +838,376 @@
         <translation type="vanished">Eliminar y borrar metadatos</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1082"/>
+        <location filename="library_window.cpp" line="1178"/>
         <source>Old library</source>
         <translation>Biblioteca antigua</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1566"/>
+        <location filename="library_window.cpp" line="1662"/>
         <source>Set as completed</source>
         <translation>Marcar como completo</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="672"/>
+        <location filename="library_window.cpp" line="768"/>
         <source>Library</source>
         <translation>Librería</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1039"/>
+        <location filename="library_window.cpp" line="1135"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
         <translation>Esta biblioteca fue creada con una versión más nueva de YACReaderLibrary. ¿Deseas descargar la nueva versión ahora?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1061"/>
+        <location filename="library_window.cpp" line="1157"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
         <translation>La biblioteca &apos;%1&apos; no está disponible. ¿Deseas eliminarla?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1554"/>
+        <location filename="library_window.cpp" line="1650"/>
         <source>Open folder...</source>
         <translation>Abrir carpeta...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2257"/>
+        <location filename="library_window.cpp" line="2353"/>
         <source>Do you want remove </source>
         <translation>¿Deseas eliminar la biblioteca  </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1563"/>
+        <location filename="library_window.cpp" line="1659"/>
         <source>Set as uncompleted</source>
         <translation>Marcar como incompleto</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2825"/>
+        <location filename="library_window.cpp" line="2921"/>
         <source>Error updating the library</source>
         <translation>Error actualizando la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="704"/>
+        <location filename="library_window.cpp" line="800"/>
         <source>Folder</source>
         <translation>Carpeta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1082"/>
+        <location filename="library_window.cpp" line="1178"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
         <translation>La biblioteca &apos;%1&apos; ha sido creada con una versión más antigua de YACReaderLibrary y debe ser creada de nuevo. ¿Deseas crear la biblioteca ahora?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1569"/>
+        <location filename="library_window.cpp" line="1665"/>
         <source>Set as read</source>
         <translation>Marcar como leído</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1061"/>
+        <location filename="library_window.cpp" line="1157"/>
         <source>Library not available</source>
         <translation>Biblioteca no disponible</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2541"/>
+        <location filename="library_window.cpp" line="2637"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Ha habido algún problema intentando borrar los cómics selecionados. Por favor, verifica los permisos de escritura en los arhicovs seleccionados o los directorios que los conienen.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="236"/>
+        <location filename="library_window.cpp" line="237"/>
         <source>YACReader Library</source>
         <translation>Biblioteca YACReader</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2820"/>
+        <location filename="library_window.cpp" line="2916"/>
         <source>Error creating the library</source>
         <translation>Errar creando la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="970"/>
+        <location filename="library_window.cpp" line="1066"/>
         <source>Update needed</source>
         <translation>Se necesita actualizar</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3018"/>
+        <location filename="library_window.cpp" line="3114"/>
         <source>Library name already exists</source>
         <translation>Ya existe el nombre de la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3018"/>
+        <location filename="library_window.cpp" line="3114"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Hay otra biblioteca con el nombre &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1039"/>
+        <location filename="library_window.cpp" line="1135"/>
         <source>Download new version</source>
         <translation>Descargar la nueva versión</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2879"/>
+        <location filename="library_window.cpp" line="2975"/>
         <source>Delete comics</source>
         <translation>Borrar cómics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2879"/>
+        <location filename="library_window.cpp" line="2975"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Todos los cómics seleccionados serán borrados de tu disco. ¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1572"/>
-        <location filename="library_window.cpp" line="1713"/>
+        <location filename="library_window.cpp" line="1668"/>
+        <location filename="library_window.cpp" line="1809"/>
         <source>Set as unread</source>
         <translation>Marcar como no leído</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1956"/>
+        <location filename="library_window.cpp" line="2052"/>
         <source>Library not found</source>
         <translation>Biblioteca no encontrada</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="582"/>
-        <location filename="library_window.cpp" line="1453"/>
-        <location filename="library_window.cpp" line="1575"/>
+        <location filename="library_window.cpp" line="678"/>
+        <location filename="library_window.cpp" line="1549"/>
+        <location filename="library_window.cpp" line="1671"/>
         <source>manga</source>
         <translation>historieta manga</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="579"/>
-        <location filename="library_window.cpp" line="1450"/>
-        <location filename="library_window.cpp" line="1578"/>
+        <location filename="library_window.cpp" line="675"/>
+        <location filename="library_window.cpp" line="1546"/>
+        <location filename="library_window.cpp" line="1674"/>
         <source>comic</source>
         <translation>cómic</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="588"/>
-        <location filename="library_window.cpp" line="1459"/>
-        <location filename="library_window.cpp" line="1584"/>
+        <location filename="library_window.cpp" line="684"/>
+        <location filename="library_window.cpp" line="1555"/>
+        <location filename="library_window.cpp" line="1680"/>
         <source>web comic</source>
         <translation>cómic web</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="585"/>
-        <location filename="library_window.cpp" line="1456"/>
-        <location filename="library_window.cpp" line="1581"/>
+        <location filename="library_window.cpp" line="681"/>
+        <location filename="library_window.cpp" line="1552"/>
+        <location filename="library_window.cpp" line="1677"/>
         <source>western manga (left to right)</source>
         <translation>manga occidental (izquierda a derecha)</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1358"/>
-        <location filename="library_window.cpp" line="2541"/>
+        <location filename="library_window.cpp" line="1454"/>
+        <location filename="library_window.cpp" line="2637"/>
         <source>Unable to delete</source>
         <translation>No se ha podido borrar</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="591"/>
-        <location filename="library_window.cpp" line="1462"/>
-        <location filename="library_window.cpp" line="1587"/>
+        <location filename="library_window.cpp" line="687"/>
+        <location filename="library_window.cpp" line="1558"/>
+        <location filename="library_window.cpp" line="1683"/>
         <source>4koma (top to botom)</source>
         <oldsource>4koma (top to botom</oldsource>
         <translation>4koma (de arriba a abajo)</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2257"/>
+        <location filename="library_window.cpp" line="2353"/>
         <source> library?</source>
         <translation>?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2256"/>
+        <location filename="library_window.cpp" line="2352"/>
         <source>Are you sure?</source>
         <translation>¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1560"/>
+        <location filename="library_window.cpp" line="1656"/>
         <source>Rescan library for XML info</source>
         <translation>Volver a escanear la biblioteca en busca de información XML</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1296"/>
+        <location filename="library_window.cpp" line="1392"/>
         <source>Add new folder</source>
         <translation>Añadir carpeta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1332"/>
+        <location filename="library_window.cpp" line="1428"/>
         <source>Delete folder</source>
         <translation>Borrar carpeta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1557"/>
+        <location filename="library_window.cpp" line="1653"/>
         <source>Update folder</source>
         <translation>Actualizar carpeta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="922"/>
+        <location filename="library_window.cpp" line="1018"/>
         <source>Upgrade failed</source>
         <translation>La actualización falló</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="922"/>
+        <location filename="library_window.cpp" line="1018"/>
         <source>There were errors during library upgrade in: </source>
         <translation>Hubo errores durante la actualización de la biblioteca en: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1112"/>
-        <location filename="library_window.cpp" line="1148"/>
+        <location filename="library_window.cpp" line="1208"/>
+        <location filename="library_window.cpp" line="1244"/>
         <source>Copying comics...</source>
         <translation>Copiando cómics...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1129"/>
-        <location filename="library_window.cpp" line="1167"/>
+        <location filename="library_window.cpp" line="1225"/>
+        <location filename="library_window.cpp" line="1263"/>
         <source>Moving comics...</source>
         <translation>Moviendo cómics...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1297"/>
+        <location filename="library_window.cpp" line="1393"/>
         <source>Folder name:</source>
         <translation>Nombre de la carpeta:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1326"/>
+        <location filename="library_window.cpp" line="1422"/>
         <source>No folder selected</source>
         <translation>No has selecionado ninguna carpeta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1326"/>
+        <location filename="library_window.cpp" line="1422"/>
         <source>Please, select a folder first</source>
         <translation>Por favor, selecciona una carpeta primero</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1330"/>
+        <location filename="library_window.cpp" line="1426"/>
         <source>Error in path</source>
         <translation>Error en la ruta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1330"/>
+        <location filename="library_window.cpp" line="1426"/>
         <source>There was an error accessing the folder&apos;s path</source>
         <translation>Hubo un error al acceder a la ruta de la carpeta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1332"/>
+        <location filename="library_window.cpp" line="1428"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
         <translation>¿Estás seguro de que deseas eliminar la carpeta seleccionada y todo su contenido de tu disco?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1358"/>
+        <location filename="library_window.cpp" line="1454"/>
         <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
         <translation>Se produjo un problema al intentar eliminar las carpetas seleccionadas. Por favor, verifica los permisos de escritura y asegúrate de que no haya aplicaciones usando estas carpetas o alguno de los archivos contenidos en ellas.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1370"/>
+        <location filename="library_window.cpp" line="1466"/>
         <source>Add new reading lists</source>
         <translation>Añadir nuevas listas de lectura</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1371"/>
-        <location filename="library_window.cpp" line="1420"/>
+        <location filename="library_window.cpp" line="1467"/>
+        <location filename="library_window.cpp" line="1516"/>
         <source>List name:</source>
         <translation>Nombre de la lista:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1389"/>
+        <location filename="library_window.cpp" line="1485"/>
         <source>Delete list/label</source>
         <translation>Eliminar lista/etiqueta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1389"/>
+        <location filename="library_window.cpp" line="1485"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>El elemento seleccionado se eliminará, tus cómics o carpetas NO se eliminarán de tu disco. ¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1419"/>
+        <location filename="library_window.cpp" line="1515"/>
         <source>Rename list name</source>
         <translation>Renombrar lista</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="631"/>
-        <location filename="library_window.cpp" line="1521"/>
-        <location filename="library_window.cpp" line="1635"/>
-        <location filename="library_window.cpp" line="3000"/>
+        <location filename="library_window.cpp" line="727"/>
+        <location filename="library_window.cpp" line="1617"/>
+        <location filename="library_window.cpp" line="1731"/>
+        <location filename="library_window.cpp" line="3096"/>
         <source>Set type</source>
         <translation>Establecer tipo</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="790"/>
+        <location filename="library_window.cpp" line="555"/>
+        <source>Search filters</source>
+        <translation>Filtros de búsqueda</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="565"/>
+        <source>Unread</source>
+        <translation>No leído</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="567"/>
+        <source>In progress</source>
+        <translation>En curso</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="569"/>
+        <source>Highly rated</source>
+        <translation>Con valoración alta</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="571"/>
+        <source>Recently added</source>
+        <translation>Añadido recientemente</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="578"/>
+        <source>Search syntax…</source>
+        <translation>Sintaxis de búsqueda…</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="886"/>
         <source>A repair of this library is already running (%1). Wait for it to finish.</source>
         <translation>Ya se está ejecutando una reparación de esta biblioteca (%1). Espere a que finalice.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="795"/>
+        <location filename="library_window.cpp" line="891"/>
         <source>The library is locked by a repair that did not finish.</source>
         <translation>La biblioteca está bloqueada por una reparación que no finalizó.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="796"/>
+        <location filename="library_window.cpp" line="892"/>
         <source>The library is locked by a repair started by %1.</source>
         <translation>La biblioteca está bloqueada por una reparación iniciada por %1.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="798"/>
+        <location filename="library_window.cpp" line="894"/>
         <source>If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?</source>
         <translation>Si está seguro de que no se está ejecutando ninguna otra reparación, se puede eliminar el bloqueo. ¿Eliminar el bloqueo y continuar?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="852"/>
+        <location filename="library_window.cpp" line="948"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="852"/>
+        <location filename="library_window.cpp" line="948"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="940"/>
+        <location filename="library_window.cpp" line="1036"/>
         <source>Restore recovery failed</source>
         <translation>Error al recuperar la restauración</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1590"/>
+        <location filename="library_window.cpp" line="1686"/>
         <source>Set custom cover</source>
         <translation>Establecer portada personalizada</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1593"/>
+        <location filename="library_window.cpp" line="1689"/>
         <source>Delete custom cover</source>
         <translation>Eliminar portada personalizada</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1778"/>
+        <location filename="library_window.cpp" line="1874"/>
         <source>Save covers</source>
         <translation>Guardar portadas</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1797"/>
+        <location filename="library_window.cpp" line="1893"/>
         <source>You are adding too many libraries.</source>
         <translation>Estás añadiendo demasiadas bibliotecas.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1797"/>
+        <location filename="library_window.cpp" line="1893"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
@@ -1190,68 +1220,68 @@ Probablemente solo necesites una biblioteca en la carpeta principal de tus cómi
 YACReaderLibrary no te detendrá de crear más bibliotecas, pero deberías mantener el número de bibliotecas bajo control.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1857"/>
+        <location filename="library_window.cpp" line="1953"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader no encontrado. YACReader debería estar instalado en la misma carpeta que YACReaderLibrary.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1859"/>
+        <location filename="library_window.cpp" line="1955"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader no encontrado. Podría haber un problema con tu instalación de YACReader.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1866"/>
+        <location filename="library_window.cpp" line="1962"/>
         <source>Error</source>
         <translation>Fallo</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1866"/>
+        <location filename="library_window.cpp" line="1962"/>
         <source>Error opening comic with third party reader.</source>
         <translation>Error al abrir el cómic con una aplicación de terceros.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2001"/>
-        <location filename="library_window.cpp" line="2041"/>
+        <location filename="library_window.cpp" line="2097"/>
+        <location filename="library_window.cpp" line="2137"/>
         <source>YACReader library database (*.ydb)</source>
         <translation>Base de datos de biblioteca de YACReader (*.ydb)</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2021"/>
+        <location filename="library_window.cpp" line="2117"/>
         <source>The library database backup was created at:
 %1</source>
         <translation>La copia de seguridad de la base de datos de la biblioteca se creó en:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2025"/>
+        <location filename="library_window.cpp" line="2121"/>
         <source>Unable to create the library database backup:
 %1</source>
         <translation>No se pudo crear la copia de seguridad de la base de datos de la biblioteca:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2047"/>
+        <location filename="library_window.cpp" line="2143"/>
         <source>Close YACReaderLibraryServer and any other YACReader application using this library before restoring. Continue?</source>
         <translation>Cierra YACReaderLibraryServer y cualquier otra aplicación YACReader que esté usando esta biblioteca antes de restaurarla. ¿Quieres continuar?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2059"/>
+        <location filename="library_window.cpp" line="2155"/>
         <source>Restoring library database...</source>
         <translation>Restaurando la base de datos de la biblioteca...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2078"/>
+        <location filename="library_window.cpp" line="2174"/>
         <source>The current library database is invalid. Restore the selected backup anyway?</source>
         <translation>La base de datos actual de la biblioteca no es válida. ¿Quieres restaurar de todos modos la copia seleccionada?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2092"/>
-        <location filename="library_window.cpp" line="2171"/>
+        <location filename="library_window.cpp" line="2188"/>
+        <location filename="library_window.cpp" line="2267"/>
         <source>The library maintenance lock may be stale. Remove it and retry?</source>
         <translation>El bloqueo de mantenimiento de la biblioteca puede estar obsoleto. ¿Quieres eliminarlo y volver a intentarlo?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2106"/>
+        <location filename="library_window.cpp" line="2202"/>
         <source>
 
 Restart YACReaderLibrary before attempting recovery again.</source>
@@ -1260,71 +1290,71 @@ Restart YACReaderLibrary before attempting recovery again.</source>
 Reinicia YACReaderLibrary antes de volver a intentar la recuperación.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2120"/>
+        <location filename="library_window.cpp" line="2216"/>
         <source>The library database was restored successfully. Update the library now?</source>
         <translation>La base de datos de la biblioteca se restauró correctamente. ¿Quieres actualizar la biblioteca ahora?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2133"/>
+        <location filename="library_window.cpp" line="2229"/>
         <source>Library database damaged</source>
         <translation>Base de datos de la biblioteca dañada</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2134"/>
+        <location filename="library_window.cpp" line="2230"/>
         <source>The database of library &apos;%1&apos; is damaged, so normal updates, maintenance, and backups are unavailable. YACReader can attempt to repair the database. Some damaged data may not be recoverable. Existing backups will not be changed.</source>
         <translation>La base de datos de la biblioteca &apos;%1&apos; está dañada, por lo que las actualizaciones, el mantenimiento y las copias de seguridad habituales no están disponibles. YACReader puede intentar reparar la base de datos. Es posible que algunos datos dañados no se puedan recuperar. Las copias de seguridad existentes no se modificarán.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2137"/>
+        <location filename="library_window.cpp" line="2233"/>
         <source>Attempt repair</source>
         <translation>Intentar reparar</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2138"/>
+        <location filename="library_window.cpp" line="2234"/>
         <source>Restore a backup...</source>
         <translation>Restaurar una copia de seguridad...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2156"/>
+        <location filename="library_window.cpp" line="2252"/>
         <source>Repairing library database...</source>
         <translation>Reparando la base de datos de la biblioteca...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2170"/>
-        <location filename="library_window.cpp" line="2178"/>
-        <location filename="library_window.cpp" line="2188"/>
+        <location filename="library_window.cpp" line="2266"/>
+        <location filename="library_window.cpp" line="2274"/>
+        <location filename="library_window.cpp" line="2284"/>
         <source>Library database repair</source>
         <translation>Reparación de la base de datos de la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2179"/>
+        <location filename="library_window.cpp" line="2275"/>
         <source>Another maintenance operation is currently using this library. Try again after it finishes.</source>
         <translation>Otra operación de mantenimiento está usando esta biblioteca. Vuelve a intentarlo cuando termine.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2189"/>
+        <location filename="library_window.cpp" line="2285"/>
         <source>The library database is already valid.</source>
         <translation>La base de datos de la biblioteca ya es válida.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2192"/>
+        <location filename="library_window.cpp" line="2288"/>
         <source>Library database repaired</source>
         <translation>Base de datos de la biblioteca reparada</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2193"/>
+        <location filename="library_window.cpp" line="2289"/>
         <source>The library database was repaired by rebuilding its indexes. The damaged original was preserved at:
 %1</source>
         <translation>La base de datos de la biblioteca se reparó reconstruyendo sus índices. El original dañado se conservó en:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2196"/>
+        <location filename="library_window.cpp" line="2292"/>
         <source>Library database rebuilt</source>
         <translation>Base de datos de la biblioteca reconstruida</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2197"/>
+        <location filename="library_window.cpp" line="2293"/>
         <source>The library database was rebuilt successfully. The damaged original was preserved at:
 %1
 
@@ -1335,7 +1365,7 @@ Update the library now?</source>
 ¿Quieres actualizar la biblioteca ahora?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2206"/>
+        <location filename="library_window.cpp" line="2302"/>
         <source>
 
 The damaged original was preserved at:
@@ -1346,12 +1376,12 @@ El original dañado se conservó en:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2208"/>
+        <location filename="library_window.cpp" line="2304"/>
         <source>Library database repair failed</source>
         <translation>Error al reparar la base de datos de la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2209"/>
+        <location filename="library_window.cpp" line="2305"/>
         <source>The library database could not be repaired:
 %1%2
 
@@ -1362,57 +1392,57 @@ You can restore a backup from the Library menu or recreate the library.</source>
 Puedes restaurar una copia de seguridad desde el menú Biblioteca o volver a crear la biblioteca.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2260"/>
+        <location filename="library_window.cpp" line="2356"/>
         <source>Remove and delete metadata and backups</source>
         <translation>Eliminar y borrar metadatos y copias de seguridad</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2329"/>
+        <location filename="library_window.cpp" line="2425"/>
         <source>Library info</source>
         <translation>Información de la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2572"/>
+        <location filename="library_window.cpp" line="2668"/>
         <source>Assign comics numbers</source>
         <translation>Asignar números a los cómics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2573"/>
+        <location filename="library_window.cpp" line="2669"/>
         <source>Assign numbers starting in:</source>
         <translation>Asignar números comenzando en:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2673"/>
+        <location filename="library_window.cpp" line="2769"/>
         <source>Invalid image</source>
         <translation>Imagen inválida</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2673"/>
+        <location filename="library_window.cpp" line="2769"/>
         <source>The selected file is not a valid image.</source>
         <translation>El archivo seleccionado no es una imagen válida.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2679"/>
+        <location filename="library_window.cpp" line="2775"/>
         <source>Error saving cover</source>
         <translation>Error guardando portada</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2679"/>
+        <location filename="library_window.cpp" line="2775"/>
         <source>There was an error saving the cover image.</source>
         <translation>Hubo un error guardando la image de portada.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2916"/>
+        <location filename="library_window.cpp" line="3012"/>
         <source>Remove comics</source>
         <translation>Eliminar cómics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2916"/>
+        <location filename="library_window.cpp" line="3012"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Los cómics sólo se eliminarán de la etiqueta/lista actual. ¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="817"/>
+        <location filename="library_window.cpp" line="913"/>
         <source>Repaired: %1
 Failed: %2
 Missing files: %3</source>
@@ -2549,6 +2579,279 @@ Para detener una actualización automática, toca en el indicador de carga junto
     </message>
 </context>
 <context>
+    <name>SearchFieldRegistry</name>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="16"/>
+        <source>Text, quoted text</source>
+        <translation>Texto, texto entre comillas</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="18"/>
+        <source>Integer</source>
+        <translation>Entero</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="21"/>
+        <source>Boolean (true / false)</source>
+        <translation>Booleano (true / false)</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="24"/>
+        <source>Integer (number of days)</source>
+        <translation>Entero (número de días)</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="27"/>
+        <source>Enum (comic, manga, westernmanga, webcomic/web, 4koma/yonkoma)</source>
+        <translation>Enumeración (comic, manga, westernmanga, webcomic/web, 4koma/yonkoma)</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="100"/>
+        <source>Comic title</source>
+        <translation>Título del cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="101"/>
+        <source>Series name</source>
+        <translation>Nombre de la serie</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="102"/>
+        <source>Issue number</source>
+        <translation>Número del ejemplar</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="103"/>
+        <source>Volume identifier</source>
+        <translation>Identificador del volumen</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="104"/>
+        <source>Reading format</source>
+        <translation>Formato de lectura</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="105"/>
+        <source>Comic rating</source>
+        <translation>Valoración del cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="106"/>
+        <source>Textual tags</source>
+        <translation>Etiquetas de texto</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="108"/>
+        <source>Writer credit</source>
+        <translation>Crédito de guion</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="109"/>
+        <source>Penciller credit</source>
+        <translation>Crédito de dibujo</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="110"/>
+        <source>Inker credit</source>
+        <translation>Crédito de entintado</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="111"/>
+        <source>Colorist credit</source>
+        <translation>Crédito de color</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="112"/>
+        <source>Letterer credit</source>
+        <translation>Crédito de rotulación</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="113"/>
+        <source>Cover artist credit</source>
+        <translation>Crédito de portada</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="114"/>
+        <source>Editor credit</source>
+        <translation>Crédito de edición</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="116"/>
+        <source>Story arc name</source>
+        <translation>Nombre del arco argumental</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="117"/>
+        <source>Position within a story arc</source>
+        <translation>Posición dentro de un arco argumental</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="118"/>
+        <source>Number of issues in a story arc</source>
+        <translation>Número de ejemplares del arco argumental</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="119"/>
+        <source>Characters appearing in the comic</source>
+        <translation>Personajes que aparecen en el cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="120"/>
+        <source>Teams appearing in the comic</source>
+        <translation>Equipos que aparecen en el cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="121"/>
+        <source>Locations appearing in the comic</source>
+        <translation>Lugares que aparecen en el cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="122"/>
+        <source>Primary character or team</source>
+        <translation>Personaje o equipo principal</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="123"/>
+        <source>Comic synopsis</source>
+        <translation>Sinopsis del cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="125"/>
+        <source>Publisher name</source>
+        <translation>Nombre de la editorial</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="126"/>
+        <source>Publishing imprint</source>
+        <translation>Sello editorial</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="127"/>
+        <source>Publication format</source>
+        <translation>Formato de publicación</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="128"/>
+        <source>Recommended age rating</source>
+        <translation>Clasificación de edad recomendada</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="129"/>
+        <source>Comic genre</source>
+        <translation>Género del cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="130"/>
+        <source>ISO language code</source>
+        <translation>Código de idioma ISO</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="131"/>
+        <source>Publication date metadata</source>
+        <translation>Metadatos de la fecha de publicación</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="132"/>
+        <source>Series grouping metadata</source>
+        <translation>Metadatos de agrupación de series</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="133"/>
+        <source>Alternate series name</source>
+        <translation>Nombre alternativo de la serie</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="134"/>
+        <source>Alternate issue number</source>
+        <translation>Número alternativo del ejemplar</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="135"/>
+        <source>Alternate series issue count</source>
+        <translation>Cantidad de ejemplares de la serie alternativa</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="136"/>
+        <source>Number of issues in the series</source>
+        <translation>Número de ejemplares de la serie</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="138"/>
+        <source>Whether the comic is marked as read</source>
+        <translation>Si el cómic está marcado como leído</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="139"/>
+        <source>Whether reading has started</source>
+        <translation>Si la lectura ha comenzado</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="140"/>
+        <source>Whether metadata has been edited</source>
+        <translation>Si se han editado los metadatos</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="141"/>
+        <source>Whether the comic is in color</source>
+        <translation>Si el cómic es en color</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="142"/>
+        <source>Number of pages</source>
+        <translation>Número de páginas</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="143"/>
+        <source>Comic file name</source>
+        <translation>Nombre del archivo del cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="144"/>
+        <source>When the item was added</source>
+        <translation>Cuándo se añadió el elemento</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="145"/>
+        <source>When the comic was last opened</source>
+        <translation>Cuándo se abrió el cómic por última vez</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="146"/>
+        <source>Comic notes</source>
+        <translation>Notas del cómic</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="147"/>
+        <source>Review text</source>
+        <translation>Texto de la reseña</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="149"/>
+        <source>Parent folder name</source>
+        <translation>Nombre de la carpeta superior</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="150"/>
+        <source>Default reading format for the folder</source>
+        <translation>Formato de lectura predeterminado de la carpeta</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="151"/>
+        <source>Whether the folder is complete</source>
+        <translation>Si la carpeta está completa</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="152"/>
+        <source>Whether the folder is marked as finished</source>
+        <translation>Si la carpeta está marcada como finalizada</translation>
+    </message>
+    <message>
+        <location filename="db/search_field_registry.cpp" line="153"/>
+        <source>When the folder was updated</source>
+        <translation>Cuándo se actualizó la carpeta</translation>
+    </message>
+</context>
+<context>
     <name>SearchSingleComic</name>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="14"/>
@@ -2565,6 +2868,301 @@ Para detener una actualización automática, toca en el indicador de carga junto
         <location filename="comic_vine/search_single_comic.cpp" line="21"/>
         <source>Use exact match search. Disable if you want to find volumes that match some of the words in the name.</source>
         <translation>Usar búsqueda exacta. Desactívala si quieres encontrar volúmenes que coincidan con algunas palabras del nombre.</translation>
+    </message>
+</context>
+<context>
+    <name>SearchSyntaxDialog</name>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="75"/>
+        <source>Common</source>
+        <translation>Común</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="77"/>
+        <source>Credits</source>
+        <translation>Créditos</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="79"/>
+        <source>Story</source>
+        <translation>Historia</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="81"/>
+        <source>Publication</source>
+        <translation>Publicación</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="83"/>
+        <source>Reading &amp; files</source>
+        <translation>Lectura y archivos</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="85"/>
+        <source>Folders</source>
+        <translation>Carpetas</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="141"/>
+        <source>Search syntax</source>
+        <translation>Sintaxis de búsqueda</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="147"/>
+        <source>Search every comic and folder field, or build precise queries.</source>
+        <translation>Busca en todos los campos de cómics y carpetas o crea consultas precisas.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="152"/>
+        <source>Quick guide</source>
+        <translation>Guía rápida</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="155"/>
+        <source>Fields (%1)</source>
+        <translation>Campos (%1)</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="156"/>
+        <source>Examples</source>
+        <translation>Ejemplos</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="172"/>
+        <source>Start with a simple search</source>
+        <translation>Empieza con una búsqueda sencilla</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="176"/>
+        <source>Just start typing. Plain text search across all metadata.</source>
+        <translation>Solo tienes que empezar a escribir. El texto simple busca en todos los metadatos.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="185"/>
+        <source>1. Search everywhere</source>
+        <translation>1. Buscar en todas partes</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="186"/>
+        <source>Type any text or quoted text.</source>
+        <translation>Escribe cualquier texto o texto entre comillas.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="192"/>
+        <source>2. Target a field</source>
+        <translation>2. Buscar en un campo</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="193"/>
+        <source>Use a field name followed by : or =</source>
+        <translation>Usa el nombre de un campo seguido de : o =</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="199"/>
+        <source>3. Combine conditions</source>
+        <translation>3. Combinar condiciones</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="200"/>
+        <source>Use AND, OR, NOT and parentheses.</source>
+        <translation>Usa AND, OR, NOT y paréntesis.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="209"/>
+        <source>Operators</source>
+        <translation>Operadores</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="213"/>
+        <source>: or =</source>
+        <translation>: o =</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="213"/>
+        <source>contains the text</source>
+        <translation>contiene el texto</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="214"/>
+        <source>matches the complete value</source>
+        <translation>coincide con el valor completo</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="215"/>
+        <source>greater than / at least</source>
+        <translation>mayor que / como mínimo</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="216"/>
+        <source>less than / at most</source>
+        <translation>menor que / como máximo</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="217"/>
+        <source>&quot;quoted text&quot;</source>
+        <translation>&quot;texto entre comillas&quot;</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="217"/>
+        <source>keeps spaces inside one value</source>
+        <translation>mantiene los espacios dentro de un único valor</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="220"/>
+        <source>Dates and grouping</source>
+        <translation>Fechas y agrupación</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="224"/>
+        <source>added in the last 7 days</source>
+        <translation>añadido en los últimos 7 días</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="225"/>
+        <source>added more than 30 days ago</source>
+        <translation>añadido hace más de 30 días</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="229"/>
+        <source>group alternatives</source>
+        <translation>agrupa alternativas</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="235"/>
+        <source>Tips:
+Spaces act like AND, and searches are not case-sensitive.
+Use quotes to include spaces in a value.</source>
+        <translation>Consejos: los espacios funcionan como AND y las búsquedas no distinguen entre mayúsculas y minúsculas. Usa comillas para incluir espacios en un valor.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="251"/>
+        <source>Find a field…</source>
+        <translation>Buscar un campo…</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="255"/>
+        <source>Text can be entered plainly or in quotes. Integer fields support &lt;, &lt;=, &gt; and &gt;=. For date fields, the integer is a number of days (added&gt;7 means added within the last 7 days).</source>
+        <translation>El texto puede introducirse directamente o entre comillas. Los campos de enteros admiten &lt;, &lt;=, &gt; y &gt;=. En los campos de fecha, el entero es un número de días (added&gt;7 significa añadido en los últimos 7 días).</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="263"/>
+        <source>Field</source>
+        <translation>Campo</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="264"/>
+        <source>Description</source>
+        <translation>Descripción</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="265"/>
+        <source>Input</source>
+        <translation>Entrada</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="266"/>
+        <source>Example</source>
+        <translation>Ejemplo</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="328"/>
+        <source>Examples show the pattern—replace the values with your own.</source>
+        <translation>Los ejemplos muestran el patrón; sustituye los valores por los tuyos.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="334"/>
+        <source>Query</source>
+        <translation>Consulta</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="334"/>
+        <source>What it finds</source>
+        <translation>Qué encuentra</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="339"/>
+        <source>Common filters</source>
+        <translation>Filtros comunes</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="340"/>
+        <source>Unread comics</source>
+        <translation>Cómics no leídos</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="341"/>
+        <source>Comics in progress</source>
+        <translation>Cómics en curso</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="342"/>
+        <source>Highly rated comics</source>
+        <translation>Cómics con valoración alta</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="343"/>
+        <source>Comics added in the last 7 days</source>
+        <translation>Cómics añadidos en los últimos 7 días</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="345"/>
+        <source>Metadata</source>
+        <translation>Metadatos</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="346"/>
+        <source>Search by series</source>
+        <translation>Buscar por serie</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="347"/>
+        <source>Search by writer</source>
+        <translation>Buscar por guionista</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="348"/>
+        <source>Manga comics</source>
+        <translation>Cómics manga</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="349"/>
+        <source>Search textual tags</source>
+        <translation>Buscar etiquetas de texto</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="351"/>
+        <source>Advanced combinations</source>
+        <translation>Combinaciones avanzadas</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="355"/>
+        <source>Match either writer</source>
+        <translation>Coincide con cualquiera de los guionistas</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="359"/>
+        <source>Group alternatives</source>
+        <translation>Agrupar alternativas</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="360"/>
+        <source>Exclude a value</source>
+        <translation>Excluir un valor</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="364"/>
+        <source>Older, highly rated comics</source>
+        <translation>Cómics antiguos con valoración alta</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="381"/>
+        <source>Copy query</source>
+        <translation>Copiar consulta</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="387"/>
+        <source>Spaces behave like AND. Use quotes for phrases and parentheses to control grouping.</source>
+        <translation>Los espacios funcionan como AND. Usa comillas para las frases y paréntesis para controlar la agrupación.</translation>
     </message>
 </context>
 <context>
@@ -3189,7 +3787,12 @@ Para detener una actualización automática, toca en el indicador de carga junto
 <context>
     <name>YACReaderSearchLineEdit</name>
     <message>
-        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="31"/>
+        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="23"/>
+        <source>Search filters</source>
+        <translation>Filtros de búsqueda</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="42"/>
         <source>type to search</source>
         <translation>escribe para buscar</translation>
     </message>
