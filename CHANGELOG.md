@@ -10,6 +10,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add optional edge easing for the magnifying glass. The magnified region is pushed toward the edges of the view, so content near the border can be inspected without pushing the cursor all the way into the corner.
 * Require a full wheel notch before the magnifying glass changes size or zoom, so a light trackpad gesture no longer resizes it.
 * Fix showing the go to flow bar asking for permission to control the computer on macOS. Moving the cursor into the bar now works without granting any accessibility permission, where before it was silently doing nothing.
+* Add a setting to control what the Escape key does. It can keep quitting the reader, as before, or instead cancel the topmost active mode: magnifying glass, dictionary, go to flow and then fullscreen.
 
 ### YACReaderLibrary
 * Add a library repair function to restore missing covers and rescan files that previously failed to be added.
