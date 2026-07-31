@@ -24,6 +24,34 @@
 
 #include <cmath>
 
+#ifdef Q_OS_MACOS
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
+namespace {
+// QCursor::setPos moves the pointer by synthesizing a mouse event and injecting
+// it into the HID event stream (QCocoaCursor::setPos -> CGEventPost). macOS
+// gates that behind the accessibility "control this computer" permission, so on
+// a machine that hasn't granted it the call is silently denied and the pointer
+// never moves, while the user gets an unexplained permission request.
+//
+// CGWarpMouseCursorPosition repositions the pointer without injecting an event
+// and needs no permission. It doesn't deliver a mouse move to the application,
+// which suits the only caller here: the point is to reposition the pointer
+// *without* triggering the move handling that would hide the widget again.
+void moveCursorTo(const QPoint &globalPos)
+{
+#ifdef Q_OS_MACOS
+    CGWarpMouseCursorPosition(CGPointMake(globalPos.x(), globalPos.y()));
+    // Warping leaves a short interval where physical mouse movement is filtered
+    // out; re-associating ends it so the next movement registers immediately.
+    CGAssociateMouseAndMouseCursorPosition(true);
+#else
+    QCursor::setPos(globalPos);
+#endif
+}
+}
+
 Viewer::Viewer(QWidget *parent)
     : QScrollArea(parent),
       fullscreen(false),
@@ -1332,7 +1360,7 @@ void Viewer::moveCursoToGoToFlow()
         cursorX = x1 + 10;
     if (cursorX >= x2)
         cursorX = x2 - 10;
-    cursor().setPos(mapToGlobal(QPoint(cursorX, cursorY)));
+    moveCursorTo(mapToGlobal(QPoint(cursorX, cursorY)));
     hideCursorTimer->stop();
     showCursor();
 }
