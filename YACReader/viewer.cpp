@@ -39,6 +39,10 @@ namespace {
 // and needs no permission. It doesn't deliver a mouse move to the application,
 // which suits the only caller here: the point is to reposition the pointer
 // *without* triggering the move handling that would hide the widget again.
+//
+// Reported upstream as https://qt-project.atlassian.net/browse/QTBUG-148709.
+// If Qt switches QCocoaCursor::setPos to the warp, this can go back to being a
+// plain QCursor::setPos call once the fixed version is the minimum supported.
 void moveCursorTo(const QPoint &globalPos)
 {
 #ifdef Q_OS_MACOS
