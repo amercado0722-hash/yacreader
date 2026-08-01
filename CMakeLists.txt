@@ -55,7 +55,7 @@ set(YACREADER_PDF_BACKENDS pdfium poppler pdfkit no_pdf)
 
 # --- Platform defaults ---
 if(UNIX AND NOT APPLE)
-    set(_default_decompression_backend "7zip")
+    set(_default_decompression_backend "libarchive")
     set(_default_pdf_backend "poppler")
 elseif(APPLE)
     set(_default_decompression_backend "7zip")
