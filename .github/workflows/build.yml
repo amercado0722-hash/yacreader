@@ -212,7 +212,7 @@ jobs:
           pip install -U pip
           pip install aqtinstall
           mkdir C:\Qt
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech || exit /b 1
           dir C:\Qt\6.9.3\msvc2022_64\bin
           curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.x64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.x64.exe"
           where iscc
@@ -356,8 +356,8 @@ jobs:
         run: |
           pip install aqtinstall
           mkdir C:\Qt
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_arm64_cross_compiled -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech || exit /b 1
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_arm64_cross_compiled -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech || exit /b 1
           dir C:\Qt\6.9.3\msvc2022_arm64\bin
           curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.arm64.exe"
           where iscc
