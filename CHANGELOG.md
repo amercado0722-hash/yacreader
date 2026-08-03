@@ -21,6 +21,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add funtion to open the library root location.
 * Add a help dialog for the search engine. Use the drop down menu in the search field.
 * Add quick search presets. Use the drop down menu in the search field.
+* Fix `open containing folder` asking for permission to control Finder on macOS.
 
 ### YACReaderLibraryServer
 * Add the `repair-library` command to restore missing covers and rescan files that previously failed to be added.

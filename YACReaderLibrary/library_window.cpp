@@ -2694,17 +2694,12 @@ void LibraryWindow::openContainingFolderComic()
 #endif
 
 #ifdef Q_OS_MACOS
-    QString filePath = file.absoluteFilePath();
+    // `open -R` reveals and selects the file in Finder without sending an Apple
+    // Event, so it doesn't trigger the macOS automation permission prompt.
     QStringList args;
-    args << "-e";
-    args << "tell application \"Finder\"";
-    args << "-e";
-    args << "activate";
-    args << "-e";
-    args << "select POSIX file \"" + filePath + "\"";
-    args << "-e";
-    args << "end tell";
-    QProcess::startDetached("osascript", args);
+    args << "-R";
+    args << file.absoluteFilePath();
+    QProcess::startDetached("open", args);
 #endif
 
 #ifdef Q_OS_WIN
