@@ -41,7 +41,7 @@ required qml modules (Quick, QuickControls2) are missing.
 ### Decompression
 
 YACReader currently supports three decompression backends: 7zip, (lib)unarr, and libarchive. YACReader
-defaults to 7zip for Windows, macOS, Linux, and other OSes, but you can
+defaults to 7zip for Windows and macOS, and libarchive for Linux and other OSes, but you can
 override this using the `DECOMPRESSION_BACKEND` option:
 
 ```
@@ -52,7 +52,7 @@ cmake -B build -DDECOMPRESSION_BACKEND=libarchive
 
 #### 7zip
 
-[7zip](https://www.7-zip.org/) is the default decompression backend.
+[7zip](https://www.7-zip.org/) is the default decompression backend for Windows and macOS.
 
 It is recommended for most builds, as it currently has better support for 7z
 files and supports the RAR5 format.
@@ -63,16 +63,20 @@ FetchContent. No manual setup is needed.
 As this backend is not 100% GPL compatible (unrar license restriction), it is not
 recommended for installations where the license is an issue.
 
+#### libarchive
+
+[libarchive](https://github.com/libarchive/libarchive) is a portable, efficient decompression backend, and the default decompression backend for Linux.
+
+libarchive supports a wide variety of archive formats, and supports the RAR5 format (with some limitations) without using non-free software.
+
+The libarchive backend is recommended for packaging, and installations where GPL compatibility is required.
+
 #### unarr
 
 [(lib)unarr](https://github.com/selmf/unarr) is a lightweight decompression backend.
 
 As of version 1.0.1, it supports less formats than 7zip, notably missing RAR5 support and only having
-limited support for 7z on git versions. However, this is rarely an issue in practice as the vast majority
-of comic books use either zip or RAR4 compression, which is handled nicely by this backend.
-
-The unarr backend is recommended for packaging, lightweight installations and generally for all users requiring
-more stability than the 7zip backend can offer.
+limited support for 7z on git versions. It is recommended that packagers switch to the libarchive backend.
 
 The recommended way to use this on Linux or other *NIX is to install it as a package, but you can also do an embedded build.
 For more information, please consult the [README](compressed_archive/unarr/README.txt)

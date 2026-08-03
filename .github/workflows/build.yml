@@ -75,7 +75,7 @@ jobs:
 
   # Linux Qt6 build
   linux-qt6:
-    name: Linux (Qt6)
+    name: Linux (Qt6 + libarchive)
     runs-on: ubuntu-24.04
     needs: [initialization, code-format-validation]
     steps:
@@ -84,7 +84,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libunarr-dev libgl-dev libgles2-mesa-dev \
+          sudo apt-get install -y libarchive-dev libgl-dev libgles2-mesa-dev \
             libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev \
             libspeechd-dev
 
@@ -98,7 +98,6 @@ jobs:
       - name: Build
         run: |
           cmake -B build \
-            -DDECOMPRESSION_BACKEND=unarr \
             -DPDF_BACKEND=poppler \
             -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" \
             -DCMAKE_BUILD_TYPE=Release
