@@ -67,9 +67,9 @@ recommended for installations where the license is an issue.
 
 [libarchive](https://github.com/libarchive/libarchive) is a portable, efficient decompression backend, and the default decompression backend for Linux.
 
-libarchive supports a wide variaty of archive formats, and supports the RAR5 format (with some limitations) without using non-free software. 
+libarchive supports a wide variety of archive formats, and supports the RAR5 format (with some limitations) without using non-free software.
 
-The libarchive backend is recommended for packaging, and installations where GPL compatability is required.
+The libarchive backend is recommended for packaging, and installations where GPL compatibility is required.
 
 #### unarr
 
