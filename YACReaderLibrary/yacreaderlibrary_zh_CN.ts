@@ -634,7 +634,7 @@
     <message>
         <location filename="../common/comic.cpp" line="647"/>
         <source>Unsupported EPUB: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>不支持的 EPUB 格式：%1</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="513"/>
