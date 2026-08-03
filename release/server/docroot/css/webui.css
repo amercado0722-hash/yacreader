@@ -1617,7 +1617,8 @@ input[type="time"]:focus-visible {
   line-height: 1.35;
 }
 
-.comic-synopsis a {
+.comic-copy-section a,
+.comic-metadata-field a {
   color: var(--accent-strong);
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent);

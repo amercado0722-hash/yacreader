@@ -894,10 +894,86 @@
       return names[Number(fileType)] || "";
     }
 
-    function detailField(label, value) {
+    var comicVineBaseUrl = "http://www.comicvine.com";
+
+    function safeExternalUrl(value) {
+      var candidate = String(value || "").trim();
+      if (!candidate) {
+        return "";
+      }
+      if (/^www\./i.test(candidate)) {
+        candidate = "http://" + candidate;
+      } else if (candidate.startsWith("//")) {
+        candidate = "http:" + candidate;
+      } else if (!/^[a-z][a-z0-9+.-]*:/i.test(candidate) && !candidate.startsWith("//")) {
+        // Match ScraperScrollLabel::openLink(): Comic Vine descriptions store
+        // relative hrefs and the desktop UI prefixes them with this host.
+        candidate = comicVineBaseUrl + (candidate.startsWith("/") ? "" : "/") + candidate;
+      }
+
+      try {
+        var url = new URL(candidate);
+        if (url.protocol === "http:" || url.protocol === "https:") {
+          return url.href;
+        }
+      } catch (error) {
+      }
+
+      return "";
+    }
+
+    function externalLink(href, label) {
+      var url = safeExternalUrl(href);
+      if (!url) {
+        return null;
+      }
+
+      var link = element("a", "", label);
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      return link;
+    }
+
+    function appendLinkifiedText(target, value) {
+      var text = String(value);
+      var urlPattern = /\b(?:https?:\/\/|www\.)[^\s<>"']+/gi;
+      var position = 0;
+      var match;
+
+      while ((match = urlPattern.exec(text)) !== null) {
+        target.appendChild(document.createTextNode(text.slice(position, match.index)));
+
+        var urlText = match[0];
+        var trailing = "";
+        var trailingMatch = urlText.match(/[.,;:!?\]\)}]+$/);
+        if (trailingMatch) {
+          trailing = trailingMatch[0];
+          urlText = urlText.slice(0, -trailing.length);
+        }
+
+        var link = externalLink(urlText, urlText);
+        target.appendChild(link || document.createTextNode(urlText));
+        if (trailing) {
+          target.appendChild(document.createTextNode(trailing));
+        }
+        position = match.index + match[0].length;
+      }
+
+      target.appendChild(document.createTextNode(text.slice(position)));
+    }
+
+    function detailField(label, value, href) {
       var field = element("div", "comic-metadata-field");
       field.appendChild(element("dt", "", label));
-      field.appendChild(element("dd", "", value));
+      var detail = element("dd");
+      var link = href ? externalLink(href, value) : null;
+      if (link) {
+        detail.appendChild(link);
+      } else {
+        appendLinkifiedText(detail, value);
+      }
+      field.appendChild(detail);
       return field;
     }
 
@@ -950,14 +1026,19 @@
       var result = document.createDocumentFragment();
 
       if (source.body.children.length === 0) {
-        var plainText = element("p", "synopsis-plain", source.body.textContent);
+        var plainText = element("p", "synopsis-plain");
+        appendLinkifiedText(plainText, source.body.textContent);
         result.appendChild(plainText);
         return result;
       }
 
-      function copyNode(node, target) {
+      function copyNode(node, target, linkifyText) {
         if (node.nodeType === Node.TEXT_NODE) {
-          target.appendChild(document.createTextNode(node.textContent));
+          if (linkifyText) {
+            appendLinkifiedText(target, node.textContent);
+          } else {
+            target.appendChild(document.createTextNode(node.textContent));
+          }
           return;
         }
 
@@ -967,21 +1048,18 @@
 
         if (!allowedElements[node.tagName]) {
           Array.from(node.childNodes).forEach(function (child) {
-            copyNode(child, target);
+            copyNode(child, target, linkifyText);
           });
           return;
         }
 
         var clean = document.createElement(node.tagName.toLowerCase());
         if (node.tagName === "A") {
-          try {
-            var url = new URL(node.getAttribute("href"), window.location.href);
-            if (url.protocol === "http:" || url.protocol === "https:") {
-              clean.href = url.href;
-              clean.target = "_blank";
-              clean.rel = "noopener noreferrer";
-            }
-          } catch (error) {
+          var url = safeExternalUrl(node.getAttribute("href"));
+          if (url) {
+            clean.href = url;
+            clean.target = "_blank";
+            clean.rel = "noopener noreferrer";
           }
         } else if (node.tagName === "TD" || node.tagName === "TH") {
           ["colspan", "rowspan"].forEach(function (attribute) {
@@ -997,13 +1075,13 @@
         }
 
         Array.from(node.childNodes).forEach(function (child) {
-          copyNode(child, clean);
+          copyNode(child, clean, linkifyText && node.tagName !== "A");
         });
         target.appendChild(clean);
       }
 
       Array.from(source.body.childNodes).forEach(function (node) {
-        copyNode(node, result);
+        copyNode(node, result, true);
       });
       return result;
     }
@@ -1544,7 +1622,8 @@
           ["Locations", comic.locations],
           ["Tags", comic.tags],
           ["Rating", Number(comic.rating) > 0 ? comic.rating + " / 5" : ""],
-          ["Color", comic.color === true ? "Color" : comic.color === false ? "Black and white" : ""]
+          ["Color", comic.color === true ? "Color" : comic.color === false ? "Black and white" : ""],
+          ["Comic Vine", hasValue(comic.comic_vine_id) ? "View on Comic Vine" : "", hasValue(comic.comic_vine_id) ? comicVineBaseUrl + "/comic/4000-" + encodeURIComponent(comic.comic_vine_id) + "/" : ""]
         ].filter(function (entry) {
           return hasValue(entry[1]);
         });
@@ -1554,7 +1633,7 @@
           metadataSection.appendChild(element("h3", "", "Metadata"));
           var metadataList = element("dl", "comic-metadata-grid");
           metadata.forEach(function (entry) {
-            metadataList.appendChild(detailField(entry[0], entry[1]));
+            metadataList.appendChild(detailField(entry[0], entry[1], entry[2]));
           });
           metadataSection.appendChild(metadataList);
           copy.appendChild(metadataSection);
@@ -1563,7 +1642,9 @@
         if (hasValue(comic.notes)) {
           var notes = element("section", "comic-copy-section");
           notes.appendChild(element("h3", "", "Notes"));
-          notes.appendChild(element("p", "", comic.notes));
+          var notesContent = element("p");
+          appendLinkifiedText(notesContent, comic.notes);
+          notes.appendChild(notesContent);
           copy.appendChild(notes);
         }
 
