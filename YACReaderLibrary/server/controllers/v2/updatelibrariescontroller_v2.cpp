@@ -47,6 +47,22 @@ std::optional<LibrariesUpdateCoordinator::UpdateRequestResult> requestUpdate(Lib
     return result;
 }
 
+std::optional<LibrariesUpdateCoordinator::UpdateRequestResult> requestXmlRescan(LibrariesUpdateCoordinator *coordinator, int libraryId)
+{
+    LibrariesUpdateCoordinator::UpdateRequestResult result = LibrariesUpdateCoordinator::UpdateRequestResult::NotAllowed;
+    const auto request = [coordinator, libraryId, &result] {
+        result = coordinator->requestSingleLibraryXmlRescan(libraryId);
+    };
+
+    if (coordinator->thread() == QThread::currentThread()) {
+        request();
+    } else if (!QMetaObject::invokeMethod(coordinator, request, Qt::BlockingQueuedConnection)) {
+        return std::nullopt;
+    }
+
+    return result;
+}
+
 } // namespace
 
 UpdateLibrariesControllerV2::UpdateLibrariesControllerV2() { }
@@ -89,6 +105,30 @@ void UpdateLibrariesControllerV2::service(HttpRequest &request, HttpResponse &re
     if (method != "POST") {
         methodNotAllowed(response, "POST");
         return;
+    }
+
+    QRegExp xmlRescan("/v2/library/([0-9]+)/rescan-xml/?");
+    if (xmlRescan.exactMatch(QString::fromUtf8(path))) {
+        const auto result = requestXmlRescan(coordinator, xmlRescan.cap(1).toInt());
+        if (!result.has_value()) {
+            writeJson(response, 503, "Service Unavailable", { { "error", "updates_unavailable" } });
+            return;
+        }
+
+        switch (result.value()) {
+        case LibrariesUpdateCoordinator::UpdateRequestResult::Started:
+            writeJson(response, 202, "Accepted", { { "status", "started" }, { "running", true } });
+            return;
+        case LibrariesUpdateCoordinator::UpdateRequestResult::AlreadyRunning:
+            writeJson(response, 409, "Conflict", { { "status", "already_running" }, { "running", true } });
+            return;
+        case LibrariesUpdateCoordinator::UpdateRequestResult::NotAllowed:
+            writeJson(response, 409, "Conflict", { { "status", "update_not_allowed" }, { "running", false } });
+            return;
+        case LibrariesUpdateCoordinator::UpdateRequestResult::LibraryNotFound:
+            writeJson(response, 404, "Not Found", { { "error", "library_not_found" } });
+            return;
+        }
     }
 
     QRegExp singleLibrary("/v2/library/([0-9]+)/update/?");

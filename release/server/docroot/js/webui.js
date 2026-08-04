@@ -1761,7 +1761,7 @@
 
     var allButton = container.querySelector("[data-update-all]");
     var cards = Array.prototype.slice.call(container.querySelectorAll("[data-library-card]"));
-    var triggers = Array.prototype.slice.call(container.querySelectorAll("[data-update-all], [data-update-library]"));
+    var triggers = Array.prototype.slice.call(container.querySelectorAll("[data-update-all], [data-update-library], [data-rescan-xml-library]"));
     if (!triggers.length) {
       return;
     }
@@ -1805,10 +1805,9 @@
       window.setTimeout(poll, delay);
     }
 
-    // The server tracks a single global "running" flag and updates libraries
-    // sequentially, so it can't say which library is in progress. We show the
-    // indicator for whatever started the run (or fall back to "all" if a run was
-    // already going) and disable every trigger until it finishes.
+    // The server tracks a single global maintenance operation. We show the
+    // indicator for whatever started it (or fall back to "all" if it was already
+    // running) and disable every trigger until it finishes.
     function applyRunning(running) {
       if (running) {
         setTriggersDisabled(true);
@@ -1875,6 +1874,10 @@
         if (libraryId) {
           var card = button.closest("[data-library-card]");
           trigger(card, "/v2/library/" + encodeURIComponent(libraryId) + "/update");
+        } else if (button.hasAttribute("data-rescan-xml-library")) {
+          var xmlLibraryId = button.getAttribute("data-rescan-xml-library");
+          var xmlCard = button.closest("[data-library-card]");
+          trigger(xmlCard, "/v2/library/" + encodeURIComponent(xmlLibraryId) + "/rescan-xml");
         } else {
           trigger("all", "/v2/libraries/update");
         }

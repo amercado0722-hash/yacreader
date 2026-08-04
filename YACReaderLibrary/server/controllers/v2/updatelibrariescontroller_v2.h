@@ -16,6 +16,7 @@
   Routes (dispatched by RequestMapper):
     - POST /v2/libraries/update          -> update all libraries
     - POST /v2/library/<id>/update       -> update a single library
+    - POST /v2/library/<id>/rescan-xml   -> rescan XML metadata for a single library
     - GET  /v2/libraries/update/status   -> { "running": bool }
     - POST /v2/libraries/update/cancel   -> cancel a running update
 */

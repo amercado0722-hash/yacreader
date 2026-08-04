@@ -2,6 +2,7 @@
 #include "libraries_update_coordinator.h"
 
 #include "library_creator.h"
+#include "xml_info_library_scanner.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
@@ -119,6 +120,24 @@ LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::requ
     return startUpdate({ path });
 }
 
+LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::requestSingleLibraryXmlRescan(int id)
+{
+    if (isRunning()) {
+        return UpdateRequestResult::AlreadyRunning;
+    }
+
+    const QString path = libraries.getPath(id);
+    if (path.isEmpty()) {
+        return UpdateRequestResult::LibraryNotFound;
+    }
+
+    if (!canStartUpdateProvider()) {
+        return UpdateRequestResult::NotAllowed;
+    }
+
+    return startXmlRescan(path);
+}
+
 bool LibrariesUpdateCoordinator::isRunning() const
 {
     QMutexLocker locker(&futureMutex);
@@ -155,6 +174,26 @@ LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::star
     return UpdateRequestResult::Started;
 }
 
+LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::startXmlRescan(const QString &path)
+{
+    QMutexLocker locker(&futureMutex);
+
+    if (updateFuture.valid() && updateFuture.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
+        return UpdateRequestResult::AlreadyRunning;
+    }
+
+    canceled = false;
+    updateFuture = std::async(std::launch::async, [this, path] {
+        emit updateStarted();
+        if (!canceled) {
+            rescanLibraryXml(path);
+        }
+        emit updateEnded();
+    });
+
+    return UpdateRequestResult::Started;
+}
+
 void LibrariesUpdateCoordinator::updateLibrary(const QString &path)
 {
     QDir pathDir(path);
@@ -177,12 +216,35 @@ void LibrariesUpdateCoordinator::updateLibrary(const QString &path)
     eventLoop.exec();
 }
 
+void LibrariesUpdateCoordinator::rescanLibraryXml(const QString &path)
+{
+    QDir pathDir(path);
+    if (!pathDir.exists()) {
+        return;
+    }
+
+    QEventLoop eventLoop;
+    auto scanner = new XMLInfoLibraryScanner();
+    std::shared_ptr<XMLInfoLibraryScanner> sharedPtr(scanner);
+    currentXmlInfoLibraryScanner = sharedPtr;
+
+    const QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
+    connect(scanner, &XMLInfoLibraryScanner::finished, &eventLoop, &QEventLoop::quit);
+
+    scanner->scanLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
+    eventLoop.exec();
+}
+
 void LibrariesUpdateCoordinator::stop()
 {
     canceled = true;
 
     if (auto libraryCreator = currentLibraryCreator.lock()) {
         libraryCreator->stop();
+    }
+
+    if (auto scanner = currentXmlInfoLibraryScanner.lock()) {
+        scanner->stop();
     }
 }
 
@@ -192,5 +254,9 @@ void LibrariesUpdateCoordinator::cancel()
 
     if (auto libraryCreator = currentLibraryCreator.lock()) {
         libraryCreator->cancel();
+    }
+
+    if (auto scanner = currentXmlInfoLibraryScanner.lock()) {
+        scanner->stop();
     }
 }

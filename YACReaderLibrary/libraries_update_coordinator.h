@@ -6,6 +6,9 @@
 
 class YACReaderLibraries;
 class LibraryCreator;
+namespace YACReader {
+class XMLInfoLibraryScanner;
+}
 
 class LibrariesUpdateCoordinator : public QObject
 {
@@ -24,6 +27,7 @@ public:
     bool isRunning() const;
     UpdateRequestResult requestLibrariesUpdate();
     UpdateRequestResult requestSingleLibraryUpdate(int id);
+    UpdateRequestResult requestSingleLibraryXmlRescan(int id);
 
 public slots:
     void updateLibraries();
@@ -40,7 +44,9 @@ private slots:
 
 private:
     UpdateRequestResult startUpdate(const QStringList &paths);
+    UpdateRequestResult startXmlRescan(const QString &path);
     void updateLibrary(const QString &path);
+    void rescanLibraryXml(const QString &path);
 
     QSettings *settings;
     YACReaderLibraries &libraries;
@@ -50,6 +56,7 @@ private:
     mutable QMutex futureMutex;
     bool canceled;
     std::weak_ptr<LibraryCreator> currentLibraryCreator;
+    std::weak_ptr<YACReader::XMLInfoLibraryScanner> currentXmlInfoLibraryScanner;
 
     std::function<bool()> canStartUpdateProvider;
 };

@@ -117,6 +117,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     QRegExp librariesUpdateStatus("/v2/libraries/update/status/?"); // poll whether an update is running
     QRegExp librariesUpdateCancel("/v2/libraries/update/cancel/?"); // cancel a running update
     QRegExp libraryUpdate("/v2/library/[0-9]+/update/?"); // trigger an update of a single library
+    QRegExp libraryXmlRescan("/v2/library/[0-9]+/rescan-xml/?"); // rescan ComicInfo.xml metadata for a single library
 
     QRegExp library("/v2/library/([0-9]+)/.+"); // permite verificar que la biblioteca solicitada existe
 
@@ -160,7 +161,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                     if (!updateController.error) {
                         emit comicUpdated(updateController.updatedLibraryId, updateController.updatedComicId);
                     }
-                } else if (libraryUpdate.exactMatch(path)) {
+                } else if (libraryUpdate.exactMatch(path) || libraryXmlRescan.exactMatch(path)) {
                     UpdateLibrariesControllerV2().service(request, response);
                 } else if (folderContent.exactMatch(path)) {
                     FolderContentControllerV2().service(request, response);
