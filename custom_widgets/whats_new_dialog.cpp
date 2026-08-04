@@ -36,14 +36,15 @@ QString renderInlineMarkdown(QString text)
 YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     : RoundedCornersDialog(parent)
 {
-    auto scrollArea = new QScrollArea(this);
+    auto surface = dialogSurface();
+    auto scrollArea = new QScrollArea(surface);
     scrollArea->setStyleSheet("background-color:transparent;"
                               "border:none;");
     scrollArea->horizontalScrollBar()->setStyleSheet("QScrollBar {height:0px;}");
     scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar {width:0px;}");
     scrollArea->setContentsMargins(0, 0, 0, 0);
 
-    auto mainLayout = new QVBoxLayout(this);
+    auto mainLayout = new QVBoxLayout(surface);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     auto contentLayout = new QGridLayout();
 
@@ -87,9 +88,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     scrollArea->setWidget(content);
     scrollArea->setWidgetResizable(true);
 
-    this->setLayout(mainLayout);
-
-    closeButton = new QPushButton(this);
+    closeButton = new QPushButton(surface);
     closeButton->setFlat(true);
     closeButton->setStyleSheet("background-color:transparent;");
     closeButton->setIconSize(QSize(44, 44));
@@ -97,7 +96,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     closeButton->move(656, 20);
 
     scrollArea->setFixedSize(720, 640);
-    setFixedSize(720, 640);
+    setContentFixedSize(QSize(720, 640));
     setModal(true);
 
     connect(closeButton, &QPushButton::clicked, this, &QDialog::close);

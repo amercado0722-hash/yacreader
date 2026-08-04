@@ -4,6 +4,8 @@
 #include <QColor>
 #include <QDialog>
 
+class QWidget;
+
 namespace YACReader {
 class RoundedCornersDialog : public QDialog
 {
@@ -12,11 +14,12 @@ public:
     explicit RoundedCornersDialog(QWidget *parent = nullptr);
 
 protected:
-    void paintEvent(QPaintEvent *) override;
+    QWidget *dialogSurface() const;
+    void setContentFixedSize(const QSize &size);
     void setBackgroundColor(const QColor &color);
 
 private:
-    QColor m_backgroundColor { 255, 255, 255 };
+    QWidget *m_dialogSurface;
 };
 }
 
