@@ -894,6 +894,36 @@
       return names[Number(fileType)] || "";
     }
 
+    function formatFileSize(value) {
+      var bytes = Number(value);
+      if (!Number.isFinite(bytes) || bytes <= 0) {
+        return "";
+      }
+
+      var units = ["B", "KB", "MB", "GB", "TB"];
+      var unit = 0;
+      while (bytes >= 1024 && unit < units.length - 1) {
+        bytes /= 1024;
+        unit += 1;
+      }
+
+      var precision = unit === 0 || bytes >= 100 ? 0 : 1;
+      return bytes.toFixed(precision) + " " + units[unit];
+    }
+
+    function numberedMetadata(name, number, count) {
+      if (!hasValue(name)) {
+        return "";
+      }
+      if (hasValue(number) && hasValue(count)) {
+        return "(" + number + "/" + count + ") " + name;
+      }
+      if (hasValue(number)) {
+        return "(" + number + ") " + name;
+      }
+      return name;
+    }
+
     var comicVineBaseUrl = "http://www.comicvine.com";
 
     function safeExternalUrl(value) {
@@ -1587,6 +1617,10 @@
         if (fileType) {
           facts.appendChild(element("span", "comic-fact", fileType));
         }
+        var fileSize = formatFileSize(comic.file_size);
+        if (fileSize) {
+          facts.appendChild(element("span", "comic-fact", fileSize));
+        }
         copy.appendChild(facts);
 
         if (hasValue(comic.synopsis)) {
@@ -1600,13 +1634,14 @@
 
         var metadata = [
           ["Series", comic.series],
-          ["Issue", comic.universal_number],
+          ["Issue", hasValue(comic.universal_number) && hasValue(comic.count) ? comic.universal_number + " / " + comic.count : comic.universal_number],
           ["Volume", comic.volume],
           ["Publisher", comic.publisher],
           ["Imprint", comic.imprint],
           ["Date", comic.date],
-          ["Story arc", comic.story_arc],
-          ["Arc number", comic.arc_number],
+          ["Story arc", numberedMetadata(comic.story_arc, comic.arc_number, comic.arc_count)],
+          ["Alternate series", numberedMetadata(comic.alternate_series, comic.alternate_number, comic.alternate_count)],
+          ["Series group", comic.series_group],
           ["Genre", comic.genre],
           ["Writer", comic.writer],
           ["Penciller", comic.penciller],
@@ -1618,6 +1653,7 @@
           ["Age rating", comic.age_rating],
           ["Language", comic.language_iso],
           ["Characters", comic.characters],
+          ["Main character or team", comic.main_character_or_team],
           ["Teams", comic.teams],
           ["Locations", comic.locations],
           ["Tags", comic.tags],
@@ -1637,6 +1673,15 @@
           });
           metadataSection.appendChild(metadataList);
           copy.appendChild(metadataSection);
+        }
+
+        if (hasValue(comic.review)) {
+          var review = element("section", "comic-copy-section");
+          review.appendChild(element("h3", "", "Review"));
+          var reviewContent = element("p");
+          appendLinkifiedText(reviewContent, comic.review);
+          review.appendChild(reviewContent);
+          copy.appendChild(review);
         }
 
         if (hasValue(comic.notes)) {

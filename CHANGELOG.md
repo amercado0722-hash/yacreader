@@ -32,6 +32,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### WebUI
 * Add a very basic web reader.
 * Add rescan xml functionality to the webui.
+* Add more metadata fields to the detail view.
 
 ### All apps
 * Unify comics sorting to use the string based universal number everywhere.
