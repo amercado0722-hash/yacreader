@@ -7,6 +7,7 @@
 #include "theme_manager.h"
 #include "yacreader_3d_flow_config_widget.h"
 #include "yacreader_global_gui.h"
+#include "yacreader_settings_widget.h"
 
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -14,7 +15,6 @@
 #include <QLayout>
 #include <QMessageBox>
 #include <QSettings>
-#include <QTabWidget>
 #include <QVBoxLayout>
 
 FlowType flowType = Strip;
@@ -29,12 +29,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     auto appearanceW = createAppearanceTab();
 
-    auto tabWidget = new QTabWidget();
-    tabWidget->addTab(generalW, tr("General"));
-    tabWidget->addTab(librariesW, tr("Libraries"));
-    tabWidget->addTab(comicFlowW, tr("Comic Flow"));
-    tabWidget->addTab(gridViewW, tr("Grid view"));
-    tabWidget->addTab(appearanceW, tr("Appearance"));
+    auto settingsWidget = new YACReaderSettingsWidget();
+    settingsWidget->addPage(generalW, tr("General"));
+    settingsWidget->addPage(librariesW, tr("Libraries"));
+    settingsWidget->addPage(comicFlowW, tr("Comic Flow"));
+    settingsWidget->addPage(gridViewW, tr("Grid view"));
+    settingsWidget->addPage(appearanceW, tr("Appearance"));
 
     auto buttons = new QHBoxLayout();
     buttons->addStretch();
@@ -43,7 +43,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     buttons->addWidget(cancel);
 
     auto layout = new QVBoxLayout(this);
-    layout->addWidget(tabWidget);
+    layout->addWidget(settingsWidget);
     layout->addLayout(buttons);
     setLayout(layout);
     setModal(true);

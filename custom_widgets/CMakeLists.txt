@@ -11,6 +11,8 @@ set(WIDGETS_COMMON_SOURCES
     yacreader_field_plain_text_edit.cpp
     yacreader_options_dialog.h
     yacreader_options_dialog.cpp
+    yacreader_settings_widget.h
+    yacreader_settings_widget.cpp
     yacreader_spin_slider_widget.h
     yacreader_spin_slider_widget.cpp
     yacreader_tool_bar_stretch.h

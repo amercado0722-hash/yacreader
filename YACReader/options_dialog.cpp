@@ -6,6 +6,7 @@
 #include "theme_factory.h"
 #include "theme_manager.h"
 #include "yacreader_3d_flow_config_widget.h"
+#include "yacreader_settings_widget.h"
 #include "yacreader_spin_slider_widget.h"
 
 #include <QCheckBox>
@@ -20,13 +21,12 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSlider>
-#include <QTabWidget>
 #include <QVBoxLayout>
 
 OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)
 {
-    auto tabWidget = new QTabWidget();
+    auto settingsWidget = new YACReaderSettingsWidget();
 
     auto layout = new QVBoxLayout(this);
 
@@ -264,12 +264,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     // APPEARANCE END ------------------------------------
 
-    tabWidget->addTab(pageGeneral, tr("General"));
-    tabWidget->addTab(pageFlow, tr("Page Flow"));
-    tabWidget->addTab(pageImage, tr("Image adjustment"));
-    tabWidget->addTab(pageAppearance, tr("Appearance"));
+    settingsWidget->addPage(pageGeneral, tr("General"));
+    settingsWidget->addPage(pageFlow, tr("Page Flow"));
+    settingsWidget->addPage(pageImage, tr("Image adjustment"));
+    settingsWidget->addPage(pageAppearance, tr("Appearance"));
 
-    layout->addWidget(tabWidget);
+    layout->addWidget(settingsWidget);
 
     auto buttons = new QHBoxLayout();
     buttons->addStretch();
