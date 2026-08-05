@@ -92,24 +92,24 @@
         <translation>无法加载当前主题 JSON。</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>导入主题</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON 文件 (*.json);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>无法从以下位置导入主题：
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -120,7 +120,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>导入失败</translation>
     </message>
@@ -276,17 +276,17 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>Gamma</source>
         <translation>Gamma值</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="197"/>
+        <location filename="options_dialog.cpp" line="195"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="208"/>
+        <location filename="options_dialog.cpp" line="206"/>
         <source>Enlarge images to fit width/height</source>
         <translation>放大图片以适应宽度/高度</translation>
     </message>
@@ -306,7 +306,7 @@
         <translation>我的漫画路径</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="269"/>
+        <location filename="options_dialog.cpp" line="268"/>
         <source>Image adjustment</source>
         <translation>图像调整</translation>
     </message>
@@ -321,7 +321,7 @@
         <translation>选择</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="219"/>
         <source>Show covers as single page</source>
         <translation>显示封面为单页</translation>
     </message>
@@ -331,12 +331,12 @@
         <translation>滚动时不翻页</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="204"/>
         <source>Fit options</source>
         <translation>适应项</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="202"/>
+        <location filename="options_dialog.cpp" line="200"/>
         <source>Image options</source>
         <translation>图片选项</translation>
     </message>
@@ -391,12 +391,12 @@
         <translation>单击屏幕的左半部分或右半部分即可翻页。</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Contrast</source>
         <translation>对比度</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="270"/>
+        <location filename="options_dialog.cpp" line="269"/>
         <source>Appearance</source>
         <translation>外观</translation>
     </message>
@@ -431,7 +431,7 @@
         <translation>漫画目录</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="153"/>
+        <location filename="options_dialog.cpp" line="150"/>
         <source>Quick Navigation Mode</source>
         <translation>快速导航模式</translation>
     </message>
@@ -441,7 +441,7 @@
         <translation>背景颜色</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="217"/>
         <source>Double Page options</source>
         <translation>双页选项</translation>
     </message>
@@ -451,47 +451,47 @@
         <translation>滚动效果</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="154"/>
+        <location filename="options_dialog.cpp" line="151"/>
         <source>Disable mouse over activation</source>
         <translation>禁用鼠标激活</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="232"/>
+        <location filename="options_dialog.cpp" line="230"/>
         <source>Scaling</source>
         <translation>缩放</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="234"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Scaling method</source>
         <translation>缩放方法</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="236"/>
+        <location filename="options_dialog.cpp" line="234"/>
         <source>Nearest (fast, low quality)</source>
         <translation>最近（快速，低质量）</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="237"/>
+        <location filename="options_dialog.cpp" line="235"/>
         <source>Bilinear</source>
         <translation>双线性</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="238"/>
+        <location filename="options_dialog.cpp" line="236"/>
         <source>Lanczos (better quality)</source>
         <translation>Lanczos（质量更好）</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="268"/>
+        <location filename="options_dialog.cpp" line="267"/>
         <source>Page Flow</source>
         <translation>页面流</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="267"/>
+        <location filename="options_dialog.cpp" line="266"/>
         <source>General</source>
         <translation>常规</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="191"/>
+        <location filename="options_dialog.cpp" line="189"/>
         <source>Brightness</source>
         <translation>亮度</translation>
     </message>
@@ -734,48 +734,48 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="1662"/>
+        <location filename="viewer.cpp" line="1694"/>
         <source>Page not available!</source>
         <translation>页面不可用!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="63"/>
-        <location filename="viewer.cpp" line="1634"/>
+        <location filename="viewer.cpp" line="95"/>
+        <location filename="viewer.cpp" line="1666"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>按下 &apos;O&apos; 以打开漫画.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="294"/>
+        <location filename="viewer.cpp" line="326"/>
         <source>Error opening comic</source>
         <translation>打开漫画时发生错误</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1885"/>
+        <location filename="viewer.cpp" line="1917"/>
         <source>Cover!</source>
         <translation>封面!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="300"/>
+        <location filename="viewer.cpp" line="332"/>
         <source>CRC Error</source>
         <translation>CRC 校验失败</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Comic not found</source>
         <translation>未找到漫画</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Not found</source>
         <translation>未找到</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1899"/>
+        <location filename="viewer.cpp" line="1931"/>
         <source>Last page!</source>
         <translation>尾页!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1651"/>
+        <location filename="viewer.cpp" line="1683"/>
         <source>Loading...please wait!</source>
         <translation>载入中... 请稍候!</translation>
     </message>
@@ -1443,12 +1443,12 @@
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation>暂无发行说明。</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation>先前版本</translation>
     </message>
@@ -1486,22 +1486,32 @@
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>快捷键</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>键盘快捷键</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>自定义应用程序使用的键盘快捷键。</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>编辑快捷键</translation>
     </message>

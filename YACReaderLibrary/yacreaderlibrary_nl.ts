@@ -166,24 +166,24 @@
         <translation>De huidige thema-JSON kan niet worden geladen.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>Thema importeren</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON-bestanden (*.json);;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>Kan thema niet importeren uit:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -194,7 +194,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>Importeren is mislukt</translation>
     </message>
@@ -818,7 +818,7 @@
         <translation>Deze bibliotheek is gemaakt met een vorige versie van YACReaderLibrary. Het moet worden bijgewerkt. Nu bijwerken?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2926"/>
+        <location filename="library_window.cpp" line="2921"/>
         <source>Error opening the library</source>
         <translation>Fout bij openen Bibliotheek</translation>
     </message>
@@ -857,7 +857,7 @@
         <translation>Wilt u verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2921"/>
+        <location filename="library_window.cpp" line="2916"/>
         <source>Error updating the library</source>
         <translation>Fout bij bijwerken Bibliotheek</translation>
     </message>
@@ -882,7 +882,7 @@
         <translation>YACReader Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2916"/>
+        <location filename="library_window.cpp" line="2911"/>
         <source>Error creating the library</source>
         <translation>Fout bij aanmaken Bibliotheek</translation>
     </message>
@@ -892,12 +892,12 @@
         <translation>Bijwerken is nodig</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3114"/>
+        <location filename="library_window.cpp" line="3109"/>
         <source>Library name already exists</source>
         <translation>Bibliotheek naam bestaat al</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3114"/>
+        <location filename="library_window.cpp" line="3109"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Er is al een bibliotheek met de naam &apos; %1 &apos;.</translation>
     </message>
@@ -907,12 +907,12 @@
         <translation>Nieuwe versie ophalen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2975"/>
+        <location filename="library_window.cpp" line="2970"/>
         <source>Delete comics</source>
         <translation>Strips verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2975"/>
+        <location filename="library_window.cpp" line="2970"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Alle geselecteerde strips worden verwijderd van uw schijf. Weet u het zeker?</translation>
     </message>
@@ -1106,7 +1106,7 @@
         <location filename="library_window.cpp" line="727"/>
         <location filename="library_window.cpp" line="1617"/>
         <location filename="library_window.cpp" line="1731"/>
-        <location filename="library_window.cpp" line="3096"/>
+        <location filename="library_window.cpp" line="3091"/>
         <source>Set type</source>
         <translation>Soort instellen</translation>
     </message>
@@ -1412,32 +1412,32 @@ Je kunt een back-up herstellen via het menu Bibliotheek of de bibliotheek opnieu
         <translation>Nummers toewijzen beginnend met:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2769"/>
+        <location filename="library_window.cpp" line="2764"/>
         <source>Invalid image</source>
         <translation>Ongeldige afbeelding</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2769"/>
+        <location filename="library_window.cpp" line="2764"/>
         <source>The selected file is not a valid image.</source>
         <translation>Het geselecteerde bestand is geen geldige afbeelding.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2775"/>
+        <location filename="library_window.cpp" line="2770"/>
         <source>Error saving cover</source>
         <translation>Fout bij opslaan van dekking</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2775"/>
+        <location filename="library_window.cpp" line="2770"/>
         <source>There was an error saving the cover image.</source>
         <translation>Er is een fout opgetreden bij het opslaan van de omslagafbeelding.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3012"/>
+        <location filename="library_window.cpp" line="3007"/>
         <source>Remove comics</source>
         <translation>Verwijder strips</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3012"/>
+        <location filename="library_window.cpp" line="3007"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Strips worden alleen verwijderd van het huidige label/de huidige lijst. Weet je het zeker?</translation>
     </message>
@@ -1977,78 +1977,78 @@ Ontbrekende bestanden: %3</translation>
         <translation>Verschijning</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="50"/>
+        <location filename="options_dialog.cpp" line="51"/>
         <source>Options</source>
         <translation>Opties</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="175"/>
+        <location filename="options_dialog.cpp" line="176"/>
         <source>Language</source>
         <translation>Taal</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="177"/>
+        <location filename="options_dialog.cpp" line="178"/>
         <source>Application language</source>
         <translation>Applicatietaal</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="179"/>
+        <location filename="options_dialog.cpp" line="180"/>
         <source>System default</source>
         <translation>Standaard van het systeem</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="189"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Tray icon settings (experimental)</source>
         <translation>Instellingen voor ladepictogram (experimenteel)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="193"/>
         <source>Close to tray</source>
         <translation>Dicht bij lade</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="194"/>
         <source>Start into the system tray</source>
         <translation>Begin in het systeemvak</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="211"/>
+        <location filename="options_dialog.cpp" line="212"/>
         <source>Edit Comic Vine API key</source>
         <translation>Bewerk de Comic Vine API-sleutel</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="214"/>
+        <location filename="options_dialog.cpp" line="215"/>
         <source>Comic Vine API key</source>
         <translation>Comic Vine API-sleutel</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="220"/>
         <source>ComicInfo.xml legacy support</source>
         <translation>ComicInfo.xml verouderde ondersteuning</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="222"/>
         <source>Import metadata from ComicInfo.xml when adding new comics</source>
         <oldsource>Import metada from ComicInfo.xml when adding new comics</oldsource>
         <translation>Importeer metagegevens uit ComicInfo.xml wanneer u nieuwe strips toevoegt</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="231"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
         <translation>Overweeg &apos;recente&apos; items die sinds X dagen geleden zijn toegevoegd of bijgewerkt</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="243"/>
+        <location filename="options_dialog.cpp" line="244"/>
         <source>Third party reader</source>
         <translation>Lezer van derden</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="245"/>
+        <location filename="options_dialog.cpp" line="246"/>
         <source>Write {comic_file_path} where the path should go in the command</source>
         <translation>Schrijf {comic_file_path} waar het pad naartoe moet in de opdracht</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="246"/>
+        <location filename="options_dialog.cpp" line="247"/>
         <source>Clear</source>
         <translation>Duidelijk</translation>
     </message>
@@ -2208,7 +2208,7 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         <translation>Algemeen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="41"/>
+        <location filename="options_dialog.cpp" line="42"/>
         <source>Restart is needed</source>
         <translation>Herstart is nodig</translation>
     </message>
@@ -3721,12 +3721,12 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation>Releaseopmerkingen zijn niet beschikbaar.</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation>Vorige versies</translation>
     </message>
@@ -3764,22 +3764,32 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>Bewaar</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>Annuleren</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>Sneltoetsen</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>Pas de sneltoetsen aan die door de toepassing worden gebruikt.</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>Snelkoppelingen bewerken</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>Snelkoppelingen</translation>
     </message>

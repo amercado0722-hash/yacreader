@@ -166,24 +166,24 @@
         <translation>Impossibile caricare il tema corrente JSON.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>Importa tema</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>File JSON (*.json);;Tutti i file (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>Impossibile importare il tema da:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -194,7 +194,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>Importazione non riuscita</translation>
     </message>
@@ -833,7 +833,7 @@
         <translation>La cartella seleziona e tutto il suo contenuto verranno cancellati dal tuo disco. Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2926"/>
+        <location filename="library_window.cpp" line="2921"/>
         <source>Error opening the library</source>
         <translation>Errore nell&apos;apertura della libreria</translation>
     </message>
@@ -878,7 +878,7 @@
         <translation>Libreria</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3012"/>
+        <location filename="library_window.cpp" line="3007"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>I fumetti verranno cancellati dall&apos;etichetta/lista corrente. Sei sicuro?</translation>
     </message>
@@ -925,7 +925,7 @@
         <translation>Errore nel percorso</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2921"/>
+        <location filename="library_window.cpp" line="2916"/>
         <source>Error updating the library</source>
         <translation>Errore aggiornando la libreria</translation>
     </message>
@@ -1009,7 +1009,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Libreria YACReader</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2916"/>
+        <location filename="library_window.cpp" line="2911"/>
         <source>Error creating the library</source>
         <translation>Errore creando la libreria</translation>
     </message>
@@ -1029,12 +1029,12 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Devi aggiornarmi</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3114"/>
+        <location filename="library_window.cpp" line="3109"/>
         <source>Library name already exists</source>
         <translation>Esiste già una libreria con lo stesso nome</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3114"/>
+        <location filename="library_window.cpp" line="3109"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Esiste già una libreria con il nome &apos;%1&apos;.</translation>
     </message>
@@ -1059,27 +1059,27 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Rimuovi ed elimina metadati e backup</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2769"/>
+        <location filename="library_window.cpp" line="2764"/>
         <source>Invalid image</source>
         <translation>Immagine non valida</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2769"/>
+        <location filename="library_window.cpp" line="2764"/>
         <source>The selected file is not a valid image.</source>
         <translation>Il file selezionato non è un&apos;immagine valida.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2775"/>
+        <location filename="library_window.cpp" line="2770"/>
         <source>Error saving cover</source>
         <translation>Errore durante il salvataggio della copertina</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2775"/>
+        <location filename="library_window.cpp" line="2770"/>
         <source>There was an error saving the cover image.</source>
         <translation>Si è verificato un errore durante il salvataggio dell&apos;immagine di copertina.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2975"/>
+        <location filename="library_window.cpp" line="2970"/>
         <source>Delete comics</source>
         <translation>Cancella i fumetti</translation>
     </message>
@@ -1099,12 +1099,12 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Nessuna cartella selezionata</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2975"/>
+        <location filename="library_window.cpp" line="2970"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Tutti i fumetti selezionati saranno cancellati dal tuo disco. Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3012"/>
+        <location filename="library_window.cpp" line="3007"/>
         <source>Remove comics</source>
         <translation>Rimuovi i fumetti</translation>
     </message>
@@ -1194,7 +1194,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <location filename="library_window.cpp" line="727"/>
         <location filename="library_window.cpp" line="1617"/>
         <location filename="library_window.cpp" line="1731"/>
-        <location filename="library_window.cpp" line="3096"/>
+        <location filename="library_window.cpp" line="3091"/>
         <source>Set type</source>
         <translation>Imposta il tipo</translation>
     </message>
@@ -1991,17 +1991,17 @@ File mancanti: %3</translation>
         <translation>Abilita l&apos;immagine di sfondo</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="50"/>
+        <location filename="options_dialog.cpp" line="51"/>
         <source>Options</source>
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="214"/>
+        <location filename="options_dialog.cpp" line="215"/>
         <source>Comic Vine API key</source>
         <translation>API di ComicVine</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="211"/>
+        <location filename="options_dialog.cpp" line="212"/>
         <source>Edit Comic Vine API key</source>
         <translation>Edita l&apos;API di ComicVine</translation>
     </message>
@@ -2042,63 +2042,63 @@ File mancanti: %3</translation>
         <translation>Aspetto</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="175"/>
+        <location filename="options_dialog.cpp" line="176"/>
         <source>Language</source>
         <translation>Lingua</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="177"/>
+        <location filename="options_dialog.cpp" line="178"/>
         <source>Application language</source>
         <translation>Lingua dell&apos;applicazione</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="179"/>
+        <location filename="options_dialog.cpp" line="180"/>
         <source>System default</source>
         <translation>Predefinita del sistema</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="189"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Tray icon settings (experimental)</source>
         <translation>Impostazioni dell&apos;icona nella barra delle applicazioni (sperimentale)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="193"/>
         <source>Close to tray</source>
         <translation>Vicino al vassoio</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="194"/>
         <source>Start into the system tray</source>
         <translation>Inizia nella barra delle applicazioni</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="220"/>
         <source>ComicInfo.xml legacy support</source>
         <translation>Supporto legacy ComicInfo.xml</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="222"/>
         <source>Import metadata from ComicInfo.xml when adding new comics</source>
         <oldsource>Import metada from ComicInfo.xml when adding new comics</oldsource>
         <translation>Importa metadati da ComicInfo.xml quando aggiungi nuovi fumetti</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="231"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
         <translation>Considera gli elementi &quot;recenti&quot; aggiunti o aggiornati da X giorni fa</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="243"/>
+        <location filename="options_dialog.cpp" line="244"/>
         <source>Third party reader</source>
         <translation>Lettore di terze parti</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="245"/>
+        <location filename="options_dialog.cpp" line="246"/>
         <source>Write {comic_file_path} where the path should go in the command</source>
         <translation>Scrivi {comic_file_path} dove dovrebbe andare il percorso nel comando</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="246"/>
+        <location filename="options_dialog.cpp" line="247"/>
         <source>Clear</source>
         <translation>Cancella</translation>
     </message>
@@ -2207,7 +2207,7 @@ Per interrompere un aggiornamento automatico, tocca l&apos;indicatore di caricam
         <translation>Continua a leggere</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="41"/>
+        <location filename="options_dialog.cpp" line="42"/>
         <source>Restart is needed</source>
         <translation>Riavvio Necessario</translation>
     </message>
@@ -3720,12 +3720,12 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation>Le note di rilascio non sono disponibili.</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation>Versioni precedenti</translation>
     </message>
@@ -3763,22 +3763,32 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>Cancella</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>Scorciatoie</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>Scorciatoie da tastiera</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>Personalizza le scorciatoie da tastiera utilizzate dall'applicazione.</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>Modifica scorciatoia</translation>
     </message>

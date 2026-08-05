@@ -167,24 +167,24 @@
         <translation>無法載入目前主題 JSON。</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>導入主題</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON 檔案 (*.json);;所有檔案 (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>無法從以下位置匯入主題：
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -195,7 +195,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>導入失敗</translation>
     </message>
@@ -1058,7 +1058,7 @@
         <location filename="library_window.cpp" line="727"/>
         <location filename="library_window.cpp" line="1617"/>
         <location filename="library_window.cpp" line="1731"/>
-        <location filename="library_window.cpp" line="3096"/>
+        <location filename="library_window.cpp" line="3091"/>
         <source>Set type</source>
         <translation>套裝類型</translation>
     </message>
@@ -1379,67 +1379,67 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>嘗試刪除所選漫畫時出現問題。 請檢查所選檔或包含檔夾中的寫入許可權。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2769"/>
+        <location filename="library_window.cpp" line="2764"/>
         <source>Invalid image</source>
         <translation>圖片無效</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2769"/>
+        <location filename="library_window.cpp" line="2764"/>
         <source>The selected file is not a valid image.</source>
         <translation>所選檔案不是有效影像。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2775"/>
+        <location filename="library_window.cpp" line="2770"/>
         <source>Error saving cover</source>
         <translation>儲存封面時發生錯誤</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2775"/>
+        <location filename="library_window.cpp" line="2770"/>
         <source>There was an error saving the cover image.</source>
         <translation>儲存封面圖片時發生錯誤。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2916"/>
+        <location filename="library_window.cpp" line="2911"/>
         <source>Error creating the library</source>
         <translation>創建庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2921"/>
+        <location filename="library_window.cpp" line="2916"/>
         <source>Error updating the library</source>
         <translation>更新庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2926"/>
+        <location filename="library_window.cpp" line="2921"/>
         <source>Error opening the library</source>
         <translation>打開庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2975"/>
+        <location filename="library_window.cpp" line="2970"/>
         <source>Delete comics</source>
         <translation>刪除漫畫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2975"/>
+        <location filename="library_window.cpp" line="2970"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>所有選定的漫畫都將從您的磁片中刪除。你確定嗎?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3012"/>
+        <location filename="library_window.cpp" line="3007"/>
         <source>Remove comics</source>
         <translation>移除漫畫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3012"/>
+        <location filename="library_window.cpp" line="3007"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>漫畫只會從當前標籤/列表中刪除。 你確定嗎?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3114"/>
+        <location filename="library_window.cpp" line="3109"/>
         <source>Library name already exists</source>
         <translation>庫名已存在</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3114"/>
+        <location filename="library_window.cpp" line="3109"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>已存在另一個名為&apos;%1&apos;的庫。</translation>
     </message>
@@ -1974,73 +1974,73 @@ Missing files: %3</source>
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="175"/>
+        <location filename="options_dialog.cpp" line="176"/>
         <source>Language</source>
         <translation>語言</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="177"/>
+        <location filename="options_dialog.cpp" line="178"/>
         <source>Application language</source>
         <translation>應用程式語言</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="179"/>
+        <location filename="options_dialog.cpp" line="180"/>
         <source>System default</source>
         <translation>系統預設</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="189"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Tray icon settings (experimental)</source>
         <translation>託盤圖示設置 (實驗特性)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="193"/>
         <source>Close to tray</source>
         <translation>關閉至託盤</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="194"/>
         <source>Start into the system tray</source>
         <translation>啟動至系統託盤</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="211"/>
+        <location filename="options_dialog.cpp" line="212"/>
         <source>Edit Comic Vine API key</source>
         <translation>編輯Comic Vine API 密匙</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="214"/>
+        <location filename="options_dialog.cpp" line="215"/>
         <source>Comic Vine API key</source>
         <translation>Comic Vine API 密匙</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="220"/>
         <source>ComicInfo.xml legacy support</source>
         <translation>ComicInfo.xml 遺留支持</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="222"/>
         <source>Import metadata from ComicInfo.xml when adding new comics</source>
         <oldsource>Import metada from ComicInfo.xml when adding new comics</oldsource>
         <translation>新增漫畫時從 ComicInfo.xml 匯入元數據</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="231"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
         <translation>考慮自 X 天前新增或更新的「最近」項目</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="243"/>
+        <location filename="options_dialog.cpp" line="244"/>
         <source>Third party reader</source>
         <translation>第三方閱讀器</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="245"/>
+        <location filename="options_dialog.cpp" line="246"/>
         <source>Write {comic_file_path} where the path should go in the command</source>
         <translation>在命令中應將路徑寫入 {comic_file_path}</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="246"/>
+        <location filename="options_dialog.cpp" line="247"/>
         <source>Clear</source>
         <translation>清空</translation>
     </message>
@@ -2205,12 +2205,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <translation>外貌</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="50"/>
+        <location filename="options_dialog.cpp" line="51"/>
         <source>Options</source>
         <translation>選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="41"/>
+        <location filename="options_dialog.cpp" line="42"/>
         <source>Restart is needed</source>
         <translation>需要重啟</translation>
     </message>
@@ -3724,12 +3724,12 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation>版本資訊無法使用。</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation>舊版本</translation>
     </message>
@@ -3767,22 +3767,32 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>鍵盤快速鍵</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>自訂應用程式使用的鍵盤快速鍵。</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>編輯快捷鍵</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>快捷鍵</translation>
     </message>

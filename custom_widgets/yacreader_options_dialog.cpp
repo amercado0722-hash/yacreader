@@ -6,6 +6,8 @@
 
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSettings>
@@ -21,12 +23,18 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
 
     cancel->setDefault(true);
 
-    QVBoxLayout *shortcutsLayout = new QVBoxLayout();
-    QPushButton *shortcutsButton = new QPushButton(tr("Edit shortcuts"));
-    shortcutsLayout->addWidget(shortcutsButton);
-
-    shortcutsBox = new QGroupBox(tr("Shortcuts"));
-    shortcutsBox->setLayout(shortcutsLayout);
+    shortcutsPage = new QWidget();
+    shortcutsPage->setWindowTitle(tr("Shortcuts"));
+    auto *shortcutsLayout = new QVBoxLayout(shortcutsPage);
+    auto *shortcutsBox = new QGroupBox(tr("Keyboard shortcuts"));
+    auto *shortcutsBoxLayout = new QHBoxLayout(shortcutsBox);
+    auto *shortcutsDescription = new QLabel(tr("Customize the keyboard shortcuts used by the application."));
+    auto *shortcutsButton = new QPushButton(tr("Edit shortcuts"));
+    shortcutsDescription->setWordWrap(true);
+    shortcutsBoxLayout->addWidget(shortcutsDescription, 1);
+    shortcutsBoxLayout->addWidget(shortcutsButton, 0, Qt::AlignRight);
+    shortcutsLayout->addWidget(shortcutsBox);
+    shortcutsLayout->addStretch();
 
     connect(shortcutsButton, &QAbstractButton::clicked, this, &YACReaderOptionsDialog::editShortcuts);
 
