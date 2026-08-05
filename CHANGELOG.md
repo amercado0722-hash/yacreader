@@ -34,6 +34,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add rescan xml functionality to the webui.
 * Add more metadata fields to the detail view.
 
+### All GUI apps
+* New settings dialogs.
+
 ### All apps
 * Unify comics sorting to use the string based universal number everywhere.
 * Experimental support for image based comics in epub format.
