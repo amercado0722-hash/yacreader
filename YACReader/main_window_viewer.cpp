@@ -218,6 +218,7 @@ MainWindowViewer::~MainWindowViewer()
     delete showShorcutsAction;
     delete showInfoAction;
     delete closeAction;
+    delete exitAction;
     delete showDictionaryAction;
     delete adjustToFullSizeAction;
     delete fitToPageAction;
@@ -565,10 +566,19 @@ void MainWindowViewer::createActions()
     showInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_INFO_ACTION_Y));
     connect(showInfoAction, &QAction::triggered, viewer, &Viewer::informationSwitch);
 
-    closeAction = new QAction(tr("Close"), this);
+    // closeAction owns the Escape key. Depending on the EscapeKeyBehavior setting it either
+    // quits (default) or cancels the topmost active mode. The File▸Close menu command lives
+    // on exitAction below, which always quits regardless of the setting.
+    closeAction = new QAction(tr("Escape"), this);
+    // The shortcuts editor lists actions by toolTip(), which otherwise falls back to the
+    // action text; name the behaviour rather than the key, which it already shows.
+    closeAction->setToolTip(tr("Escape key: quit, or cancel the active mode"));
     closeAction->setData(CLOSE_ACTION_Y);
     closeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CLOSE_ACTION_Y));
-    connect(closeAction, &QAction::triggered, this, &QWidget::close);
+    connect(closeAction, &QAction::triggered, this, &MainWindowViewer::onEscapePressed);
+
+    exitAction = new QAction(tr("Close"), this);
+    connect(exitAction, &QAction::triggered, this, &QWidget::close);
 
     showDictionaryAction = new QAction(tr("Show Dictionary"), this);
     // showDictionaryAction->setCheckable(true);
@@ -787,7 +797,7 @@ void MainWindowViewer::createToolBars()
     fileMenu->addMenu(recentmenu);
 
     fileMenu->addSeparator();
-    fileMenu->addAction(closeAction);
+    fileMenu->addAction(exitAction);
 
     auto editMenu = new QMenu(tr("Edit"));
     editMenu->addAction(leftRotationAction);
@@ -1185,6 +1195,45 @@ void MainWindowViewer::toggleFullScreen()
 {
     fullscreen ? toNormal() : toFullScreen();
     Configuration::getConfiguration().setFullScreen(fullscreen = !fullscreen);
+}
+
+void MainWindowViewer::onEscapePressed()
+{
+    if (Configuration::getConfiguration().getEscapeKeyBehavior() == EscapeCancelsMode) {
+        // Cancel the topmost active mode; if none is active this is a no-op (does not quit).
+        cancelActiveMode();
+        return;
+    }
+
+    close();
+}
+
+bool MainWindowViewer::cancelActiveMode()
+{
+    // This order is documented to users in the Options ▸ General ▸ "Escape key" tooltip;
+    // keep the two in sync when adding or reordering modes.
+    if (viewer->magnifyingGlassIsVisible()) {
+        viewer->hideMagnifyingGlass();
+        showMagnifyingGlassAction->setChecked(false);
+        return true;
+    }
+
+    if (viewer->translatorIsVisible()) {
+        viewer->animateHideTranslator();
+        return true;
+    }
+
+    if (viewer->goToFlowIsVisible()) {
+        viewer->animateHideGoToFlow();
+        return true;
+    }
+
+    if (fullscreen) {
+        toggleFullScreen();
+        return true;
+    }
+
+    return false;
 }
 
 void MainWindowViewer::toFullScreen()
@@ -1724,6 +1773,7 @@ void MainWindowViewer::applyTheme(const Theme &theme)
     setIcon(showShorcutsAction, toolbarTheme.showShorcutsAction, toolbarTheme.showShorcutsAction18x18);
     setIcon(showInfoAction, toolbarTheme.showInfoAction, toolbarTheme.showInfoAction18x18);
     setIcon(closeAction, toolbarTheme.closeAction, toolbarTheme.closeAction18x18);
+    setIcon(exitAction, toolbarTheme.closeAction, toolbarTheme.closeAction18x18);
     setIcon(showDictionaryAction, toolbarTheme.showDictionaryAction, toolbarTheme.showDictionaryAction18x18);
     setIcon(adjustToFullSizeAction, toolbarTheme.adjustToFullSizeAction, toolbarTheme.adjustToFullSizeAction18x18);
     setIcon(fitToPageAction, toolbarTheme.fitToPageAction, toolbarTheme.fitToPageAction18x18);

@@ -25,7 +25,7 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
 
     shortcutsPage = new QWidget();
     shortcutsPage->setWindowTitle(tr("Shortcuts"));
-    auto *shortcutsLayout = new QVBoxLayout(shortcutsPage);
+    shortcutsLayout = new QVBoxLayout(shortcutsPage);
     auto *shortcutsBox = new QGroupBox(tr("Keyboard shortcuts"));
     auto *shortcutsBoxLayout = new QHBoxLayout(shortcutsBox);
     auto *shortcutsDescription = new QLabel(tr("Customize the keyboard shortcuts used by the application."));
@@ -92,6 +92,11 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
     connect(gl->performanceSlider, &QAbstractSlider::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
     connect(gl->vSyncCheck, &QCheckBox::checkStateChanged, this, &YACReaderOptionsDialog::saveUseVSync);
+}
+
+void YACReaderOptionsDialog::addShortcutsSection(QWidget *section)
+{
+    shortcutsLayout->insertWidget(shortcutsLayout->count() - 1, section);
 }
 
 void YACReaderOptionsDialog::savePerformance(int value)
