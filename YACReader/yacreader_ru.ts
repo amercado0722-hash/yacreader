@@ -92,24 +92,24 @@
         <translation>Не удалось загрузить JSON текущей темы.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>Импортировать тему</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>Файлы JSON (*.json);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>Не удалось импортировать тему из:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -120,7 +120,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>Импорт не удался</translation>
     </message>
@@ -276,12 +276,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>Gamma</source>
         <translation>Гамма</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="197"/>
+        <location filename="options_dialog.cpp" line="195"/>
         <source>Reset</source>
         <translation>Вернуть к первоначальным значениям</translation>
     </message>
@@ -291,7 +291,7 @@
         <translation>Папка комиксов</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="269"/>
+        <location filename="options_dialog.cpp" line="268"/>
         <source>Image adjustment</source>
         <translation>Настройка изображения</translation>
     </message>
@@ -306,17 +306,17 @@
         <translation>Выбрать</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="202"/>
+        <location filename="options_dialog.cpp" line="200"/>
         <source>Image options</source>
         <translation>Настройки изображения</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Contrast</source>
         <translation>Контраст</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="270"/>
+        <location filename="options_dialog.cpp" line="269"/>
         <source>Appearance</source>
         <translation>Появление</translation>
     </message>
@@ -351,7 +351,7 @@
         <translation>Папка комиксов</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="153"/>
+        <location filename="options_dialog.cpp" line="150"/>
         <source>Quick Navigation Mode</source>
         <translation>Ползунок для быстрой навигации по страницам</translation>
     </message>
@@ -431,47 +431,47 @@
         <translation>Нажмите левую или правую половину экрана, чтобы перелистывать страницы.</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="154"/>
+        <location filename="options_dialog.cpp" line="151"/>
         <source>Disable mouse over activation</source>
         <translation>Отключить активацию потока при наведении мыши</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="232"/>
+        <location filename="options_dialog.cpp" line="230"/>
         <source>Scaling</source>
         <translation>Масштабирование</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="234"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Scaling method</source>
         <translation>Метод масштабирования</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="236"/>
+        <location filename="options_dialog.cpp" line="234"/>
         <source>Nearest (fast, low quality)</source>
         <translation>Ближайший (быстро, низкое качество)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="237"/>
+        <location filename="options_dialog.cpp" line="235"/>
         <source>Bilinear</source>
         <translation>Билинейный</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="238"/>
+        <location filename="options_dialog.cpp" line="236"/>
         <source>Lanczos (better quality)</source>
         <translation>Ланцос (лучшее качество)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="268"/>
+        <location filename="options_dialog.cpp" line="267"/>
         <source>Page Flow</source>
         <translation>Поток Страниц</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="267"/>
+        <location filename="options_dialog.cpp" line="266"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="191"/>
+        <location filename="options_dialog.cpp" line="189"/>
         <source>Brightness</source>
         <translation>Яркость</translation>
     </message>
@@ -481,22 +481,22 @@
         <translation>Требуется перезагрузка</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="204"/>
         <source>Fit options</source>
         <translation>Варианты подгонки</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="208"/>
+        <location filename="options_dialog.cpp" line="206"/>
         <source>Enlarge images to fit width/height</source>
         <translation>Увеличьте изображения по ширине/высоте</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="217"/>
         <source>Double Page options</source>
         <translation>Параметры двойной страницы</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="219"/>
         <source>Show covers as single page</source>
         <translation>Показывать обложки на одной странице</translation>
     </message>
@@ -734,48 +734,48 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="1662"/>
+        <location filename="viewer.cpp" line="1694"/>
         <source>Page not available!</source>
         <translation>Страница недоступна!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="63"/>
-        <location filename="viewer.cpp" line="1634"/>
+        <location filename="viewer.cpp" line="95"/>
+        <location filename="viewer.cpp" line="1666"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Нажмите &quot;O&quot; чтобы открыть комикс.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="294"/>
+        <location filename="viewer.cpp" line="326"/>
         <source>Error opening comic</source>
         <translation>Ошибка открытия комикса</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1885"/>
+        <location filename="viewer.cpp" line="1917"/>
         <source>Cover!</source>
         <translation>Начало!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="300"/>
+        <location filename="viewer.cpp" line="332"/>
         <source>CRC Error</source>
         <translation>Ошибка CRC</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Comic not found</source>
         <translation>Комикс не найден</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Not found</source>
         <translation>Не найдено</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1899"/>
+        <location filename="viewer.cpp" line="1931"/>
         <source>Last page!</source>
         <translation>Конец!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1651"/>
+        <location filename="viewer.cpp" line="1683"/>
         <source>Loading...please wait!</source>
         <translation>Загрузка... Пожалуйста подождите!</translation>
     </message>
@@ -1443,12 +1443,12 @@
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1486,22 +1486,32 @@
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>Горячие клавиши</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>Сочетания клавиш</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>Настройте сочетания клавиш, используемые приложением.</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>Редактировать горячие клавиши</translation>
     </message>

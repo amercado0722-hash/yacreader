@@ -92,24 +92,24 @@
         <translation>현재 테마 JSON을 불러올 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>테마 가져오기</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON 파일 (*.json);;모든 파일 (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>다음에서 테마를 가져올 수 없습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -120,7 +120,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>가져오기 실패</translation>
     </message>
@@ -296,12 +296,12 @@
         <translation>지우기</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="267"/>
+        <location filename="options_dialog.cpp" line="266"/>
         <source>General</source>
         <translation>일반</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="270"/>
+        <location filename="options_dialog.cpp" line="269"/>
         <source>Appearance</source>
         <translation>외관</translation>
     </message>
@@ -401,92 +401,92 @@
         <translation>화면 왼쪽 또는 오른쪽 절반을 클릭하여 페이지 넘김.</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="153"/>
+        <location filename="options_dialog.cpp" line="150"/>
         <source>Quick Navigation Mode</source>
         <translation>빠른 탐색 모드</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="154"/>
+        <location filename="options_dialog.cpp" line="151"/>
         <source>Disable mouse over activation</source>
         <translation>마우스 오버 활성화 끄기</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="191"/>
+        <location filename="options_dialog.cpp" line="189"/>
         <source>Brightness</source>
         <translation>밝기</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Contrast</source>
         <translation>대비</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>Gamma</source>
         <translation>감마</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="197"/>
+        <location filename="options_dialog.cpp" line="195"/>
         <source>Reset</source>
         <translation>초기화</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="202"/>
+        <location filename="options_dialog.cpp" line="200"/>
         <source>Image options</source>
         <translation>이미지 옵션</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="204"/>
         <source>Fit options</source>
         <translation>맞춤 옵션</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="208"/>
+        <location filename="options_dialog.cpp" line="206"/>
         <source>Enlarge images to fit width/height</source>
         <translation>작은 그림도 꽉차게 보기</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="217"/>
         <source>Double Page options</source>
         <translation>두 페이지 옵션</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="219"/>
         <source>Show covers as single page</source>
         <translation>표지를 한 장으로 표시</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="232"/>
+        <location filename="options_dialog.cpp" line="230"/>
         <source>Scaling</source>
         <translation>스케일링</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="234"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Scaling method</source>
         <translation>스케일링 방법</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="236"/>
+        <location filename="options_dialog.cpp" line="234"/>
         <source>Nearest (fast, low quality)</source>
         <translation>빠른 모드 (빠름, 저화질)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="237"/>
+        <location filename="options_dialog.cpp" line="235"/>
         <source>Bilinear</source>
         <translation>보통 모드 (중간 품질)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="238"/>
+        <location filename="options_dialog.cpp" line="236"/>
         <source>Lanczos (better quality)</source>
         <translation>고화질 모드 (더 좋은 화질)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="268"/>
+        <location filename="options_dialog.cpp" line="267"/>
         <source>Page Flow</source>
         <translation>페이지 플로우</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="269"/>
+        <location filename="options_dialog.cpp" line="268"/>
         <source>Image adjustment</source>
         <translation>이미지 조정</translation>
     </message>
@@ -734,48 +734,48 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="63"/>
-        <location filename="viewer.cpp" line="1634"/>
+        <location filename="viewer.cpp" line="95"/>
+        <location filename="viewer.cpp" line="1666"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>&apos;O&apos;를 눌러 만화를 열어보세요.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Not found</source>
         <translation>찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Comic not found</source>
         <translation>만화를 찾을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="294"/>
+        <location filename="viewer.cpp" line="326"/>
         <source>Error opening comic</source>
         <translation>만화를 여는 중 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="300"/>
+        <location filename="viewer.cpp" line="332"/>
         <source>CRC Error</source>
         <translation>CRC 오류</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1651"/>
+        <location filename="viewer.cpp" line="1683"/>
         <source>Loading...please wait!</source>
         <translation>불러오는 중... 잠시 기다려주세요!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1662"/>
+        <location filename="viewer.cpp" line="1694"/>
         <source>Page not available!</source>
         <translation>페이지를 불러올 수 없습니다!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1885"/>
+        <location filename="viewer.cpp" line="1917"/>
         <source>Cover!</source>
         <translation>표지!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1899"/>
+        <location filename="viewer.cpp" line="1931"/>
         <source>Last page!</source>
         <translation>마지막 페이지!</translation>
     </message>
@@ -1443,12 +1443,12 @@
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation></translation>
     </message>
@@ -1486,22 +1486,32 @@
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>저장</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>키보드 단축키</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>애플리케이션에서 사용하는 키보드 단축키를 사용자 지정합니다.</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>단축키 편집</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>단축키</translation>
     </message>

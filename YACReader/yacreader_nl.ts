@@ -92,24 +92,24 @@
         <translation>De huidige thema-JSON kan niet worden geladen.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>Thema importeren</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON-bestanden (*.json);;Alle bestanden (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>Kan thema niet importeren uit:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -120,7 +120,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>Importeren is mislukt</translation>
     </message>
@@ -276,12 +276,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>Gamma</source>
         <translation>Gammawaarde</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="197"/>
+        <location filename="options_dialog.cpp" line="195"/>
         <source>Reset</source>
         <translation>Standaardwaarden terugzetten</translation>
     </message>
@@ -291,32 +291,32 @@
         <translation>Pad naar mijn strips</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="232"/>
+        <location filename="options_dialog.cpp" line="230"/>
         <source>Scaling</source>
         <translation>Schalen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="234"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Scaling method</source>
         <translation>Schaalmethode</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="236"/>
+        <location filename="options_dialog.cpp" line="234"/>
         <source>Nearest (fast, low quality)</source>
         <translation>Dichtstbijzijnde (snel, lage kwaliteit)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="237"/>
+        <location filename="options_dialog.cpp" line="235"/>
         <source>Bilinear</source>
         <translation>Bilineair</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="238"/>
+        <location filename="options_dialog.cpp" line="236"/>
         <source>Lanczos (better quality)</source>
         <translation>Lanczos (betere kwaliteit)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="269"/>
+        <location filename="options_dialog.cpp" line="268"/>
         <source>Image adjustment</source>
         <translation>Beeldaanpassing</translation>
     </message>
@@ -331,17 +331,17 @@
         <translation>Kies</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="202"/>
+        <location filename="options_dialog.cpp" line="200"/>
         <source>Image options</source>
         <translation>Afbeelding opties</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Contrast</source>
         <translation>Contrastwaarde</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="270"/>
+        <location filename="options_dialog.cpp" line="269"/>
         <source>Appearance</source>
         <translation>Verschijning</translation>
     </message>
@@ -381,17 +381,17 @@
         <translation>Achtergrondkleur</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="268"/>
+        <location filename="options_dialog.cpp" line="267"/>
         <source>Page Flow</source>
         <translation>Omslagbrowser</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="267"/>
+        <location filename="options_dialog.cpp" line="266"/>
         <source>General</source>
         <translation>Algemeen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="191"/>
+        <location filename="options_dialog.cpp" line="189"/>
         <source>Brightness</source>
         <translation>Helderheid</translation>
     </message>
@@ -401,7 +401,7 @@
         <translation>Herstart is nodig</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="153"/>
+        <location filename="options_dialog.cpp" line="150"/>
         <source>Quick Navigation Mode</source>
         <translation>Snelle navigatiemodus</translation>
     </message>
@@ -476,27 +476,27 @@
         <translation>Klik op de linker- of rechterhelft van het scherm om pagina&apos;s om te slaan.</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="154"/>
+        <location filename="options_dialog.cpp" line="151"/>
         <source>Disable mouse over activation</source>
         <translation>Schakel muis-over-activering uit</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="204"/>
         <source>Fit options</source>
         <translation>Pas opties</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="208"/>
+        <location filename="options_dialog.cpp" line="206"/>
         <source>Enlarge images to fit width/height</source>
         <translation>Vergroot afbeeldingen zodat ze in de breedte/hoogte passen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="217"/>
         <source>Double Page options</source>
         <translation>Opties voor dubbele pagina&apos;s</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="219"/>
         <source>Show covers as single page</source>
         <translation>Toon omslagen als enkele pagina</translation>
     </message>
@@ -734,48 +734,48 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="63"/>
-        <location filename="viewer.cpp" line="1634"/>
+        <location filename="viewer.cpp" line="95"/>
+        <location filename="viewer.cpp" line="1666"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Druk &apos;O&apos; om een strip te openen.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1885"/>
+        <location filename="viewer.cpp" line="1917"/>
         <source>Cover!</source>
         <translation>Omslag!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Comic not found</source>
         <translation>Strip niet gevonden</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Not found</source>
         <translation>Niet gevonden</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1899"/>
+        <location filename="viewer.cpp" line="1931"/>
         <source>Last page!</source>
         <translation>Laatste pagina!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1651"/>
+        <location filename="viewer.cpp" line="1683"/>
         <source>Loading...please wait!</source>
         <translation>Inladen...even wachten!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="294"/>
+        <location filename="viewer.cpp" line="326"/>
         <source>Error opening comic</source>
         <translation>Fout bij openen strip</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="300"/>
+        <location filename="viewer.cpp" line="332"/>
         <source>CRC Error</source>
         <translation>CRC-fout</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1662"/>
+        <location filename="viewer.cpp" line="1694"/>
         <source>Page not available!</source>
         <translation>Pagina niet beschikbaar!</translation>
     </message>
@@ -1443,12 +1443,12 @@
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1486,22 +1486,32 @@
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>Bewaar</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>Annuleren</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>Sneltoetsen</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>Pas de sneltoetsen aan die door de toepassing worden gebruikt.</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>Snelkoppelingen bewerken</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>Snelkoppelingen</translation>
     </message>

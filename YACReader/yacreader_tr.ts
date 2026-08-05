@@ -92,24 +92,24 @@
         <translation>Geçerli tema JSON yüklenemedi.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>Import theme</source>
         <translation>Temayı içe aktar</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="279"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON dosyaları (*.json);;Tüm dosyalar (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="287"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
         <source>Could not import theme from:
 %1</source>
         <translation>Tema şu kaynaktan içe aktarılamadı:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="288"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1
 
@@ -120,7 +120,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="289"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Import failed</source>
         <translation>İçe aktarma başarısız oldu</translation>
     </message>
@@ -276,12 +276,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>Gamma</source>
         <translation>Gama</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="197"/>
+        <location filename="options_dialog.cpp" line="195"/>
         <source>Reset</source>
         <translation>Yeniden başlat</translation>
     </message>
@@ -291,32 +291,32 @@
         <translation>Çizgi Romanlarım</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="232"/>
+        <location filename="options_dialog.cpp" line="230"/>
         <source>Scaling</source>
         <translation>Ölçeklendirme</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="234"/>
+        <location filename="options_dialog.cpp" line="232"/>
         <source>Scaling method</source>
         <translation>Ölçeklendirme yöntemi</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="236"/>
+        <location filename="options_dialog.cpp" line="234"/>
         <source>Nearest (fast, low quality)</source>
         <translation>En yakın (hızlı, düşük kalite)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="237"/>
+        <location filename="options_dialog.cpp" line="235"/>
         <source>Bilinear</source>
         <translation>Çift doğrusal</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="238"/>
+        <location filename="options_dialog.cpp" line="236"/>
         <source>Lanczos (better quality)</source>
         <translation>Lanczos (daha kaliteli)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="269"/>
+        <location filename="options_dialog.cpp" line="268"/>
         <source>Image adjustment</source>
         <translation>Resim ayarları</translation>
     </message>
@@ -331,17 +331,17 @@
         <translation>Seç</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="202"/>
+        <location filename="options_dialog.cpp" line="200"/>
         <source>Image options</source>
         <translation>Sayfa ayarları</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="192"/>
+        <location filename="options_dialog.cpp" line="190"/>
         <source>Contrast</source>
         <translation>Kontrast</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="270"/>
+        <location filename="options_dialog.cpp" line="269"/>
         <source>Appearance</source>
         <translation>Dış görünüş</translation>
     </message>
@@ -381,17 +381,17 @@
         <translation>Arka plan rengi</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="268"/>
+        <location filename="options_dialog.cpp" line="267"/>
         <source>Page Flow</source>
         <translation>Sayfa akışı</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="267"/>
+        <location filename="options_dialog.cpp" line="266"/>
         <source>General</source>
         <translation>Genel</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="191"/>
+        <location filename="options_dialog.cpp" line="189"/>
         <source>Brightness</source>
         <translation>Parlaklık</translation>
     </message>
@@ -401,7 +401,7 @@
         <translation>Yeniden başlatılmalı</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="153"/>
+        <location filename="options_dialog.cpp" line="150"/>
         <source>Quick Navigation Mode</source>
         <translation>Hızlı Gezinti Kipi</translation>
     </message>
@@ -476,27 +476,27 @@
         <translation>Sayfaları çevirmek için ekranın sol veya sağ yarısına tıklayın.</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="154"/>
+        <location filename="options_dialog.cpp" line="151"/>
         <source>Disable mouse over activation</source>
         <translation>Etkinleştirme üzerinde fareyi devre dışı bırak</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="204"/>
         <source>Fit options</source>
         <translation>Sığdırma seçenekleri</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="208"/>
+        <location filename="options_dialog.cpp" line="206"/>
         <source>Enlarge images to fit width/height</source>
         <translation>Genişliğe/yüksekliği sığmaları için resimleri genişlet</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="219"/>
+        <location filename="options_dialog.cpp" line="217"/>
         <source>Double Page options</source>
         <translation>Çift Sayfa seçenekleri</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="221"/>
+        <location filename="options_dialog.cpp" line="219"/>
         <source>Show covers as single page</source>
         <translation>Kapakları tek sayfa olarak göster</translation>
     </message>
@@ -734,48 +734,48 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="63"/>
-        <location filename="viewer.cpp" line="1634"/>
+        <location filename="viewer.cpp" line="95"/>
+        <location filename="viewer.cpp" line="1666"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>&apos;O&apos;ya basarak aç.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1885"/>
+        <location filename="viewer.cpp" line="1917"/>
         <source>Cover!</source>
         <translation>Kapak!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Comic not found</source>
         <translation>Çizgi roman bulunamadı</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="288"/>
+        <location filename="viewer.cpp" line="320"/>
         <source>Not found</source>
         <translation>Bulunamadı</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1899"/>
+        <location filename="viewer.cpp" line="1931"/>
         <source>Last page!</source>
         <translation>Son sayfa!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1651"/>
+        <location filename="viewer.cpp" line="1683"/>
         <source>Loading...please wait!</source>
         <translation>Yükleniyor... lütfen bekleyin!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="294"/>
+        <location filename="viewer.cpp" line="326"/>
         <source>Error opening comic</source>
         <translation>Çizgi roman açılırken hata</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="300"/>
+        <location filename="viewer.cpp" line="332"/>
         <source>CRC Error</source>
         <translation>CRC Hatası</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1662"/>
+        <location filename="viewer.cpp" line="1694"/>
         <source>Page not available!</source>
         <translation>Sayfa bulunamadı!</translation>
     </message>
@@ -1443,12 +1443,12 @@
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1486,22 +1486,32 @@
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>Kaydet</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>Vazgeç</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
+        <source>Keyboard shortcuts</source>
+        <translation>Klavye kısayolları</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
+        <source>Customize the keyboard shortcuts used by the application.</source>
+        <translation>Uygulama tarafından kullanılan klavye kısayollarını özelleştirin.</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
         <translation>Kısayolları düzenle</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
         <translation>Kısayollar</translation>
     </message>
