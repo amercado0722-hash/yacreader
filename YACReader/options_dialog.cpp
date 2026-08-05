@@ -135,9 +135,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layoutGeneral->addWidget(languageBox);
     layoutGeneral->addWidget(displayBox);
     layoutGeneral->addWidget(magnifyingGlassBox);
-    layoutGeneral->addWidget(slideSizeBox);
     // layoutGeneral->addWidget(fitBox);
-    layoutGeneral->addWidget(colorBox);
     layoutGeneral->addWidget(scrollBox);
     layoutGeneral->addWidget(mouseModeBox);
     layoutGeneral->addWidget(shortcutsBox);
@@ -154,6 +152,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
 
     layoutFlow->addWidget(gl);
+    layoutFlow->addWidget(slideSizeBox);
 
     layoutFlow->addWidget(quickNavi);
     layoutFlow->addWidget(disableShowOnMouseOver);
@@ -261,6 +260,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
             []() { return ThemeManager::instance().getCurrentTheme().sourceJson; },
             [](const QJsonObject &json) { ThemeManager::instance().setTheme(makeTheme(json)); },
             this);
+    pageAppearance->addSection(colorBox);
 
     // APPEARANCE END ------------------------------------
 
