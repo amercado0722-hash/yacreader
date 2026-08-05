@@ -138,7 +138,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     // layoutGeneral->addWidget(fitBox);
     layoutGeneral->addWidget(scrollBox);
     layoutGeneral->addWidget(mouseModeBox);
-    layoutGeneral->addWidget(shortcutsBox);
     layoutGeneral->addStretch();
 
     // GENERAL END ---------------------------------------
@@ -268,6 +267,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     settingsWidget->addPage(pageFlow, tr("Page Flow"));
     settingsWidget->addPage(pageImage, tr("Image adjustment"));
     settingsWidget->addPage(pageAppearance, tr("Appearance"));
+    settingsWidget->addPage(shortcutsPage, shortcutsPage->windowTitle());
 
     layout->addWidget(settingsWidget);
 

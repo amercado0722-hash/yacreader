@@ -35,6 +35,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     settingsWidget->addPage(comicFlowW, tr("Comic Flow"));
     settingsWidget->addPage(gridViewW, tr("Grid view"));
     settingsWidget->addPage(appearanceW, tr("Appearance"));
+    settingsWidget->addPage(shortcutsPage, shortcutsPage->windowTitle());
 
     auto buttons = new QHBoxLayout();
     buttons->addStretch();
@@ -253,7 +254,6 @@ QWidget *OptionsDialog::createGeneralTab()
     auto generalLayout = new QVBoxLayout();
     generalLayout->addWidget(languageBox);
     generalLayout->addWidget(trayIconBox);
-    generalLayout->addWidget(shortcutsBox);
     generalLayout->addWidget(apiKeyBox);
     generalLayout->addWidget(comicInfoXMLBox);
     generalLayout->addWidget(recentlyAddedBox);
