@@ -406,6 +406,23 @@ Render::~Render()
 void Render::render()
 {
     updateBuffer();
+
+    // The buffer and pageRenders lists rotate together. A page that was being
+    // prefetched can therefore become the current page while its render is
+    // still in flight. Do not replace (or restart) that worker: it owns the
+    // write to this buffer slot and must remain tracked until it finishes.
+    PageRender *currentPageRender = pageRenders[currentPageBufferedIndex];
+    if (currentPageRender != nullptr) {
+        Q_ASSERT(currentPageRender->getNumPage() == currentIndex);
+        if (currentPageRender->isRunning() || buffer[currentPageBufferedIndex]->isNull()) {
+            emit processingPage();
+        } else {
+            prepareAvailablePage(currentIndex);
+        }
+        fillBuffer();
+        return;
+    }
+
     if (buffer[currentPageBufferedIndex]->isNull()) {
         if (pagesReady.size() > 0) {
             if (pagesReady[currentIndex]) {
@@ -940,7 +957,6 @@ void Render::rotateLeft()
 // Calcula el número de nuevas páginas que hay que buferear y si debe hacerlo por la izquierda o la derecha (según sea el sentido de la lectura)
 void Render::updateBuffer()
 {
-    QMutexLocker locker(&mutex);
     int windowSize = currentIndex - previousIndex;
 
     if (windowSize > 0) // add pages to right pages and remove on the left
@@ -998,9 +1014,9 @@ void Render::fillBuffer()
 
     for (int i = 1; i <= qMax(numLeftPages, numRightPages); i++) {
         if ((currentIndex + i < (int)comic->numPages()) &&
+            pageRenders[currentPageBufferedIndex + i] == 0 &&
             buffer[currentPageBufferedIndex + i]->isNull() &&
             i <= numRightPages &&
-            pageRenders[currentPageBufferedIndex + i] == 0 &&
             pagesReady[currentIndex + i]) // preload next pages
         {
             pageRenders[currentPageBufferedIndex + i] = new PageRender(this, currentIndex + i, comic->getRawData()->at(currentIndex + i), buffer[currentPageBufferedIndex + i], imageRotation, filters);
@@ -1009,9 +1025,9 @@ void Render::fillBuffer()
         }
 
         if ((currentIndex - i >= 0) &&
+            pageRenders[currentPageBufferedIndex - i] == 0 &&
             buffer[currentPageBufferedIndex - i]->isNull() &&
             i <= numLeftPages &&
-            pageRenders[currentPageBufferedIndex - i] == 0 &&
             pagesReady[currentIndex - i]) // preload previous pages
         {
             pageRenders[currentPageBufferedIndex - i] = new PageRender(this, currentIndex - i, comic->getRawData()->at(currentIndex - i), buffer[currentPageBufferedIndex - i], imageRotation, filters);
