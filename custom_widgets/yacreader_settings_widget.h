@@ -6,6 +6,7 @@
 #include <QWidget>
 
 class QListWidget;
+class QSplitter;
 class QStackedWidget;
 
 class YACReaderSettingsWidget : public QWidget
@@ -16,10 +17,11 @@ public:
     int addPage(QWidget *page, const QString &title, const QIcon &icon = { });
 
 private:
-    void updateNavigationWidth();
+    void updateNavigationSize();
 
     QListWidget *navigation;
     QStackedWidget *pages;
+    QSplitter *splitter;
 };
 
 #endif // YACREADER_SETTINGS_WIDGET_H

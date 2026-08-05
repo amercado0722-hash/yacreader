@@ -1,28 +1,29 @@
 #include "yacreader_settings_widget.h"
 
 #include <QAbstractItemView>
-#include <QFrame>
 #include <QHBoxLayout>
 #include <QListWidget>
+#include <QSplitter>
 #include <QStackedWidget>
 
 YACReaderSettingsWidget::YACReaderSettingsWidget(QWidget *parent)
-    : QWidget(parent), navigation(new QListWidget(this)), pages(new QStackedWidget(this))
+    : QWidget(parent), navigation(new QListWidget(this)), pages(new QStackedWidget(this)), splitter(new QSplitter(Qt::Horizontal, this))
 {
-    navigation->setFrameShape(QFrame::NoFrame);
     navigation->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    navigation->setMinimumWidth(140);
     navigation->setSelectionMode(QAbstractItemView::SingleSelection);
     navigation->setUniformItemSizes(true);
 
-    auto *separator = new QFrame(this);
-    separator->setFrameShape(QFrame::VLine);
-    separator->setFrameShadow(QFrame::Sunken);
+    splitter->addWidget(navigation);
+    splitter->addWidget(pages);
+    splitter->setCollapsible(0, false);
+    splitter->setCollapsible(1, false);
+    splitter->setStretchFactor(0, 0);
+    splitter->setStretchFactor(1, 1);
 
     auto *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(navigation);
-    layout->addWidget(separator);
-    layout->addWidget(pages, 1);
+    layout->addWidget(splitter);
 
     connect(navigation, &QListWidget::currentRowChanged, pages, &QStackedWidget::setCurrentIndex);
 }
@@ -31,7 +32,7 @@ int YACReaderSettingsWidget::addPage(QWidget *page, const QString &title, const 
 {
     const int index = pages->addWidget(page);
     navigation->addItem(new QListWidgetItem(icon, title));
-    updateNavigationWidth();
+    updateNavigationSize();
 
     if (navigation->currentRow() == -1)
         navigation->setCurrentRow(0);
@@ -39,11 +40,12 @@ int YACReaderSettingsWidget::addPage(QWidget *page, const QString &title, const 
     return index;
 }
 
-void YACReaderSettingsWidget::updateNavigationWidth()
+void YACReaderSettingsWidget::updateNavigationSize()
 {
     constexpr int minimumWidth = 140;
-    constexpr int maximumWidth = 240;
     constexpr int horizontalPadding = 32;
 
-    navigation->setFixedWidth(qBound(minimumWidth, navigation->sizeHintForColumn(0) + horizontalPadding, maximumWidth));
+    const int navigationWidth = qMax(minimumWidth, navigation->sizeHintForColumn(0) + horizontalPadding);
+    const int contentWidth = qMax(400, pages->sizeHint().width());
+    splitter->setSizes({ navigationWidth, contentWidth });
 }

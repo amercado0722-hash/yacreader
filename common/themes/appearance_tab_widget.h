@@ -13,6 +13,7 @@
 class AppearanceConfiguration;
 class QComboBox;
 class QPushButton;
+class QVBoxLayout;
 class ThemeEditorDialog;
 class ThemeRepository;
 
@@ -26,6 +27,8 @@ public:
             std::function<QJsonObject()> currentThemeJson,
             std::function<void(const QJsonObject &)> applyTheme,
             QWidget *parent = nullptr);
+
+    void addSection(QWidget *section);
 
 private:
     AppearanceConfiguration *config;
@@ -46,6 +49,8 @@ private:
     QPushButton *lightDeleteBtn = nullptr;
     QPushButton *darkDeleteBtn = nullptr;
     QPushButton *customDeleteBtn = nullptr;
+
+    QVBoxLayout *sectionsLayout;
 
     // Populate a combo with themes, filtered strictly by variant (or all if nullopt).
     void populateCombo(QComboBox *combo, std::optional<ThemeVariant> variantFilter, const QString &selectedId);

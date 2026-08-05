@@ -211,11 +211,16 @@ AppearanceTabWidget::AppearanceTabWidget(
         themeEditor->activateWindow();
     });
 
-    auto *layout = new QVBoxLayout(this);
-    layout->addWidget(modeBox);
-    layout->addWidget(themeSelBox);
-    layout->addWidget(themeEditorBox);
-    layout->addStretch();
+    sectionsLayout = new QVBoxLayout(this);
+    sectionsLayout->addWidget(modeBox);
+    sectionsLayout->addWidget(themeSelBox);
+    sectionsLayout->addWidget(themeEditorBox);
+    sectionsLayout->addStretch();
+}
+
+void AppearanceTabWidget::addSection(QWidget *section)
+{
+    sectionsLayout->insertWidget(sectionsLayout->count() - 1, section);
 }
 
 void AppearanceTabWidget::populateCombo(QComboBox *combo,
