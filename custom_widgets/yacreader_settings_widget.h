@@ -2,6 +2,7 @@
 #define YACREADER_SETTINGS_WIDGET_H
 
 #include <QIcon>
+#include <QSize>
 #include <QString>
 #include <QWidget>
 
@@ -16,7 +17,11 @@ public:
 
     int addPage(QWidget *page, const QString &title, const QIcon &icon = { });
 
+    QSize sizeHint() const override;
+
 private:
+    int preferredNavigationWidth() const;
+    int preferredContentWidth() const;
     void updateNavigationSize();
 
     QListWidget *navigation;

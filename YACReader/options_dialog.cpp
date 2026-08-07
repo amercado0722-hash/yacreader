@@ -310,8 +310,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     setModal(true);
     setWindowTitle(tr("Options"));
 
-    this->layout()->setSizeConstraint(QLayout::SetFixedSize);
-
     initTheme(this);
 }
 

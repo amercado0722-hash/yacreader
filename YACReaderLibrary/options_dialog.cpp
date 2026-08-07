@@ -49,8 +49,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     setLayout(layout);
     setModal(true);
     setWindowTitle(tr("Options"));
-
-    this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 void OptionsDialog::editApiKey()
@@ -332,10 +330,14 @@ QWidget *OptionsDialog::createLibrariesTab()
     librariesBoxLayout->addWidget(updateLibrariesAtCertainTimeCheck);
     librariesBoxLayout->addLayout(updateLibrariesAtCertainTimeLayout);
 
-    librariesBoxLayout->addWidget(new QLabel(tr("WARNING! During library updates writes to the database are disabled!\n"
-                                                "Don't schedule updates while you may be using the app actively.\n"
-                                                "During automatic updates the app will block some of the actions until the update is finished.\n"
-                                                "To stop an automatic update tap on the loading indicator next to the Libraries title.")));
+    // Without word wrapping this label is the widest widget in the whole dialog, and because
+    // QStackedWidget hints at the width of its widest page it would size every other section too.
+    auto updatesWarningLabel = new QLabel(tr("WARNING! During library updates writes to the database are disabled!\n"
+                                             "Don't schedule updates while you may be using the app actively.\n"
+                                             "During automatic updates the app will block some of the actions until the update is finished.\n"
+                                             "To stop an automatic update tap on the loading indicator next to the Libraries title."));
+    updatesWarningLabel->setWordWrap(true);
+    librariesBoxLayout->addWidget(updatesWarningLabel);
 
     auto librariesBox = new QGroupBox(tr("Libraries"));
     librariesBox->setLayout(librariesBoxLayout);
