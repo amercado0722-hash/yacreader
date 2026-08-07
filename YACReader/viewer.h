@@ -20,6 +20,7 @@
 #include <QResizeEvent>
 #include <QScrollArea>
 #include <QSettings>
+#include <QSize>
 #include <QTimer>
 #include <QWheelEvent>
 
@@ -199,6 +200,9 @@ private:
     bool gestureEvent(QGestureEvent *event);
     void captureZoomAnchor();
     bool applyZoomAtAnchor(int newZoom);
+    void restoreZoomAnchor();
+    void cancelZoomPreview();
+    void renderFinalZoomImage();
     void positionZoomHud();
 
     int pinchStartZoom;
@@ -207,6 +211,11 @@ private:
     double zoomAnchorNormY;
     QLabel *zoomHud;
     QTimer *zoomHudHideTimer;
+    QTimer *zoomPreviewFinishTimer;
+    bool zoomPreviewActive = false;
+    bool scaledContentsBeforeZoomPreview = false;
+    QSize zoomPreviewBaseSize;
+    int zoomPreviewBaseZoom = 100;
     int wheelZoomAccumulator = 0;
     QElapsedTimer wheelZoomTimer;
 
