@@ -133,7 +133,6 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
         accept->setEnabled(check->isChecked() && port->hasAcceptableInput() && port->text() != httpServer->getPort());
     });
     connect(accept, &QPushButton::clicked, this, &ServerConfigDialog::updatePort);
-    connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
     connect(copyLinkButton, &QPushButton::clicked, this, [this] {
         QApplication::clipboard()->setText(webInterfaceUrl());
     });
@@ -150,6 +149,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     accept->setMinimumWidth(qMax(102, accept->sizeHint().width()));
 
     check->setChecked(serverEnabled);
+    connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
     setConnectionControlsEnabled(serverEnabled);
     if (serverEnabled)
         generateQR();
