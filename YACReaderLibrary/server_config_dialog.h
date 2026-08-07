@@ -10,40 +10,49 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+class QFrame;
+
 class ServerConfigDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
-    ServerConfigDialog(QWidget *parent = 0);
+    explicit ServerConfigDialog(QWidget *parent = nullptr);
     void showEvent(QShowEvent *event) override;
 
 protected:
     void applyTheme(const Theme &theme) override;
 
 private:
+    QString webInterfaceUrl() const;
+    void refreshWebInterface();
+    void setConnectionControlsEnabled(bool enabled);
+
     QComboBox *ip;
     QLineEdit *port;
-
     QCheckBox *check;
-
-    QPushButton *close;
     QPushButton *accept;
+    QPushButton *copyLinkButton;
+    QPushButton *openWebUiButton;
     QLabel *qrCode;
-
-    // Labels for themable styling
     QLabel *titleLabel;
+    QLabel *descriptionLabel;
     QLabel *qrMessageLabel;
     QLabel *propagandaLabel;
     QLabel *ipLabel;
     QLabel *portLabel;
+    QLabel *webInterfaceLabel;
+    QLabel *webInterfaceUrlLabel;
     QLabel *backgroundDecoration;
+    QFrame *connectionCard;
+    QString propagandaText;
 
 public slots:
     void generateQR();
     void generateQR(const QString &serverAddress);
-    void regenerateQR(const QString &ip);
+    void regenerateQR(const QString &address);
     void enableServer(int status);
     void updatePort();
+
 signals:
     void portChanged(QString port);
 };

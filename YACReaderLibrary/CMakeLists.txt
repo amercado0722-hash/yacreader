@@ -210,6 +210,7 @@ target_compile_definitions(YACReaderLibrary PRIVATE
 
 # Resources
 set(yacreaderlibrary_image_files
+    ${PROJECT_SOURCE_DIR}/images/chevronDown.svg
     ${PROJECT_SOURCE_DIR}/images/shortcuts/accept_shortcut.svg
     ${PROJECT_SOURCE_DIR}/images/shortcuts/clear_shortcut.svg
     ${PROJECT_SOURCE_DIR}/images/comic_vine/downArrow.svg

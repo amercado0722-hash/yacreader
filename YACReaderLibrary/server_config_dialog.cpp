@@ -5,218 +5,306 @@
 #include "yacreader_global_gui.h"
 #include "yacreader_http_server.h"
 
-#include <QBitmap>
+#include <QApplication>
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QFrame>
 #include <QGridLayout>
+#include <QHBoxLayout>
+#include <QIntValidator>
 #include <QPainter>
 #include <QPalette>
-#include <QPixmap>
 #include <QSettings>
+#include <QSignalBlocker>
+#include <QUrl>
+#include <QVBoxLayout>
 
 extern YACReaderHttpServer *httpServer;
 
 ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     : QDialog(parent)
 {
-    // Background decoration (SVG on left side)
+    setWindowTitle(tr("Server connectivity"));
+    setFixedSize(770, 595);
+
     backgroundDecoration = new QLabel(this);
-    backgroundDecoration->move(0, 0);
-    backgroundDecoration->setFixedSize(329, 595);
+    backgroundDecoration->setGeometry(0, 0, 329, 595);
     backgroundDecoration->setScaledContents(true);
 
-    accept = new QPushButton(tr("set port"), this);
-
     qrCode = new QLabel(this);
-    qrCode->move(64, 112);
-    qrCode->setFixedSize(200, 200);
+    qrCode->setGeometry(64, 112, 200, 200);
     qrCode->setScaledContents(true);
 
-    titleLabel = new QLabel(tr("Server connectivity information"), this);
-    titleLabel->move(332, 61);
-
-    qrMessageLabel = new QLabel(tr("Scan it!"), this);
-    qrMessageLabel->move(135, 388);
+    qrMessageLabel = new QLabel(tr("Scan to connect"), this);
+    qrMessageLabel->setGeometry(43, 312, 243, 208);
+    qrMessageLabel->setAlignment(Qt::AlignCenter);
     qrMessageLabel->setWordWrap(true);
-    qrMessageLabel->setFixedWidth(200);
 
-    propagandaLabel = new QLabel(tr("YACReader is available for iOS and Android devices.<br/>Discover it for <a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'>iOS</a> or <a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'>Android</a>."), this);
-    propagandaLabel->move(332, 505);
+    auto detailsWidget = new QWidget(this);
+    detailsWidget->setGeometry(332, 0, 410, 595);
+
+    auto detailsLayout = new QVBoxLayout(detailsWidget);
+    detailsLayout->setContentsMargins(0, 48, 0, 43);
+    detailsLayout->setSpacing(0);
+
+    titleLabel = new QLabel(tr("Server connectivity"), detailsWidget);
+    detailsLayout->addWidget(titleLabel);
+    detailsLayout->addSpacing(7);
+
+    descriptionLabel = new QLabel(tr("Devices on this network can reach your library at the address below."), detailsWidget);
+    descriptionLabel->setWordWrap(true);
+    detailsLayout->addWidget(descriptionLabel);
+    detailsLayout->addSpacing(25);
+
+    auto formLayout = new QGridLayout;
+    formLayout->setContentsMargins(0, 0, 0, 0);
+    formLayout->setHorizontalSpacing(16);
+    formLayout->setVerticalSpacing(7);
+
+    ipLabel = new QLabel(tr("IP address"), detailsWidget);
+    portLabel = new QLabel(tr("Port"), detailsWidget);
+    formLayout->addWidget(ipLabel, 0, 0);
+    formLayout->addWidget(portLabel, 0, 1);
+
+    ip = new QComboBox(detailsWidget);
+    ip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    port = new QLineEdit(QStringLiteral("8080"), detailsWidget);
+    port->setFixedWidth(88);
+    port->setValidator(new QIntValidator(1024, 65535, this));
+    accept = new QPushButton(tr("Set port"), detailsWidget);
+    accept->setObjectName(QStringLiteral("primaryButton"));
+    accept->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+    auto portLayout = new QHBoxLayout;
+    portLayout->setContentsMargins(0, 0, 0, 0);
+    portLayout->setSpacing(7);
+    portLayout->addWidget(port);
+    portLayout->addWidget(accept);
+    formLayout->addWidget(ip, 1, 0);
+    formLayout->addLayout(portLayout, 1, 1);
+    detailsLayout->addLayout(formLayout);
+    detailsLayout->addSpacing(26);
+
+    connectionCard = new QFrame(detailsWidget);
+    connectionCard->setObjectName(QStringLiteral("connectionCard"));
+    auto cardLayout = new QVBoxLayout(connectionCard);
+    cardLayout->setContentsMargins(16, 14, 16, 14);
+    cardLayout->setSpacing(5);
+
+    webInterfaceLabel = new QLabel(tr("Web interface").toUpper(), connectionCard);
+    webInterfaceLabel->setObjectName(QStringLiteral("sectionLabel"));
+    cardLayout->addWidget(webInterfaceLabel);
+
+    webInterfaceUrlLabel = new QLabel(connectionCard);
+    webInterfaceUrlLabel->setObjectName(QStringLiteral("webInterfaceUrl"));
+    webInterfaceUrlLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    cardLayout->addWidget(webInterfaceUrlLabel);
+    cardLayout->addSpacing(7);
+
+    auto buttonsLayout = new QHBoxLayout;
+    buttonsLayout->setContentsMargins(0, 0, 0, 0);
+    buttonsLayout->setSpacing(8);
+    buttonsLayout->addStretch();
+
+    copyLinkButton = new QPushButton(tr("Copy link"), connectionCard);
+    copyLinkButton->setObjectName(QStringLiteral("secondaryButton"));
+    openWebUiButton = new QPushButton(tr("Open web UI"), connectionCard);
+    openWebUiButton->setObjectName(QStringLiteral("primaryButton"));
+    buttonsLayout->addWidget(copyLinkButton);
+    buttonsLayout->addWidget(openWebUiButton);
+    cardLayout->addLayout(buttonsLayout);
+    detailsLayout->addWidget(connectionCard);
+    detailsLayout->addSpacing(25);
+
+    check = new QCheckBox(tr("Enable the server"), detailsWidget);
+    detailsLayout->addWidget(check);
+    detailsLayout->addStretch();
+
+    propagandaText = tr("YACReader is available for iOS and Android. Discover it for <a href='https://ios.yacreader.com'>iOS</a> or <a href='https://android.yacreader.com'>Android</a>.");
+    propagandaLabel = new QLabel(detailsWidget);
     propagandaLabel->setOpenExternalLinks(true);
+    propagandaLabel->setWordWrap(true);
+    detailsLayout->addWidget(propagandaLabel);
 
-    // FORM---------------------------------------------------------------------
-
-    ipLabel = new QLabel(tr("Choose an IP address"), this);
-    ipLabel->move(332, 117);
-
-    portLabel = new QLabel(tr("Port"), this);
-    portLabel->move(332, 211);
-
-    ip = new QComboBox(this);
     connect(ip, &QComboBox::currentTextChanged, this, &ServerConfigDialog::regenerateQR);
-
-    ip->setFixedWidth(200);
-    ip->move(332, 153);
-
-    port = new QLineEdit("8080", this);
-    port->setReadOnly(false);
-
-    connect(port, &QLineEdit::textChanged, this, [=](const QString &portValue) {
-        accept->setEnabled(!portValue.isEmpty());
+    connect(port, &QLineEdit::textChanged, this, [this] {
+        accept->setEnabled(check->isChecked() && port->hasAcceptableInput() && port->text() != httpServer->getPort());
+    });
+    connect(accept, &QPushButton::clicked, this, &ServerConfigDialog::updatePort);
+    connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
+    connect(copyLinkButton, &QPushButton::clicked, this, [this] {
+        QApplication::clipboard()->setText(webInterfaceUrl());
+    });
+    connect(openWebUiButton, &QPushButton::clicked, this, [this] {
+        QDesktopServices::openUrl(QUrl(webInterfaceUrl()));
     });
 
-    QValidator *validator = new QIntValidator(1024, 65535, this);
-    port->setValidator(validator);
+    QSettings settings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("libraryConfig"));
+    const bool serverEnabled = settings.value(SERVER_ON, true).toBool();
+    settings.endGroup();
 
-    QWidget *portWidget = new QWidget(this);
-    auto portWidgetLayout = new QHBoxLayout(this);
-    portWidgetLayout->addWidget(port);
-    portWidgetLayout->addWidget(accept);
-    portWidgetLayout->setContentsMargins(0, 0, 0, 0);
-    portWidget->setLayout(portWidgetLayout);
-    portWidget->move(332, 244);
-    connect(accept, &QAbstractButton::pressed, this, &ServerConfigDialog::updatePort);
-
-    // END FORM-----------------------------------------------------------------
-
-    check = new QCheckBox(this);
-    check->move(332, 314);
-    check->setText(tr("enable the server"));
-
-    this->setFixedSize(770, 595);
-
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
-    settings->beginGroup("libraryConfig");
-
-    if (settings->value(SERVER_ON, true).toBool()) {
-        check->setChecked(true);
-        generateQR();
-    } else {
-        ip->setDisabled(true);
-        port->setDisabled(true);
-        accept->setDisabled(true);
-
-        check->setChecked(false);
-    }
-
-    settings->endGroup();
-
-    connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
-
-    // Initialize theme
     initTheme(this);
+
+    check->setChecked(serverEnabled);
+    setConnectionControlsEnabled(serverEnabled);
+    if (serverEnabled)
+        generateQR();
+    else {
+        qrCode->clear();
+        refreshWebInterface();
+    }
 }
 
 void ServerConfigDialog::applyTheme(const Theme &theme)
 {
-    // Apply pre-built QSS from theme
     setStyleSheet(theme.serverConfigDialog.dialogQSS);
     titleLabel->setStyleSheet(theme.serverConfigDialog.titleLabelQSS);
     qrMessageLabel->setStyleSheet(theme.serverConfigDialog.qrMessageLabelQSS);
     propagandaLabel->setStyleSheet(theme.serverConfigDialog.propagandaLabelQSS);
-    ipLabel->setStyleSheet(theme.serverConfigDialog.labelQSS);
-    portLabel->setStyleSheet(theme.serverConfigDialog.labelQSS);
+    const QColor linkColor = theme.serverConfigDialog.linkColor;
+    QString themedPropagandaText = propagandaText;
+    themedPropagandaText.replace(QStringLiteral("<a "), QStringLiteral("<a style='color:%1' ").arg(linkColor.name()));
+    propagandaLabel->setText(themedPropagandaText);
+    auto propagandaPalette = propagandaLabel->palette();
+    propagandaPalette.setColor(QPalette::Link, linkColor);
+    propagandaPalette.setColor(QPalette::LinkVisited, linkColor);
+    propagandaLabel->setPalette(propagandaPalette);
+    descriptionLabel->setStyleSheet(theme.serverConfigDialog.textLabelQSS);
+    ipLabel->setStyleSheet(theme.serverConfigDialog.secondaryLabelQSS);
+    portLabel->setStyleSheet(theme.serverConfigDialog.secondaryLabelQSS);
     check->setStyleSheet(theme.serverConfigDialog.checkBoxQSS);
 
-    // Set background decoration (SVG on left)
     backgroundDecoration->setPixmap(theme.serverConfigDialog.backgroundDecoration);
-    backgroundDecoration->lower(); // Send to back so other widgets appear on top
+    backgroundDecoration->lower();
 
-    // Regenerate QR code with new theme colors
     generateQR();
 }
 
 void ServerConfigDialog::showEvent(QShowEvent *event)
 {
     QDialog::showEvent(event);
-
     generateQR();
 }
 
 void ServerConfigDialog::enableServer(int status)
 {
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
-    settings->beginGroup("libraryConfig");
+    QSettings settings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("libraryConfig"));
 
-    if (status == Qt::Checked) {
-        ip->setDisabled(false);
-        port->setDisabled(false);
-        accept->setDisabled(false);
+    const bool enabled = status == Qt::Checked;
+    setConnectionControlsEnabled(enabled);
+    if (enabled) {
         httpServer->start();
-        this->generateQR();
-        settings->setValue(SERVER_ON, true);
+        generateQR();
     } else {
         httpServer->stop();
-        qrCode->setPixmap(QPixmap());
-        ip->setDisabled(true);
-        port->setDisabled(true);
-        accept->setDisabled(true);
-        settings->setValue(SERVER_ON, false);
+        qrCode->clear();
+        refreshWebInterface();
     }
-    settings->endGroup();
+    settings.setValue(SERVER_ON, enabled);
+    settings.endGroup();
 }
 
 void ServerConfigDialog::generateQR()
 {
-    if (!httpServer->isRunning())
+    if (!httpServer->isRunning()) {
+        refreshWebInterface();
         return;
-
-    ip->clear();
-
-    auto addresses = getIpAddresses();
-    if (addresses.length() > 0) {
-        generateQR(addresses.first() + ":" + httpServer->getPort());
-        ip->addItems(addresses);
-        port->setText(httpServer->getPort());
     }
+
+    const QSignalBlocker blocker(ip);
+    const auto addresses = getIpAddresses();
+    ip->clear();
+    ip->addItems(addresses);
+    port->setText(httpServer->getPort());
+
+    if (!addresses.isEmpty())
+        generateQR(addresses.first() + ":" + httpServer->getPort());
+    else
+        refreshWebInterface();
 }
 
 void ServerConfigDialog::generateQR(const QString &serverAddress)
 {
     qrCode->clear();
 
-    auto backgroundColor = theme.serverConfigDialog.qrBackgroundColor;
-    auto foregroundColor = theme.serverConfigDialog.qrForegroundColor;
-
-    qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(
+    const auto backgroundColor = theme.serverConfigDialog.qrBackgroundColor;
+    const auto foregroundColor = theme.serverConfigDialog.qrForegroundColor;
+    const qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(
             serverAddress.toLocal8Bit(),
             qrcodegen::QrCode::Ecc::LOW);
 
-    int qrSize = code.getSize();
+    const int qrSize = code.getSize();
     QPixmap qrPixmap(qrSize, qrSize);
     qrPixmap.fill(backgroundColor);
 
     QPainter painter(&qrPixmap);
     painter.setPen(foregroundColor);
     painter.setBrush(foregroundColor);
-    for (int x = 0; x < qrSize; x++) {
-        for (int y = 0; y < qrSize; y++) {
-            if (code.getModule(x, y)) {
+    for (int x = 0; x < qrSize; ++x) {
+        for (int y = 0; y < qrSize; ++y) {
+            if (code.getModule(x, y))
                 painter.drawPoint(x, y);
-            }
         }
     }
     painter.end();
 
-    // Scale to label size
     qrPixmap = qrPixmap.scaled(qrCode->size() * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::FastTransformation);
     qrPixmap.setDevicePixelRatio(devicePixelRatioF());
-
     qrCode->setPixmap(qrPixmap);
+    refreshWebInterface();
 }
 
-void ServerConfigDialog::regenerateQR(const QString &ip)
+void ServerConfigDialog::regenerateQR(const QString &address)
 {
-    generateQR(ip + ":" + httpServer->getPort());
+    if (httpServer->isRunning() && !address.isEmpty())
+        generateQR(address + ":" + httpServer->getPort());
+    else
+        refreshWebInterface();
 }
 
 void ServerConfigDialog::updatePort()
 {
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
-    settings->beginGroup("listener");
-    settings->setValue("port", port->text().toInt());
-    settings->endGroup();
+    if (!port->hasAcceptableInput()) {
+        port->setText(httpServer->getPort());
+        return;
+    }
+    if (port->text() == httpServer->getPort())
+        return;
+
+    QSettings settings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("listener"));
+    settings.setValue(QStringLiteral("port"), port->text().toInt());
+    settings.endGroup();
 
     httpServer->stop();
     httpServer->start();
+    generateQR();
+}
 
-    generateQR(ip->currentText() + ":" + port->text());
+QString ServerConfigDialog::webInterfaceUrl() const
+{
+    if (ip->currentText().isEmpty())
+        return { };
+    return QStringLiteral("http://%1:%2/webui").arg(ip->currentText(), httpServer->getPort());
+}
+
+void ServerConfigDialog::refreshWebInterface()
+{
+    const QString url = httpServer->isRunning() ? webInterfaceUrl() : QString();
+    webInterfaceUrlLabel->setText(url.isEmpty() ? QStringLiteral("—") : url);
+    copyLinkButton->setEnabled(!url.isEmpty());
+    openWebUiButton->setEnabled(!url.isEmpty());
+}
+
+void ServerConfigDialog::setConnectionControlsEnabled(bool enabled)
+{
+    ip->setEnabled(enabled);
+    port->setEnabled(enabled);
+    accept->setEnabled(enabled && port->hasAcceptableInput() && port->text() != httpServer->getPort());
+    if (!enabled) {
+        copyLinkButton->setEnabled(false);
+        openWebUiButton->setEnabled(false);
+    }
 }

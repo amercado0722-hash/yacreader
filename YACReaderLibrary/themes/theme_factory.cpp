@@ -239,12 +239,33 @@ struct SidebarIconsParams {
 };
 
 struct ServerConfigDialogThemeTemplates {
-    QString dialogQSS = "ServerConfigDialog { background-color: %1; }";
-    QString titleLabelQSS = "QLabel { color: %1; font-size: 30px; font-family: Arial; }";
-    QString qrMessageLabelQSS = "QLabel { color: %1; font-size: 18px; font-family: Arial; }";
-    QString propagandaLabelQSS = "QLabel { color: %1; font-size: 13px; font-family: Arial; font-style: italic; }";
-    QString labelQSS = "QLabel { color: %1; font-size: 18px; font-family: Arial; }";
-    QString checkBoxQSS = "QCheckBox { color: %1; font-size: 13px; font-family: Arial; }";
+    // %1 = background, %2 = text, %3 = border, %4 = accent, %5 = card background,
+    // %6 = combo-box chevron, %7 = secondary text, %8 = accent foreground,
+    // %9 = disabled combo-box chevron
+    QString dialogQSS = "ServerConfigDialog { background-color: %1; }"
+                        "QComboBox, QLineEdit { background-color: %1; color: %2; border: 1px solid %3; border-radius: 5px; padding: 7px 10px; min-height: 18px; }"
+                        "QComboBox { padding-right: 28px; }"
+                        "QComboBox::drop-down { subcontrol-origin: border; subcontrol-position: top right; width: 28px; border: none; background: transparent; }"
+                        "QComboBox::down-arrow { image: url('%6'); width: 10px; height: 6px; }"
+                        "QComboBox:focus, QLineEdit:focus { border-color: %4; }"
+                        "QComboBox:disabled, QLineEdit:disabled { color: %7; background-color: %5; }"
+                        "QComboBox::down-arrow:disabled { image: url('%9'); }"
+                        "QFrame#connectionCard { background-color: %5; border: 1px solid %3; border-radius: 8px; }"
+                        "QLabel#sectionLabel { color: %7; border: none; font-size: 11px; font-weight: bold; }"
+                        "QLabel#webInterfaceUrl { color: %2; border: none; font-family: monospace; font-size: 12px; }"
+                        "QPushButton { min-height: 32px; padding: 0 13px; border-radius: 5px; font-size: 12px; }"
+                        "QPushButton#secondaryButton { color: %2; background: transparent; border: 1px solid %3; }"
+                        "QPushButton#secondaryButton:hover { border-color: %4; }"
+                        "QPushButton#primaryButton { color: %8; background-color: %4; border: 1px solid %4; font-weight: bold; }"
+                        "QPushButton:disabled { color: %7; background: transparent; border-color: %3; }";
+    QString titleLabelQSS = "QLabel { color: %1; font-size: 28px; font-weight: bold; }";
+    QString qrMessageLabelQSS = "QLabel { color: %1; font-size: 16px; }";
+    QString propagandaLabelQSS = "QLabel { color: %1; font-size: 15px; font-style: italic; }";
+    QString textLabelQSS = "QLabel { color: %1; font-size: 12px; }";
+    QString secondaryLabelQSS = "QLabel { color: %1; font-size: 12px; }";
+    QString checkBoxQSS = "QCheckBox { color: %1; font-size: 13px; spacing: 9px; }"
+                          "QCheckBox::indicator { width: 14px; height: 14px; border: 1px solid %2; border-radius: 3px; background: transparent; }"
+                          "QCheckBox::indicator:checked { background-color: %2; image: url(%3); }";
 };
 
 struct LibraryItemParams {
@@ -318,11 +339,14 @@ struct ServerConfigDialogParams {
     QColor titleTextColor;
     QColor qrMessageTextColor;
     QColor propagandaTextColor;
-    QColor labelTextColor;
-    QColor checkBoxTextColor;
+    QColor textColor;
+    QColor secondaryTextColor;
+    QColor borderColor;
+    QColor accentColor;
+    QColor accentForegroundColor;
+    QColor linkColor;
     QColor qrBackgroundColor;
     QColor qrForegroundColor;
-    QColor decorationColor;
 };
 
 struct WhatsNewDialogParams {
@@ -929,15 +953,19 @@ Theme makeTheme(const ThemeParams &params)
 
     // ServerConfigDialog
     const auto &scd = params.serverConfigDialogParams;
-    theme.serverConfigDialog.dialogQSS = scd.t.dialogQSS.arg(scd.backgroundColor.name());
+    QColor cardColor = scd.backgroundColor;
+    cardColor = cardColor.darker(cardColor.lightness() > 127 ? 104 : 112);
+    theme.serverConfigDialog.dialogQSS = scd.t.dialogQSS.arg(scd.backgroundColor.name(), scd.textColor.name(), scd.borderColor.name(), scd.accentColor.name(), cardColor.name(), recolor(":/images/chevronDown.svg", scd.accentColor), scd.secondaryTextColor.name(), scd.accentForegroundColor.name(), recolor(":/images/chevronDown.svg", scd.secondaryTextColor));
     theme.serverConfigDialog.titleLabelQSS = scd.t.titleLabelQSS.arg(scd.titleTextColor.name());
     theme.serverConfigDialog.qrMessageLabelQSS = scd.t.qrMessageLabelQSS.arg(scd.qrMessageTextColor.name());
     theme.serverConfigDialog.propagandaLabelQSS = scd.t.propagandaLabelQSS.arg(scd.propagandaTextColor.name());
-    theme.serverConfigDialog.labelQSS = scd.t.labelQSS.arg(scd.labelTextColor.name());
-    theme.serverConfigDialog.checkBoxQSS = scd.t.checkBoxQSS.arg(scd.checkBoxTextColor.name());
+    theme.serverConfigDialog.textLabelQSS = scd.t.textLabelQSS.arg(scd.textColor.name());
+    theme.serverConfigDialog.secondaryLabelQSS = scd.t.secondaryLabelQSS.arg(scd.secondaryTextColor.name());
+    theme.serverConfigDialog.checkBoxQSS = scd.t.checkBoxQSS.arg(scd.textColor.name(), scd.accentColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", scd.accentForegroundColor));
+    theme.serverConfigDialog.linkColor = scd.linkColor;
     theme.serverConfigDialog.qrBackgroundColor = scd.qrBackgroundColor;
     theme.serverConfigDialog.qrForegroundColor = scd.qrForegroundColor;
-    theme.serverConfigDialog.backgroundDecoration = QPixmap(recoloredSvgToThemeFile(":/images/serverConfigBackground.svg", scd.decorationColor, params.meta.id));
+    theme.serverConfigDialog.backgroundDecoration = QPixmap(recoloredSvgToThemeFile(":/images/serverConfigBackground.svg", scd.accentColor, params.meta.id));
 
     theme.meta = params.meta;
 
@@ -1098,11 +1126,14 @@ Theme makeTheme(const QJsonObject &json)
         scd2.titleTextColor = colorFromJson(o, "titleTextColor", scd2.titleTextColor);
         scd2.qrMessageTextColor = colorFromJson(o, "qrMessageTextColor", scd2.qrMessageTextColor);
         scd2.propagandaTextColor = colorFromJson(o, "propagandaTextColor", scd2.propagandaTextColor);
-        scd2.labelTextColor = colorFromJson(o, "labelTextColor", scd2.labelTextColor);
-        scd2.checkBoxTextColor = colorFromJson(o, "checkBoxTextColor", scd2.checkBoxTextColor);
+        scd2.textColor = colorFromJson(o, "textColor", scd2.textColor);
+        scd2.secondaryTextColor = colorFromJson(o, "secondaryTextColor", scd2.secondaryTextColor);
+        scd2.borderColor = colorFromJson(o, "borderColor", scd2.borderColor);
+        scd2.accentColor = colorFromJson(o, "accentColor", scd2.accentColor);
+        scd2.accentForegroundColor = colorFromJson(o, "accentForegroundColor", scd2.accentForegroundColor);
+        scd2.linkColor = colorFromJson(o, "linkColor", scd2.linkColor);
         scd2.qrBackgroundColor = colorFromJson(o, "qrBackgroundColor", scd2.qrBackgroundColor);
         scd2.qrForegroundColor = colorFromJson(o, "qrForegroundColor", scd2.qrForegroundColor);
-        scd2.decorationColor = colorFromJson(o, "decorationColor", scd2.decorationColor);
     }
 
     if (json.contains("mainToolbar")) {

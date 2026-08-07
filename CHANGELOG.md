@@ -24,6 +24,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add a help dialog for the search engine. Use the drop down menu in the search field.
 * Add quick search presets. Use the drop down menu in the search field.
 * Fix `open containing folder` asking for permission to control Finder on macOS.
+* Improve the server dialog UI a big and add the option to open the webui from it.
 
 ### YACReaderLibraryServer
 * Add the `repair-library` command to restore missing covers and rescan files that previously failed to be added.

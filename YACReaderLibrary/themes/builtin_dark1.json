@@ -225,14 +225,17 @@
         "textColor": "#C1C0C0"
     },
     "serverConfigDialog": {
+        "accentColor": "#FCFCFA",
+        "accentForegroundColor": "#2B282D",
         "backgroundColor": "#2B282D",
-        "checkBoxTextColor": "#FCFCFA",
-        "decorationColor": "#FCFCFA",
-        "labelTextColor": "#D7D6D7",
+        "borderColor": "#7B7A7C",
+        "linkColor": "#78DCE8",
         "propagandaTextColor": "#A6A5A6",
-        "qrBackgroundColor": "#2D2A2E",
-        "qrForegroundColor": "#FFFFFF",
+        "qrBackgroundColor": "#2B282D",
+        "qrForegroundColor": "#FCFCFA",
         "qrMessageTextColor": "#A6A5A6",
+        "secondaryTextColor": "#D1CFD1",
+        "textColor": "#FCFCFA",
         "titleTextColor": "#FCFCFA"
     },
     "shortcutsIcons": {
