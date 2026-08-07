@@ -58,30 +58,32 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     auto formLayout = new QGridLayout;
     formLayout->setContentsMargins(0, 0, 0, 0);
-    formLayout->setHorizontalSpacing(16);
+    formLayout->setHorizontalSpacing(0);
     formLayout->setVerticalSpacing(7);
+    formLayout->setColumnStretch(0, 9);
+    formLayout->setColumnMinimumWidth(1, 16);
+    formLayout->setColumnStretch(2, 4);
+    formLayout->setColumnMinimumWidth(3, 7);
 
     ipLabel = new QLabel(tr("IP address"), detailsWidget);
     portLabel = new QLabel(tr("Port"), detailsWidget);
     formLayout->addWidget(ipLabel, 0, 0);
-    formLayout->addWidget(portLabel, 0, 1);
+    formLayout->addWidget(portLabel, 0, 2);
 
     ip = new QComboBox(detailsWidget);
     ip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    ip->setMinimumWidth(100);
     port = new QLineEdit(QStringLiteral("8080"), detailsWidget);
-    port->setFixedWidth(88);
+    port->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    port->setMinimumWidth(55);
     port->setValidator(new QIntValidator(1024, 65535, this));
     accept = new QPushButton(tr("Set port"), detailsWidget);
     accept->setObjectName(QStringLiteral("primaryButton"));
     accept->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-    auto portLayout = new QHBoxLayout;
-    portLayout->setContentsMargins(0, 0, 0, 0);
-    portLayout->setSpacing(7);
-    portLayout->addWidget(port);
-    portLayout->addWidget(accept);
     formLayout->addWidget(ip, 1, 0);
-    formLayout->addLayout(portLayout, 1, 1);
+    formLayout->addWidget(port, 1, 2);
+    formLayout->addWidget(accept, 1, 4);
     detailsLayout->addLayout(formLayout);
     detailsLayout->addSpacing(26);
 
@@ -145,6 +147,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     settings.endGroup();
 
     initTheme(this);
+    accept->setMinimumWidth(qMax(102, accept->sizeHint().width()));
 
     check->setChecked(serverEnabled);
     setConnectionControlsEnabled(serverEnabled);
