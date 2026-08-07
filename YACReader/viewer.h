@@ -8,6 +8,7 @@
 #include <QAction>
 #include <QByteArray>
 #include <QCloseEvent>
+#include <QElapsedTimer>
 #include <QGestureEvent>
 #include <QLabel>
 #include <QList>
@@ -192,16 +193,22 @@ private:
     void wheelEvent(QWheelEvent *event) override;
     void wheelEventMouse(QWheelEvent *event);
     void wheelEventTrackpad(QWheelEvent *event);
+    void wheelEventZoom(QWheelEvent *event);
     void mouseMoveEvent(QMouseEvent *event) override;
     bool event(QEvent *event) override;
     bool gestureEvent(QGestureEvent *event);
-    void positionPinchZoomHud();
+    void captureZoomAnchor();
+    bool applyZoomAtAnchor(int newZoom);
+    void positionZoomHud();
 
     int pinchStartZoom;
-    QPoint pinchAnchorViewport;
-    double pinchAnchorNormX;
-    double pinchAnchorNormY;
-    QLabel *pinchZoomHud;
+    QPoint zoomAnchorViewport;
+    double zoomAnchorNormX;
+    double zoomAnchorNormY;
+    QLabel *zoomHud;
+    QTimer *zoomHudHideTimer;
+    int wheelZoomAccumulator = 0;
+    QElapsedTimer wheelZoomTimer;
 
     int verticalScrollStep() const;
     int horizontalScrollStep() const;

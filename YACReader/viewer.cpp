@@ -74,21 +74,26 @@ Viewer::Viewer(QWidget *parent)
       magnifyingGlassShown(false),
       restoreMagnifyingGlass(false),
       pinchStartZoom(100),
-      pinchAnchorNormX(0.5),
-      pinchAnchorNormY(0.5),
-      pinchZoomHud(nullptr),
+      zoomAnchorNormX(0.5),
+      zoomAnchorNormY(0.5),
+      zoomHud(nullptr),
+      zoomHudHideTimer(nullptr),
       mouseHandler(std::make_unique<YACReader::MouseHandler>(this))
 {
     grabGesture(Qt::PinchGesture);
 
-    pinchZoomHud = new QLabel(this);
-    pinchZoomHud->setAlignment(Qt::AlignCenter);
-    pinchZoomHud->setAttribute(Qt::WA_TransparentForMouseEvents);
-    pinchZoomHud->setTextFormat(Qt::RichText);
-    pinchZoomHud->setStyleSheet(
+    zoomHud = new QLabel(this);
+    zoomHud->setAlignment(Qt::AlignCenter);
+    zoomHud->setAttribute(Qt::WA_TransparentForMouseEvents);
+    zoomHud->setTextFormat(Qt::RichText);
+    zoomHud->setStyleSheet(
             "background-color: rgba(0, 0, 0, 153); border-radius: 3px;");
-    pinchZoomHud->setFixedSize(100, 60);
-    pinchZoomHud->hide();
+    zoomHud->setFixedSize(100, 60);
+    zoomHud->hide();
+
+    zoomHudHideTimer = new QTimer(this);
+    zoomHudHideTimer->setSingleShot(true);
+    connect(zoomHudHideTimer, &QTimer::timeout, zoomHud, &QWidget::hide);
 
     translator = new YACReaderTranslator(this);
     translator->hide();
@@ -818,11 +823,51 @@ void Viewer::wheelEvent(QWheelEvent *event)
         return;
     }
 
+    // Check the modifier before choosing the regular mouse/trackpad scroll path so
+    // high-resolution devices with pixelDelta (notably on macOS) zoom as well. Qt maps
+    // ControlModifier to Command on macOS unless the application opts out of that mapping.
+    if (event->modifiers() == Qt::ControlModifier && event->angleDelta().y() != 0) {
+        wheelEventZoom(event);
+        return;
+    }
+
+    wheelZoomAccumulator = 0;
+
     if (!event->pixelDelta().isNull()) {
         wheelEventTrackpad(event);
     } else {
         wheelEventMouse(event);
     }
+}
+
+void Viewer::wheelEventZoom(QWheelEvent *event)
+{
+    static constexpr int wheelStep = 120;
+    static constexpr int zoomStep = 10;
+    static constexpr qint64 accumulatorResetMs = 400;
+    static constexpr int hudTimeoutMs = 500;
+
+    horizontalScroller->stop();
+    verticalScroller->stop();
+    wheelStop = false;
+
+    if (!wheelZoomTimer.isValid() || wheelZoomTimer.elapsed() > accumulatorResetMs) {
+        wheelZoomAccumulator = 0;
+    }
+    wheelZoomTimer.restart();
+
+    wheelZoomAccumulator += event->angleDelta().y();
+    const int steps = wheelZoomAccumulator / wheelStep;
+    wheelZoomAccumulator -= steps * wheelStep;
+
+    if (steps != 0) {
+        captureZoomAnchor();
+        if (applyZoomAtAnchor(zoom + steps * zoomStep)) {
+            zoomHudHideTimer->start(hudTimeoutMs);
+        }
+    }
+
+    event->accept();
 }
 
 void Viewer::wheelEventMouse(QWheelEvent *event)
@@ -1846,12 +1891,51 @@ bool Viewer::event(QEvent *event)
     return QScrollArea::event(event);
 }
 
-void Viewer::positionPinchZoomHud()
+void Viewer::captureZoomAnchor()
+{
+    zoomAnchorViewport = viewport()->mapFromGlobal(QCursor::pos());
+    if (content->width() > 0 && content->height() > 0) {
+        const QPoint cursorInContent = content->mapFrom(viewport(), zoomAnchorViewport);
+        zoomAnchorNormX = std::clamp(double(cursorInContent.x()) / content->width(), 0.0, 1.0);
+        zoomAnchorNormY = std::clamp(double(cursorInContent.y()) / content->height(), 0.0, 1.0);
+    } else {
+        zoomAnchorNormX = 0.5;
+        zoomAnchorNormY = 0.5;
+    }
+}
+
+bool Viewer::applyZoomAtAnchor(int newZoom)
+{
+    newZoom = std::clamp(newZoom, 30, 500);
+    if (newZoom == zoom) {
+        return false;
+    }
+
+    updateZoomRatio(newZoom);
+
+    if (!continuousScroll) {
+        const int alignX = std::max(0, (viewport()->width() - content->width()) / 2);
+        const int alignY = std::max(0, (viewport()->height() - content->height()) / 2);
+        const int targetH = std::lround(zoomAnchorNormX * content->width()) + alignX - zoomAnchorViewport.x();
+        const int targetV = std::lround(zoomAnchorNormY * content->height()) + alignY - zoomAnchorViewport.y();
+        horizontalScrollBar()->setValue(targetH);
+        verticalScrollBar()->setValue(targetV);
+    }
+
+    zoomHud->setText(QStringLiteral("<span style=\"color:white; font-size:12px;\">%1%</span>").arg(zoom));
+    positionZoomHud();
+    zoomHud->show();
+
+    emit zoomUpdated(zoom);
+    return true;
+}
+
+void Viewer::positionZoomHud()
 {
     const int margin = 16;
-    pinchZoomHud->move(width() - pinchZoomHud->width() - margin,
-                       height() - pinchZoomHud->height() - margin);
-    pinchZoomHud->raise();
+    zoomHud->move(width() - zoomHud->width() - margin,
+                  height() - zoomHud->height() - margin);
+    zoomHud->raise();
 }
 
 bool Viewer::gestureEvent(QGestureEvent *event)
@@ -1863,39 +1947,14 @@ bool Viewer::gestureEvent(QGestureEvent *event)
             return true;
         }
         if (pinch->state() == Qt::GestureStarted) {
+            zoomHudHideTimer->stop();
             pinchStartZoom = zoom;
-            const QPoint cursorViewport = viewport()->mapFromGlobal(QCursor::pos());
-            pinchAnchorViewport = cursorViewport;
-            if (content->width() > 0 && content->height() > 0) {
-                const QPoint cursorInContent = content->mapFrom(viewport(), cursorViewport);
-                pinchAnchorNormX = std::clamp(double(cursorInContent.x()) / content->width(), 0.0, 1.0);
-                pinchAnchorNormY = std::clamp(double(cursorInContent.y()) / content->height(), 0.0, 1.0);
-            } else {
-                pinchAnchorNormX = 0.5;
-                pinchAnchorNormY = 0.5;
-            }
+            captureZoomAnchor();
         }
         int newZoom = std::clamp<int>(std::lround(pinchStartZoom * pinch->totalScaleFactor()), 30, 500);
-        if (newZoom != zoom) {
-            updateZoomRatio(newZoom);
-
-            if (!continuousScroll) {
-                const int alignX = std::max(0, (viewport()->width() - content->width()) / 2);
-                const int alignY = std::max(0, (viewport()->height() - content->height()) / 2);
-                const int targetH = std::lround(pinchAnchorNormX * content->width()) + alignX - pinchAnchorViewport.x();
-                const int targetV = std::lround(pinchAnchorNormY * content->height()) + alignY - pinchAnchorViewport.y();
-                horizontalScrollBar()->setValue(targetH);
-                verticalScrollBar()->setValue(targetV);
-            }
-
-            pinchZoomHud->setText(QStringLiteral("<span style=\"color:white; font-size:12px;\">%1%</span>").arg(zoom));
-            positionPinchZoomHud();
-            pinchZoomHud->show();
-
-            emit zoomUpdated(zoom);
-        }
+        applyZoomAtAnchor(newZoom);
         if (pinch->state() == Qt::GestureFinished || pinch->state() == Qt::GestureCanceled) {
-            pinchZoomHud->hide();
+            zoomHud->hide();
         }
         event->accept(pinch);
         return true;
