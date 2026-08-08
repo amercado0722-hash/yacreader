@@ -21,11 +21,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * When database corruption is detected, offer to attempt a repair or restore a backup. Damaged originals are preserved in `.yacreaderlibrary/recovery`.
 * Fix comics info export/import and covers package import/export error handling.
 * Fix grid comic cells info height so the title doesn't overlap the other fields.
-* Add funtion to open the library root location.
+* Add a function to open the library root location.
 * Add a help dialog for the search engine. Use the drop down menu in the search field.
 * Add quick search presets. Use the drop down menu in the search field.
 * Fix `open containing folder` asking for permission to control Finder on macOS.
-* Improve the server dialog UI a big and add the option to open the webui from it.
+* Improve the server dialog UI a bit and add the option to open the Web UI from it.
 
 ### YACReaderLibraryServer
 * Add the `repair-library` command to restore missing covers and rescan files that previously failed to be added.
