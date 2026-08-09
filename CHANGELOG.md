@@ -2,6 +2,11 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.3.0
+
+### WebUI
+* Add per library search.
+
 ## 10.2.0
 
 ### YACReader

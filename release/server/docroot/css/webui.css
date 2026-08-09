@@ -1143,6 +1143,91 @@ input[type="time"]:focus-visible {
   min-width: 0;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.browser-search {
+  display: flex;
+  width: min(40vw, 430px);
+  min-width: 220px;
+  height: 42px;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.browser-search[hidden] {
+  display: none;
+}
+
+.browser-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.browser-search input {
+  min-width: 0;
+  height: 100%;
+  flex: 1;
+  padding: 0 5px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.browser-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.browser-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.browser-search-submit,
+.browser-search-clear {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.browser-search-submit:hover,
+.browser-search-clear:hover {
+  background: var(--surface-subtle);
+  color: var(--accent-strong);
+}
+
+.browser-search-submit:focus-visible,
+.browser-search-clear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .breadcrumbs {
   display: flex;
   min-width: 0;
@@ -1459,6 +1544,12 @@ input[type="time"]:focus-visible {
   font-size: 23px;
   font-weight: 800;
   place-items: center;
+}
+
+.browser-state-search-icon {
+  padding: 13px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .folder-state-icon {
@@ -2420,6 +2511,21 @@ input[type="time"]:disabled {
 
   .topbar {
     padding: 14px 20px;
+  }
+
+  .browser-topbar {
+    flex-wrap: wrap;
+  }
+
+  .browser-heading {
+    flex: 1;
+  }
+
+  .browser-search {
+    width: 100%;
+    min-width: 0;
+    flex-basis: 100%;
+    margin-left: 0;
   }
 
   .browser-back:not([hidden]) {

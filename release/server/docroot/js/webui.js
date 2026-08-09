@@ -402,6 +402,9 @@
     var breadcrumbs = document.querySelector("[data-browser-breadcrumbs]");
     var pageTitle = document.querySelector("[data-browser-title]");
     var browserBack = document.querySelector("[data-browser-back]");
+    var searchForm = document.querySelector("[data-browser-search]");
+    var searchInput = document.querySelector("[data-browser-search-input]");
+    var searchClear = document.querySelector("[data-browser-search-clear]");
     var navigationVersion = 0;
     var folderMetadataCache = {};
     var browserBackAction = null;
@@ -464,6 +467,22 @@
       });
     }
 
+    function postJson(url, payload) {
+      var headers = apiHeaders("application/json");
+      headers["Content-Type"] = "application/json";
+
+      return fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(payload)
+      }).then(function (response) {
+        if (!response.ok) {
+          throw new Error("Request failed with status " + response.status);
+        }
+        return response.json();
+      });
+    }
+
     function libraryUrl() {
       return "/webui/library/" + encodeURIComponent(libraryId);
     }
@@ -504,6 +523,10 @@
 
     function comicProgressApi(comicId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId) + "/update";
+    }
+
+    function searchApi() {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/search";
     }
 
     function apiHeaders(accept) {
@@ -732,6 +755,146 @@
       return card;
     }
 
+    function setSearchValue(query) {
+      if (!searchInput) {
+        return;
+      }
+      searchInput.value = query || "";
+      if (searchClear) {
+        searchClear.hidden = searchInput.value.length === 0;
+      }
+    }
+
+    function setSearchVisible(visible) {
+      if (searchForm) {
+        searchForm.hidden = !visible;
+      }
+    }
+
+    function showSearch(query, pushHistory) {
+      var normalizedQuery = String(query || "").trim();
+      if (!normalizedQuery) {
+        showFolder("1", pushHistory);
+        return;
+      }
+
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      setSearchValue(normalizedQuery);
+      showLoading();
+
+      postJson(searchApi(), { query: normalizedQuery }).then(function (items) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var folders = items.filter(function (item) { return item.type === "folder"; });
+        var comics = items.filter(function (item) { return item.type === "comic"; });
+        var resultCount = folders.length + comics.length;
+
+        setPageHeading("Search");
+        setBrowserBack("1");
+        renderBreadcrumbs([
+          { label: "Libraries", href: "/webui#libraries" },
+          {
+            label: libraryName,
+            href: libraryUrl(),
+            action: function () { showFolder("1", true); }
+          },
+          { label: "Search" }
+        ]);
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+
+        var header = element("section", "browser-library-header search-results-header");
+        header.appendChild(element("div", "section-title", "Search results"));
+        header.appendChild(element("h2", "", 'Results for "' + normalizedQuery + '"'));
+        var summary = resultCount === 1 ? "1 result" : resultCount + " results";
+        var resultParts = [];
+        if (folders.length) {
+          resultParts.push(folders.length === 1 ? "1 folder" : folders.length + " folders");
+        }
+        if (comics.length) {
+          resultParts.push(comics.length === 1 ? "1 comic" : comics.length + " comics");
+        }
+        header.appendChild(element("p", "", resultParts.length ? summary + " - " + resultParts.join(" - ") : summary));
+        browserRoot.appendChild(header);
+
+        if (!resultCount) {
+          var empty = element("div", "browser-state compact");
+          empty.appendChild(svgIcon("browser-state-icon browser-state-search-icon", '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>'));
+          empty.appendChild(element("h2", "", "No matching comics or folders"));
+          empty.appendChild(element("p", "", "Try a different term or use YACReader search fields such as writer:, series:, read:, or added>."));
+          browserRoot.appendChild(empty);
+        } else {
+          var grid = element("div", "browser-grid");
+          items.forEach(function (item) {
+            if (item.type === "folder") {
+              grid.appendChild(folderCard(item));
+            } else if (item.type === "comic") {
+              grid.appendChild(comicCard(item));
+            }
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        var url = libraryUrl() + "?q=" + encodeURIComponent(normalizedQuery);
+        var state = { view: "search", query: normalizedQuery };
+        if (pushHistory) {
+          history.pushState(state, "", url);
+        } else {
+          history.replaceState(state, "", url);
+        }
+      }).catch(function () {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showSearch(normalizedQuery, false);
+        });
+      });
+    }
+
+    if (searchForm && searchInput) {
+      searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var query = searchInput.value.trim();
+        if (query) {
+          showSearch(query, true);
+        } else {
+          showFolder("1", true);
+        }
+      });
+
+      searchInput.addEventListener("input", function () {
+        if (searchClear) {
+          searchClear.hidden = searchInput.value.length === 0;
+        }
+      });
+
+      searchInput.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && searchInput.value) {
+          event.preventDefault();
+          setSearchValue("");
+        }
+      });
+    }
+
+    if (searchClear) {
+      searchClear.addEventListener("click", function () {
+        var route = routeFromLocation();
+        setSearchValue("");
+        if (route.view === "search") {
+          showFolder("1", true);
+        }
+        if (searchInput) {
+          searchInput.focus();
+        }
+      });
+    }
+
     function getFolderMetadata(folderId) {
       if (folderMetadataCache[folderId]) {
         return Promise.resolve(folderMetadataCache[folderId]);
@@ -808,6 +971,10 @@
 
     function showFolder(folderId, pushHistory) {
       leaveReader();
+      setSearchVisible(folderId === "1");
+      if (folderId === "1") {
+        setSearchValue("");
+      }
       var version = ++navigationVersion;
       showLoading();
 
@@ -1118,6 +1285,7 @@
 
     function showReader(comicId, pushHistory, existingComic) {
       leaveReader();
+      setSearchVisible(false);
       var version = ++navigationVersion;
       showLoading();
 
@@ -1470,6 +1638,7 @@
 
     function showComic(comicId, pushHistory) {
       leaveReader();
+      setSearchVisible(false);
       var version = ++navigationVersion;
       showLoading();
 
@@ -1714,6 +1883,10 @@
     }
 
     function routeFromLocation() {
+      var query = new URL(window.location.href).searchParams.get("q");
+      if (query && query.trim()) {
+        return { view: "search", query: query.trim() };
+      }
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+)(?:/(read))?)?/?$"));
       if (!match) {
@@ -1727,7 +1900,9 @@
 
     window.addEventListener("popstate", function () {
       var route = routeFromLocation();
-      if (route.view === "reader") {
+      if (route.view === "search") {
+        showSearch(route.query, false);
+      } else if (route.view === "reader") {
         showReader(route.itemId, false);
       } else if (route.view === "comic") {
         showComic(route.itemId, false);
@@ -1738,7 +1913,10 @@
 
     var initialView = document.body.dataset.browserInitialView;
     var initialItemId = document.body.dataset.browserInitialItemId || "1";
-    if (initialView === "reader") {
+    var initialRoute = routeFromLocation();
+    if (initialRoute.view === "search") {
+      showSearch(initialRoute.query, false);
+    } else if (initialView === "reader") {
       showReader(initialItemId, false);
     } else if (initialView === "comic") {
       showComic(initialItemId, false);
