@@ -409,6 +409,67 @@
     var folderMetadataCache = {};
     var browserBackAction = null;
     var readerCleanup = null;
+    var browserItemCollator = new Intl.Collator(undefined, {
+      numeric: true,
+      sensitivity: "base"
+    });
+
+    function naturalBrowserCompare(left, right) {
+      return browserItemCollator.compare(String(left || ""), String(right || ""));
+    }
+
+    function compareBrowserItems(left, right) {
+      if (left.type !== right.type) {
+        if (left.type === "folder") {
+          return -1;
+        }
+        if (right.type === "folder") {
+          return 1;
+        }
+        if (left.type === "comic") {
+          return -1;
+        }
+        if (right.type === "comic") {
+          return 1;
+        }
+        return 0;
+      }
+
+      if (left.type === "folder") {
+        return naturalBrowserCompare(left.folder_name, right.folder_name);
+      }
+
+      if (left.type === "comic") {
+        var leftHasNumber = left.universal_number !== undefined && left.universal_number !== null;
+        var rightHasNumber = right.universal_number !== undefined && right.universal_number !== null;
+
+        if (leftHasNumber && rightHasNumber) {
+          // universal_number is a string: natural comparison supports decimals,
+          // suffixes and other non-integer issue identifiers used by the apps.
+          return naturalBrowserCompare(left.universal_number, right.universal_number);
+        }
+        if (leftHasNumber) {
+          return -1;
+        }
+        if (rightHasNumber) {
+          return 1;
+        }
+
+        return naturalBrowserCompare(left.file_name, right.file_name);
+      }
+
+      return 0;
+    }
+
+    function sortBrowserItems(items) {
+      return items.map(function (item, index) {
+        return { item: item, index: index };
+      }).sort(function (left, right) {
+        return compareBrowserItems(left.item, right.item) || left.index - right.index;
+      }).map(function (entry) {
+        return entry.item;
+      });
+    }
 
     if (browserBack) {
       browserBack.addEventListener("click", function () {
@@ -789,6 +850,7 @@
           return;
         }
 
+        items = sortBrowserItems(items);
         var folders = items.filter(function (item) { return item.type === "folder"; });
         var comics = items.filter(function (item) { return item.type === "comic"; });
         var resultCount = folders.length + comics.length;
@@ -986,7 +1048,7 @@
           return;
         }
 
-        var items = results[0];
+        var items = sortBrowserItems(results[0]);
         var trail = results[1];
         var folderName = trail.length ? trail[trail.length - 1].name : libraryName;
         var folders = items.filter(function (item) { return item.type === "folder"; });

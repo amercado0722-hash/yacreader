@@ -6,6 +6,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### WebUI
 * Add per library search.
+* Use the same sorting used in the rest of the apps.
 
 ## 10.2.0
 
