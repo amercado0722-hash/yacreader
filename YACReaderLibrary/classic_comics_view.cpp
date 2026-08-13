@@ -16,7 +16,7 @@
 #include <QVBoxLayout>
 
 ClassicComicsView::ClassicComicsView(QWidget *parent)
-    : ComicsView(parent), searching(false)
+    : ComicsView(parent), toolbar(nullptr), startSeparatorAction(nullptr), searching(false)
 {
     auto layout = new QHBoxLayout;
 
@@ -132,10 +132,33 @@ void ClassicComicsView::hideComicFlow(bool hide)
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0, toolBar);
-    this->toolbar = toolBar;
+    toolbar = toolBar;
 
-    startSeparatorAction = toolBar->addSeparator();
-    toolBar->addAction(hideFlowViewAction);
+    if (!startSeparatorAction) {
+        startSeparatorAction = new QAction(this);
+        startSeparatorAction->setSeparator(true);
+    }
+
+    const auto actions = toolbar->actions();
+    if (!actions.contains(startSeparatorAction))
+        toolbar->addAction(startSeparatorAction);
+    if (!actions.contains(hideFlowViewAction))
+        toolbar->addAction(hideFlowViewAction);
+}
+
+void ClassicComicsView::releaseToolBar()
+{
+    if (!toolbar)
+        return;
+
+    toolbar->removeAction(startSeparatorAction);
+    toolbar->removeAction(hideFlowViewAction);
+}
+
+void ClassicComicsView::saveViewConfig()
+{
+    saveTableHeadersStatus();
+    saveSplitterStatus();
 }
 
 void ClassicComicsView::setModel(ComicModel *model)
@@ -409,11 +432,8 @@ void ClassicComicsView::addItemsToFlow(const QModelIndex &parent, int from, int 
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)
 {
-    toolbar->removeAction(startSeparatorAction);
-    toolbar->removeAction(hideFlowViewAction);
-
-    saveTableHeadersStatus();
-    saveSplitterStatus();
+    releaseToolBar();
+    saveViewConfig();
     ComicsView::closeEvent(event);
 }
 

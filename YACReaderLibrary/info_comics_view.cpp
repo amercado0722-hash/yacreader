@@ -14,7 +14,7 @@
 #include <QVBoxLayout>
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    : ComicsView(parent), flow(nullptr), list(nullptr)
+    : ComicsView(parent), toolbar(nullptr), flow(nullptr), list(nullptr)
 {
 
     // container->setFocusPolicy(Qt::StrongFocus);
@@ -53,7 +53,11 @@ InfoComicsView::~InfoComicsView()
 void InfoComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(this->layout())->insertWidget(1, toolBar);
-    this->toolbar = toolBar;
+    toolbar = toolBar;
+}
+
+void InfoComicsView::releaseToolBar()
+{
 }
 
 void InfoComicsView::setModel(ComicModel *model)

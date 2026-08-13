@@ -6,6 +6,7 @@ class QString;
 
 #include <QList>
 #include <QMap>
+#include <QVariantMap>
 
 class ComicDB;
 class Folder;
@@ -108,6 +109,7 @@ public:
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
 
     // library
+    static QVariantMap getLibraryInfoData(QUuid id);
     static QString getLibraryInfo(QUuid id);
 };
 

@@ -371,7 +371,7 @@
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="329"/>
+        <location filename="options_dialog.cpp" line="327"/>
         <source>Comics directory</source>
         <translation>Çizgi roman konumu</translation>
     </message>
@@ -774,48 +774,48 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="95"/>
-        <location filename="viewer.cpp" line="1676"/>
+        <location filename="viewer.cpp" line="122"/>
+        <location filename="viewer.cpp" line="1745"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>&apos;O&apos;ya basarak aç.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1927"/>
+        <location filename="viewer.cpp" line="2121"/>
         <source>Cover!</source>
         <translation>Kapak!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Comic not found</source>
         <translation>Çizgi roman bulunamadı</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Not found</source>
         <translation>Bulunamadı</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1941"/>
+        <location filename="viewer.cpp" line="2135"/>
         <source>Last page!</source>
         <translation>Son sayfa!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1693"/>
+        <location filename="viewer.cpp" line="1762"/>
         <source>Loading...please wait!</source>
         <translation>Yükleniyor... lütfen bekleyin!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="326"/>
+        <location filename="viewer.cpp" line="353"/>
         <source>Error opening comic</source>
         <translation>Çizgi roman açılırken hata</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="332"/>
+        <location filename="viewer.cpp" line="359"/>
         <source>CRC Error</source>
         <translation>CRC Hatası</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1704"/>
+        <location filename="viewer.cpp" line="1773"/>
         <source>Page not available!</source>
         <translation>Sayfa bulunamadı!</translation>
     </message>

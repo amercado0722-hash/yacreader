@@ -1,6 +1,7 @@
 #ifndef YACREADERCONTENTVIEWSMANAGER_H
 #define YACREADERCONTENTVIEWSMANAGER_H
 
+#include "reading_list_model.h"
 #include "themable.h"
 #include "yacreader_global_gui.h"
 
@@ -10,16 +11,17 @@
 class LibraryWindow;
 
 class ComicsView;
+class ComicModel;
 class ClassicComicsView;
 class GridComicsView;
 class InfoComicsView;
 class ComicsViewTransition;
-class FolderContentView;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
 class EmptyFolderWidget;
 class NoSearchResultsWidget;
+class FolderModel;
 
 using namespace YACReader;
 
@@ -30,22 +32,15 @@ public:
     explicit YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent = nullptr);
 
     QWidget *containerWidget();
+    GridComicsView *gridView() const;
+    bool isComicsViewVisible() const;
+    void prepareToClose();
 
     ComicsView *comicsView;
 
     ComicsViewTransition *comicsViewTransition;
 
-    FolderContentView *folderContentView;
-    EmptyLabelWidget *emptyLabelWidget;
-    EmptySpecialListWidget *emptySpecialList;
-    EmptyReadingListWidget *emptyReadingList;
-    EmptyFolderWidget *emptyFolderWidget;
-
-    NoSearchResultsWidget *noSearchResultsWidget;
-
-    void updateCurrentContentView();
     void updateCurrentComicView();
-    void updateContinueReadingView();
 
     void toFullscreen();
     void toNormal();
@@ -59,31 +54,42 @@ protected:
     ClassicComicsView *classicComicsView;
     GridComicsView *gridComicsView;
     InfoComicsView *infoComicsView;
+    ComicsView *toolbarOwner;
+
+    EmptyLabelWidget *emptyLabelWidget;
+    EmptySpecialListWidget *emptySpecialList;
+    EmptyReadingListWidget *emptyReadingList;
+    EmptyFolderWidget *emptyFolderWidget;
+    NoSearchResultsWidget *noSearchResultsWidget;
 
     void applyTheme(const Theme &theme) override;
-
-signals:
 
 public slots:
     void toggleComicsView();
     void focusComicsViewViaShortcut();
 
     void showComicsView();
-    void showFolderContentView();
-    void showEmptyLabelView();
-    void showEmptySpecialList();
-    void showEmptyReadingListWidget();
-    void showEmptyFolderWidget();
-    void showNoSearchResultsView();
+    void showFoldersOnlyGrid();
+    void showEmptyLabel(YACReader::LabelColors color);
+    void showEmptySpecialList(ReadingListModel::TypeSpecialList type);
+    void showEmptyReadingList();
+    void showEmptyFolder();
+    void showNoSearchResults();
 
 protected slots:
     void showComicsViewTransition();
-    void _toggleComicsView();
+    void switchToNextComicsView();
 
     void disconnectComicsViewConnections(ComicsView *widget);
-    void doComicsViewConnections();
+    void connectComicsViewConnections(ComicsView *view);
 
     void switchToComicsView(ComicsView *from, ComicsView *to);
+    void setToolBarOwner(ComicsView *view);
+    void setViewSelectorEnabled(bool enabled);
+    void updateViewSelectorIcon(const Theme &theme);
+    void ensureInStack(ComicsView *view);
+    void showStackWidget(QWidget *widget, bool viewSelectorEnabled);
+    void updateComicActionsForCurrentView();
 };
 
 #endif // YACREADERCONTENTVIEWSMANAGER_H

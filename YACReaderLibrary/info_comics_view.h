@@ -21,6 +21,7 @@ protected:
     void applyTheme(const Theme &theme) override;
     ~InfoComicsView() override;
     void setToolBar(QToolBar *toolBar) override;
+    void releaseToolBar() override;
     void setModel(ComicModel *model) override;
     void setCurrentIndex(const QModelIndex &index) override;
     QModelIndex currentIndex() override;

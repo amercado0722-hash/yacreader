@@ -176,7 +176,7 @@ struct GridAndInfoViewParams {
     // Current comic banner
     QColor currentComicBackgroundColor;
 
-    // Continue reading section (FolderContentView)
+    // Continue reading section (grid content view)
     QColor continueReadingBackgroundColor;
     QColor continueReadingTextColor;
 
@@ -497,6 +497,7 @@ Theme makeTheme(const ThemeParams &params)
         theme.emptyContainer.emptyFolderIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_folder.svg", ec.iconColor, params.meta.id), 319, 243, dpr);
         theme.emptyContainer.emptyFavoritesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_favorites.svg", rli.favoritesMainColor, params.meta.id), 238, 223, dpr);
         theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.iconColor, params.meta.id), 167, 214, dpr);
+        theme.emptyContainer.emptyRecentIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.meta.id), 167, dpr);
         theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.iconColor, params.meta.id), 248, 187, dpr);
 
         // Generate empty label icons for each label color

@@ -12,42 +12,37 @@ class YACReaderNavigationController : public QObject
 public:
     explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager);
 
-signals:
-
 public slots:
-    // info origins
-    // folders view
-    void selectedFolder(const QModelIndex &mi);
+    void selectedFolder(const QModelIndex &proxyIndex);
     void reselectCurrentFolder();
-    // reading lists
-    void selectedList(const QModelIndex &mi);
+    void selectedList(const QModelIndex &proxyIndex);
     void reselectCurrentList();
 
     void reselectCurrentSource();
+    void refreshCurrentSource();
 
     // history navigation
     void selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
     void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
-    // empty subfolder
-    void selectSubfolder(const QModelIndex &sourceMI, int child);
 
-    void loadEmptyFolderInfo(const QModelIndex &modelIndex);
-
-    void loadFolderInfo(const QModelIndex &modelIndex);
-    void loadListInfo(const QModelIndex &modelIndex);
-    void loadSpecialListInfo(const QModelIndex &modelIndex);
-    void loadLabelInfo(const QModelIndex &modelIndex);
-    void loadReadingListInfo(const QModelIndex &modelIndex);
+    void loadFolderContent(const QModelIndex &folderIndex);
+    void loadListContent(const QModelIndex &listIndex);
+    void loadSpecialListContent(const QModelIndex &listIndex);
+    void loadLabelContent(const QModelIndex &listIndex);
+    void loadReadingListContent(const QModelIndex &listIndex);
 
     void loadPreviousStatus();
+    void reloadRootContinueReading();
 
 private:
     void setupConnections();
+    void loadRootContinueReading();
+
     LibraryWindow *libraryWindow;
     YACReaderContentViewsManager *contentViewsManager;
+    bool restoringHistorySelection = false;
 
-    // convenience methods
-    qulonglong folderModelIndexToID(const QModelIndex &mi);
+    qulonglong folderIdForIndex(const QModelIndex &folderIndex) const;
 };
 
 #endif // YACREADER_NAVIGATION_CONTROLLER_H

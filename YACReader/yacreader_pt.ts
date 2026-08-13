@@ -316,7 +316,7 @@
         <translation>Claro</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="329"/>
+        <location filename="options_dialog.cpp" line="327"/>
         <source>Comics directory</source>
         <translation>Diretório de quadrinhos</translation>
     </message>
@@ -774,48 +774,48 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="95"/>
-        <location filename="viewer.cpp" line="1676"/>
+        <location filename="viewer.cpp" line="122"/>
+        <location filename="viewer.cpp" line="1745"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Pressione &apos;O&apos; para abrir um quadrinho.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1693"/>
+        <location filename="viewer.cpp" line="1762"/>
         <source>Loading...please wait!</source>
         <translation>Carregando... por favor, aguarde!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Not found</source>
         <translation>Não encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Comic not found</source>
         <translation>Quadrinho não encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="326"/>
+        <location filename="viewer.cpp" line="353"/>
         <source>Error opening comic</source>
         <translation>Erro ao abrir quadrinho</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="332"/>
+        <location filename="viewer.cpp" line="359"/>
         <source>CRC Error</source>
         <translation>Erro CRC</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1704"/>
+        <location filename="viewer.cpp" line="1773"/>
         <source>Page not available!</source>
         <translation>Página não disponível!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1927"/>
+        <location filename="viewer.cpp" line="2121"/>
         <source>Cover!</source>
         <translation>Cobrir!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1941"/>
+        <location filename="viewer.cpp" line="2135"/>
         <source>Last page!</source>
         <translation>Última página!</translation>
     </message>

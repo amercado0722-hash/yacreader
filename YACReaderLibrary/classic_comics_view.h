@@ -27,6 +27,8 @@ public:
 protected:
     void applyTheme(const Theme &theme) override;
     void setToolBar(QToolBar *toolBar) override;
+    void releaseToolBar() override;
+    void saveViewConfig() override;
     void setModel(ComicModel *model) override;
 
     QModelIndex currentIndex() override;
