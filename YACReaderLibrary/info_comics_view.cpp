@@ -147,6 +147,29 @@ void InfoComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHi
     Q_UNUSED(hint);
 }
 
+ContentViewState InfoComicsView::captureViewState() const
+{
+    ContentViewState state;
+    const auto index = selectionHelper->currentIndex();
+    if (index.isValid()) {
+        state.topItem.kind = ContentItemRef::Comic;
+        state.topItem.id = index.data(ComicModel::IdRole).toULongLong();
+        state.fallbackComicRow = index.row();
+        state.currentItem = state.topItem;
+    }
+    return state;
+}
+
+void InfoComicsView::restoreViewState(const ContentViewState &state)
+{
+    if (!model)
+        return;
+
+    const auto index = state.currentItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.currentItem.id) : QModelIndex();
+    if (index.isValid())
+        setCurrentIndex(index);
+}
+
 void InfoComicsView::toFullScreen()
 {
     toolbar->hide();

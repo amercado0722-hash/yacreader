@@ -26,6 +26,7 @@ public slots:
     void clear();
     void setImagePaths(QStringList paths);
     void setCenterIndex(int index);
+    void setCenterIndexWithoutAnimation(int index);
     void showSlide(int index);
     int centerIndex();
     void updateMarks();

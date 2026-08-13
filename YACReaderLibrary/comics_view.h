@@ -2,6 +2,7 @@
 #define COMICS_VIEW_H
 
 #include "comic_model.h"
+#include "content_view_state.h"
 
 #include <QAbstractItemView>
 #include <QSettings>
@@ -35,6 +36,8 @@ public:
     virtual void updateCurrentComicView() = 0;
     virtual void focusComicsNavigation(Qt::FocusReason reason) = 0;
     virtual void reloadContent();
+    virtual ContentViewState captureViewState() const { return { }; }
+    virtual void restoreViewState(const ContentViewState &state) { Q_UNUSED(state); }
 
 public slots:
     virtual void updateInfoForIndex(int index);

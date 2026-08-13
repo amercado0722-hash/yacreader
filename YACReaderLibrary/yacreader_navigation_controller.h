@@ -22,6 +22,8 @@ public slots:
     void refreshCurrentSource();
 
     // history navigation
+    void backward();
+    void forward();
     void selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
     void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
 
@@ -37,6 +39,7 @@ public slots:
 private:
     void setupConnections();
     void loadRootContinueReading();
+    void recordCurrentViewState();
 
     LibraryWindow *libraryWindow;
     YACReaderContentViewsManager *contentViewsManager;

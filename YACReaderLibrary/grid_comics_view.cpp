@@ -40,7 +40,7 @@ QString pixmapDataUrl(const QPixmap &pixmap)
 } // namespace
 
 GridComicsView::GridComicsView(QWidget *parent)
-    : ComicsView(parent), toolbar(nullptr), coverSizeSliderWidget(nullptr), coverSizeSlider(nullptr), coverSizeSliderAction(nullptr), showInfoSeparatorAction(nullptr), startSeparatorAction(nullptr), filterEnabled(false), contentModel(new GridContentModel(this)), smallZoomLabel(nullptr), bigZoomLabel(nullptr)
+    : ComicsView(parent), toolbar(nullptr), coverSizeSliderWidget(nullptr), coverSizeSlider(nullptr), coverSizeSliderAction(nullptr), showInfoSeparatorAction(nullptr), startSeparatorAction(nullptr), filterEnabled(false), contentModel(new GridContentModel(this)), viewStateTimer(new QTimer(this)), smallZoomLabel(nullptr), bigZoomLabel(nullptr)
 {
     qmlRegisterUncreatableType<GridContentModel>("com.yacreader.GridContentModel", 1, 0, "GridContentModel", QStringLiteral("GridContentModel is provided by GridComicsView"));
 
@@ -98,6 +98,9 @@ GridComicsView::GridComicsView(QWidget *parent)
     globalContinueReadingEnabled = settings->value(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
     contentModel->setMixFoldersAndComics(settings->value(COMICS_GRID_MIX_FOLDERS_AND_COMICS, true).toBool());
     contentModel->setStartComicsOnNewRow(settings->value(COMICS_GRID_START_COMICS_ON_NEW_ROW, false).toBool());
+
+    viewStateTimer->setSingleShot(true);
+    connect(viewStateTimer, &QTimer::timeout, this, &GridComicsView::applyPendingViewState);
 
     bool showInfo = settings->value(COMICS_GRID_SHOW_INFO, false).toBool();
     ctxt->setContextProperty("showInfo", showInfo);
@@ -236,6 +239,10 @@ void GridComicsView::setModel(ComicModel *model)
     if (model == nullptr)
         return;
 
+    // Keep the previous frame visible while QML resets the model. The pending
+    // origin/anchor is applied before painting is enabled again.
+    view->setUpdatesEnabled(false);
+
     clearFocusedFolder();
     ComicsView::setModel(model);
 
@@ -271,9 +278,8 @@ void GridComicsView::setModel(ComicModel *model)
     selectionHelper->clear();
     updateInfoForIndex(-1);
 
-    // If the currentComicView was hidden before showing it sometimes the scroll view doesn't show it
-    // this is a hacky solution...
-    QTimer::singleShot(0, this, &GridComicsView::resetScroll);
+    pendingViewState.reset();
+    viewStateTimer->start(0);
 }
 
 void GridComicsView::updateBackgroundConfig()
@@ -612,6 +618,50 @@ void GridComicsView::reloadRootContinueReadingModel()
         rootContinueReadingModelStorage->reloadContinueReading();
 }
 
+ContentViewState GridComicsView::captureViewState() const
+{
+    ContentViewState state;
+    auto *rootObject = view->rootObject();
+    auto *scrollView = rootObject ? rootObject->findChild<QObject *>(QStringLiteral("topScrollView"), Qt::FindChildrenRecursively) : nullptr;
+    if (!scrollView)
+        return state;
+
+    QVariant position;
+    QMetaObject::invokeMethod(scrollView, "capturePosition", Q_RETURN_ARG(QVariant, position));
+    const auto values = position.toMap();
+    const auto viewRow = values.value(QStringLiteral("viewRow"), -1).toInt();
+
+    state.offset = values.value(QStringLiteral("offset")).toReal();
+    state.itemExtent = values.value(QStringLiteral("itemExtent")).toReal();
+    if (model && model->rowCount() > 0)
+        state.fallbackComicRow = qBound(0, contentModel->sourceComicRow(viewRow), model->rowCount() - 1);
+
+    if (values.value(QStringLiteral("header")).toBool()) {
+        state.topItem.kind = ContentItemRef::Header;
+    } else if (viewRow >= 0 && viewRow < contentModel->rowCount()) {
+        const auto index = contentModel->index(viewRow, 0);
+        const auto kind = contentModel->data(index, GridContentModel::ItemKindRole).toInt();
+        state.topItem.kind = kind == GridContentModel::FolderItem ? ContentItemRef::Folder : ContentItemRef::Comic;
+        state.topItem.id = contentModel->data(index, GridContentModel::IdRole).toULongLong();
+    }
+
+    if (focusedFolderIndex.isValid()) {
+        state.currentItem.kind = ContentItemRef::Folder;
+        state.currentItem.id = focusedFolderIndex.data(FolderModel::IdRole).toULongLong();
+    } else if (const auto index = selectionHelper->currentIndex(); index.isValid()) {
+        state.currentItem.kind = ContentItemRef::Comic;
+        state.currentItem.id = index.data(ComicModel::IdRole).toULongLong();
+    }
+
+    return state;
+}
+
+void GridComicsView::restoreViewState(const ContentViewState &state)
+{
+    pendingViewState = state;
+    viewStateTimer->start(0);
+}
+
 void GridComicsView::openContinueReadingComic(int sourceRow)
 {
     if (!rootContinueReadingModelStorage || sourceRow < 0 || sourceRow >= rootContinueReadingModelStorage->rowCount())
@@ -819,14 +869,68 @@ void GridComicsView::clearFocusedFolder()
     emit focusedFolderChanged();
 }
 
-void GridComicsView::resetScroll()
+void GridComicsView::applyPendingViewState()
 {
     auto *rootObject = view->rootObject();
-    if (!rootObject)
+    if (!rootObject) {
+        view->setUpdatesEnabled(true);
         return;
+    }
     auto scrollView = rootObject->findChild<QObject *>("topScrollView", Qt::FindChildrenRecursively);
+    if (!scrollView) {
+        view->setUpdatesEnabled(true);
+        return;
+    }
 
-    QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
+    if (!pendingViewState) {
+        QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
+        view->setUpdatesEnabled(true);
+        view->update();
+        return;
+    }
+
+    const auto state = *pendingViewState;
+    pendingViewState.reset();
+
+    if (state.currentItem.kind != ContentItemRef::None) {
+        const auto currentRow = viewRowForItem(state.currentItem);
+        if (currentRow >= 0)
+            focusItem(currentRow);
+    }
+
+    auto viewRow = viewRowForItem(state.topItem);
+    if (state.topItem.kind == ContentItemRef::Header) {
+        viewRow = -1;
+    } else if (viewRow < 0 && contentModel->rowCount() > 0) {
+        if (model && model->rowCount() > 0 && state.fallbackComicRow >= 0) {
+            const auto comicRow = qBound(0, state.fallbackComicRow, model->rowCount() - 1);
+            viewRow = contentModel->viewRowForComicRow(comicRow);
+        } else {
+            viewRow = 0;
+        }
+        viewRow = nearestSelectableRow(viewRow, 1);
+    }
+
+    QMetaObject::invokeMethod(scrollView, "restorePosition",
+                              Q_ARG(QVariant, viewRow),
+                              Q_ARG(QVariant, state.offset),
+                              Q_ARG(QVariant, state.itemExtent));
+    view->setUpdatesEnabled(true);
+    view->update();
+}
+
+int GridComicsView::viewRowForItem(const ContentItemRef &item) const
+{
+    switch (item.kind) {
+    case ContentItemRef::Comic:
+        return contentModel->viewRowForComicId(item.id);
+    case ContentItemRef::Folder:
+        return contentModel->viewRowForFolderId(item.id);
+    case ContentItemRef::None:
+    case ContentItemRef::Header:
+        return -1;
+    }
+    return -1;
 }
 
 void GridComicsView::showEvent(QShowEvent *event)

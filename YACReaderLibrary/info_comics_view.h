@@ -34,6 +34,8 @@ protected:
     void selectIndex(int index) override;
     void updateCurrentComicView() override;
     void focusComicsNavigation(Qt::FocusReason reason) override;
+    ContentViewState captureViewState() const override;
+    void restoreViewState(const ContentViewState &state) override;
 
 public slots:
     void setShowMarks(bool show) override;

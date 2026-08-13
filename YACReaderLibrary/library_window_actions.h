@@ -8,6 +8,7 @@
 
 class LibraryWindow;
 class YACReaderHistoryController;
+class YACReaderNavigationController;
 class EditShortcutsDialog;
 class HelpAboutDialog;
 class ExportLibraryDialog;
@@ -127,6 +128,7 @@ public:
     LibraryWindowActions();
     void createActions(LibraryWindow *window, QSettings *settings);
     void createConnections(YACReaderHistoryController *historyController,
+                           YACReaderNavigationController *navigationController,
                            LibraryWindow *window,
                            HelpAboutDialog *had,
                            ExportLibraryDialog *exportLibraryDialog,

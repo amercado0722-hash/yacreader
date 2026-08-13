@@ -11,11 +11,13 @@
 #include <QVariantMap>
 
 #include <memory>
+#include <optional>
 
 class QAbstractListModel;
 class QItemSelectionModel;
 class QQuickWidget;
 class QQmlContext;
+class QTimer;
 
 class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;
@@ -98,6 +100,8 @@ protected:
     void updateCurrentComicView() override;
     void focusComicsNavigation(Qt::FocusReason reason) override;
     void reloadContent() override;
+    ContentViewState captureViewState() const override;
+    void restoreViewState(const ContentViewState &state) override;
 
 public slots:
     // ComicsView
@@ -131,7 +135,7 @@ protected slots:
 
     void updateCurrentComicBanner();
 
-    void resetScroll();
+    void applyPendingViewState();
 
     virtual void showEvent(QShowEvent *event) override;
 
@@ -171,6 +175,8 @@ private:
     QPersistentModelIndex focusedFolderIndex;
     QVariantMap focusedFolderInfo;
     QVariantMap currentLocationInfo;
+    QTimer *viewStateTimer;
+    std::optional<ContentViewState> pendingViewState;
 
     ComicDB currentComic;
 
@@ -180,6 +186,7 @@ private:
     void updateCurrentListIcon();
     void setFocusedFolder(int viewRow);
     void clearFocusedFolder();
+    int viewRowForItem(const ContentItemRef &item) const;
 
     // Zoom slider labels (for theming)
     QLabel *smallZoomLabel;

@@ -980,6 +980,22 @@ void YACReaderFlow3D::setCurrentIndex(int pos)
     viewRotateActive = 1;
 }
 
+void YACReaderFlow3D::setCurrentIndexWithoutAnimation(int pos)
+{
+    if (pos < 0 || pos >= images.size())
+        return;
+
+    currentSelected = pos;
+    for (auto index = 0; index < images.size(); ++index) {
+        calcVector(images[index].animEnd, index - currentSelected);
+        images[index].current = images[index].animEnd;
+    }
+
+    viewRotate = 0;
+    cleanupAnimation();
+    startAnimationTimer();
+}
+
 void YACReaderFlow3D::updatePositions()
 {
     int count;

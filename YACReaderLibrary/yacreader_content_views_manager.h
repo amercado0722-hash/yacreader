@@ -1,6 +1,7 @@
 #ifndef YACREADERCONTENTVIEWSMANAGER_H
 #define YACREADERCONTENTVIEWSMANAGER_H
 
+#include "content_view_state.h"
 #include "reading_list_model.h"
 #include "themable.h"
 #include "yacreader_global_gui.h"
@@ -35,6 +36,8 @@ public:
     GridComicsView *gridView() const;
     bool isComicsViewVisible() const;
     void prepareToClose();
+    ContentViewState captureViewState() const;
+    void restoreViewState(const ContentViewState &state);
 
     ComicsView *comicsView;
 

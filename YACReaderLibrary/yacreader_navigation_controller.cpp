@@ -32,8 +32,10 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &proxyIndex
 {
     const QModelIndex folderIndex = libraryWindow->foldersModelProxy->mapToSource(proxyIndex);
 
-    if (!restoringHistorySelection)
+    if (!restoringHistorySelection) {
+        recordCurrentViewState();
         libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(folderIndex, YACReaderLibrarySourceContainer::Folder));
+    }
 
     // when a folder is selected the search mode has to be reset
     if (libraryWindow->exitSearchMode()) {
@@ -175,6 +177,7 @@ void YACReaderNavigationController::selectedList(const QModelIndex &proxyIndex)
 {
     const QModelIndex listIndex = libraryWindow->listsModelProxy->mapToSource(proxyIndex);
 
+    recordCurrentViewState();
     libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(listIndex, YACReaderLibrarySourceContainer::List));
 
     // when a list is selected the search mode has to be reset
@@ -230,6 +233,16 @@ void YACReaderNavigationController::refreshCurrentSource()
     loadFolderContent(libraryWindow->getCurrentFolderIndex());
 }
 
+void YACReaderNavigationController::backward()
+{
+    libraryWindow->historyController->backward(contentViewsManager->captureViewState());
+}
+
+void YACReaderNavigationController::forward()
+{
+    libraryWindow->historyController->forward(contentViewsManager->captureViewState());
+}
+
 void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer)
 {
     // TODO NO searching allowed, just disable backward/forward actions in searching mode
@@ -237,6 +250,7 @@ void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibr
     libraryWindow->exitSearchMode();
     restoringHistorySelection = true;
     loadIndexFromHistory(sourceContainer);
+    contentViewsManager->restoreViewState(sourceContainer.getViewState());
     restoringHistorySelection = false;
     libraryWindow->setToolbarTitle(sourceContainer.getSourceModelIndex());
 }
@@ -313,6 +327,11 @@ void YACReaderNavigationController::setupConnections()
     });
     connect(gridView, &GridComicsView::openLibraryFolderRequested, libraryWindow, &LibraryWindow::openLibraryFolder);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);
+}
+
+void YACReaderNavigationController::recordCurrentViewState()
+{
+    libraryWindow->historyController->recordViewStateForCurrentEntry(contentViewsManager->captureViewState());
 }
 
 qulonglong YACReaderNavigationController::folderIdForIndex(const QModelIndex &folderIndex) const

@@ -838,6 +838,7 @@ void LibraryWindow::createConnections()
 {
     actions.createConnections(
             historyController,
+            navigationController,
             this,
             had,
             exportLibraryDialog,

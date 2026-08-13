@@ -135,6 +135,45 @@ SplitView {
                 grid.contentX = grid.originX
             }
 
+            function capturePosition() {
+                const probeX = Math.max(1, grid.cellWidth / 2)
+                const viewRow = grid.indexAt(probeX, grid.contentY + 1)
+                if (viewRow < 0) {
+                    return {
+                        "header": true,
+                        "viewRow": -1,
+                        "offset": grid.contentY - grid.originY,
+                        "itemExtent": Math.max(1, -grid.originY)
+                    }
+                }
+
+                const item = grid.itemAtIndex(viewRow)
+                return {
+                    "header": false,
+                    "viewRow": viewRow,
+                    "offset": item ? grid.contentY - item.y : 0,
+                    "itemExtent": grid.cellHeight
+                }
+            }
+
+            function restorePosition(viewRow, offset, oldItemExtent) {
+                if (viewRow < 0) {
+                    const currentExtent = Math.max(1, -grid.originY)
+                    const restoredOffset = oldItemExtent === currentExtent
+                            ? offset
+                            : offset * currentExtent / Math.max(1, oldItemExtent)
+                    grid.contentY = grid.originY + restoredOffset
+                    return
+                }
+
+                grid.positionViewAtIndex(viewRow, GridView.Beginning)
+                const restoredOffset = oldItemExtent === grid.cellHeight
+                        ? offset
+                        : offset * grid.cellHeight / Math.max(1, oldItemExtent)
+                const maximumY = Math.max(grid.originY, grid.contentHeight - grid.height + grid.originY)
+                grid.contentY = Math.max(grid.originY, Math.min(maximumY, grid.contentY + restoredOffset))
+            }
+
             property Component currentComicView: Component {
                 id: currentComicView
                 Rectangle {

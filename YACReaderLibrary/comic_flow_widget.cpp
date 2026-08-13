@@ -92,6 +92,11 @@ void ComicFlowWidget::setCenterIndex(int index)
     flow->setCenterIndex(index);
 }
 
+void ComicFlowWidget::setCenterIndexWithoutAnimation(int index)
+{
+    flow->setCurrentIndexWithoutAnimation(index);
+}
+
 void ComicFlowWidget::showSlide(int index)
 {
     flow->showSlide(index);

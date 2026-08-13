@@ -92,6 +92,18 @@ void YACReaderContentViewsManager::prepareToClose()
     comicsView->close();
 }
 
+ContentViewState YACReaderContentViewsManager::captureViewState() const
+{
+    const auto *view = qobject_cast<ComicsView *>(comicsViewStack->currentWidget());
+    return view ? view->captureViewState() : ContentViewState { };
+}
+
+void YACReaderContentViewsManager::restoreViewState(const ContentViewState &state)
+{
+    if (auto *view = qobject_cast<ComicsView *>(comicsViewStack->currentWidget()))
+        view->restoreViewState(state);
+}
+
 void YACReaderContentViewsManager::updateCurrentComicView()
 {
     if (comicsViewStack->currentWidget() == comicsView) {
