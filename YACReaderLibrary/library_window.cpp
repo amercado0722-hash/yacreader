@@ -157,17 +157,19 @@ void LibraryWindow::showEvent(QShowEvent *event)
 bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
 {
     if (this->isActiveWindow()) {
-        if (event->type() == QEvent::MouseButtonRelease) {
+        if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease) {
             auto mouseEvent = static_cast<QMouseEvent *>(event);
 
             if (mouseEvent->button() == Qt::ForwardButton) {
-                actions.forwardAction->trigger();
+                if (event->type() == QEvent::MouseButtonRelease)
+                    actions.forwardAction->trigger();
                 event->accept();
                 return true;
             }
 
             if (mouseEvent->button() == Qt::BackButton) {
-                actions.backAction->trigger();
+                if (event->type() == QEvent::MouseButtonRelease)
+                    actions.backAction->trigger();
                 event->accept();
                 return true;
             }
