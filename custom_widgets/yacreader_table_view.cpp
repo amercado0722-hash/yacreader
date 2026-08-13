@@ -146,10 +146,26 @@ void YACReaderTableView::dragMoveEvent(QDragMoveEvent *event)
 
 void YACReaderTableView::dropEvent(QDropEvent *event)
 {
-    QTableView::dropEvent(event);
+    if (!model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex())) {
+        event->ignore();
+        return;
+    }
 
-    if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
-        event->acceptProposedAction();
+    const QPoint position = event->position().toPoint();
+    const QModelIndex destination = indexAt(position);
+    int destinationRow = -1;
+    if (destination.isValid()) {
+        destinationRow = destination.row();
+        if (position.y() >= visualRect(destination).center().y())
+            ++destinationRow;
+    }
+
+    if (model()->dropMimeData(event->mimeData(), Qt::MoveAction, destinationRow, 0, QModelIndex())) {
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    } else {
+        event->ignore();
+    }
     QLOG_DEBUG() << "drop on table";
 }
 

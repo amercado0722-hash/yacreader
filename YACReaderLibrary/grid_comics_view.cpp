@@ -889,7 +889,7 @@ bool GridComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
     return false;
 }
 
-bool GridComicsView::canDropFormats(const QString &formats)
+bool GridComicsView::canDropFormats(const QStringList &formats)
 {
     return (formats.contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat) && model->canBeResorted());
 }

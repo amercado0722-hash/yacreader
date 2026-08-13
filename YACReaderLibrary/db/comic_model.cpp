@@ -61,14 +61,18 @@ bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
 // TODO: optimize this method (seriously)
 bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-
-    QAbstractItemModel::dropMimeData(data, action, row, column, parent);
     QLOG_TRACE() << ">>>>>>>>>>>>>>dropMimeData ComicModel<<<<<<<<<<<<<<<<<" << parent << row << "," << column;
 
-    if (!data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
+    if (!canDropMimeData(data, action, row, column, parent))
         return false;
 
     const QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
+    if (comicIds.isEmpty())
+        return false;
+
+    if (row < 0 || row > _data.count())
+        row = _data.count();
+
     QList<int> currentIndexes;
     int i;
     {
@@ -84,6 +88,9 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
             }
         }
     }
+
+    if (currentIndexes.size() != comicIds.size())
+        return false;
 
     std::sort(currentIndexes.begin(), currentIndexes.end());
     QList<ComicItem *> resortedData;
@@ -132,26 +139,24 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     int tempRow = row;
 
-    if (tempRow < 0)
-        tempRow = _data.count();
-
     for (const auto id : comicIds) {
         int i = 0;
         const auto dataSnapshot = _data;
         for (auto *item : dataSnapshot) {
             if (item->data(Id) == id) {
-                beginMoveRows(parent, i, i, parent, tempRow);
-
-                bool skipElement = i == tempRow || i + 1 == tempRow;
+                const bool skipElement = i == tempRow || i + 1 == tempRow;
 
                 if (!skipElement) {
+                    if (!beginMoveRows(parent, i, i, parent, tempRow))
+                        return false;
+
                     if (i > tempRow)
                         _data.move(i, tempRow);
                     else
                         _data.move(i, tempRow - 1);
-                }
 
-                endMoveRows();
+                    endMoveRows();
+                }
 
                 if (i > tempRow)
                     tempRow++;

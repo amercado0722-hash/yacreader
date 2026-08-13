@@ -603,14 +603,15 @@ SplitView {
                                    else{
                                        if (dropManager.canDropFormats(drop.formats))
                                        {
-                                           var destItem = grid.itemAt(drop.x,drop.y + grid.contentY);
-                                           var destLocalX = grid.mapToItem(destItem,drop.x,drop.y + grid.contentY).x
                                            var realIndex = grid.indexAt(drop.x,drop.y + grid.contentY);
-
-                                           if(realIndex === -1)
-                                           realIndex = grid.count - 1;
-
-                                           var destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
+                                           var destIndex = grid.count;
+                                           if (realIndex !== -1) {
+                                               var destItem = grid.itemAtIndex(realIndex);
+                                               var destLocalX = grid.mapToItem(destItem,
+                                                                               drop.x,
+                                                                               drop.y + grid.contentY).x;
+                                               destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
+                                           }
                                            dropManager.droppedComicsForResortingAt("", destIndex);
                                        }
                                    }

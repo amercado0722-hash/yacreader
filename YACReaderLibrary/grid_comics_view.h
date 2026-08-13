@@ -120,7 +120,7 @@ protected slots:
     void startDrag();
     // QML - dropManager
     bool canDropUrls(const QList<QUrl> &urls, Qt::DropAction action);
-    bool canDropFormats(const QString &formats);
+    bool canDropFormats(const QStringList &formats);
     void droppedFiles(const QList<QUrl> &urls, Qt::DropAction action);
     void droppedComicsForResortingAt(const QString &data, int index);
     // QML - context menu
