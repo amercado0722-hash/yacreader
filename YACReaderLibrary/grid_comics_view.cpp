@@ -884,7 +884,7 @@ void GridComicsView::clearFocusedFolder()
     if (!focusedFolderIndex.isValid() && focusedFolderInfo.isEmpty())
         return;
 
-    focusedFolderIndex = { };
+    focusedFolderIndex = QModelIndex();
     focusedFolderInfo.clear();
     emit focusedFolderChanged();
 }
