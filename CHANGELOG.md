@@ -4,9 +4,17 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10.3.0
 
+### YACReaderLibrary
+* Unify folder and comic browsing in the grid view. The side information panel can show information about folders and lists. There are settings to decide if folders should be displayed alongside comics and if folders and comics should be kept visually separated.
+* Fix drag & drop for sorting comics in lists.
+* Add state restoration when going back and forth through the navigation history.
+* Add scroll and current item restoration when switching between content views.
+* Keep current scroll position when editing comics.
+* Fix info panel in the grid view not getting updates when the select comic metadata changes.
+
 ### WebUI
-* Add per library search.
-* Use the same sorting used in the rest of the apps.
+* Add per-library search.
+* Use the same sorting as the rest of the apps.
 
 ## 10.2.0
 
