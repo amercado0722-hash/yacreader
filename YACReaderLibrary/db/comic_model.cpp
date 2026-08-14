@@ -1267,6 +1267,12 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> &comicsList)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    QList<qulonglong> comicIds;
+    comicIds.reserve(comics.size());
+    for (const auto &comic : comics)
+        comicIds.append(comic.id);
+    emit favoritesChanged(comicIds);
 }
 
 void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId)
@@ -1316,6 +1322,12 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    QList<qulonglong> comicIds;
+    comicIds.reserve(comics.size());
+    for (const auto &comic : comics)
+        comicIds.append(comic.id);
+    emit favoritesChanged(comicIds);
 
     if (mode == Favorites)
         deleteComicsFromModel(comicsList);

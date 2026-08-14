@@ -244,7 +244,27 @@ void GridComicsView::setModel(ComicModel *model)
     view->setUpdatesEnabled(false);
 
     clearFocusedFolder();
+    disconnect(modelDataChangedConnection);
+    disconnect(modelFavoritesChangedConnection);
     ComicsView::setModel(model);
+
+    modelDataChangedConnection = connect(model, &QAbstractItemModel::dataChanged, this, [this](const QModelIndex &topLeft, const QModelIndex &bottomRight) {
+        if (!showInfoAction->isChecked() || focusedFolderIndex.isValid())
+            return;
+
+        const auto index = currentIndex();
+        if (index.isValid() && index.row() >= topLeft.row() && index.row() <= bottomRight.row())
+            updateInfoForIndex(index.row());
+    });
+
+    modelFavoritesChangedConnection = connect(model, &ComicModel::favoritesChanged, this, [this](const QList<qulonglong> &comicIds) {
+        if (!showInfoAction->isChecked() || focusedFolderIndex.isValid())
+            return;
+
+        const auto index = currentIndex();
+        if (index.isValid() && comicIds.contains(index.data(ComicModel::IdRole).toULongLong()))
+            updateInfoForIndex(index.row());
+    });
 
     updateCurrentComicBanner();
 

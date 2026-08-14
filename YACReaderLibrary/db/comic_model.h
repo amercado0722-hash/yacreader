@@ -203,6 +203,7 @@ private:
 
 signals:
     void isEmpty();
+    void favoritesChanged(const QList<qulonglong> &comicIds);
     void searchNumResults(int);
     void resortedIndexes(QList<int>);
     void newSelectedIndex(const QModelIndex &);
