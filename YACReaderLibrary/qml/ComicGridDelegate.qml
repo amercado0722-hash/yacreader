@@ -281,18 +281,28 @@ Rectangle {
         Component {
             id: ratingContextMenuComponent
             Menu {
-                background: Rectangle {
-                    implicitWidth: 42
-                    implicitHeight: 100
+                id: ratingMenu
+
+                readonly property real menuItemPadding: 6
+                property TextMetrics resetRatingTextMetrics: TextMetrics {
+                    font: ratingMenu.font
+                    text: resetRatingAction.text
                 }
+
+                implicitWidth: Math.ceil(resetRatingTextMetrics.advanceWidth) + 2 * menuItemPadding + leftPadding + rightPadding
 
                 Action { text: "1"; onTriggered: cell.rateRequested(cell.source_index, 1) }
                 Action { text: "2"; onTriggered: cell.rateRequested(cell.source_index, 2) }
                 Action { text: "3"; onTriggered: cell.rateRequested(cell.source_index, 3) }
                 Action { text: "4"; onTriggered: cell.rateRequested(cell.source_index, 4) }
                 Action { text: "5"; onTriggered: cell.rateRequested(cell.source_index, 5) }
+                MenuSeparator {}
+                Action { id: resetRatingAction; text: qsTranslate("LibraryWindowActions", "Reset rating"); onTriggered: cell.rateRequested(cell.source_index, 0) }
 
-                delegate: MenuItem { implicitHeight: 30 }
+                delegate: MenuItem {
+                    implicitHeight: 30
+                    padding: ratingMenu.menuItemPadding
+                }
             }
         }
     }
