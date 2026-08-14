@@ -1,7 +1,12 @@
 #ifndef YACREADER_NAVIGATION_CONTROLLER_H
 #define YACREADER_NAVIGATION_CONTROLLER_H
 
+#include "content_view_state.h"
+
 #include <QObject>
+
+#include <optional>
+
 class LibraryWindow;
 class YACReaderLibrarySourceContainer;
 class YACReaderContentViewsManager;
@@ -19,6 +24,8 @@ public slots:
     void reselectCurrentList();
 
     void reselectCurrentSource();
+    void beginCurrentSourceRefresh();
+    void cancelCurrentSourceRefresh();
     void refreshCurrentSource();
 
     // history navigation
@@ -44,6 +51,7 @@ private:
     LibraryWindow *libraryWindow;
     YACReaderContentViewsManager *contentViewsManager;
     bool restoringHistorySelection = false;
+    std::optional<ContentViewState> pendingRefreshViewState;
 
     qulonglong folderIdForIndex(const QModelIndex &folderIndex) const;
 };

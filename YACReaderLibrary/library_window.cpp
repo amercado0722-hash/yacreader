@@ -978,12 +978,14 @@ void LibraryWindow::createConnections()
 
     // properties & config
     connect(propertiesDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::refreshCurrentSource);
+    connect(propertiesDialog, &QDialog::rejected, navigationController, &YACReaderNavigationController::cancelCurrentSourceRefresh);
     connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, this, [=](const ComicDB &comic) {
         comicsModel->notifyCoverChange(comic);
     });
 
     // comic vine
     connect(comicVineDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::refreshCurrentSource, Qt::QueuedConnection);
+    connect(comicVineDialog, &QDialog::rejected, navigationController, &YACReaderNavigationController::cancelCurrentSourceRefresh);
 
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
@@ -2607,6 +2609,7 @@ void LibraryWindow::showProperties()
         propertiesDialog->setComicsForSequentialEditing(index, comicsModel->getAllComics());
     }
 
+    navigationController->beginCurrentSourceRefresh();
     propertiesDialog->show();
 }
 
@@ -2632,6 +2635,7 @@ void LibraryWindow::showComicVineScraper()
         comicVineDialog->basePath = currentPath();
         comicVineDialog->setComics(comics);
 
+        navigationController->beginCurrentSourceRefresh();
         comicVineDialog->show();
     }
 }

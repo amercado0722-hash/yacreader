@@ -185,14 +185,14 @@ void YACReaderContentViewsManager::showNoSearchResults()
     showStackWidget(noSearchResultsWidget, true);
 }
 
-// TODO recover the current comics selection and restore it in the destination
 void YACReaderContentViewsManager::toggleComicsView()
 {
+    const auto viewState = captureViewState();
     if (comicsViewStack->currentWidget() == comicsView) {
         QTimer::singleShot(0, this, &YACReaderContentViewsManager::showComicsViewTransition);
-        QTimer::singleShot(100, this, &YACReaderContentViewsManager::switchToNextComicsView);
+        QTimer::singleShot(100, this, [this, viewState]() { switchToNextComicsView(viewState); });
     } else {
-        switchToNextComicsView();
+        switchToNextComicsView(viewState);
     }
 }
 
@@ -233,7 +233,7 @@ void YACReaderContentViewsManager::connectComicsViewConnections(ComicsView *view
     connect(view, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
 }
 
-void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsView *to)
+void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsView *to, const ContentViewState &viewState)
 {
     // setup views
     disconnectComicsViewConnections(from);
@@ -257,6 +257,7 @@ void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsVi
         comicsView->enableFilterMode(true);
     }
 
+    to->restoreViewState(viewState);
     updateComicActionsForCurrentView();
 }
 
@@ -337,11 +338,11 @@ void YACReaderContentViewsManager::showComicsViewTransition()
     comicsViewStack->setCurrentWidget(comicsViewTransition);
 }
 
-void YACReaderContentViewsManager::switchToNextComicsView()
+void YACReaderContentViewsManager::switchToNextComicsView(const ContentViewState &viewState)
 {
     switch (comicsViewStatus) {
     case Flow: {
-        switchToComicsView(classicComicsView, gridComicsView);
+        switchToComicsView(classicComicsView, gridComicsView, viewState);
         comicsViewStatus = Grid;
 
         break;
@@ -351,7 +352,7 @@ void YACReaderContentViewsManager::switchToNextComicsView()
         if (infoComicsView == nullptr)
             infoComicsView = new InfoComicsView();
 
-        switchToComicsView(gridComicsView, infoComicsView);
+        switchToComicsView(gridComicsView, infoComicsView, viewState);
         comicsViewStatus = Info;
 
         break;
@@ -361,7 +362,7 @@ void YACReaderContentViewsManager::switchToNextComicsView()
         if (classicComicsView == nullptr)
             classicComicsView = new ClassicComicsView();
 
-        switchToComicsView(infoComicsView, classicComicsView);
+        switchToComicsView(infoComicsView, classicComicsView, viewState);
         comicsViewStatus = Flow;
 
         break;

@@ -151,6 +151,7 @@ protected:
 
     int numObjects;
     int lazyPopulateObjects;
+    int pendingCurrentIndex;
     bool showMarks;
     QVector<bool> loaded;
     QVector<YACReader::YACReaderComicReadStatus> marks;

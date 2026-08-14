@@ -81,12 +81,12 @@ public slots:
 
 protected slots:
     void showComicsViewTransition();
-    void switchToNextComicsView();
 
     void disconnectComicsViewConnections(ComicsView *widget);
     void connectComicsViewConnections(ComicsView *view);
 
-    void switchToComicsView(ComicsView *from, ComicsView *to);
+    void switchToNextComicsView(const ContentViewState &viewState);
+    void switchToComicsView(ComicsView *from, ComicsView *to, const ContentViewState &viewState);
     void setToolBarOwner(ComicsView *view);
     void setViewSelectorEnabled(bool enabled);
     void updateViewSelectorIcon(const Theme &theme);

@@ -4,6 +4,7 @@
 #include "yacreader_global.h"
 
 #include <QAbstractItemModel>
+#include <QHash>
 #include <QModelIndex>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -173,6 +174,7 @@ public slots:
 
 protected:
 private:
+    QHash<quint64, quint64> coverRevisions;
     QList<ComicItem *> createModelData(QSqlQuery &sqlquery) const;
     QList<ComicItem *> createModelDataForList(QSqlQuery &sqlquery) const;
 

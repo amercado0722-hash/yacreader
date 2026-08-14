@@ -332,9 +332,13 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(FileName);
     else if (role == RatingRole)
         return item->data(Rating);
-    else if (role == CoverPathRole)
-        return getCoverUrlPathForComicHash(item->data(Hash).toString());
-    else if (role == NumPagesRole)
+    else if (role == CoverPathRole) {
+        auto coverUrl = getCoverUrlPathForComicHash(item->data(Hash).toString());
+        const auto revision = coverRevisions.value(item->data(Id).toULongLong());
+        if (revision > 0)
+            coverUrl.setQuery(QStringLiteral("revision=%1").arg(revision));
+        return coverUrl;
+    } else if (role == NumPagesRole)
         return item->data(NumPages);
     else if (role == CurrentPageRole)
         return item->data(CurrentPage);
@@ -1229,20 +1233,16 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
 void ComicModel::notifyCoverChange(const ComicDB &comic)
 {
     auto it = std::find_if(_data.begin(), _data.end(), [comic](ComicItem *item) { return item->data(ComicModel::Id).toULongLong() == comic.id; });
-    auto itemIndex = std::distance(_data.begin(), it);
-    auto item = _data[itemIndex];
+    if (it == _data.end())
+        return;
 
-    // emiting a dataChage doesn't work in QML for some reason, CoverPathRole is requested but the view doesn't update the image
-    // removing and reading again works with the flow views without any additional code, but it's not the best solution
-    beginRemoveRows(QModelIndex(), itemIndex, itemIndex);
-    _data.removeAt(itemIndex);
-    endRemoveRows();
-
-    beginInsertRows(QModelIndex(), itemIndex, itemIndex);
-    _data.insert(itemIndex, item);
-    endInsertRows();
-
-    // this doesn't work in QML -> emit dataChanged(index(itemIndex, 0), index(itemIndex, 0), QVector<int>() << CoverPathRole);
+    // Keep cover changes non-structural. Removing and reinserting the row makes
+    // views adjust their selection and scroll position before the edit refresh can
+    // capture them. Changing the URL also makes QML reload the image even though
+    // the underlying cover file path is unchanged.
+    ++coverRevisions[comic.id];
+    const auto itemIndex = std::distance(_data.begin(), it);
+    emit dataChanged(index(itemIndex, 0), index(itemIndex, columnCount() - 1), { CoverPathRole });
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const

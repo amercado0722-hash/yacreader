@@ -1061,7 +1061,6 @@ void PropertiesDialog::saveAndClose()
     updateComics();
 
     close();
-    emit accepted();
 }
 
 void PropertiesDialog::setDisableUniqueValues(bool disabled)

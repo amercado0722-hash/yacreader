@@ -162,12 +162,19 @@ ContentViewState InfoComicsView::captureViewState() const
 
 void InfoComicsView::restoreViewState(const ContentViewState &state)
 {
-    if (!model)
+    if (!model || model->rowCount() == 0)
         return;
 
-    const auto index = state.currentItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.currentItem.id) : QModelIndex();
-    if (index.isValid())
-        setCurrentIndex(index);
+    auto index = state.currentItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.currentItem.id) : QModelIndex();
+    if (!index.isValid() && state.fallbackComicRow >= 0)
+        index = model->index(qBound(0, state.fallbackComicRow, model->rowCount() - 1), 0);
+    if (!index.isValid())
+        return;
+
+    selectionHelper->clear();
+    selectionHelper->selectIndex(index.row());
+    if (list)
+        QMetaObject::invokeMethod(list, "restoreCurrentIndex", Q_ARG(QVariant, index.row()));
 }
 
 void InfoComicsView::toFullScreen()

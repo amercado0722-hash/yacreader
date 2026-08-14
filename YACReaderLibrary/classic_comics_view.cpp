@@ -9,6 +9,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
+#include <QScrollBar>
 #include <QSettings>
 #include <QSplitter>
 #include <QStackedWidget>
@@ -294,8 +295,11 @@ void ClassicComicsView::restoreViewState(const ContentViewState &state)
     const auto topIndex = state.topItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.topItem.id) : QModelIndex();
     const auto fallbackRow = qBound(0, state.fallbackComicRow, model->rowCount() - 1);
     const auto restoreIndex = topIndex.isValid() ? topIndex : model->index(fallbackRow, 0);
-    if (restoreIndex.isValid())
+    if (restoreIndex.isValid()) {
         tableView->scrollTo(restoreIndex, QAbstractItemView::PositionAtTop);
+        if (state.offset > 0)
+            tableView->verticalScrollBar()->setValue(tableView->verticalScrollBar()->value() + qRound(state.offset));
+    }
 }
 
 void ClassicComicsView::toFullScreen()
@@ -446,11 +450,18 @@ void ClassicComicsView::saveSplitterStatus()
 
 void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
-    Q_UNUSED(topLeft);
-    Q_UNUSED(bottomRight);
     if (roles.contains(ComicModel::ReadColumnRole)) {
         comicFlow->setMarks(model->getReadList());
         comicFlow->updateMarks();
+    }
+
+    if (roles.contains(ComicModel::CoverPathRole)) {
+        const auto centerIndex = comicFlow->centerIndex();
+        for (auto row = topLeft.row(); row <= bottomRight.row(); ++row) {
+            comicFlow->remove(row);
+            comicFlow->add(model->index(row, 0).data(ComicModel::CoverPathRole).toUrl().toLocalFile(), row);
+        }
+        comicFlow->setCenterIndexWithoutAnimation(centerIndex);
     }
 }
 

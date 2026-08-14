@@ -209,16 +209,36 @@ void YACReaderNavigationController::reselectCurrentSource()
     }
 }
 
+void YACReaderNavigationController::beginCurrentSourceRefresh()
+{
+    pendingRefreshViewState = contentViewsManager->captureViewState();
+}
+
+void YACReaderNavigationController::cancelCurrentSourceRefresh()
+{
+    pendingRefreshViewState.reset();
+}
+
 void YACReaderNavigationController::refreshCurrentSource()
 {
-    if (!libraryWindow->hasLoadedLibraryModels())
+    if (!libraryWindow->hasLoadedLibraryModels()) {
+        pendingRefreshViewState.reset();
         return;
+    }
+
+    // Reloading resets the models used by every content view. Keep the view-specific
+    // state outside that operation so each view can restore its stable item anchor
+    // once the refreshed source has been populated.
+    const auto viewState = pendingRefreshViewState.value_or(contentViewsManager->captureViewState());
+    pendingRefreshViewState.reset();
 
     if (libraryWindow->status == LibraryWindow::Searching) {
         libraryWindow->comicsModel->reload();
 
         if (contentViewsManager->isComicsViewVisible())
             contentViewsManager->comicsView->reloadContent();
+
+        contentViewsManager->restoreViewState(viewState);
         return;
     }
 
@@ -226,11 +246,13 @@ void YACReaderNavigationController::refreshCurrentSource()
         auto currentListIndex = libraryWindow->listsModelProxy->mapToSource(libraryWindow->listsView->currentIndex());
         if (currentListIndex.isValid()) {
             loadListContent(currentListIndex);
+            contentViewsManager->restoreViewState(viewState);
             return;
         }
     }
 
     loadFolderContent(libraryWindow->getCurrentFolderIndex());
+    contentViewsManager->restoreViewState(viewState);
 }
 
 void YACReaderNavigationController::backward()
