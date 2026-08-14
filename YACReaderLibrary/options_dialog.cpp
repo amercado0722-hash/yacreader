@@ -90,6 +90,9 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     displayGlobalContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
     displayContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
+    mixFoldersAndComicsCheck->setChecked(settings->value(COMICS_GRID_MIX_FOLDERS_AND_COMICS, true).toBool());
+    startComicsOnNewRowCheck->setChecked(settings->value(COMICS_GRID_START_COMICS_ON_NEW_ROW, false).toBool());
+    startComicsOnNewRowCheck->setEnabled(mixFoldersAndComicsCheck->isChecked());
 
     updateLibrariesAtStartupCheck->setChecked(settings->value(UPDATE_LIBRARIES_AT_STARTUP, false).toBool());
     detectChangesAutomaticallyCheck->setChecked(settings->value(DETECT_CHANGES_IN_LIBRARIES_AUTOMATICALLY, false).toBool());
@@ -421,6 +424,16 @@ QWidget *OptionsDialog::createGridTab()
     auto continueReadingGroup = new QGroupBox(tr("Continue reading"));
     continueReadingGroup->setLayout(continueReadingLayout);
 
+    mixFoldersAndComicsCheck = new QCheckBox(tr("Mix folders and comics"));
+    startComicsOnNewRowCheck = new QCheckBox(tr("Start comics on a new row"));
+
+    auto gridContentLayout = new QVBoxLayout();
+    gridContentLayout->addWidget(mixFoldersAndComicsCheck);
+    gridContentLayout->addWidget(startComicsOnNewRowCheck);
+
+    auto gridContentGroup = new QGroupBox(tr("Content"));
+    gridContentGroup->setLayout(gridContentLayout);
+
     connect(useBackgroundImageCheck, &QAbstractButton::clicked, this, &OptionsDialog::useBackgroundImageCheckClicked);
     connect(backgroundImageOpacitySlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageOpacitySliderChanged);
     connect(backgroundImageBlurRadiusSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageBlurRadiusSliderChanged);
@@ -440,8 +453,20 @@ QWidget *OptionsDialog::createGridTab()
         emit optionsChanged();
     });
 
+    connect(mixFoldersAndComicsCheck, &QCheckBox::clicked, this, [this](bool checked) {
+        settings->setValue(COMICS_GRID_MIX_FOLDERS_AND_COMICS, checked);
+        startComicsOnNewRowCheck->setEnabled(checked);
+        emit optionsChanged();
+    });
+
+    connect(startComicsOnNewRowCheck, &QCheckBox::clicked, this, [this](bool checked) {
+        settings->setValue(COMICS_GRID_START_COMICS_ON_NEW_ROW, checked);
+        emit optionsChanged();
+    });
+
     auto gridViewLayout = new QVBoxLayout();
     gridViewLayout->addWidget(gridBackgroundGroup);
+    gridViewLayout->addWidget(gridContentGroup);
     gridViewLayout->addWidget(continueReadingGroup);
     gridViewLayout->addStretch();
 

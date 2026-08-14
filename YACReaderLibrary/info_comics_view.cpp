@@ -14,7 +14,7 @@
 #include <QVBoxLayout>
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    : ComicsView(parent), flow(nullptr), list(nullptr)
+    : ComicsView(parent), toolbar(nullptr), flow(nullptr), list(nullptr)
 {
 
     // container->setFocusPolicy(Qt::StrongFocus);
@@ -53,7 +53,11 @@ InfoComicsView::~InfoComicsView()
 void InfoComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(this->layout())->insertWidget(1, toolBar);
-    this->toolbar = toolBar;
+    toolbar = toolBar;
+}
+
+void InfoComicsView::releaseToolBar()
+{
 }
 
 void InfoComicsView::setModel(ComicModel *model)
@@ -141,6 +145,36 @@ void InfoComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHi
 {
     Q_UNUSED(mi);
     Q_UNUSED(hint);
+}
+
+ContentViewState InfoComicsView::captureViewState() const
+{
+    ContentViewState state;
+    const auto index = selectionHelper->currentIndex();
+    if (index.isValid()) {
+        state.topItem.kind = ContentItemRef::Comic;
+        state.topItem.id = index.data(ComicModel::IdRole).toULongLong();
+        state.fallbackComicRow = index.row();
+        state.currentItem = state.topItem;
+    }
+    return state;
+}
+
+void InfoComicsView::restoreViewState(const ContentViewState &state)
+{
+    if (!model || model->rowCount() == 0)
+        return;
+
+    auto index = state.currentItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.currentItem.id) : QModelIndex();
+    if (!index.isValid() && state.fallbackComicRow >= 0)
+        index = model->index(qBound(0, state.fallbackComicRow, model->rowCount() - 1), 0);
+    if (!index.isValid())
+        return;
+
+    selectionHelper->clear();
+    selectionHelper->selectIndex(index.row());
+    if (list)
+        QMetaObject::invokeMethod(list, "restoreCurrentIndex", Q_ARG(QVariant, index.row()));
 }
 
 void InfoComicsView::toFullScreen()

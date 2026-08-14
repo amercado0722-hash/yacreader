@@ -170,6 +170,8 @@ public:
     QToolBar *treeActions;
     QToolBar *comicsToolBar;
     QToolBar *editInfoToolBar;
+    QList<QAction *> comicToolbarEntries;
+    QAction *comicToolbarEndAnchor = nullptr;
 
     OptionsDialog *optionsDialog;
     ServerConfigDialog *serverConfigDialog;
@@ -236,7 +238,6 @@ signals:
     void errorUpgradingLibrary(const QString &path);
 public slots:
     void loadLibrary(const QString &path);
-    void selectSubfolder(const QModelIndex &mi, int child);
     void checkEmptyFolder();
     void openComic();
     void openComic(const ComicDB &comic, const ComicModel::Mode mode);
@@ -338,7 +339,8 @@ public slots:
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
-    void disableComicsActions(bool disabled);
+    void setComicActionsDisabled(bool disabled);
+    void setComicToolbarEntriesVisible(bool visible);
     void addFolderToCurrentIndex();
     void deleteSelectedFolder();
     void errorDeletingFolder();

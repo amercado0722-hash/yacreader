@@ -122,16 +122,17 @@ qt_add_executable(YACReaderLibrary WIN32
     yacreader_main_toolbar.cpp
     comics_view.h
     comics_view.cpp
+    content_view_state.h
     comics_view_transition.h
     comics_view_transition.cpp
     classic_comics_view.h
     classic_comics_view.cpp
     grid_comics_view.h
     grid_comics_view.cpp
+    grid_content_model.h
+    grid_content_model.cpp
     no_search_results_widget.h
     no_search_results_widget.cpp
-    folder_content_view.h
-    folder_content_view.cpp
     recent_visibility_coordinator.h
     recent_visibility_coordinator.cpp
     library_comic_opener.h
@@ -348,7 +349,14 @@ set_source_files_properties(
 )
 set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
-    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderContentView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ContinueReadingGridHeader.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FlowView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoTick.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoFavorites.qml
@@ -370,7 +378,14 @@ set(yacreaderlibrary_qml_files
 )
 set(yacreaderlibrary_qml_translation_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
-    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderContentView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ContinueReadingGridHeader.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FlowView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoTick.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoFavorites.qml

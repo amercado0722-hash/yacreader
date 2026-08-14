@@ -11,6 +11,7 @@
 #include "yacreader_content_views_manager.h"
 #include "yacreader_folders_view.h"
 #include "yacreader_history_controller.h"
+#include "yacreader_navigation_controller.h"
 #include "yacreader_options_dialog.h"
 
 #include <QtCore>
@@ -427,6 +428,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
 
 void LibraryWindowActions::createConnections(
         YACReaderHistoryController *historyController,
+        YACReaderNavigationController *navigationController,
         LibraryWindow *window,
         HelpAboutDialog *had,
         ExportLibraryDialog *exportLibraryDialog,
@@ -437,10 +439,8 @@ void LibraryWindowActions::createConnections(
         ServerConfigDialog *serverConfigDialog,
         RecentVisibilityCoordinator *recentVisibilityCoordinator)
 {
-    // history navigation
-    QObject::connect(backAction, &QAction::triggered, historyController, &YACReaderHistoryController::backward);
-    QObject::connect(forwardAction, &QAction::triggered, historyController, &YACReaderHistoryController::forward);
-    //--
+    QObject::connect(backAction, &QAction::triggered, navigationController, &YACReaderNavigationController::backward);
+    QObject::connect(forwardAction, &QAction::triggered, navigationController, &YACReaderNavigationController::forward);
     QObject::connect(historyController, &YACReaderHistoryController::enabledBackward, backAction, &QAction::setEnabled);
     QObject::connect(historyController, &YACReaderHistoryController::enabledForward, forwardAction, &QAction::setEnabled);
     // connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
@@ -678,36 +678,41 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
 }
 
-void LibraryWindowActions::disableComicsActions(bool disabled)
+void LibraryWindowActions::setComicActionsDisabled(bool disabled)
 {
     // if there aren't comics, no fullscreen option will be available
 #ifndef Q_OS_MACOS
     toggleFullScreenAction->setDisabled(disabled);
 #endif
     // edit toolbar
-    openComicAction->setDisabled(disabled);
-    editSelectedComicsAction->setDisabled(disabled);
+    setComicSelectionActionsEnabled(!disabled);
     selectAllComicsAction->setDisabled(disabled);
-    asignOrderAction->setDisabled(disabled);
-    setAsReadAction->setDisabled(disabled);
-    setAsNonReadAction->setDisabled(disabled);
-    setNormalAction->setDisabled(disabled);
-    setMangaAction->setDisabled(disabled);
-    setWebComicAction->setDisabled(disabled);
-    setWesternMangaAction->setDisabled(disabled);
-    setYonkomaAction->setDisabled(disabled);
     // setAllAsReadAction->setDisabled(disabled);
     // setAllAsNonReadAction->setDisabled(disabled);
     showHideMarksAction->setDisabled(disabled);
-    deleteMetadataAction->setDisabled(disabled);
-    deleteComicsAction->setDisabled(disabled);
-    // context menu
-    openContainingFolderComicAction->setDisabled(disabled);
-    resetComicRatingAction->setDisabled(disabled);
-
-    getInfoAction->setDisabled(disabled);
-
     updateCurrentFolderAction->setDisabled(disabled);
+}
+
+void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
+{
+    openComicAction->setEnabled(enabled);
+    saveCoversToAction->setEnabled(enabled);
+    editSelectedComicsAction->setEnabled(enabled);
+    asignOrderAction->setEnabled(enabled);
+    setAsReadAction->setEnabled(enabled);
+    setAsNonReadAction->setEnabled(enabled);
+    setNormalAction->setEnabled(enabled);
+    setMangaAction->setEnabled(enabled);
+    setWebComicAction->setEnabled(enabled);
+    setWesternMangaAction->setEnabled(enabled);
+    setYonkomaAction->setEnabled(enabled);
+    deleteMetadataAction->setEnabled(enabled);
+    deleteComicsAction->setEnabled(enabled);
+    openContainingFolderComicAction->setEnabled(enabled);
+    resetComicRatingAction->setEnabled(enabled);
+    getInfoAction->setEnabled(enabled);
+    addToMenuAction->setEnabled(enabled);
+    addToFavoritesAction->setEnabled(enabled);
 }
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
@@ -750,7 +755,7 @@ void LibraryWindowActions::disableFoldersActions(bool disabled)
 
 void LibraryWindowActions::disableAllActions()
 {
-    disableComicsActions(true);
+    setComicActionsDisabled(true);
     disableLibrariesActions(true);
     disableFoldersActions(true);
 }

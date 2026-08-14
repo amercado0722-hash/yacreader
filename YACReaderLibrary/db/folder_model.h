@@ -44,6 +44,8 @@ class FolderModel : public QAbstractItemModel, protected Themable
     friend class YACReader::FolderQueryResultProcessor;
 
 public:
+    static constexpr qulonglong RootFolderId = 1;
+
     explicit FolderModel(QObject *parent = nullptr);
     ~FolderModel() override;
 
@@ -75,10 +77,9 @@ public:
     void resetFolderCover(const QModelIndex &index);
 
     QStringList getSubfoldersNames(const QModelIndex &mi);
-    FolderModel *getSubfoldersModel(const QModelIndex &mi); // it creates a model that contains just the direct subfolders
 
-    Folder getRootFolder();
-    Folder getFolder(const QModelIndex &mi);
+    Folder getRootFolder() const;
+    Folder getFolder(const QModelIndex &mi) const;
     QModelIndex getIndexFromFolderId(qulonglong folderId, const QModelIndex &parent = QModelIndex());
     QModelIndex getIndexFromFolder(const Folder &folder, const QModelIndex &parent = QModelIndex());
 
@@ -117,12 +118,13 @@ public:
         RecentRangeRole,
     };
 
-    bool isSubfolder;
 public slots:
     void deleteFolder(const QModelIndex &mi);
     void updateFolderChildrenInfo(qulonglong folderId);
 
 private:
+    void emitDataChangedRecursively(const QModelIndex &parent, int role);
+
     struct ModelData {
         FolderItem *rootItem; // items tree
         QMap<unsigned long long int, FolderItem *> items; // items lookup
@@ -135,7 +137,7 @@ private:
     // parent contains the current data in the model (parentModelIndex is its index), updated contains fresh info loaded from the DB,
     void takeUpdatedChildrenInfo(FolderItem *parent, const QModelIndex &parentModelIndex, FolderItem *updated);
 
-    Folder folderFromItem(FolderItem *item);
+    Folder folderFromItem(FolderItem *item) const;
 
     FolderItem *rootItem; // items tree
     QMap<unsigned long long int, FolderItem *> items; // items lookup

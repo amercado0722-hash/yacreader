@@ -21,6 +21,7 @@ protected:
     void applyTheme(const Theme &theme) override;
     ~InfoComicsView() override;
     void setToolBar(QToolBar *toolBar) override;
+    void releaseToolBar() override;
     void setModel(ComicModel *model) override;
     void setCurrentIndex(const QModelIndex &index) override;
     QModelIndex currentIndex() override;
@@ -33,6 +34,8 @@ protected:
     void selectIndex(int index) override;
     void updateCurrentComicView() override;
     void focusComicsNavigation(Qt::FocusReason reason) override;
+    ContentViewState captureViewState() const override;
+    void restoreViewState(const ContentViewState &state) override;
 
 public slots:
     void setShowMarks(bool show) override;

@@ -3,7 +3,7 @@
 #include "comic_model.h"
 
 YACReaderComicsSelectionHelper::YACReaderComicsSelectionHelper(QObject *parent)
-    : QObject(parent), _selectionModel(nullptr)
+    : QObject(parent)
 {
 }
 
@@ -14,89 +14,88 @@ void YACReaderComicsSelectionHelper::setModel(ComicModel *model)
 
     this->model = model;
 
-    if (_selectionModel != nullptr)
-        delete _selectionModel;
+    delete itemSelectionModel;
 
-    _selectionModel = new QItemSelectionModel(model);
+    itemSelectionModel = new QItemSelectionModel(model, this);
+    connect(itemSelectionModel, &QItemSelectionModel::selectionChanged, this, [this]() {
+        ++revision;
+        emit selectionChanged();
+    });
+
+    ++revision;
+    emit selectionChanged();
 }
 
 void YACReaderComicsSelectionHelper::selectIndex(int index)
 {
-    if (_selectionModel != nullptr && model != nullptr) {
-        _selectionModel->select(model->index(index, 0), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    if (itemSelectionModel != nullptr && model != nullptr && index >= 0 && index < model->rowCount())
+        itemSelectionModel->select(model->index(index, 0), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+}
 
-        emit selectionChanged();
-    }
+void YACReaderComicsSelectionHelper::selectOnly(int index)
+{
+    if (itemSelectionModel != nullptr && model != nullptr && index >= 0 && index < model->rowCount())
+        itemSelectionModel->select(model->index(index, 0), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
 void YACReaderComicsSelectionHelper::deselectIndex(int index)
 {
-    if (_selectionModel != nullptr && model != nullptr) {
-        _selectionModel->select(model->index(index, 0), QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
-
-        emit selectionChanged();
-    }
+    if (itemSelectionModel != nullptr && model != nullptr && index >= 0 && index < model->rowCount())
+        itemSelectionModel->select(model->index(index, 0), QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
 }
 
 bool YACReaderComicsSelectionHelper::isSelectedIndex(int index) const
 {
-    if (_selectionModel != nullptr && model != nullptr) {
+    if (itemSelectionModel != nullptr && model != nullptr) {
         QModelIndex mi = model->index(index, 0);
-        return _selectionModel->isSelected(mi);
+        return itemSelectionModel->isSelected(mi);
     }
     return false;
 }
 
 void YACReaderComicsSelectionHelper::clear()
 {
-    if (_selectionModel != nullptr) {
-        _selectionModel->clear();
-
-        emit selectionChanged();
-    }
+    if (itemSelectionModel != nullptr)
+        itemSelectionModel->clear();
 }
 
 QModelIndex YACReaderComicsSelectionHelper::currentIndex()
 {
-    if (!_selectionModel)
+    if (!itemSelectionModel)
         return QModelIndex();
 
-    QModelIndexList indexes = _selectionModel->selectedRows();
+    QModelIndexList indexes = itemSelectionModel->selectedRows();
     if (indexes.length() > 0)
         return indexes[0];
 
-    this->selectIndex(0);
-    indexes = _selectionModel->selectedRows();
-    if (indexes.length() > 0)
-        return indexes[0];
-    else
-        return QModelIndex();
+    return QModelIndex();
 }
 
 void YACReaderComicsSelectionHelper::selectAll()
 {
+    if (!itemSelectionModel || !model || model->rowCount() == 0)
+        return;
+
     QModelIndex top = model->index(0, 0);
     QModelIndex bottom = model->index(model->rowCount() - 1, 0);
     QItemSelection selection(top, bottom);
-    _selectionModel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
-
-    emit selectionChanged();
+    itemSelectionModel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 }
 
 QModelIndexList YACReaderComicsSelectionHelper::selectedRows(int column) const
 {
-    return _selectionModel->selectedRows(column);
+    return itemSelectionModel ? itemSelectionModel->selectedRows(column) : QModelIndexList();
 }
 
 QList<QModelIndex> YACReaderComicsSelectionHelper::selectedIndexes() const
 {
-    return _selectionModel->selectedIndexes();
+    return itemSelectionModel ? itemSelectionModel->selectedIndexes() : QModelIndexList();
 }
 
 int YACReaderComicsSelectionHelper::numItemsSelected() const
 {
-    if (_selectionModel != nullptr) {
-        return _selectionModel->selectedRows().length();
+    if (itemSelectionModel != nullptr) {
+        return itemSelectionModel->selectedRows().length();
     }
 
     return 0;
@@ -104,8 +103,9 @@ int YACReaderComicsSelectionHelper::numItemsSelected() const
 
 int YACReaderComicsSelectionHelper::lastSelectedIndex() const
 {
-    if (_selectionModel != nullptr) {
-        return _selectionModel->selectedRows().last().row();
+    if (itemSelectionModel != nullptr) {
+        const auto selectedRows = itemSelectionModel->selectedRows();
+        return selectedRows.isEmpty() ? -1 : selectedRows.last().row();
     }
 
     return -1;
@@ -113,9 +113,10 @@ int YACReaderComicsSelectionHelper::lastSelectedIndex() const
 
 QItemSelectionModel *YACReaderComicsSelectionHelper::selectionModel()
 {
-    QModelIndexList indexes = _selectionModel->selectedRows();
-    if (indexes.length() == 0)
-        this->selectIndex(0);
+    return itemSelectionModel;
+}
 
-    return _selectionModel;
+qulonglong YACReaderComicsSelectionHelper::selectionRevision() const
+{
+    return revision;
 }

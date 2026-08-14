@@ -126,7 +126,7 @@ if(BUILD_SERVER_STANDALONE)
         Sql
     )
 else()
-    find_package(Qt6 6.7 REQUIRED COMPONENTS
+    find_package(Qt6 6.9 REQUIRED COMPONENTS
         Core
         Core5Compat
         Gui
