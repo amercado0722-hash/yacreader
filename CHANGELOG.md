@@ -12,6 +12,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Keep current scroll position when editing comics.
 * Fix info panel in the grid view not getting updates when the select comic metadata changes.
 * Fix rating context menu in the grid view.
+* Add reset rating to the comic context menu.
 
 ### WebUI
 * Add per-library search.

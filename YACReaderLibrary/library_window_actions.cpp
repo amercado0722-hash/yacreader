@@ -292,7 +292,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
 
     resetComicRatingAction = new QAction(window);
-    resetComicRatingAction->setText(tr("Reset comic rating"));
+    resetComicRatingAction->setText(tr("Reset rating"));
     resetComicRatingAction->setData(RESET_COMIC_RATING_ACTION_YL);
     resetComicRatingAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESET_COMIC_RATING_ACTION_YL));
 

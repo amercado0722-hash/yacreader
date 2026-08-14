@@ -1632,8 +1632,6 @@ void LibraryWindow::showComicsContextMenu(const QPoint &point, bool showFullScre
     menu->addAction(actions.openContainingFolderComicAction);
     menu->addAction(actions.updateCurrentFolderAction);
     menu->addSeparator();
-    menu->addAction(actions.resetComicRatingAction);
-    menu->addSeparator();
     menu->addAction(actions.editSelectedComicsAction);
     menu->addAction(actions.getInfoAction);
     menu->addAction(actions.asignOrderAction);
@@ -1650,6 +1648,8 @@ void LibraryWindow::showComicsContextMenu(const QPoint &point, bool showFullScre
     typeMenu->addAction(setWesternMangaAction);
     typeMenu->addAction(setWebComicAction);
     typeMenu->addAction(setYonkomaAction);
+    menu->addSeparator();
+    menu->addAction(actions.resetComicRatingAction);
     menu->addSeparator();
     menu->addAction(actions.deleteMetadataAction);
     menu->addSeparator();
