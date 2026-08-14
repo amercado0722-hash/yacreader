@@ -409,10 +409,150 @@
     var folderMetadataCache = {};
     var browserBackAction = null;
     var readerCleanup = null;
+    var historyNavigationPending = false;
+    var historyTraversalPending = false;
     var browserItemCollator = new Intl.Collator(undefined, {
       numeric: true,
       sensitivity: "base"
     });
+
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    function shouldHandleInAppLink(event) {
+      return event.button === 0
+        && !event.metaKey
+        && !event.ctrlKey
+        && !event.shiftKey
+        && !event.altKey;
+    }
+
+    function routesMatch(left, right) {
+      if (!left || !right || left.view !== right.view) {
+        return false;
+      }
+      if (left.view === "search") {
+        return left.query === right.query;
+      }
+      return String(left.itemId || "") === String(right.itemId || "");
+    }
+
+    function browserViewportTop() {
+      var topbar = document.querySelector(".browser-topbar");
+      return topbar ? topbar.getBoundingClientRect().bottom : 0;
+    }
+
+    function currentScrollAnchor(preferredCard) {
+      var viewportTop = browserViewportTop();
+      if (preferredCard
+          && preferredCard.isConnected
+          && preferredCard.dataset.browserHistoryKey) {
+        return {
+          key: preferredCard.dataset.browserHistoryKey,
+          offset: preferredCard.getBoundingClientRect().top - viewportTop
+        };
+      }
+
+      var cards = browserRoot.querySelectorAll("[data-browser-history-key]");
+
+      for (var i = 0; i < cards.length; i++) {
+        var bounds = cards[i].getBoundingClientRect();
+        if (bounds.bottom > viewportTop && bounds.top < window.innerHeight) {
+          return {
+            key: cards[i].dataset.browserHistoryKey,
+            offset: bounds.top - viewportTop
+          };
+        }
+      }
+
+      return null;
+    }
+
+    function scrollPositionForState(state, fallbackScrollY) {
+      if (!state || !state.scrollAnchorKey || !Number.isFinite(state.scrollAnchorOffset)) {
+        return fallbackScrollY;
+      }
+
+      var cards = browserRoot.querySelectorAll("[data-browser-history-key]");
+      var anchor = null;
+      for (var i = 0; i < cards.length; i++) {
+        if (cards[i].dataset.browserHistoryKey === state.scrollAnchorKey) {
+          anchor = cards[i];
+          break;
+        }
+      }
+      if (!anchor) {
+        return fallbackScrollY;
+      }
+
+      var bounds = anchor.getBoundingClientRect();
+      var viewportTop = browserViewportTop();
+      var viewportBottomPadding = 16;
+      var availableHeight = Math.max(0, window.innerHeight - viewportTop - viewportBottomPadding);
+      var maximumVisibleOffset = Math.max(0, availableHeight - bounds.height);
+      var restoredOffset = Math.min(
+        Math.max(0, state.scrollAnchorOffset),
+        maximumVisibleOffset
+      );
+      return window.scrollY + bounds.top - viewportTop - restoredOffset;
+    }
+
+    function saveCurrentScrollPosition(preferredCard) {
+      if (historyNavigationPending) {
+        return;
+      }
+
+      var state = history.state || routeFromLocation();
+      var nextState = Object.assign({}, state, {
+        scrollY: window.scrollY
+      });
+      var anchor = currentScrollAnchor(preferredCard);
+      if (anchor) {
+        nextState.scrollAnchorKey = anchor.key;
+        nextState.scrollAnchorOffset = anchor.offset;
+      } else {
+        delete nextState.scrollAnchorKey;
+        delete nextState.scrollAnchorOffset;
+      }
+      history.replaceState(nextState, "", window.location.href);
+    }
+
+    function startHistoryNavigation(pushHistory, returnToCard) {
+      if (pushHistory) {
+        saveCurrentScrollPosition(returnToCard);
+      }
+      historyNavigationPending = true;
+    }
+
+    function finishHistoryNavigation(state, url, pushHistory, version) {
+      var existingState = history.state;
+      var restoringExistingState = !pushHistory && routesMatch(existingState, state);
+      var scrollY = restoringExistingState && Number.isFinite(existingState.scrollY)
+        ? existingState.scrollY
+        : 0;
+      var restoredScrollY = restoringExistingState
+        ? scrollPositionForState(existingState, scrollY)
+        : 0;
+      var nextState = restoringExistingState
+        ? Object.assign({}, existingState, state, { scrollY: restoredScrollY })
+        : Object.assign({}, state, { scrollY: scrollY });
+
+      if (pushHistory) {
+        history.pushState(nextState, "", url);
+      } else {
+        history.replaceState(nextState, "", url);
+      }
+
+      // The destination DOM has already been built. Applying the saved offset in
+      // this same task prevents the browser from painting an intermediate frame
+      // with the document clamped to the top.
+      if (version === navigationVersion) {
+        window.scrollTo(0, restoredScrollY);
+      }
+      historyNavigationPending = false;
+      historyTraversalPending = false;
+    }
 
     function naturalBrowserCompare(left, right) {
       return browserItemCollator.compare(String(left || ""), String(right || ""));
@@ -492,7 +632,15 @@
 
       browserBack.hidden = false;
       browserBackAction = function () {
-        showFolder(String(parentFolderId), true);
+        var state = history.state;
+        if (state
+            && state.view === "folder"
+            && String(state.enteredFromFolderId || "") === String(parentFolderId)) {
+          saveCurrentScrollPosition();
+          history.back();
+        } else {
+          showFolder(String(parentFolderId), true);
+        }
       };
     }
 
@@ -674,6 +822,9 @@
           link.href = part.href;
           if (part.action) {
             link.addEventListener("click", function (event) {
+              if (!shouldHandleInAppLink(event)) {
+                return;
+              }
               event.preventDefault();
               part.action();
             });
@@ -699,7 +850,17 @@
       browserRoot.appendChild(loading);
     }
 
+    function showNavigationLoading() {
+      if (historyTraversalPending) {
+        browserRoot.setAttribute("aria-busy", "true");
+        return;
+      }
+      showLoading();
+    }
+
     function showError(retry) {
+      historyNavigationPending = false;
+      historyTraversalPending = false;
       browserRoot.removeAttribute("aria-busy");
       browserRoot.replaceChildren();
 
@@ -747,12 +908,16 @@
       return image;
     }
 
-    function folderCard(folder) {
+    function folderCard(folder, containingFolderId) {
       var card = element("a", "browser-card folder-card");
       card.href = folderUrl(String(folder.id));
+      card.dataset.browserHistoryKey = "folder:" + String(folder.id);
       card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
         event.preventDefault();
-        showFolder(String(folder.id), true);
+        showFolder(String(folder.id), true, containingFolderId, card);
       });
 
       var cover = element("div", "browser-cover folder-cover");
@@ -779,9 +944,13 @@
     function comicCard(comic) {
       var card = element("a", "browser-card comic-card");
       card.href = comicUrl(String(comic.id));
+      card.dataset.browserHistoryKey = "comic:" + String(comic.id);
       card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
         event.preventDefault();
-        showComic(String(comic.id), true);
+        showComic(String(comic.id), true, card);
       });
 
       var cover = element("div", "browser-cover comic-cover");
@@ -839,11 +1008,12 @@
         return;
       }
 
+      startHistoryNavigation(pushHistory);
       leaveReader();
       setSearchVisible(false);
       var version = ++navigationVersion;
       setSearchValue(normalizedQuery);
-      showLoading();
+      showNavigationLoading();
 
       postJson(searchApi(), { query: normalizedQuery }).then(function (items) {
         if (version !== navigationVersion) {
@@ -904,11 +1074,7 @@
 
         var url = libraryUrl() + "?q=" + encodeURIComponent(normalizedQuery);
         var state = { view: "search", query: normalizedQuery };
-        if (pushHistory) {
-          history.pushState(state, "", url);
-        } else {
-          history.replaceState(state, "", url);
-        }
+        finishHistoryNavigation(state, url, pushHistory, version);
       }).catch(function () {
         if (version !== navigationVersion) {
           return;
@@ -1031,14 +1197,15 @@
       return parts;
     }
 
-    function showFolder(folderId, pushHistory) {
+    function showFolder(folderId, pushHistory, enteredFromFolderId, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(folderId === "1");
       if (folderId === "1") {
         setSearchValue("");
       }
       var version = ++navigationVersion;
-      showLoading();
+      showNavigationLoading();
 
       Promise.all([
         fetchJson(folderContentApi(folderId)),
@@ -1089,7 +1256,7 @@
           var grid = element("div", "browser-grid");
           items.forEach(function (item) {
             if (item.type === "folder") {
-              grid.appendChild(folderCard(item));
+              grid.appendChild(folderCard(item, folderId));
             } else if (item.type === "comic") {
               grid.appendChild(comicCard(item));
             }
@@ -1099,11 +1266,10 @@
 
         var url = folderUrl(folderId);
         var state = { view: "folder", itemId: folderId };
-        if (pushHistory) {
-          history.pushState(state, "", url);
-        } else {
-          history.replaceState(state, "", url);
+        if (pushHistory && enteredFromFolderId) {
+          state.enteredFromFolderId = String(enteredFromFolderId);
         }
+        finishHistoryNavigation(state, url, pushHistory, version);
       }).catch(function () {
         if (version !== navigationVersion) {
           return;
@@ -1346,10 +1512,11 @@
     }
 
     function showReader(comicId, pushHistory, existingComic) {
+      startHistoryNavigation(pushHistory);
       leaveReader();
       setSearchVisible(false);
       var version = ++navigationVersion;
-      showLoading();
+      showNavigationLoading();
 
       Promise.resolve(existingComic || fetchJson(comicInfoApi(comicId))).then(function (comic) {
         if (version !== navigationVersion) {
@@ -1679,11 +1846,7 @@
           : false;
         var url = readerUrl(comicId);
         var state = { view: "reader", itemId: comicId, fromComicDetail: pushHistory || existingReaderState };
-        if (pushHistory) {
-          history.pushState(state, "", url);
-        } else {
-          history.replaceState(state, "", url);
-        }
+        finishHistoryNavigation(state, url, pushHistory, version);
 
         updateNavigation();
         openComicAndLoad();
@@ -1698,11 +1861,12 @@
       });
     }
 
-    function showComic(comicId, pushHistory) {
+    function showComic(comicId, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(false);
       var version = ++navigationVersion;
-      showLoading();
+      showNavigationLoading();
 
       fetchJson(comicInfoApi(comicId)).then(function (comic) {
         return Promise.all([
@@ -1929,11 +2093,7 @@
 
         var url = comicUrl(comicId);
         var state = { view: "comic", itemId: comicId };
-        if (pushHistory) {
-          history.pushState(state, "", url);
-        } else {
-          history.replaceState(state, "", url);
-        }
+        finishHistoryNavigation(state, url, pushHistory, version);
       }).catch(function () {
         if (version !== navigationVersion) {
           return;
@@ -1961,6 +2121,10 @@
     }
 
     window.addEventListener("popstate", function () {
+      historyNavigationPending = true;
+      historyTraversalPending = Boolean(history.state
+        && (history.state.scrollAnchorKey
+          || (Number.isFinite(history.state.scrollY) && history.state.scrollY > 0)));
       var route = routeFromLocation();
       if (route.view === "search") {
         showSearch(route.query, false);

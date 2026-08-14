@@ -15,6 +15,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### WebUI
 * Add per-library search.
 * Use the same sorting as the rest of the apps.
+* Restore the previous scroll position when navigating back through library folders.
 
 ## 10.2.0
 
