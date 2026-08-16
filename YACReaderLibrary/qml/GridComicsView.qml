@@ -533,14 +533,19 @@ SplitView {
                     currentIndexHelper.setGridColumnCount(wholeCells)
                 }
 
-                WheelHandler {
-                    onWheel: {
-                        if (grid.contentHeight <= grid.height) {
-                            return;
-                        }
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
 
-                        var newValue =  Math.min((grid.contentHeight - grid.height + grid.originY), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
-                        grid.contentY = newValue;
+                    onWheel: (wheel) => {
+                        if (grid.contentHeight <= grid.height)
+                            return
+
+                            var newValue = Math.min(
+                                (grid.contentHeight - grid.height + grid.originY),
+                                                    Math.max(grid.originY, grid.contentY - wheel.angleDelta.y)
+                            )
+                            grid.contentY = newValue
                     }
                 }
 
@@ -732,14 +737,19 @@ SplitView {
                 EmptyInfoView { width: infoView.width }
             }
 
-            WheelHandler {
-                onWheel: {
-                    if (infoFlickable.contentHeight <= infoFlickable.height) {
-                        return;
-                    }
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
 
-                    var newValue =  Math.min((infoFlickable.contentHeight - infoFlickable.height), (Math.max(infoFlickable.originY , infoFlickable.contentY - event.angleDelta.y)));
-                    infoFlickable.contentY = newValue;
+                onWheel: (wheel) => {
+                    if (infoFlickable.contentHeight <= infoFlickable.height)
+                        return
+
+                        var newValue = Math.min(
+                            (infoFlickable.contentHeight - infoFlickable.height),
+                                                Math.max(infoFlickable.originY, infoFlickable.contentY - wheel.angleDelta.y)
+                        )
+                        infoFlickable.contentY = newValue
                 }
             }
 
