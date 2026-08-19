@@ -169,7 +169,7 @@ jobs:
 
       - name: Build
         env:
-          MACOSX_DEPLOYMENT_TARGET: "11"
+          MACOSX_DEPLOYMENT_TARGET: "12"
         run: |
           VERSION="$(tr -d '\r\n' < VERSION)"
           SKIP_CODESIGN="${{ env.IS_FORK }}"
