@@ -12,6 +12,13 @@ Rectangle {
     readonly property int sectionHeight: 430
     readonly property int topMargin: 20
 
+    function handlesWheelAt(position) {
+        const listPosition = list.mapFromItem(header, position.x, position.y)
+        return listPosition.x >= 0 && listPosition.x <= list.width
+                && listPosition.y >= 0 && listPosition.y <= list.height
+                && list.contentWidth > list.width
+    }
+
     color: "transparent"
     height: list.count > 0 && sectionVisible ? sectionHeight : topMargin
 

@@ -180,6 +180,15 @@ SplitView {
                     id: currentComicViewTopView
                     color: "#00000000"
 
+                    function handlesWheelAt(position) {
+                        const synopsisPosition = synopsisScroller.mapFromItem(currentComicViewTopView,
+                                                                              position.x,
+                                                                              position.y)
+                        return synopsisPosition.x >= 0 && synopsisPosition.x <= synopsisScroller.width
+                                && synopsisPosition.y >= 0 && synopsisPosition.y <= synopsisScroller.height
+                                && synopsisScroller.contentHeight > synopsisScroller.availableHeight
+                    }
+
                     height: currentIndexHelper.currentComicBannerVisible ? 270 : 20
 
                     Rectangle {
@@ -462,6 +471,7 @@ SplitView {
 
                 currentIndex: -1
                 cacheBuffer: 0
+                readonly property var wheelAwareHeader: headerItem
 
                 interactive: true
 
@@ -534,10 +544,21 @@ SplitView {
                 }
 
                 MouseArea {
+                    id: gridWheelArea
                     anchors.fill: parent
                     acceptedButtons: Qt.NoButton
 
                     onWheel: (wheel) => {
+                        if (grid.wheelAwareHeader && grid.wheelAwareHeader.handlesWheelAt) {
+                            const headerPosition = grid.wheelAwareHeader.mapFromItem(gridWheelArea,
+                                                                                    wheel.x,
+                                                                                    wheel.y)
+                            if (grid.wheelAwareHeader.handlesWheelAt(headerPosition)) {
+                                wheel.accepted = false
+                                return
+                            }
+                        }
+
                         if (grid.contentHeight <= grid.height)
                             return
 
