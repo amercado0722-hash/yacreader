@@ -1279,6 +1279,57 @@ input[type="time"]:focus-visible {
   font-size: 13px;
 }
 
+.continue-reading-shelf {
+  margin: 0 0 34px;
+  padding: 20px 0 22px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.continue-reading-heading {
+  display: flex;
+  position: relative;
+  z-index: 1;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.continue-reading-heading h3 {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: -0.018em;
+}
+
+.continue-reading-list {
+  --continue-reading-main-width: calc(100vw - 252px);
+  --continue-reading-inline-padding: max(32px, calc(50vw - 714px));
+
+  display: grid;
+  width: var(--continue-reading-main-width);
+  overflow-x: auto;
+  grid-auto-columns: 142px;
+  grid-auto-flow: column;
+  align-items: start;
+  gap: 20px;
+  margin: -40px 0 -26px calc(-1 * var(--continue-reading-inline-padding));
+  padding: 44px var(--continue-reading-inline-padding) 40px;
+  -ms-overflow-style: none;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  scroll-padding-inline: var(--continue-reading-inline-padding);
+  scroll-snap-type: inline proximity;
+}
+
+.continue-reading-list::-webkit-scrollbar {
+  display: none;
+}
+
+.continue-reading-item {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
 .browser-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
@@ -2539,6 +2590,14 @@ input[type="time"]:disabled {
   .browser-grid {
     grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
     gap: 24px 16px;
+  }
+
+  .continue-reading-list {
+    --continue-reading-main-width: 100vw;
+    --continue-reading-inline-padding: 20px;
+
+    grid-auto-columns: 125px;
+    gap: 16px;
   }
 
   .browser-loading-grid {

@@ -18,6 +18,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add per-library search.
 * Use the same sorting as the rest of the apps.
 * Restore the previous scroll position when navigating back through library folders.
+* Add per-library continue reading list.
 
 ## 10.2.0
 

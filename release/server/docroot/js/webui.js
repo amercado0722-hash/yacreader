@@ -409,6 +409,7 @@
     var folderMetadataCache = {};
     var browserBackAction = null;
     var readerCleanup = null;
+    var progressSyncPromise = Promise.resolve();
     var historyNavigationPending = false;
     var historyTraversalPending = false;
     var browserItemCollator = new Intl.Collator(undefined, {
@@ -714,6 +715,10 @@
       return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/content";
     }
 
+    function continueReadingApi() {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/reading";
+    }
+
     function folderMetadataApi(folderId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/metadata";
     }
@@ -941,16 +946,22 @@
       return card;
     }
 
-    function comicCard(comic) {
-      var card = element("a", "browser-card comic-card");
-      card.href = comicUrl(String(comic.id));
-      card.dataset.browserHistoryKey = "comic:" + String(comic.id);
+    function comicCard(comic, options) {
+      options = options || {};
+      var comicId = String(comic.id);
+      var card = element("a", "browser-card comic-card" + (options.continueReading ? " continue-reading-card" : ""));
+      card.href = options.continueReading ? readerUrl(comicId) : comicUrl(comicId);
+      card.dataset.browserHistoryKey = (options.continueReading ? "continue-reading:" : "comic:") + comicId;
       card.addEventListener("click", function (event) {
         if (!shouldHandleInAppLink(event)) {
           return;
         }
         event.preventDefault();
-        showComic(String(comic.id), true, card);
+        if (options.continueReading) {
+          showReader(comicId, true, comic, card);
+        } else {
+          showComic(comicId, true, card);
+        }
       });
 
       var cover = element("div", "browser-cover comic-cover");
@@ -963,7 +974,7 @@
 
       if (comic.read) {
         cover.appendChild(element("span", "comic-status read", "Read"));
-      } else if (Number(comic.current_page) > 1) {
+      } else if (!options.continueReading && Number(comic.current_page) > 1) {
         cover.appendChild(element("span", "comic-status reading", "Page " + comic.current_page));
       }
 
@@ -979,10 +990,47 @@
 
       var copy = element("div", "browser-card-copy");
       copy.appendChild(element("div", "browser-card-title", readableComicTitle(comic)));
-      copy.appendChild(element("div", "browser-card-meta", numPages === 1 ? "1 page" : numPages + " pages"));
+      var meta = options.continueReading && currentPage > 0 && numPages > 0
+        ? "Page " + currentPage + " of " + numPages
+        : numPages === 1 ? "1 page" : numPages + " pages";
+      copy.appendChild(element("div", "browser-card-meta", meta));
 
       card.append(cover, copy);
       return card;
+    }
+
+    function continueReadingShelf(comics) {
+      var shelf = element("section", "continue-reading-shelf");
+      shelf.setAttribute("aria-labelledby", "continue-reading-title");
+
+      var heading = element("div", "continue-reading-heading");
+      var title = element("h3", "", "Continue reading");
+      title.id = "continue-reading-title";
+      heading.appendChild(title);
+
+      var list = element("div", "continue-reading-list");
+      list.setAttribute("role", "list");
+      list.addEventListener("wheel", function (event) {
+        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
+          return;
+        }
+
+        var previousScrollLeft = list.scrollLeft;
+        list.scrollLeft += event.deltaY;
+        if (list.scrollLeft !== previousScrollLeft) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+      comics.forEach(function (comic) {
+        var item = element("div", "continue-reading-item");
+        item.setAttribute("role", "listitem");
+        var card = comicCard(comic, { continueReading: true });
+        item.appendChild(card);
+        list.appendChild(item);
+      });
+
+      shelf.append(heading, list);
+      return shelf;
     }
 
     function setSearchValue(query) {
@@ -1209,7 +1257,10 @@
 
       Promise.all([
         fetchJson(folderContentApi(folderId)),
-        folderTrail(folderId)
+        folderTrail(folderId),
+        folderId === "1"
+          ? progressSyncPromise.then(function () { return fetchJson(continueReadingApi()); })
+          : Promise.resolve([])
       ]).then(function (results) {
         if (version !== navigationVersion) {
           return;
@@ -1217,6 +1268,7 @@
 
         var items = sortBrowserItems(results[0]);
         var trail = results[1];
+        var continueReading = results[2].filter(function (item) { return item.type === "comic"; });
         var folderName = trail.length ? trail[trail.length - 1].name : libraryName;
         var folders = items.filter(function (item) { return item.type === "folder"; });
         var comics = items.filter(function (item) { return item.type === "comic"; });
@@ -1245,6 +1297,10 @@
         }
         header.appendChild(element("p", "", summaryParts.join(" · ") || "No items"));
         browserRoot.appendChild(header);
+
+        if (continueReading.length) {
+          browserRoot.appendChild(continueReadingShelf(continueReading));
+        }
 
         if (!items.length) {
           var empty = element("div", "browser-state compact");
@@ -1511,8 +1567,8 @@
       return result;
     }
 
-    function showReader(comicId, pushHistory, existingComic) {
-      startHistoryNavigation(pushHistory);
+    function showReader(comicId, pushHistory, existingComic, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(false);
       var version = ++navigationVersion;
@@ -1598,18 +1654,19 @@
 
         function syncProgress() {
           if (!hasDisplayedPage || progressSynced) {
-            return;
+            return progressSyncPromise;
           }
           progressSynced = true;
           var headers = apiHeaders("text/plain");
           headers["Content-Type"] = "text/plain; charset=utf-8";
-          fetch(comicProgressApi(comicId), {
+          progressSyncPromise = fetch(comicProgressApi(comicId), {
             method: "POST",
             headers: headers,
             body: "currentPage:" + (currentPage + 1) + "\n",
             keepalive: true
           }).catch(function () {
           });
+          return progressSyncPromise;
         }
 
         function cancelledPageError() {
