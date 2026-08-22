@@ -81,7 +81,7 @@ class EmptySpecialListWidget;
 class EmptyReadingListWidget;
 class RecentVisibilityCoordinator;
 class OrganizeFilesCoordinator;
-class ComicFilesCoordinator;
+class ComicManagementCoordinator;
 class FolderManagementCoordinator;
 class LibraryDatabaseMaintenanceCoordinator;
 class LibraryRepairCoordinator;
@@ -178,8 +178,6 @@ public:
     QString libraryPath;
     QString comicsPath;
 
-    quint64 _comicIdEdited;
-
     enum NavigationStatus {
         Normal, //
         Searching
@@ -213,8 +211,6 @@ public:
 
     // navigation backward and forward
     YACReaderHistoryController *historyController;
-
-    bool removeError;
 
     // QTBUG-41883
     QSize _size;
@@ -273,17 +269,11 @@ public slots:
     void setComicSearchFilterData(QList<ComicItem *> *, const QString &);
     void setFolderSearchFilterData(QMap<unsigned long long int, FolderItem *> *filteredItems, FolderItem *root);
     void clearSearchFilter();
-    void showProperties();
     void exportLibrary(QString destPath);
     void importLibrary(QString clc, QString destPath, QString name);
     void reloadOptions();
-    void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
-    void setCurrentComicReaded();
-    void setCurrentComicUnreaded();
-    void setSelectedComicsType(FileType type);
     void showExportComicsInfo();
     void showImportComicsInfo();
-    void asignNumbers();
     void showNoLibrariesWidget();
     void showRootWidget();
     void showImportingWidget();
@@ -291,10 +281,6 @@ public slots:
     void manageUpdatingError(const QString &error);
     void manageOpeningLibraryError(const QString &error);
     QModelIndexList getSelectedComics();
-    void deleteMetadataFromSelectedComics();
-    void deleteComics();
-    void deleteComicsFromDisk();
-    void deleteComicsFromList();
     void showFoldersContextMenu(const QPoint &point);
     void showGridFoldersContextMenu(QPoint point, Folder folder);
     void showContinueReadingContextMenu(QPoint point, ComicDB comic);
@@ -303,9 +289,6 @@ public slots:
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
     void updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic);
     void showComicVineScraper();
-    void setRemoveError();
-    void checkRemoveError();
-    void resetComicRating();
     void checkSearchNumResults(int numResults);
     void loadCoversFromCurrentModel();
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
@@ -336,7 +319,6 @@ public slots:
     void setupAddToSubmenu(QMenu &menu);
     void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex &modelIndex);
-    void saveSelectedCoversTo();
     void setCurrentLibraryAs(FileType fileType);
 
     void prepareToCloseApp();
@@ -363,7 +345,7 @@ private:
 
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
     OrganizeFilesCoordinator *organizeFilesCoordinator;
-    ComicFilesCoordinator *comicFilesCoordinator;
+    ComicManagementCoordinator *comicManagementCoordinator;
     FolderManagementCoordinator *folderManagementCoordinator;
     LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator;
     LibraryRepairCoordinator *libraryRepairCoordinator;

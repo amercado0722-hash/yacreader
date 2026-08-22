@@ -1,5 +1,6 @@
 #include "library_window_actions.h"
 
+#include "comic_management_coordinator.h"
 #include "edit_shortcuts_dialog.h"
 #include "export_library_dialog.h"
 #include "feature_flags.h"
@@ -453,7 +454,8 @@ void LibraryWindowActions::createConnections(
         YACReaderFoldersView *foldersView,
         YACReaderOptionsDialog *optionsDialog,
         ServerConfigDialog *serverConfigDialog,
-        RecentVisibilityCoordinator *recentVisibilityCoordinator)
+        RecentVisibilityCoordinator *recentVisibilityCoordinator,
+        ComicManagementCoordinator *comicManagementCoordinator)
 {
     QObject::connect(backAction, &QAction::triggered, navigationController, &YACReaderNavigationController::backward);
     QObject::connect(forwardAction, &QAction::triggered, navigationController, &YACReaderNavigationController::forward);
@@ -467,23 +469,23 @@ void LibraryWindowActions::createConnections(
     QObject::connect(importLibraryAction, &QAction::triggered, window, &LibraryWindow::importLibraryPackage);
 
     QObject::connect(openLibraryAction, &QAction::triggered, window, &LibraryWindow::showAddLibrary);
-    QObject::connect(setAsReadAction, &QAction::triggered, window, &LibraryWindow::setCurrentComicReaded);
-    QObject::connect(setAsNonReadAction, &QAction::triggered, window, &LibraryWindow::setCurrentComicUnreaded);
+    QObject::connect(setAsReadAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::setSelectedComicsRead);
+    QObject::connect(setAsNonReadAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::setSelectedComicsUnread);
 
     QObject::connect(setNormalAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::Comic);
+        comicManagementCoordinator->setSelectedComicsType(FileType::Comic);
     });
     QObject::connect(setMangaAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::Manga);
+        comicManagementCoordinator->setSelectedComicsType(FileType::Manga);
     });
     QObject::connect(setWesternMangaAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::WesternManga);
+        comicManagementCoordinator->setSelectedComicsType(FileType::WesternManga);
     });
     QObject::connect(setWebComicAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::WebComic);
+        comicManagementCoordinator->setSelectedComicsType(FileType::WebComic);
     });
     QObject::connect(setYonkomaAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::Yonkoma);
+        comicManagementCoordinator->setSelectedComicsType(FileType::Yonkoma);
     });
 
     // comicsInfoManagement
@@ -520,15 +522,15 @@ void LibraryWindowActions::createConnections(
         window->setFolderType(FileType::Yonkoma);
     });
 
-    QObject::connect(resetComicRatingAction, &QAction::triggered, window, &LibraryWindow::resetComicRating);
+    QObject::connect(resetComicRatingAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::resetSelectedComicRatings);
 
     // Comicts edition
-    QObject::connect(editSelectedComicsAction, &QAction::triggered, window, &LibraryWindow::showProperties);
-    QObject::connect(asignOrderAction, &QAction::triggered, window, &LibraryWindow::asignNumbers);
+    QObject::connect(editSelectedComicsAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showProperties);
+    QObject::connect(asignOrderAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::assignNumbers);
 
-    QObject::connect(deleteMetadataAction, &QAction::triggered, window, &LibraryWindow::deleteMetadataFromSelectedComics);
+    QObject::connect(deleteMetadataAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::deleteMetadataFromSelectedComics);
 
-    QObject::connect(deleteComicsAction, &QAction::triggered, window, &LibraryWindow::deleteComics);
+    QObject::connect(deleteComicsAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::deleteSelectedComics);
 
     QObject::connect(getInfoAction, &QAction::triggered, window, &LibraryWindow::showComicVineScraper);
 
@@ -581,7 +583,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(addToFavoritesAction, &QAction::triggered, window, &LibraryWindow::addSelectedComicsToFavorites);
 
     // save covers
-    QObject::connect(saveCoversToAction, &QAction::triggered, window, &LibraryWindow::saveSelectedCoversTo);
+    QObject::connect(saveCoversToAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::saveSelectedCoversTo);
 
     QObject::connect(toogleShowRecentIndicatorAction, &QAction::toggled, recentVisibilityCoordinator, &RecentVisibilityCoordinator::toggleVisibility);
 }

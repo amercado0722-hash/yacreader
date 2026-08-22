@@ -7,7 +7,6 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
-#include <QFileDialog>
 #include <QFileIconProvider>
 #include <QFileInfo>
 #include <QHBoxLayout>
@@ -40,10 +39,9 @@
 #include "add_library_dialog.h"
 #include "api_key_dialog.h"
 #include "comic_db.h"
-#include "comic_files_coordinator.h"
+#include "comic_management_coordinator.h"
 #include "comic_model.h"
 #include "comic_vine_dialog.h"
-#include "comics_remover.h"
 #include "comics_view.h"
 #include "create_library_dialog.h"
 #include "data_base_management.h"
@@ -95,24 +93,10 @@ extern YACReaderHttpServer *httpServer;
 
 #include <KDSignalThrottler.h>
 
-namespace {
-template<class Remover>
-void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
-{
-    Q_ASSERT(remover);
-    Q_ASSERT(thread);
-    remover->moveToThread(thread);
-    QObject::connect(thread, &QThread::started, remover, &Remover::process);
-    QObject::connect(remover, &Remover::finished, remover, &QObject::deleteLater);
-    QObject::connect(remover, &Remover::finished, thread, &QThread::quit);
-    QObject::connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-}
-}
-
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false), pendingAfterLaunchTasks(false)
+    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), pendingAfterLaunchTasks(false)
 {
     createSettings();
 
@@ -429,10 +413,35 @@ void LibraryWindow::setupCoordinators()
 {
     recentVisibilityCoordinator = new RecentVisibilityCoordinator(settings, foldersModel, comicsModel);
     organizeFilesCoordinator = new OrganizeFilesCoordinator(settings, this);
-    comicFilesCoordinator = new ComicFilesCoordinator(this);
-    connect(comicFilesCoordinator, &ComicFilesCoordinator::importRequested, this, [this](qulonglong folderId) {
+    comicManagementCoordinator = new ComicManagementCoordinator(
+            this,
+            comicsModel,
+            foldersModel,
+            propertiesDialog,
+            [this] { return getSelectedComics(); },
+            [this] {
+                if (listsView->selectionModel() == nullptr || listsView->selectionModel()->selectedRows().isEmpty())
+                    return QModelIndex();
+                return listsModelProxy->mapToSource(listsView->currentIndex());
+            },
+            [this] { return currentPath(); });
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::importRequested, this, [this](qulonglong folderId) {
         updateFolder(foldersModel->getIndexFromFolderId(folderId));
     });
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::currentComicViewUpdateRequested, contentViewsManager, &YACReaderContentViewsManager::updateCurrentComicView);
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshStarted, navigationController, &YACReaderNavigationController::beginCurrentSourceRefresh);
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshAccepted, navigationController, &YACReaderNavigationController::refreshCurrentSource);
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshCancelled, navigationController, &YACReaderNavigationController::cancelCurrentSourceRefresh);
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::comicNumbersAssigned, this, [this](qint64 editedComicId) {
+        navigationController->loadFolderContent(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+
+        const auto editedComic = comicsModel->getIndexFromId(editedComicId);
+        if (editedComic.isValid()) {
+            contentViewsManager->comicsView->scrollTo(editedComic, QAbstractItemView::PositionAtCenter);
+            contentViewsManager->comicsView->setCurrentIndex(editedComic);
+        }
+    });
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::comicDeletionFinished, this, &LibraryWindow::checkEmptyFolder);
     folderManagementCoordinator = new FolderManagementCoordinator(foldersModel, this);
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFailed, this, &LibraryWindow::errorDeletingFolder);
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
@@ -915,7 +924,8 @@ void LibraryWindow::createConnections()
             foldersView,
             optionsDialog,
             serverConfigDialog,
-            recentVisibilityCoordinator);
+            recentVisibilityCoordinator,
+            comicManagementCoordinator);
     connect(actions.focusSearchLineAction, &QAction::triggered, this, &LibraryWindow::focusSearchInput);
 
     connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::createLibrary);
@@ -967,13 +977,6 @@ void LibraryWindow::createConnections()
     connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::moveComicsToFolder),
             this, &LibraryWindow::moveAndImportComicsToFolder);
     connect(foldersView, &QWidget::customContextMenuRequested, this, &LibraryWindow::showFoldersContextMenu);
-
-    // properties & config
-    connect(propertiesDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::refreshCurrentSource);
-    connect(propertiesDialog, &QDialog::rejected, navigationController, &YACReaderNavigationController::cancelCurrentSourceRefresh);
-    connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, this, [=](const ComicDB &comic) {
-        comicsModel->notifyCoverChange(comic);
-    });
 
     // comic vine
     connect(comicVineDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::refreshCurrentSource, Qt::QueuedConnection);
@@ -1074,27 +1077,27 @@ void LibraryWindow::loadCoversFromCurrentModel()
 void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
 {
     const QModelIndex destinationFolder = getCurrentFolderIndex();
-    comicFilesCoordinator->copyAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
+    comicManagementCoordinator->copyAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
 {
     const QModelIndex destinationFolder = getCurrentFolderIndex();
-    comicFilesCoordinator->moveAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
+    comicManagementCoordinator->moveAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder)
 {
     const QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
     const QString destinationPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
-    comicFilesCoordinator->copyAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
+    comicManagementCoordinator->copyAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder)
 {
     const QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
     const QString destinationPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
-    comicFilesCoordinator->moveAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
+    comicManagementCoordinator->moveAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::updateCurrentFolder()
@@ -1707,24 +1710,6 @@ void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
 #endif
 }
 
-void LibraryWindow::saveSelectedCoversTo()
-{
-    QFileDialog saveDialog;
-    QString folderPath = saveDialog.getExistingDirectory(this, tr("Save covers"), QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
-    if (!folderPath.isEmpty()) {
-        const auto comics = getSelectedComics();
-        for (const auto &comic : comics) {
-            QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///").remove("file:");
-            QString destination = QDir(folderPath).filePath(comic.data(ComicModel::FileNameRole).toString() + ".jpg");
-
-            QLOG_DEBUG() << "From : " << origin;
-            QLOG_DEBUG() << "To : " << destination;
-
-            QFile::copy(origin, destination);
-        }
-    }
-}
-
 // this methods is only using after deleting comics
 // TODO broken window :)
 void LibraryWindow::checkEmptyFolder()
@@ -1786,27 +1771,6 @@ void LibraryWindow::openComic(const ComicDB &comic, const ComicModel::Mode mode)
             QMessageBox::critical(this, tr("Error"), tr("Error opening comic with third party reader."));
         }
     }
-}
-
-void LibraryWindow::setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus)
-{
-    comicsModel->setComicsRead(getSelectedComics(), readStatus);
-    contentViewsManager->updateCurrentComicView();
-}
-
-void LibraryWindow::setCurrentComicReaded()
-{
-    this->setCurrentComicsStatusReaded(YACReader::Read);
-}
-
-void LibraryWindow::setCurrentComicUnreaded()
-{
-    this->setCurrentComicsStatusReaded(YACReader::Unread);
-}
-
-void LibraryWindow::setSelectedComicsType(FileType type)
-{
-    comicsModel->setComicsType(getSelectedComics(), type);
 }
 
 void LibraryWindow::createLibrary()
@@ -2079,29 +2043,6 @@ void LibraryWindow::clearSearchFilter()
     status = LibraryWindow::Normal;
 }
 
-void LibraryWindow::showProperties()
-{
-    QModelIndexList indexList = getSelectedComics();
-
-    QList<ComicDB> comics = comicsModel->getComics(indexList);
-    ComicDB c = comics[0];
-    _comicIdEdited = c.id; // static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
-
-    propertiesDialog->databasePath = foldersModel->getDatabase();
-    propertiesDialog->basePath = currentPath();
-
-    if (indexList.length() > 1) { // edit common properties
-        propertiesDialog->setComics(comics);
-    } else {
-        auto allComics = comicsModel->getAllComics();
-        int index = allComics.indexOf(c);
-        propertiesDialog->setComicsForSequentialEditing(index, comicsModel->getAllComics());
-    }
-
-    navigationController->beginCurrentSourceRefresh();
-    propertiesDialog->show();
-}
-
 void LibraryWindow::showComicVineScraper()
 {
     QSettings s(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
@@ -2117,9 +2058,6 @@ void LibraryWindow::showComicVineScraper()
         QModelIndexList indexList = getSelectedComics();
 
         const auto comics = comicsModel->getComics(indexList);
-        ComicDB c = comics[0];
-        _comicIdEdited = c.id; // static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
-
         comicVineDialog->databasePath = foldersModel->getDatabase();
         comicVineDialog->basePath = currentPath();
         comicVineDialog->setComics(comics);
@@ -2129,62 +2067,12 @@ void LibraryWindow::showComicVineScraper()
     }
 }
 
-void LibraryWindow::setRemoveError()
-{
-    removeError = true;
-}
-
-void LibraryWindow::checkRemoveError()
-{
-    if (removeError) {
-        QMessageBox::critical(this, tr("Unable to delete"), tr("There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder."));
-    }
-    removeError = false;
-}
-
-void LibraryWindow::resetComicRating()
-{
-    QModelIndexList indexList = getSelectedComics();
-
-    comicsModel->startTransaction();
-    for (auto &index : indexList) {
-        comicsModel->resetComicRating(index);
-    }
-    comicsModel->finishTransaction();
-}
-
 void LibraryWindow::checkSearchNumResults(int numResults)
 {
     if (numResults == 0)
         contentViewsManager->showNoSearchResults();
     else
         contentViewsManager->showComicsView();
-}
-
-void LibraryWindow::asignNumbers()
-{
-    QModelIndexList indexList = getSelectedComics();
-
-    int startingNumber = indexList[0].row() + 1;
-    if (indexList.count() > 1) {
-        bool ok;
-        int n = QInputDialog::getInt(this, tr("Assign comics numbers"),
-                                     tr("Assign numbers starting in:"), startingNumber, 0, 2147483647, 1, &ok);
-        if (ok)
-            startingNumber = n;
-        else
-            return;
-    }
-    qint64 edited = comicsModel->asignNumbers(indexList, startingNumber);
-
-    // TODO add resorting without reloading
-    navigationController->loadFolderContent(foldersModelProxy->mapToSource(foldersView->currentIndex()));
-
-    const QModelIndex &mi = comicsModel->getIndexFromId(edited);
-    if (mi.isValid()) {
-        contentViewsManager->comicsView->scrollTo(mi, QAbstractItemView::PositionAtCenter);
-        contentViewsManager->comicsView->setCurrentIndex(mi);
-    }
 }
 
 void LibraryWindow::openContainingFolderComic()
@@ -2452,97 +2340,6 @@ QModelIndexList LibraryWindow::getSelectedComics()
         selection = contentViewsManager->comicsView->selectionModel()->selectedRows();
     }
     return selection;
-}
-
-void LibraryWindow::deleteMetadataFromSelectedComics()
-{
-    QModelIndexList indexList = getSelectedComics();
-    QList<ComicDB> comics = comicsModel->getComics(indexList);
-
-    for (auto &comic : comics) {
-        comic.info.deleteMetadata();
-    }
-
-    DBHelper::updateComicsInfo(comics, foldersModel->getDatabase());
-
-    comicsModel->reload();
-}
-
-void LibraryWindow::deleteComics()
-{
-    // TODO
-    if (!listsView->selectionModel()->selectedRows().isEmpty()) {
-        deleteComicsFromList();
-    } else {
-        deleteComicsFromDisk();
-    }
-}
-
-void LibraryWindow::deleteComicsFromDisk()
-{
-    int ret = QMessageBox::question(this, tr("Delete comics"), tr("All the selected comics will be deleted from your disk. Are you sure?"), QMessageBox::Yes, QMessageBox::No);
-
-    if (ret == QMessageBox::Yes) {
-
-        QModelIndexList indexList = getSelectedComics();
-
-        QList<ComicDB> comics = comicsModel->getComics(indexList);
-
-        QList<QString> paths;
-        QString libraryPath = currentPath();
-        for (const auto &comic : comics) {
-            paths.append(libraryPath + comic.path);
-            QLOG_TRACE() << comic.path;
-            QLOG_TRACE() << comic.id;
-            QLOG_TRACE() << comic.parentId;
-        }
-
-        auto remover = new ComicsRemover(indexList, paths, comics.at(0).parentId);
-        const auto thread = new QThread(this);
-        moveAndConnectRemoverToThread(remover, thread);
-
-        comicsModel->startTransaction();
-
-        connect(remover, &ComicsRemover::remove, comicsModel, &ComicModel::remove);
-        connect(remover, &ComicsRemover::removeError, this, &LibraryWindow::setRemoveError);
-        connect(remover, &ComicsRemover::finished, comicsModel, &ComicModel::finishTransaction);
-        connect(remover, &ComicsRemover::removedItemsFromFolder, foldersModel, &FolderModel::updateFolderChildrenInfo);
-
-        connect(remover, &ComicsRemover::finished, this, &LibraryWindow::checkEmptyFolder);
-        connect(remover, &ComicsRemover::finished, this, &LibraryWindow::checkRemoveError);
-
-        thread->start();
-    }
-}
-
-void LibraryWindow::deleteComicsFromList()
-{
-    int ret = QMessageBox::question(this, tr("Remove comics"), tr("Comics will only be deleted from the current label/list. Are you sure?"), QMessageBox::Yes, QMessageBox::No);
-
-    if (ret == QMessageBox::Yes) {
-        QModelIndexList indexList = getSelectedComics();
-        if (indexList.isEmpty())
-            return;
-
-        QModelIndex mi = listsModelProxy->mapToSource(listsView->currentIndex());
-
-        ReadingListModel::TypeList typeList = (ReadingListModel::TypeList)mi.data(ReadingListModel::TypeListsRole).toInt();
-
-        qulonglong id = mi.data(ReadingListModel::IDRole).toULongLong();
-        switch (typeList) {
-        case ReadingListModel::SpecialList:
-            comicsModel->deleteComicsFromSpecialList(indexList, id);
-            break;
-        case ReadingListModel::Label:
-            comicsModel->deleteComicsFromLabel(indexList, id);
-            break;
-        case ReadingListModel::ReadingList:
-            comicsModel->deleteComicsFromReadingList(indexList, id);
-            break;
-        case ReadingListModel::Separator:
-            break;
-        }
-    }
 }
 
 void LibraryWindow::showFoldersContextMenu(const QPoint &point)

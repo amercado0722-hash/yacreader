@@ -17,6 +17,7 @@ class YACReaderFoldersView;
 class YACReaderOptionsDialog;
 class ServerConfigDialog;
 class RecentVisibilityCoordinator;
+class ComicManagementCoordinator;
 struct Theme;
 
 class LibraryWindowActions
@@ -140,7 +141,8 @@ public:
                            YACReaderFoldersView *foldersView,
                            YACReaderOptionsDialog *optionsDialog,
                            ServerConfigDialog *serverConfigDialog,
-                           RecentVisibilityCoordinator *recentVisibilityCoordinator);
+                           RecentVisibilityCoordinator *recentVisibilityCoordinator,
+                           ComicManagementCoordinator *comicManagementCoordinator);
 
     void setComicActionsDisabled(bool disabled);
     void setComicSelectionActionsEnabled(bool enabled);
