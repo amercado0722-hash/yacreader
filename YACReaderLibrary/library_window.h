@@ -82,6 +82,7 @@ class EmptyReadingListWidget;
 class RecentVisibilityCoordinator;
 class OrganizeFilesCoordinator;
 class ComicFilesCoordinator;
+class FolderManagementCoordinator;
 class LibraryDatabaseMaintenanceCoordinator;
 class LibraryRepairCoordinator;
 class LibraryManagementCoordinator;
@@ -365,6 +366,7 @@ private:
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
     OrganizeFilesCoordinator *organizeFilesCoordinator;
     ComicFilesCoordinator *comicFilesCoordinator;
+    FolderManagementCoordinator *folderManagementCoordinator;
     LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator;
     LibraryRepairCoordinator *libraryRepairCoordinator;
     LibraryManagementCoordinator *libraryManagementCoordinator;

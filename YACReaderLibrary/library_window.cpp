@@ -54,6 +54,7 @@
 #include "export_library_dialog.h"
 #include "feature_flags.h"
 #include "folder_item.h"
+#include "folder_management_coordinator.h"
 #include "folder_model.h"
 #include "grid_comics_view.h"
 #include "help_about_dialog.h"
@@ -433,6 +434,9 @@ void LibraryWindow::setupCoordinators()
     connect(comicFilesCoordinator, &ComicFilesCoordinator::importRequested, this, [this](qulonglong folderId) {
         updateFolder(foldersModel->getIndexFromFolderId(folderId));
     });
+    folderManagementCoordinator = new FolderManagementCoordinator(foldersModel, this);
+    connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFailed, this, &LibraryWindow::errorDeletingFolder);
+    connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
     libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(this);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::backupAvailabilityChanged, actions.backupLibraryAction, &QAction::setEnabled);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::maintenanceStarted, this, [this] {
@@ -1190,23 +1194,17 @@ void LibraryWindow::addFolderToCurrentIndex()
 {
     exitSearchMode(); // Creating a folder in search mode is broken => exit it.
 
-    QModelIndex currentIndex = getCurrentFolderIndex();
+    const auto currentIndex = getCurrentFolderIndex();
 
     bool ok;
-    QString newFolderName = QInputDialog::getText(this, tr("Add new folder"),
-                                                  tr("Folder name:"), QLineEdit::Normal,
-                                                  "", &ok);
+    const auto newFolderName = QInputDialog::getText(this, tr("Add new folder"),
+                                                     tr("Folder name:"), QLineEdit::Normal,
+                                                     "", &ok);
 
-    // chars not supported in a folder's name: / \ : * ? " < > |
-    QRegularExpression invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\"); // TODO this regexp is not properly written
-    bool isValid = !newFolderName.contains(invalidChars);
-
-    if (ok && !newFolderName.isEmpty() && isValid) {
-        QString parentPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(currentIndex));
-        QDir parentDir(parentPath);
-        QDir newFolder(parentPath + "/" + newFolderName);
-        if (parentDir.mkdir(newFolderName) || newFolder.exists()) {
-            QModelIndex newIndex = foldersModel->addFolderAtParent(newFolderName, currentIndex);
+    if (ok) {
+        const auto parentPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(currentIndex));
+        const auto newIndex = folderManagementCoordinator->createFolder(currentIndex, parentPath, newFolderName);
+        if (newIndex.isValid()) {
             foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newIndex));
             navigationController->loadFolderContent(newIndex);
             historyController->updateHistory(YACReaderLibrarySourceContainer(newIndex, YACReaderLibrarySourceContainer::Folder));
@@ -1232,40 +1230,31 @@ void LibraryWindow::renameFolder(const QModelIndex &folder)
     if (!accepted || newName == oldName)
         return;
 
-    const QRegularExpression invalidChars(QStringLiteral("[\\/\\\\:*?\"<>|]"));
-    if (newName.isEmpty() || newName == "." || newName == ".." || newName.contains(invalidChars)) {
+    const auto result = folderManagementCoordinator->renameFolder(folder, currentPath(), newName);
+    switch (result.error) {
+    case FolderManagementCoordinator::RenameError::None:
+        navigationController->refreshCurrentSource();
+        return;
+    case FolderManagementCoordinator::RenameError::InvalidName:
         QMessageBox::warning(this, tr("Invalid folder name"), tr("The folder name is empty or contains characters that are not supported."));
         return;
-    }
-
-    const auto oldPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folder));
-    const QFileInfo oldFolder(oldPath);
-    QDir parentDirectory(oldFolder.absolutePath());
-    const auto newPath = QDir::cleanPath(parentDirectory.filePath(newName));
-
-    if (QFileInfo::exists(newPath) && QString::compare(oldPath, newPath, Qt::CaseInsensitive) != 0) {
+    case FolderManagementCoordinator::RenameError::TargetAlreadyExists:
         QMessageBox::warning(this, tr("Unable to rename folder"), tr("A file or folder named '%1' already exists.").arg(newName));
         return;
-    }
-
-    if (!parentDirectory.rename(oldName, newName)) {
-        QMessageBox::critical(this, tr("Unable to rename folder"), tr("The folder could not be renamed on disk. Please check the folder name and write permissions.\n\nFolder: %1").arg(oldPath));
+    case FolderManagementCoordinator::RenameError::FileSystemRenameFailed:
+        QMessageBox::critical(this, tr("Unable to rename folder"), tr("The folder could not be renamed on disk. Please check the folder name and write permissions.\n\nFolder: %1").arg(result.folderPath));
         return;
-    }
-
-    QString databaseError;
-    if (!foldersModel->renameFolder(folder, newName, &databaseError)) {
-        const auto restored = parentDirectory.rename(newName, oldName);
-        auto message = tr("The library database could not be updated. The folder rename on disk was reverted.");
-        if (!restored)
-            message = tr("The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.");
-        if (!databaseError.isEmpty())
-            message += "\n\n" + databaseError;
+    case FolderManagementCoordinator::RenameError::DatabaseUpdateFailed:
+    case FolderManagementCoordinator::RenameError::DatabaseUpdateAndRollbackFailed: {
+        auto message = result.error == FolderManagementCoordinator::RenameError::DatabaseUpdateFailed
+                ? tr("The library database could not be updated. The folder rename on disk was reverted.")
+                : tr("The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.");
+        if (!result.databaseError.isEmpty())
+            message += "\n\n" + result.databaseError;
         QMessageBox::critical(this, tr("Unable to rename folder"), message);
         return;
     }
-
-    navigationController->refreshCurrentSource();
+    }
 }
 
 void LibraryWindow::deleteSelectedFolder()
@@ -1284,13 +1273,6 @@ void LibraryWindow::deleteSelectedFolder()
             int ret = QMessageBox::question(this, tr("Delete folder"), tr("The selected folder and all its contents will be deleted from your disk. Are you sure?") + "\n\nFolder : " + folderPath, QMessageBox::Yes, QMessageBox::No);
 
             if (ret == QMessageBox::Yes) {
-                // no folders multiselection by now
-                QModelIndexList indexList;
-                indexList << currentIndex;
-
-                QList<QString> paths;
-                paths << folderPath;
-
                 // The unified grid observes the main folder model directly. Move
                 // away from the folder before removing its model index so the
                 // content view never retains the index being deleted.
@@ -1300,15 +1282,7 @@ void LibraryWindow::deleteSelectedFolder()
                 else
                     setRootIndex();
 
-                auto remover = new FoldersRemover(indexList, paths);
-                const auto thread = new QThread(this);
-                moveAndConnectRemoverToThread(remover, thread);
-
-                connect(remover, &FoldersRemover::remove, foldersModel, &FolderModel::deleteFolder);
-                connect(remover, &FoldersRemover::removeError, this, &LibraryWindow::errorDeletingFolder);
-                connect(remover, &FoldersRemover::finished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
-
-                thread->start();
+                folderManagementCoordinator->deleteFolder(currentIndex, folderPath);
             }
         }
     }
