@@ -57,6 +57,7 @@ public:
 
     // tree actions
     QAction *addFolderAction;
+    QAction *renameFolderAction;
     QAction *deleteFolderAction;
     //--
     QAction *setRootIndexAction;

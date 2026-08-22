@@ -13,6 +13,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix info panel in the grid view not getting updates when the select comic metadata changes.
 * Fix rating context menu in the grid view.
 * Add reset rating to the comic context menu.
+* Add support for renaming folders inside the app. This preserves the folder and subfolders state (completed, read, dates, etc.) rather than creating a new folder like updating the library does if you rename the folder directly on the file system.
 
 ### WebUI
 * Add per-library search.

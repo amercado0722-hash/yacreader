@@ -72,6 +72,7 @@ public:
     void updateFolderCompletedStatus(const QModelIndexList &list, bool status);
     void updateFolderFinishedStatus(const QModelIndexList &list, bool status);
     void updateFolderType(const QModelIndexList &list, YACReader::FileType type);
+    bool renameFolder(const QModelIndex &folder, const QString &name, QString *error = nullptr);
     void updateTreeType(YACReader::FileType type);
     void setCustomFolderCover(const QModelIndex &index, const QString &path);
     void resetFolderCover(const QModelIndex &index);

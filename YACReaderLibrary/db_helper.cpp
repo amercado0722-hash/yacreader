@@ -1416,6 +1416,48 @@ void DBHelper::updateComicsInfo(QList<ComicDB> &comics, const QString &databaseP
     QSqlDatabase::removeDatabase(connectionName);
 }
 
+bool DBHelper::renameFolder(qulonglong id, const QString &name, const QString &oldPath, const QString &newPath, QSqlDatabase &db, QString *error)
+{
+    if (error != nullptr)
+        error->clear();
+
+    const auto execute = [error](QSqlQuery &query) {
+        if (query.exec())
+            return true;
+
+        if (error != nullptr)
+            *error = query.lastError().text();
+        return false;
+    };
+
+    QSqlQuery renameFolder(db);
+    renameFolder.prepare("UPDATE folder SET name = :name, path = :newPath WHERE id = :id AND path = :oldPath");
+    renameFolder.bindValue(":name", name);
+    renameFolder.bindValue(":newPath", newPath);
+    renameFolder.bindValue(":id", id);
+    renameFolder.bindValue(":oldPath", oldPath);
+    if (!execute(renameFolder) || renameFolder.numRowsAffected() != 1) {
+        if (error != nullptr && error->isEmpty())
+            *error = QCoreApplication::translate("DBHelper", "The folder entry could not be found in the library database.");
+        return false;
+    }
+
+    QSqlQuery updateSubfolders(db);
+    updateSubfolders.prepare("UPDATE folder SET path = :newPath || substr(path, length(:oldPath) + 1) "
+                             "WHERE substr(path, 1, length(:oldPath) + 1) = :oldPath || '/'");
+    updateSubfolders.bindValue(":newPath", newPath);
+    updateSubfolders.bindValue(":oldPath", oldPath);
+    if (!execute(updateSubfolders))
+        return false;
+
+    QSqlQuery updateComics(db);
+    updateComics.prepare("UPDATE comic SET path = :newPath || substr(path, length(:oldPath) + 1) "
+                         "WHERE substr(path, 1, length(:oldPath) + 1) = :oldPath || '/'");
+    updateComics.bindValue(":newPath", newPath);
+    updateComics.bindValue(":oldPath", oldPath);
+    return execute(updateComics);
+}
+
 // inserts
 qulonglong DBHelper::insert(Folder *folder, QSqlDatabase &db)
 {

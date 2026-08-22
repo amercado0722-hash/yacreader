@@ -186,6 +186,9 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     addFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_FOLDER_ACTION_YL));
     addFolderAction->setToolTip(tr("Add new folder to the current library"));
 
+    renameFolderAction = new QAction(tr("Rename folder"), window);
+    renameFolderAction->setToolTip(tr("Rename the current folder on disk and in the library"));
+
     deleteFolderAction = new QAction(tr("Delete folder"), window);
     deleteFolderAction->setData(REMOVE_FOLDER_ACTION_YL);
     deleteFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_FOLDER_ACTION_YL));
@@ -544,6 +547,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
     QObject::connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
     QObject::connect(addFolderAction, &QAction::triggered, window, &LibraryWindow::addFolderToCurrentIndex);
+    QObject::connect(renameFolderAction, &QAction::triggered, window, &LibraryWindow::renameSelectedFolder);
     QObject::connect(deleteFolderAction, &QAction::triggered, window, &LibraryWindow::deleteSelectedFolder);
     QObject::connect(setRootIndexAction, &QAction::triggered, window, &LibraryWindow::setRootIndex);
     QObject::connect(expandAllNodesAction, &QAction::triggered, foldersView, &QTreeView::expandAll);
@@ -605,6 +609,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     editShortcutsDialog->addActionsGroup("Folders", theme.shortcutsIcons.foldersIcon,
                                          tmpList = QList<QAction *>()
                                                  << addFolderAction
+                                                 << renameFolderAction
                                                  << deleteFolderAction
                                                  << setRootIndexAction
                                                  << expandAllNodesAction
@@ -749,6 +754,7 @@ void LibraryWindowActions::disableFoldersActions(bool disabled)
 
     openContainingFolderAction->setDisabled(disabled);
 
+    renameFolderAction->setDisabled(disabled);
     updateFolderAction->setDisabled(disabled);
     rescanXMLFromCurrentFolderAction->setDisabled(disabled);
 }
@@ -772,6 +778,7 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     createLibraryAction->setIcon(sidebarIcons.newLibraryIcon);
     openLibraryAction->setIcon(sidebarIcons.openLibraryIcon);
     addFolderAction->setIcon(sidebarIcons.addNewIcon);
+    renameFolderAction->setIcon(sidebarIcons.renameListIcon);
     deleteFolderAction->setIcon(sidebarIcons.deleteIcon);
     setRootIndexAction->setIcon(sidebarIcons.setRootIcon);
     expandAllNodesAction->setIcon(sidebarIcons.expandIcon);

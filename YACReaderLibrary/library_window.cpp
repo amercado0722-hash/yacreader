@@ -645,6 +645,7 @@ void LibraryWindow::showSearchSyntax()
 void LibraryWindow::createMenus()
 {
     foldersView->addAction(actions.addFolderAction);
+    foldersView->addAction(actions.renameFolderAction);
     foldersView->addAction(actions.deleteFolderAction);
     YACReader::addSperator(foldersView);
 
@@ -803,6 +804,7 @@ void LibraryWindow::createMenus()
     // folder
     QMenu *folderMenu = new QMenu(tr("Folder"));
     folderMenu->addAction(actions.openContainingFolderAction);
+    folderMenu->addAction(actions.renameFolderAction);
     folderMenu->addAction(actions.updateFolderAction);
     folderMenu->addSeparator();
     folderMenu->addAction(actions.rescanXMLFromCurrentFolderAction);
@@ -1432,6 +1434,60 @@ void LibraryWindow::addFolderToCurrentIndex()
     }
 }
 
+void LibraryWindow::renameSelectedFolder()
+{
+    renameFolder(getCurrentFolderIndex());
+}
+
+void LibraryWindow::renameFolder(const QModelIndex &folder)
+{
+    if (!folder.isValid()) {
+        QMessageBox::information(this, tr("No folder selected"), tr("Please, select a folder first"));
+        return;
+    }
+
+    const auto oldName = folder.data(FolderModel::FolderNameRole).toString();
+    bool accepted = false;
+    const auto newName = QInputDialog::getText(this, tr("Rename folder"), tr("Folder name:"), QLineEdit::Normal, oldName, &accepted);
+    if (!accepted || newName == oldName)
+        return;
+
+    const QRegularExpression invalidChars(QStringLiteral("[\\/\\\\:*?\"<>|]"));
+    if (newName.isEmpty() || newName == "." || newName == ".." || newName.contains(invalidChars)) {
+        QMessageBox::warning(this, tr("Invalid folder name"), tr("The folder name is empty or contains characters that are not supported."));
+        return;
+    }
+
+    const auto oldPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folder));
+    const QFileInfo oldFolder(oldPath);
+    QDir parentDirectory(oldFolder.absolutePath());
+    const auto newPath = QDir::cleanPath(parentDirectory.filePath(newName));
+
+    if (QFileInfo::exists(newPath) && QString::compare(oldPath, newPath, Qt::CaseInsensitive) != 0) {
+        QMessageBox::warning(this, tr("Unable to rename folder"), tr("A file or folder named '%1' already exists.").arg(newName));
+        return;
+    }
+
+    if (!parentDirectory.rename(oldName, newName)) {
+        QMessageBox::critical(this, tr("Unable to rename folder"), tr("The folder could not be renamed on disk. Please check the folder name and write permissions.\n\nFolder: %1").arg(oldPath));
+        return;
+    }
+
+    QString databaseError;
+    if (!foldersModel->renameFolder(folder, newName, &databaseError)) {
+        const auto restored = parentDirectory.rename(newName, oldName);
+        auto message = tr("The library database could not be updated. The folder rename on disk was reverted.");
+        if (!restored)
+            message = tr("The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.");
+        if (!databaseError.isEmpty())
+            message += "\n\n" + databaseError;
+        QMessageBox::critical(this, tr("Unable to rename folder"), message);
+        return;
+    }
+
+    navigationController->refreshCurrentSource();
+}
+
 void LibraryWindow::deleteSelectedFolder()
 {
     QModelIndex currentIndex = getCurrentFolderIndex();
@@ -1683,6 +1739,9 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     auto updateFolderAction = new QAction(tr("Update folder"), menu);
     updateFolderAction->setIcon(menuIcons.updateCurrentFolderIcon);
 
+    auto renameFolderAction = new QAction(tr("Rename folder"), menu);
+    renameFolderAction->setIcon(theme.sidebarIcons.renameListIcon);
+
     auto rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), menu);
 
     auto setFolderAsNotCompletedAction = new QAction(menu);
@@ -1719,6 +1778,7 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     deleteCustomFolderCoverAction->setText(tr("Delete custom cover"));
 
     menu->addAction(openContainingFolderAction);
+    menu->addAction(renameFolderAction);
     menu->addAction(updateFolderAction);
     menu->addSeparator();
     menu->addAction(rescanLibraryForXMLInfoAction);
@@ -1771,6 +1831,9 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     });
     connect(updateFolderAction, &QAction::triggered, this, [=]() {
         updateFolder(foldersModel->getIndexFromFolder(folder));
+    });
+    connect(renameFolderAction, &QAction::triggered, this, [=]() {
+        renameFolder(foldersModel->getIndexFromFolder(folder));
     });
     connect(rescanLibraryForXMLInfoAction, &QAction::triggered, this, [=]() {
         rescanFolderForXMLInfo(foldersModel->getIndexFromFolder(folder));
@@ -3088,6 +3151,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     QMenu menu;
 
     menu.addAction(actions.openContainingFolderAction);
+    menu.addAction(actions.renameFolderAction);
     menu.addAction(actions.updateFolderAction);
     menu.addSeparator(); //-------------------------------
     menu.addAction(actions.rescanXMLFromCurrentFolderAction);

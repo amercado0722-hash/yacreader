@@ -342,6 +342,8 @@ public slots:
     void setComicActionsDisabled(bool disabled);
     void setComicToolbarEntriesVisible(bool visible);
     void addFolderToCurrentIndex();
+    void renameSelectedFolder();
+    void renameFolder(const QModelIndex &folder);
     void deleteSelectedFolder();
     void errorDeletingFolder();
     void addNewReadingList();

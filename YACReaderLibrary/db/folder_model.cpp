@@ -7,8 +7,10 @@
 #include "qnaturalsorting.h"
 #include "yacreader_global.h"
 
+#include <QDir>
 #include <QFileIconProvider>
 #include <QPainter>
+#include <QSqlError>
 #include <QSqlRecord>
 
 #include <algorithm>
@@ -650,6 +652,74 @@ void FolderModel::updateFolderType(const QModelIndexList &list, YACReader::FileT
 
     const auto parent = list.first().parent();
     emit dataChanged(index(list.first().row(), FolderModel::Name, parent), index(list.last().row(), FolderModel::Updated, parent));
+}
+
+bool FolderModel::renameFolder(const QModelIndex &folder, const QString &name, QString *error)
+{
+    if (!folder.isValid())
+        return false;
+
+    auto item = static_cast<FolderItem *>(folder.internalPointer());
+    const auto oldPath = item->data(FolderModel::Path).toString();
+    const auto parentPath = item->parent()->data(FolderModel::Path).toString();
+    const auto newPath = QDir::cleanPath(parentPath + "/" + name);
+
+    QString connectionName;
+    bool success = false;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        connectionName = db.connectionName();
+
+        if (!db.isValid() || !db.isOpen()) {
+            if (error != nullptr)
+                *error = db.lastError().text();
+        } else if (!db.transaction()) {
+            if (error != nullptr)
+                *error = db.lastError().text();
+        } else if (!DBHelper::renameFolder(item->id, name, oldPath, newPath, db, error)) {
+            db.rollback();
+        } else if (!db.commit()) {
+            if (error != nullptr)
+                *error = db.lastError().text();
+            db.rollback();
+        } else {
+            success = true;
+        }
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (!success)
+        return false;
+
+    item->setData(FolderModel::Name, name);
+
+    const auto updatePath = [&oldPath, &newPath](auto &&self, FolderItem *folderItem) -> void {
+        const auto path = folderItem->data(FolderModel::Path).toString();
+        folderItem->setData(FolderModel::Path, newPath + path.mid(oldPath.size()));
+        for (auto child : folderItem->children())
+            self(self, child);
+    };
+    updatePath(updatePath, item);
+
+    auto parentItem = item->parent();
+    const auto oldRow = item->row();
+    auto newRow = 0;
+    for (auto sibling : parentItem->children()) {
+        if (sibling != item && !naturalSortLessThanCI(name, sibling->data(FolderModel::Name).toString()))
+            ++newRow;
+    }
+
+    if (newRow != oldRow) {
+        const auto destination = newRow > oldRow ? newRow + 1 : newRow;
+        beginMoveRows(folder.parent(), oldRow, oldRow, folder.parent(), destination);
+        parentItem->removeChild(item);
+        parentItem->appendChild(item);
+        endMoveRows();
+    }
+
+    const auto renamedIndex = index(item->row(), FolderModel::Name, folder.parent());
+    emit dataChanged(renamedIndex, index(item->row(), FolderModel::Path, folder.parent()));
+    return true;
 }
 
 void FolderModel::updateTreeType(YACReader::FileType type)
