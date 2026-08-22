@@ -4,8 +4,11 @@
 #include <QObject>
 #include <QString>
 
+#include <functional>
+
 class QSettings;
 class QWidget;
+class YACReaderLibraries;
 
 namespace YACReader {
 class ComicInfoRepairer;
@@ -16,9 +19,11 @@ class LibraryRepairCoordinator : public QObject
     Q_OBJECT
 
 public:
-    LibraryRepairCoordinator(QSettings *settings, QWidget *dialogParent);
+    using CurrentLibraryNameProvider = std::function<QString()>;
 
-    void repairLibrary(const QString &libraryName, const QString &libraryPath, const QString &dialogTitle);
+    LibraryRepairCoordinator(QSettings *settings, YACReaderLibraries &libraries, QWidget *dialogParent, CurrentLibraryNameProvider currentLibraryNameProvider);
+
+    void repairCurrentLibrary(const QString &dialogTitle);
     void stop();
 
 signals:
@@ -32,7 +37,9 @@ private:
     void handleFinished();
     void handleFailure(const QString &error);
 
+    YACReaderLibraries &libraries;
     QWidget *dialogParent;
+    CurrentLibraryNameProvider currentLibraryNameProvider;
     YACReader::ComicInfoRepairer *repairer;
     QString libraryName;
     QString libraryPath;

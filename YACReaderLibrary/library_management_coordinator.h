@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 
+#include <functional>
 #include <future>
 
 class LibraryCreator;
@@ -16,21 +17,25 @@ class LibraryManagementCoordinator : public QObject
     Q_OBJECT
 
 public:
-    LibraryManagementCoordinator(QSettings *settings, YACReaderLibraries &libraries, QWidget *dialogParent);
+    using CurrentLibraryNameProvider = std::function<QString()>;
+
+    LibraryManagementCoordinator(QSettings *settings, YACReaderLibraries &libraries, QWidget *dialogParent, CurrentLibraryNameProvider currentLibraryNameProvider, QString libraryInfoDialogTitle);
 
     void loadLibrary(const QString &libraryName, const QString &libraryPath);
     QList<QPair<QString, QString>> loadLibraries();
 
     void createLibrary(const QString &source, const QString &destination, const QString &name);
-    void updateLibrary(const QString &libraryName, const QString &libraryPath);
+    void updateCurrentLibrary();
     void updateFolder(const QString &libraryName, const QString &libraryPath, const QString &folderPath, qulonglong folderId);
     void addExistingLibrary(QString libraryPath, const QString &libraryName);
     void prepareImportedLibrary(const QString &libraryName, const QString &libraryPath);
     void finishAddingLibrary();
 
-    void askToRemoveLibrary(const QString &libraryName);
-    void deleteLibrary(const QString &libraryName, bool deleteMetadata);
-    bool renameLibrary(const QString &currentName, const QString &newName);
+    void askToRemoveCurrentLibrary();
+    void deleteCurrentLibrary(bool deleteMetadata);
+    void renameCurrentLibrary(const QString &newName);
+    void openCurrentLibraryFolder();
+    void showCurrentLibraryInfo();
 
     void warnIfLibraryCountIsHigh();
     void showLibraryAlreadyExists(const QString &libraryName);
@@ -54,17 +59,24 @@ signals:
     void currentLibraryReloadRequested();
     void libraryAdded(const QString &libraryName, const QString &libraryPath);
     void libraryRemoved(const QString &libraryName, bool librariesEmpty);
+    void libraryRenamed(const QString &oldName, const QString &newName);
     void folderUpdateFinished(qulonglong folderId);
     void comicAdded(const QString &relativePath, const QString &coverPath);
     void creationFailed(const QString &error);
     void updateFailed(const QString &error);
 
 private:
+    void updateLibrary(const QString &libraryName, const QString &libraryPath);
+    void askToRemoveLibrary(const QString &libraryName);
+    void deleteLibrary(const QString &libraryName, bool deleteMetadata);
+    bool renameLibrary(const QString &currentName, const QString &newName);
     void startUpgrade(const QString &libraryName, const QString &libraryPath, const QString &libraryDataPath);
     void handleCreatorOpeningFailure(const QString &error);
 
     YACReaderLibraries &libraries;
     QWidget *dialogParent;
+    CurrentLibraryNameProvider currentLibraryNameProvider;
+    QString libraryInfoDialogTitle;
     LibraryCreator *libraryCreator;
     QString pendingLibraryName;
     QString pendingLibraryPath;

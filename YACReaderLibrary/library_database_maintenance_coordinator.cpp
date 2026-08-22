@@ -2,6 +2,7 @@
 
 #include "data_base_management.h"
 #include "yacreader_global.h"
+#include "yacreader_libraries.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -14,12 +15,24 @@
 #include <QWidget>
 
 #include <memory>
+#include <utility>
 
 using namespace YACReader;
 
-LibraryDatabaseMaintenanceCoordinator::LibraryDatabaseMaintenanceCoordinator(QWidget *dialogParent)
-    : QObject(dialogParent), dialogParent(dialogParent)
+LibraryDatabaseMaintenanceCoordinator::LibraryDatabaseMaintenanceCoordinator(YACReaderLibraries &libraries, QWidget *dialogParent, CurrentLibraryNameProvider currentLibraryNameProvider)
+    : QObject(dialogParent), libraries(libraries), dialogParent(dialogParent), currentLibraryNameProvider(std::move(currentLibraryNameProvider))
 {
+}
+
+void LibraryDatabaseMaintenanceCoordinator::backupCurrentLibrary(const QString &dialogTitle)
+{
+    backupLibrary(libraries.getPath(currentLibraryNameProvider()), dialogTitle);
+}
+
+void LibraryDatabaseMaintenanceCoordinator::restoreCurrentLibrary(const QString &dialogTitle)
+{
+    const auto libraryName = currentLibraryNameProvider();
+    restoreLibrary(libraryName, libraries.getPath(libraryName), dialogTitle);
 }
 
 void LibraryDatabaseMaintenanceCoordinator::backupLibrary(const QString &libraryPath, const QString &dialogTitle)
@@ -154,8 +167,9 @@ void LibraryDatabaseMaintenanceCoordinator::startLibraryRestore(const QString &l
     worker->start();
 }
 
-void LibraryDatabaseMaintenanceCoordinator::offerDatabaseRecovery(const QString &libraryName, const QString &libraryPath, const QString &restoreDialogTitle)
+void LibraryDatabaseMaintenanceCoordinator::offerDatabaseRecovery(const QString &libraryName, const QString &restoreDialogTitle)
 {
+    const auto libraryPath = libraries.getPath(libraryName);
     QMessageBox messageBox(QMessageBox::Warning,
                            QCoreApplication::translate("LibraryWindow", "Library database damaged"),
                            QCoreApplication::translate("LibraryWindow", "The database of library '%1' is damaged, so normal updates, maintenance, and backups are unavailable. YACReader can attempt to repair the database. Some damaged data may not be recoverable. Existing backups will not be changed.").arg(libraryName),

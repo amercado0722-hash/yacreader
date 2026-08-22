@@ -970,7 +970,7 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_management_coordinator.cpp" line="209"/>
+        <location filename="library_management_coordinator.cpp" line="262"/>
         <source>Do you want remove </source>
         <translation>다음을 제거하시겠습니까: </translation>
     </message>
@@ -980,12 +980,12 @@
         <translation>YACReader Library</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="208"/>
+        <location filename="library_management_coordinator.cpp" line="261"/>
         <source>Are you sure?</source>
         <translation>확실합니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1028"/>
+        <location filename="library_window.cpp" line="1058"/>
         <source>Add new folder</source>
         <translation>새 폴더 추가</translation>
     </message>
@@ -995,57 +995,57 @@
         <translation>폴더 삭제</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="28"/>
+        <location filename="library_management_coordinator.cpp" line="33"/>
         <source>Upgrade failed</source>
         <translation>업그레이드 실패</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="29"/>
+        <location filename="library_management_coordinator.cpp" line="34"/>
         <source>There were errors during library upgrade in: </source>
         <translation>라이브러리 업그레이드 중 오류 발생: </translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="46"/>
+        <location filename="library_management_coordinator.cpp" line="51"/>
         <source>Restore recovery failed</source>
         <translation>복원 복구 실패</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="68"/>
+        <location filename="library_management_coordinator.cpp" line="73"/>
         <source>Update needed</source>
         <translation>업데이트 필요</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="69"/>
+        <location filename="library_management_coordinator.cpp" line="74"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>이 라이브러리는 YACReaderLibrary의 이전 버전으로 만들어졌습니다. 업데이트가 필요합니다. 지금 업데이트하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="89"/>
+        <location filename="library_management_coordinator.cpp" line="94"/>
         <source>Download new version</source>
         <translation>새 버전 내려받기</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="90"/>
+        <location filename="library_management_coordinator.cpp" line="95"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
         <translation>이 라이브러리는 YACReaderLibrary의 최신 버전으로 만들어졌습니다. 지금 새 버전을 내려받으시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="104"/>
+        <location filename="library_management_coordinator.cpp" line="109"/>
         <source>Library not available</source>
         <translation>라이브러리를 사용할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="105"/>
+        <location filename="library_management_coordinator.cpp" line="110"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
         <translation>&apos;%1&apos; 라이브러리를 더 이상 사용할 수 없습니다. 제거하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="120"/>
+        <location filename="library_management_coordinator.cpp" line="125"/>
         <source>Old library</source>
         <translation>오래된 라이브러리</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="121"/>
+        <location filename="library_management_coordinator.cpp" line="126"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
         <translation>&apos;%1&apos; 라이브러리는 이전 버전의 YACReaderLibrary로 만들어졌습니다. 다시 만들어야 합니다. 지금 만드시겠습니까?</translation>
     </message>
@@ -1060,7 +1060,7 @@
         <translation>만화 이동 중...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1029"/>
+        <location filename="library_window.cpp" line="1059"/>
         <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>폴더 이름:</translation>
@@ -1107,88 +1107,88 @@
         <translation>선택한 폴더를 삭제하는 중 문제가 발생했습니다. 쓰기 권한을 확인하고, 다른 응용 프로그램이 이 폴더나 안의 파일을 사용하고 있지 않은지 확인하세요.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1052"/>
+        <location filename="library_window.cpp" line="1082"/>
         <source>Add new reading lists</source>
         <translation>새 읽기 목록 추가</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1053"/>
-        <location filename="library_window.cpp" line="1102"/>
+        <location filename="library_window.cpp" line="1083"/>
+        <location filename="library_window.cpp" line="1132"/>
         <source>List name:</source>
         <translation>목록 이름:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1071"/>
+        <location filename="library_window.cpp" line="1101"/>
         <source>Delete list/label</source>
         <translation>목록/라벨 삭제</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1071"/>
+        <location filename="library_window.cpp" line="1101"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>선택한 항목이 삭제됩니다. 디스크에서 만화나 폴더는 삭제되지 않습니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1101"/>
+        <location filename="library_window.cpp" line="1131"/>
         <source>Rename list name</source>
         <translation>목록 이름 변경</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="680"/>
+        <location filename="library_window.cpp" line="707"/>
         <source>Search filters</source>
         <translation>검색 필터</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="690"/>
+        <location filename="library_window.cpp" line="717"/>
         <source>Unread</source>
         <translation>읽지 않음</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="692"/>
+        <location filename="library_window.cpp" line="719"/>
         <source>In progress</source>
         <translation>읽는 중</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="694"/>
+        <location filename="library_window.cpp" line="721"/>
         <source>Highly rated</source>
         <translation>높은 평점</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="696"/>
+        <location filename="library_window.cpp" line="723"/>
         <source>Recently added</source>
         <translation>최근 추가</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="703"/>
+        <location filename="library_window.cpp" line="730"/>
         <source>Search syntax…</source>
         <translation>검색 구문…</translation>
     </message>
     <message>
-        <location filename="library_repair_coordinator.cpp" line="58"/>
+        <location filename="library_repair_coordinator.cpp" line="61"/>
         <source>A repair of this library is already running (%1). Wait for it to finish.</source>
         <translation>이 라이브러리에 대한 복구가 이미 진행 중입니다 (%1). 완료될 때까지 기다려 주세요.</translation>
     </message>
     <message>
-        <location filename="library_repair_coordinator.cpp" line="63"/>
+        <location filename="library_repair_coordinator.cpp" line="66"/>
         <source>The library is locked by a repair that did not finish.</source>
         <translation>라이브러리가 완료되지 않은 복구에 의해 잠겨 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_repair_coordinator.cpp" line="64"/>
+        <location filename="library_repair_coordinator.cpp" line="67"/>
         <source>The library is locked by a repair started by %1.</source>
         <translation>라이브러리가 %1에서 시작한 복구에 의해 잠겨 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_repair_coordinator.cpp" line="66"/>
+        <location filename="library_repair_coordinator.cpp" line="69"/>
         <source>If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?</source>
         <translation>다른 복구가 실행 중이 아니라고 확신하면 잠금을 해제할 수 있습니다. 잠금을 해제하고 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="808"/>
+        <location filename="library_window.cpp" line="841"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="808"/>
+        <location filename="library_window.cpp" line="841"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1242,12 +1242,12 @@ Folder: %1</source>
         <translation>표지 저장</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="254"/>
+        <location filename="library_management_coordinator.cpp" line="307"/>
         <source>You are adding too many libraries.</source>
         <translation>라이브러리를 너무 많이 추가하고 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="255"/>
+        <location filename="library_management_coordinator.cpp" line="308"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
@@ -1260,84 +1260,84 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 YACReaderLibrary는 라이브러리를 더 만드는 것을 막지 않지만, 라이브러리 수는 적게 유지하는 것이 좋습니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1170"/>
-        <location filename="library_window.cpp" line="1172"/>
+        <location filename="library_window.cpp" line="1200"/>
+        <location filename="library_window.cpp" line="1202"/>
         <source>YACReader not found</source>
         <translation>YACReader를 찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1170"/>
+        <location filename="library_window.cpp" line="1200"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader를 찾을 수 없습니다. YACReader는 YACReaderLibrary와 같은 폴더에 설치되어야 합니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1172"/>
+        <location filename="library_window.cpp" line="1202"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader를 찾을 수 없습니다. YACReader 설치에 문제가 있을 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1179"/>
+        <location filename="library_window.cpp" line="1209"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1179"/>
+        <location filename="library_window.cpp" line="1209"/>
         <source>Error opening comic with third party reader.</source>
         <translation>타사 뷰어로 만화를 여는 중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="178"/>
+        <location filename="library_management_coordinator.cpp" line="189"/>
         <source>Library not found</source>
         <translation>라이브러리를 찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="179"/>
+        <location filename="library_management_coordinator.cpp" line="190"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>선택한 폴더에 라이브러리가 없습니다.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="38"/>
-        <location filename="library_database_maintenance_coordinator.cpp" line="77"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="51"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="90"/>
         <source>YACReader library database (*.ydb)</source>
         <translation>YACReader 라이브러리 데이터베이스 (*.ydb)</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="58"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="71"/>
         <source>The library database backup was created at:
 %1</source>
         <translation>라이브러리 데이터베이스 백업을 다음 위치에 만들었습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="62"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="75"/>
         <source>Unable to create the library database backup:
 %1</source>
         <translation>라이브러리 데이터베이스 백업을 만들 수 없습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="83"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="96"/>
         <source>Close YACReaderLibraryServer and any other YACReader application using this library before restoring. Continue?</source>
         <translation>복원하기 전에 YACReaderLibraryServer와 이 라이브러리를 사용하는 다른 모든 YACReader 애플리케이션을 종료하세요. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="93"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="106"/>
         <source>Restoring library database...</source>
         <translation>라이브러리 데이터베이스 복원 중...</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="109"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="122"/>
         <source>The current library database is invalid. Restore the selected backup anyway?</source>
         <translation>현재 라이브러리 데이터베이스가 유효하지 않습니다. 선택한 백업을 그래도 복원하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="121"/>
-        <location filename="library_database_maintenance_coordinator.cpp" line="197"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="134"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="211"/>
         <source>The library maintenance lock may be stale. Remove it and retry?</source>
         <translation>라이브러리 유지 관리 잠금이 오래된 것일 수 있습니다. 잠금을 제거하고 다시 시도하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="135"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="148"/>
         <source>
 
 Restart YACReaderLibrary before attempting recovery again.</source>
@@ -1346,71 +1346,71 @@ Restart YACReaderLibrary before attempting recovery again.</source>
 복구를 다시 시도하기 전에 YACReaderLibrary를 다시 시작하세요.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="147"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="160"/>
         <source>The library database was restored successfully. Update the library now?</source>
         <translation>라이브러리 데이터베이스를 성공적으로 복원했습니다. 지금 라이브러리를 업데이트하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="160"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="174"/>
         <source>Library database damaged</source>
         <translation>라이브러리 데이터베이스 손상</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="161"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="175"/>
         <source>The database of library &apos;%1&apos; is damaged, so normal updates, maintenance, and backups are unavailable. YACReader can attempt to repair the database. Some damaged data may not be recoverable. Existing backups will not be changed.</source>
         <translation>&apos;%1&apos; 라이브러리의 데이터베이스가 손상되어 일반 업데이트, 유지 관리 및 백업을 사용할 수 없습니다. YACReader가 데이터베이스 복구를 시도할 수 있습니다. 손상된 일부 데이터는 복구하지 못할 수 있습니다. 기존 백업은 변경되지 않습니다.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="164"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="178"/>
         <source>Attempt repair</source>
         <translation>복구 시도</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="165"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="179"/>
         <source>Restore a backup...</source>
         <translation>백업 복원...</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="182"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="196"/>
         <source>Repairing library database...</source>
         <translation>라이브러리 데이터베이스 복구 중...</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="196"/>
-        <location filename="library_database_maintenance_coordinator.cpp" line="204"/>
-        <location filename="library_database_maintenance_coordinator.cpp" line="214"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="210"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="218"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="228"/>
         <source>Library database repair</source>
         <translation>라이브러리 데이터베이스 복구</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="205"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="219"/>
         <source>Another maintenance operation is currently using this library. Try again after it finishes.</source>
         <translation>현재 다른 유지 관리 작업에서 이 라이브러리를 사용 중입니다. 작업이 끝난 후 다시 시도하세요.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="215"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="229"/>
         <source>The library database is already valid.</source>
         <translation>라이브러리 데이터베이스가 이미 유효합니다.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="218"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="232"/>
         <source>Library database repaired</source>
         <translation>라이브러리 데이터베이스 복구됨</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="219"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="233"/>
         <source>The library database was repaired by rebuilding its indexes. The damaged original was preserved at:
 %1</source>
         <translation>인덱스를 다시 빌드하여 라이브러리 데이터베이스를 복구했습니다. 손상된 원본은 다음 위치에 보존되었습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="222"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="236"/>
         <source>Library database rebuilt</source>
         <translation>라이브러리 데이터베이스 재구축됨</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="223"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="237"/>
         <source>The library database was rebuilt successfully. The damaged original was preserved at:
 %1
 
@@ -1421,7 +1421,7 @@ Update the library now?</source>
 지금 라이브러리를 업데이트하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="232"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="246"/>
         <source>
 
 The damaged original was preserved at:
@@ -1432,12 +1432,12 @@ The damaged original was preserved at:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="234"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="248"/>
         <source>Library database repair failed</source>
         <translation>라이브러리 데이터베이스 복구 실패</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="235"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="249"/>
         <source>The library database could not be repaired:
 %1%2
 
@@ -1448,12 +1448,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
 라이브러리 메뉴에서 백업을 복원하거나 라이브러리를 다시 만들 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="209"/>
+        <location filename="library_management_coordinator.cpp" line="262"/>
         <source> library?</source>
         <translation>라이브러리?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="212"/>
+        <location filename="library_management_coordinator.cpp" line="265"/>
         <source>Remove and delete metadata and backups</source>
         <translation>메타데이터 및 백업 제거 후 삭제</translation>
     </message>
@@ -1462,7 +1462,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation type="vanished">제거 및 메타데이터 삭제</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1316"/>
+        <location filename="library_window.cpp" line="533"/>
         <source>Library info</source>
         <translation>라이브러리 정보</translation>
     </message>
@@ -1502,17 +1502,17 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>표지 이미지를 저장하는 중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1622"/>
+        <location filename="library_window.cpp" line="1569"/>
         <source>Error creating the library</source>
         <translation>라이브러리 생성 오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1627"/>
+        <location filename="library_window.cpp" line="1574"/>
         <source>Error updating the library</source>
         <translation>라이브러리 업데이트 오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1632"/>
+        <location filename="library_window.cpp" line="1579"/>
         <source>Error opening the library</source>
         <translation>라이브러리 열기 오류</translation>
     </message>
@@ -1537,17 +1537,17 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>만화가 현재 라벨/목록에서만 삭제됩니다. 확실합니까?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="261"/>
+        <location filename="library_management_coordinator.cpp" line="314"/>
         <source>Library name already exists</source>
         <translation>라이브러리 이름 중복</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="262"/>
+        <location filename="library_management_coordinator.cpp" line="315"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>&apos;%1&apos; 이름의 라이브러리가 이미 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_repair_coordinator.cpp" line="83"/>
+        <location filename="library_repair_coordinator.cpp" line="86"/>
         <source>Repaired: %1
 Failed: %2
 Missing files: %3</source>
@@ -1559,364 +1559,364 @@ Missing files: %3</source>
 <context>
     <name>LibraryWindowActions</name>
     <message>
-        <location filename="library_window_actions.cpp" line="42"/>
+        <location filename="library_window_actions.cpp" line="46"/>
         <source>Create a new library</source>
         <translation>새 라이브러리 만들기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="47"/>
+        <location filename="library_window_actions.cpp" line="51"/>
         <source>Open an existing library</source>
         <translation>기존 라이브러리 열기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="51"/>
-        <location filename="library_window_actions.cpp" line="52"/>
+        <location filename="library_window_actions.cpp" line="55"/>
+        <location filename="library_window_actions.cpp" line="56"/>
         <source>Export comics info</source>
         <translation>만화 정보 내보내기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="56"/>
-        <location filename="library_window_actions.cpp" line="57"/>
+        <location filename="library_window_actions.cpp" line="60"/>
+        <location filename="library_window_actions.cpp" line="61"/>
         <source>Import comics info</source>
         <translation>만화 정보 가져오기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="61"/>
+        <location filename="library_window_actions.cpp" line="65"/>
         <source>Pack covers</source>
         <translation>표지 묶기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="62"/>
+        <location filename="library_window_actions.cpp" line="66"/>
         <source>Pack the covers of the selected library</source>
         <translation>선택한 라이브러리의 표지 묶기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="66"/>
+        <location filename="library_window_actions.cpp" line="70"/>
         <source>Unpack covers</source>
         <translation>표지 풀기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="67"/>
+        <location filename="library_window_actions.cpp" line="71"/>
         <source>Unpack a catalog</source>
         <translation>카탈로그 풀기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="71"/>
+        <location filename="library_window_actions.cpp" line="75"/>
         <source>Update library</source>
         <translation>라이브러리 업데이트</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="72"/>
+        <location filename="library_window_actions.cpp" line="76"/>
         <source>Update current library</source>
         <translation>현재 라이브러리 업데이트</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="76"/>
+        <location filename="library_window_actions.cpp" line="80"/>
         <source>Back up library database</source>
         <translation>라이브러리 데이터베이스 백업</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="77"/>
+        <location filename="library_window_actions.cpp" line="81"/>
         <source>Create a backup of the current library database</source>
         <translation>현재 라이브러리 데이터베이스의 백업 만들기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="81"/>
+        <location filename="library_window_actions.cpp" line="85"/>
         <source>Restore library database backup</source>
         <translation>라이브러리 데이터베이스 백업 복원</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="82"/>
+        <location filename="library_window_actions.cpp" line="86"/>
         <source>Restore the current library database from a backup</source>
         <translation>백업에서 현재 라이브러리 데이터베이스 복원</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="86"/>
+        <location filename="library_window_actions.cpp" line="90"/>
         <location filename="import_widget.cpp" line="364"/>
         <source>Repair covers and comic info</source>
         <translation>표지 및 만화 정보 복구</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="87"/>
+        <location filename="library_window_actions.cpp" line="91"/>
         <source>Retry comics with missing covers or incomplete information</source>
         <translation>표지가 없거나 정보가 불완전한 만화를 다시 처리합니다</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="91"/>
+        <location filename="library_window_actions.cpp" line="95"/>
         <source>Rename library</source>
         <translation>라이브러리 이름 변경</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="92"/>
+        <location filename="library_window_actions.cpp" line="96"/>
         <source>Rename current library</source>
         <translation>현재 라이브러리 이름 변경</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="96"/>
+        <location filename="library_window_actions.cpp" line="100"/>
         <source>Remove library</source>
         <translation>라이브러리 제거</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="97"/>
+        <location filename="library_window_actions.cpp" line="101"/>
         <source>Remove current library from your collection</source>
         <translation>내 컬렉션에서 현재 라이브러리 제거</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="101"/>
+        <location filename="library_window_actions.cpp" line="105"/>
         <source>Rescan library for XML info</source>
         <translation>XML 정보로 라이브러리 재검색</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="102"/>
+        <location filename="library_window_actions.cpp" line="106"/>
         <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
         <translation>만화 파일에 포함된 XML 정보를 찾으려고 시도합니다. 9.8.2 이하 버전으로 만든 라이브러리이거나 타사 소프트웨어로 파일에 XML 정보를 포함한 경우에만 필요합니다.</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="106"/>
+        <location filename="library_window_actions.cpp" line="110"/>
         <source>Open library folder...</source>
         <translation>라이브러리 폴더 열기...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="107"/>
+        <location filename="library_window_actions.cpp" line="111"/>
         <source>Open the root folder of the current library</source>
         <translation>현재 라이브러리의 루트 폴더 열기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="111"/>
+        <location filename="library_window_actions.cpp" line="115"/>
         <source>Show library info</source>
         <translation>라이브러리 정보 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="112"/>
+        <location filename="library_window_actions.cpp" line="116"/>
         <source>Show information about the current library</source>
         <translation>현재 라이브러리에 대한 정보 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="116"/>
+        <location filename="library_window_actions.cpp" line="120"/>
         <source>Open current comic</source>
         <translation>현재 만화 열기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="117"/>
+        <location filename="library_window_actions.cpp" line="121"/>
         <source>Open current comic on YACReader</source>
         <translation>YACReader에서 현재 만화 열기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="121"/>
+        <location filename="library_window_actions.cpp" line="125"/>
         <source>Save selected covers to...</source>
         <translation>선택한 표지 저장...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="122"/>
+        <location filename="library_window_actions.cpp" line="126"/>
         <source>Save covers of the selected comics as JPG files</source>
         <translation>선택한 만화의 표지를 JPG 파일로 저장</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="126"/>
-        <location filename="library_window_actions.cpp" line="254"/>
+        <location filename="library_window_actions.cpp" line="130"/>
+        <location filename="library_window_actions.cpp" line="258"/>
         <source>Set as read</source>
         <translation>읽음으로 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="127"/>
+        <location filename="library_window_actions.cpp" line="131"/>
         <source>Set comic as read</source>
         <translation>만화를 읽음으로 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="131"/>
-        <location filename="library_window_actions.cpp" line="259"/>
+        <location filename="library_window_actions.cpp" line="135"/>
+        <location filename="library_window_actions.cpp" line="263"/>
         <source>Set as unread</source>
         <translation>읽지 않음으로 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="132"/>
+        <location filename="library_window_actions.cpp" line="136"/>
         <source>Set comic as unread</source>
         <translation>만화를 읽지 않음으로 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="136"/>
-        <location filename="library_window_actions.cpp" line="274"/>
+        <location filename="library_window_actions.cpp" line="140"/>
+        <location filename="library_window_actions.cpp" line="278"/>
         <source>manga</source>
         <translation>망가</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="137"/>
+        <location filename="library_window_actions.cpp" line="141"/>
         <source>Set issue as manga</source>
         <translation>만화를 망가로 설정</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="141"/>
-        <location filename="library_window_actions.cpp" line="279"/>
+        <location filename="library_window_actions.cpp" line="145"/>
+        <location filename="library_window_actions.cpp" line="283"/>
         <source>comic</source>
         <translation>만화</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="142"/>
+        <location filename="library_window_actions.cpp" line="146"/>
         <source>Set issue as normal</source>
         <translation>만화를 일반으로 설정</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="146"/>
+        <location filename="library_window_actions.cpp" line="150"/>
         <source>western manga</source>
         <translation>서양 만화</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="147"/>
+        <location filename="library_window_actions.cpp" line="151"/>
         <source>Set issue as western manga</source>
         <translation>만화를 서양 만화로 설정</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="152"/>
-        <location filename="library_window_actions.cpp" line="289"/>
+        <location filename="library_window_actions.cpp" line="156"/>
+        <location filename="library_window_actions.cpp" line="293"/>
         <source>web comic</source>
         <translation>웹 만화</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="153"/>
+        <location filename="library_window_actions.cpp" line="157"/>
         <source>Set issue as web comic</source>
         <translation>만화를 웹 만화로 설정</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="158"/>
-        <location filename="library_window_actions.cpp" line="294"/>
+        <location filename="library_window_actions.cpp" line="162"/>
+        <location filename="library_window_actions.cpp" line="298"/>
         <source>yonkoma</source>
         <translation>4컷 만화</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="159"/>
+        <location filename="library_window_actions.cpp" line="163"/>
         <source>Set issue as yonkoma</source>
         <translation>만화를 4컷 만화로 설정</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="163"/>
+        <location filename="library_window_actions.cpp" line="167"/>
         <source>Show/Hide marks</source>
         <translation>읽음 마크 표시/숨김</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="164"/>
+        <location filename="library_window_actions.cpp" line="168"/>
         <source>Show or hide read marks</source>
         <translation>읽음 마크를 표시하거나 숨김</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="170"/>
+        <location filename="library_window_actions.cpp" line="174"/>
         <source>Show/Hide recent indicator</source>
         <translation>신규 표시 표시/숨김</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="171"/>
+        <location filename="library_window_actions.cpp" line="175"/>
         <source>Show or hide recent indicator</source>
         <translation>신규 표시를 표시하거나 숨김</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="178"/>
-        <location filename="library_window_actions.cpp" line="179"/>
+        <location filename="library_window_actions.cpp" line="182"/>
+        <location filename="library_window_actions.cpp" line="183"/>
         <source>Fullscreen mode on/off</source>
         <translation>전체화면 모드 켜기/끄기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="184"/>
+        <location filename="library_window_actions.cpp" line="188"/>
         <source>Help, About YACReader</source>
         <translation>도움말, YACReader 정보</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="188"/>
+        <location filename="library_window_actions.cpp" line="192"/>
         <source>Add new folder</source>
         <translation>새 폴더 추가</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="191"/>
+        <location filename="library_window_actions.cpp" line="195"/>
         <source>Add new folder to the current library</source>
         <translation>현재 라이브러리에 새 폴더 추가</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="193"/>
+        <location filename="library_window_actions.cpp" line="197"/>
         <source>Rename folder</source>
         <translation>폴더 이름 바꾸기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="194"/>
+        <location filename="library_window_actions.cpp" line="198"/>
         <source>Rename the current folder on disk and in the library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="196"/>
+        <location filename="library_window_actions.cpp" line="200"/>
         <source>Delete folder</source>
         <translation>폴더 삭제</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="199"/>
+        <location filename="library_window_actions.cpp" line="203"/>
         <source>Delete current folder from disk</source>
         <translation>현재 폴더를 디스크에서 삭제</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="204"/>
+        <location filename="library_window_actions.cpp" line="208"/>
         <source>Select root node</source>
         <translation>루트 노드 선택</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="207"/>
+        <location filename="library_window_actions.cpp" line="211"/>
         <source>Expand all nodes</source>
         <translation>모든 노드 펼치기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="212"/>
+        <location filename="library_window_actions.cpp" line="216"/>
         <source>Collapse all nodes</source>
         <translation>모든 노드 접기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="217"/>
+        <location filename="library_window_actions.cpp" line="221"/>
         <source>Show options dialog</source>
         <translation>환경설정 다이얼로그 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="222"/>
+        <location filename="library_window_actions.cpp" line="226"/>
         <source>Show comics server options dialog</source>
         <translation>만화 서버 환경설정 다이얼로그 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="226"/>
-        <location filename="library_window_actions.cpp" line="227"/>
+        <location filename="library_window_actions.cpp" line="230"/>
+        <location filename="library_window_actions.cpp" line="231"/>
         <source>Change between comics views</source>
         <translation>만화 보기 전환</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="235"/>
+        <location filename="library_window_actions.cpp" line="239"/>
         <source>Open folder...</source>
         <translation>폴더 열기...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="240"/>
-        <location filename="library_window_actions.cpp" line="306"/>
+        <location filename="library_window_actions.cpp" line="244"/>
+        <location filename="library_window_actions.cpp" line="310"/>
         <source>Organize files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="244"/>
+        <location filename="library_window_actions.cpp" line="248"/>
         <source>Set as uncompleted</source>
         <translation>미완료로 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="249"/>
+        <location filename="library_window_actions.cpp" line="253"/>
         <source>Set as completed</source>
         <translation>완료로 표시</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="264"/>
+        <location filename="library_window_actions.cpp" line="268"/>
         <source>Set custom cover</source>
         <translation>사용자 지정 표지 설정</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="269"/>
+        <location filename="library_window_actions.cpp" line="273"/>
         <source>Delete custom cover</source>
         <translation>사용자 지정 표지 삭제</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="284"/>
+        <location filename="library_window_actions.cpp" line="288"/>
         <source>western manga (left to right)</source>
         <translation>서양 만화 (왼쪽 → 오른쪽)</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="301"/>
+        <location filename="library_window_actions.cpp" line="305"/>
         <source>Open containing folder...</source>
         <translation>포함된 폴더 열기...</translation>
     </message>
@@ -1925,133 +1925,133 @@ Missing files: %3</source>
         <translation type="vanished">만화 평점 초기화</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="316"/>
+        <location filename="library_window_actions.cpp" line="320"/>
         <source>Select all comics</source>
         <translation>모든 만화 선택</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="321"/>
+        <location filename="library_window_actions.cpp" line="325"/>
         <source>Edit</source>
         <translation>편집</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="326"/>
+        <location filename="library_window_actions.cpp" line="330"/>
         <source>Assign current order to comics</source>
         <translation>만화에 현재 순서 적용</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="331"/>
+        <location filename="library_window_actions.cpp" line="335"/>
         <source>Update cover</source>
         <translation>표지 업데이트</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="337"/>
+        <location filename="library_window_actions.cpp" line="341"/>
         <source>Delete selected comics</source>
         <translation>선택한 만화 삭제</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="342"/>
+        <location filename="library_window_actions.cpp" line="346"/>
         <source>Delete metadata from selected comics</source>
         <translation>선택한 만화에서 메타데이터 삭제</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="349"/>
+        <location filename="library_window_actions.cpp" line="353"/>
         <source>Download tags from Comic Vine</source>
         <translation>Comic Vine에서 태그 내려받기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="352"/>
+        <location filename="library_window_actions.cpp" line="356"/>
         <source>Focus search line</source>
         <translation>검색창으로 이동</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="358"/>
+        <location filename="library_window_actions.cpp" line="362"/>
         <source>Focus comics view</source>
         <translation>만화 보기로 이동</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="363"/>
+        <location filename="library_window_actions.cpp" line="367"/>
         <source>Edit shortcuts</source>
         <translation>단축키 편집</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="369"/>
+        <location filename="library_window_actions.cpp" line="373"/>
         <source>&amp;Quit</source>
         <translation>끝내기(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="376"/>
+        <location filename="library_window_actions.cpp" line="380"/>
         <source>Update folder</source>
         <translation>폴더 업데이트</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="378"/>
+        <location filename="library_window_actions.cpp" line="382"/>
         <source>Update current folder</source>
         <translation>현재 폴더 업데이트</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="382"/>
+        <location filename="library_window_actions.cpp" line="386"/>
         <source>Scan legacy XML metadata</source>
         <translation>레거시 XML 메타데이터 스캔</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="386"/>
+        <location filename="library_window_actions.cpp" line="390"/>
         <source>Add new reading list</source>
         <translation>새 읽기 목록 추가</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="389"/>
+        <location filename="library_window_actions.cpp" line="393"/>
         <source>Add a new reading list to the current library</source>
         <translation>현재 라이브러리에 새 읽기 목록 추가</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="391"/>
+        <location filename="library_window_actions.cpp" line="395"/>
         <source>Remove reading list</source>
         <translation>읽기 목록 제거</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="394"/>
+        <location filename="library_window_actions.cpp" line="398"/>
         <source>Remove current reading list from the library</source>
         <translation>라이브러리에서 현재 읽기 목록 제거</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="396"/>
+        <location filename="library_window_actions.cpp" line="400"/>
         <source>Add new label</source>
         <translation>새 라벨 추가</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="399"/>
+        <location filename="library_window_actions.cpp" line="403"/>
         <source>Add a new label to this library</source>
         <translation>이 라이브러리에 새 라벨 추가</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="401"/>
+        <location filename="library_window_actions.cpp" line="405"/>
         <source>Rename selected list</source>
         <translation>선택한 목록 이름 변경</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="404"/>
+        <location filename="library_window_actions.cpp" line="408"/>
         <source>Rename any selected labels or lists</source>
         <translation>선택한 라벨이나 목록 이름 변경</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="407"/>
+        <location filename="library_window_actions.cpp" line="411"/>
         <source>Add to...</source>
         <translation>추가...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="409"/>
+        <location filename="library_window_actions.cpp" line="413"/>
         <source>Favorites</source>
         <translation>즐겨찾기</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="412"/>
+        <location filename="library_window_actions.cpp" line="416"/>
         <source>Add selected comics to favorites list</source>
         <translation>선택한 만화를 즐겨찾기 목록에 추가</translation>
     </message>
     <message>
         <location filename="qml/ComicGridDelegate.qml" line="300"/>
-        <location filename="library_window_actions.cpp" line="310"/>
+        <location filename="library_window_actions.cpp" line="314"/>
         <source>Reset rating</source>
         <translation>평점 초기화</translation>
     </message>

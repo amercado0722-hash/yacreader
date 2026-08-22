@@ -3,6 +3,7 @@
 #include "comic_info_repairer.h"
 #include "data_base_management.h"
 #include "yacreader_global.h"
+#include "yacreader_libraries.h"
 
 #include <QCoreApplication>
 #include <QFile>
@@ -10,23 +11,25 @@
 #include <QSettings>
 #include <QWidget>
 
+#include <utility>
+
 using namespace YACReader;
 
-LibraryRepairCoordinator::LibraryRepairCoordinator(QSettings *settings, QWidget *dialogParent)
-    : QObject(dialogParent), dialogParent(dialogParent), repairer(new ComicInfoRepairer(settings, this))
+LibraryRepairCoordinator::LibraryRepairCoordinator(QSettings *settings, YACReaderLibraries &libraries, QWidget *dialogParent, CurrentLibraryNameProvider currentLibraryNameProvider)
+    : QObject(dialogParent), libraries(libraries), dialogParent(dialogParent), currentLibraryNameProvider(std::move(currentLibraryNameProvider)), repairer(new ComicInfoRepairer(settings, this))
 {
     connect(repairer, &QThread::finished, this, &LibraryRepairCoordinator::handleFinished);
     connect(repairer, &ComicInfoRepairer::comicProcessed, this, &LibraryRepairCoordinator::comicProcessed);
     connect(repairer, &ComicInfoRepairer::failed, this, &LibraryRepairCoordinator::handleFailure);
 }
 
-void LibraryRepairCoordinator::repairLibrary(const QString &libraryName, const QString &libraryPath, const QString &dialogTitle)
+void LibraryRepairCoordinator::repairCurrentLibrary(const QString &dialogTitle)
 {
     if (repairer->isRunning())
         return;
 
-    this->libraryName = libraryName;
-    this->libraryPath = libraryPath;
+    libraryName = currentLibraryNameProvider();
+    libraryPath = libraries.getPath(libraryName);
     this->dialogTitle = dialogTitle;
     startRepair(false);
 }

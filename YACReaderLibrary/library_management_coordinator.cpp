@@ -1,6 +1,7 @@
 #include "library_management_coordinator.h"
 
 #include "data_base_management.h"
+#include "db_helper.h"
 #include "library_creator.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
@@ -9,18 +10,22 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QGridLayout>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <QSpacerItem>
 #include <QSqlError>
 #include <QUrl>
 #include <QWidget>
 #include <QsLog.h>
 
+#include <utility>
+
 using namespace YACReader;
 
-LibraryManagementCoordinator::LibraryManagementCoordinator(QSettings *settings, YACReaderLibraries &libraries, QWidget *dialogParent)
-    : QObject(dialogParent), libraries(libraries), dialogParent(dialogParent), libraryCreator(new LibraryCreator(settings))
+LibraryManagementCoordinator::LibraryManagementCoordinator(QSettings *settings, YACReaderLibraries &libraries, QWidget *dialogParent, CurrentLibraryNameProvider currentLibraryNameProvider, QString libraryInfoDialogTitle)
+    : QObject(dialogParent), libraries(libraries), dialogParent(dialogParent), currentLibraryNameProvider(std::move(currentLibraryNameProvider)), libraryInfoDialogTitle(std::move(libraryInfoDialogTitle)), libraryCreator(new LibraryCreator(settings))
 {
     libraryCreator->setParent(this);
 
@@ -148,6 +153,12 @@ void LibraryManagementCoordinator::createLibrary(const QString &source, const QS
     libraryCreator->start();
 }
 
+void LibraryManagementCoordinator::updateCurrentLibrary()
+{
+    const auto libraryName = currentLibraryNameProvider();
+    updateLibrary(libraryName, libraries.getPath(libraryName));
+}
+
 void LibraryManagementCoordinator::updateLibrary(const QString &libraryName, const QString &libraryPath)
 {
     operationLibraryName = libraryName;
@@ -200,6 +211,48 @@ void LibraryManagementCoordinator::finishAddingLibrary()
     emit libraryAdded(pendingLibraryName, pendingLibraryPath);
     pendingLibraryName.clear();
     pendingLibraryPath.clear();
+}
+
+void LibraryManagementCoordinator::askToRemoveCurrentLibrary()
+{
+    askToRemoveLibrary(currentLibraryNameProvider());
+}
+
+void LibraryManagementCoordinator::deleteCurrentLibrary(bool deleteMetadata)
+{
+    deleteLibrary(currentLibraryNameProvider(), deleteMetadata);
+}
+
+void LibraryManagementCoordinator::renameCurrentLibrary(const QString &newName)
+{
+    const auto currentName = currentLibraryNameProvider();
+    if (!renameLibrary(currentName, newName))
+        return;
+
+    emit libraryRenamed(currentName, newName);
+}
+
+void LibraryManagementCoordinator::openCurrentLibraryFolder()
+{
+    const auto path = libraries.getPath(currentLibraryNameProvider());
+    if (!path.isEmpty())
+        QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::cleanPath(path)));
+}
+
+void LibraryManagementCoordinator::showCurrentLibraryInfo()
+{
+    const auto id = libraries.getUuid(currentLibraryNameProvider());
+    const auto info = DBHelper::getLibraryInfo(id);
+
+    QMessageBox messageBox(dialogParent);
+    messageBox.setWindowTitle(libraryInfoDialogTitle);
+    messageBox.setText(info);
+    auto horizontalSpacer = new QSpacerItem(420, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    auto layout = qobject_cast<QGridLayout *>(messageBox.layout());
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    messageBox.setStandardButtons(QMessageBox::Close);
+    messageBox.setDefaultButton(QMessageBox::Close);
+    messageBox.exec();
 }
 
 void LibraryManagementCoordinator::askToRemoveLibrary(const QString &libraryName)

@@ -491,7 +491,10 @@ void LibraryWindow::setupCoordinators()
             setRootIndex();
     });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
-    libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(this);
+    libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(
+            libraries,
+            this,
+            [this] { return selectedLibrary->currentText(); });
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::backupAvailabilityChanged, actions.backupLibraryAction, &QAction::setEnabled);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::maintenanceStarted, this, [this] {
         contentViewsManager->comicsView->setModel(nullptr);
@@ -500,7 +503,6 @@ void LibraryWindow::setupCoordinators()
         actions.disableAllActions();
     });
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryReloadRequested, this, &LibraryWindow::loadLibrary);
-    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryUpdateRequested, this, &LibraryWindow::updateLibrary);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::invalidDatabaseRestoreCancelled, this, [this] {
         actions.renameLibraryAction->setEnabled(true);
         actions.removeLibraryAction->setEnabled(true);
@@ -513,21 +515,36 @@ void LibraryWindow::setupCoordinators()
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::databaseSalvageFailed, this, [this] {
         actions.restoreLibraryAction->setEnabled(true);
     });
-    libraryRepairCoordinator = new LibraryRepairCoordinator(settings, this);
+    libraryRepairCoordinator = new LibraryRepairCoordinator(
+            settings,
+            libraries,
+            this,
+            [this] { return selectedLibrary->currentText(); });
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairStarted, importWidget, &ImportWidget::setRepairLook);
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairStarted, this, &LibraryWindow::showImportingWidget);
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairFinished, this, &LibraryWindow::showRootWidget);
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairFinished, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::comicProcessed, importWidget, &ImportWidget::newComic);
-    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::databaseRecoveryRequested, this, &LibraryWindow::offerDatabaseRecovery);
-    libraryManagementCoordinator = new LibraryManagementCoordinator(settings, libraries, this);
+    libraryManagementCoordinator = new LibraryManagementCoordinator(
+            settings,
+            libraries,
+            this,
+            [this] { return selectedLibrary->currentText(); },
+            tr("Library info"));
+    connect(contentViewsManager->gridView(), &GridComicsView::openLibraryFolderRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::openCurrentLibraryFolder);
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryUpdateRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentLibrary);
+    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::databaseRecoveryRequested, libraryDatabaseMaintenanceCoordinator, [coordinator = libraryDatabaseMaintenanceCoordinator, restoreAction = actions.restoreLibraryAction](const QString &libraryName) {
+        coordinator->offerDatabaseRecovery(libraryName, restoreAction->text());
+    });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::loadStarted, this, [this] {
         historyController->clear();
         showRootWidget();
     });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryReady, this, &LibraryWindow::applyLoadedLibrary);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryManagementOnlyRequested, this, &LibraryWindow::showLibraryManagementOnly);
-    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::databaseRecoveryRequested, this, &LibraryWindow::offerDatabaseRecovery);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::databaseRecoveryRequested, libraryDatabaseMaintenanceCoordinator, [coordinator = libraryDatabaseMaintenanceCoordinator, restoreAction = actions.restoreLibraryAction](const QString &libraryName) {
+        coordinator->offerDatabaseRecovery(libraryName, restoreAction->text());
+    });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::upgradeStarted, importWidget, &ImportWidget::setUpgradeLook);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::upgradeStarted, this, &LibraryWindow::showImportingWidget);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryReloadRequested, this, &LibraryWindow::loadLibrary);
@@ -542,6 +559,16 @@ void LibraryWindow::setupCoordinators()
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::currentLibraryReloadRequested, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryAdded, this, &LibraryWindow::addLibraryToSelector);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRemoved, this, &LibraryWindow::handleLibraryRemoved);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRenamed, this, [this](const QString &oldName, const QString &newName) {
+        if (newName == oldName)
+            return;
+
+        selectedLibrary->renameCurrentLibrary(newName);
+#ifndef Y_MAC_UI
+        if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
+            libraryToolBar->setCurrentFolderName(newName);
+#endif
+    });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::folderUpdateFinished, this, [this](qulonglong folderId) {
         reloadAfterCopyMove(foldersModel->getIndexFromFolderId(folderId));
     });
@@ -778,7 +805,11 @@ void LibraryWindow::createConnections()
             recentVisibilityCoordinator,
             comicManagementCoordinator,
             folderManagementCoordinator,
-            organizeFilesCoordinator);
+            organizeFilesCoordinator,
+            libraryManagementCoordinator,
+            libraryDatabaseMaintenanceCoordinator,
+            libraryRepairCoordinator,
+            renameLibraryDialog);
     connect(actions.focusSearchLineAction, &QAction::triggered, this, &LibraryWindow::focusSearchInput);
 
     connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::createLibrary);
@@ -800,7 +831,9 @@ void LibraryWindow::createConnections()
     connect(packageManager, &PackageManager::exported, exportLibraryDialog, &ExportLibraryDialog::close);
     connect(importLibraryDialog, &ImportLibraryDialog::unpackCLC, this, &LibraryWindow::importLibrary);
     connect(importLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
-    connect(importLibraryDialog, &QDialog::rejected, this, &LibraryWindow::deleteCurrentLibrary);
+    connect(importLibraryDialog, &QDialog::rejected, libraryManagementCoordinator, [coordinator = libraryManagementCoordinator] {
+        coordinator->deleteCurrentLibrary(true);
+    });
     connect(importLibraryDialog, &ImportLibraryDialog::libraryExists, libraryManagementCoordinator, &LibraryManagementCoordinator::showLibraryAlreadyExists);
     connect(packageManager, &PackageManager::imported, importLibraryDialog, &QWidget::hide);
     connect(packageManager, &PackageManager::imported, libraryManagementCoordinator, &LibraryManagementCoordinator::finishAddingLibrary);
@@ -816,9 +849,6 @@ void LibraryWindow::createConnections()
 
     // load library when selected library changes
     connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, this, &LibraryWindow::loadLibrary);
-
-    // rename library dialog
-    connect(renameLibraryDialog, &RenameLibraryDialog::renameLibrary, this, &LibraryWindow::rename);
 
     // navigations between view modes (tree,list and flow)
     // TODO connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
@@ -1236,65 +1266,6 @@ void LibraryWindow::handleLibraryRemoved(const QString &libraryName, bool librar
     showNoLibrariesWidget();
 }
 
-void LibraryWindow::updateLibrary()
-{
-    const auto libraryName = selectedLibrary->currentText();
-    libraryManagementCoordinator->updateLibrary(libraryName, libraries.getPath(libraryName));
-}
-
-void LibraryWindow::backupLibrary()
-{
-    libraryDatabaseMaintenanceCoordinator->backupLibrary(libraries.getPath(selectedLibrary->currentText()), actions.backupLibraryAction->text());
-}
-
-void LibraryWindow::restoreLibrary()
-{
-    const auto libraryName = selectedLibrary->currentText();
-    libraryDatabaseMaintenanceCoordinator->restoreLibrary(libraryName, libraries.getPath(libraryName), actions.restoreLibraryAction->text());
-}
-
-void LibraryWindow::offerDatabaseRecovery(const QString &libraryName)
-{
-    libraryDatabaseMaintenanceCoordinator->offerDatabaseRecovery(libraryName, libraries.getPath(libraryName), actions.restoreLibraryAction->text());
-}
-
-void LibraryWindow::repairLibrary()
-{
-    const auto libraryName = selectedLibrary->currentText();
-    libraryRepairCoordinator->repairLibrary(libraryName, libraries.getPath(libraryName), actions.repairLibraryAction->text());
-}
-
-void LibraryWindow::deleteCurrentLibrary()
-{
-    libraryManagementCoordinator->deleteLibrary(selectedLibrary->currentText(), true);
-}
-
-void LibraryWindow::removeLibrary()
-{
-    libraryManagementCoordinator->askToRemoveLibrary(selectedLibrary->currentText());
-}
-
-void LibraryWindow::renameLibrary()
-{
-    renameLibraryDialog->open();
-}
-
-void LibraryWindow::rename(QString newName) // TODO replace
-{
-    const auto currentLibrary = selectedLibrary->currentText();
-    if (!libraryManagementCoordinator->renameLibrary(currentLibrary, newName))
-        return;
-
-    if (newName != currentLibrary) {
-        selectedLibrary->renameCurrentLibrary(newName);
-#ifndef Y_MAC_UI
-        if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
-            libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
-#endif
-    }
-    renameLibraryDialog->close();
-}
-
 void LibraryWindow::rescanLibraryForXMLInfo()
 {
     importWidget->setXMLScanLook();
@@ -1304,30 +1275,6 @@ void LibraryWindow::rescanLibraryForXMLInfo()
     const auto path = libraries.getPath(currentLibrary);
 
     xmlInfoLibraryScanner->scanLibrary(path, LibraryPaths::libraryDataPath(path));
-}
-
-void LibraryWindow::showLibraryInfo()
-{
-    auto id = libraries.getUuid(selectedLibrary->currentText());
-    auto info = DBHelper::getLibraryInfo(id);
-
-    // TODO: use something nicer than a QMessageBox
-    QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("Library info"));
-    msgBox.setText(info);
-    QSpacerItem *horizontalSpacer = new QSpacerItem(420, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    QGridLayout *layout = (QGridLayout *)msgBox.layout();
-    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
-    msgBox.setStandardButtons(QMessageBox::Close);
-    msgBox.setDefaultButton(QMessageBox::Close);
-    msgBox.exec();
-}
-
-void LibraryWindow::openLibraryFolder()
-{
-    const auto path = libraries.getPath(selectedLibrary->currentText());
-    if (!path.isEmpty())
-        QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::cleanPath(path)));
 }
 
 void LibraryWindow::rescanCurrentFolderForXMLInfo()

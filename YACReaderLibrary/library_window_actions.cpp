@@ -6,9 +6,13 @@
 #include "feature_flags.h"
 #include "folder_management_coordinator.h"
 #include "help_about_dialog.h"
+#include "library_database_maintenance_coordinator.h"
+#include "library_management_coordinator.h"
+#include "library_repair_coordinator.h"
 #include "library_window.h"
 #include "organize_files_coordinator.h"
 #include "recent_visibility_coordinator.h"
+#include "rename_library_dialog.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "theme_manager.h"
@@ -459,7 +463,11 @@ void LibraryWindowActions::createConnections(
         RecentVisibilityCoordinator *recentVisibilityCoordinator,
         ComicManagementCoordinator *comicManagementCoordinator,
         FolderManagementCoordinator *folderManagementCoordinator,
-        OrganizeFilesCoordinator *organizeFilesCoordinator)
+        OrganizeFilesCoordinator *organizeFilesCoordinator,
+        LibraryManagementCoordinator *libraryManagementCoordinator,
+        LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator,
+        LibraryRepairCoordinator *libraryRepairCoordinator,
+        RenameLibraryDialog *renameLibraryDialog)
 {
     QObject::connect(backAction, &QAction::triggered, navigationController, &YACReaderNavigationController::backward);
     QObject::connect(forwardAction, &QAction::triggered, navigationController, &YACReaderNavigationController::forward);
@@ -564,16 +572,24 @@ void LibraryWindowActions::createConnections(
     QObject::connect(addLabelAction, &QAction::triggered, window, &LibraryWindow::showAddNewLabelDialog);
     QObject::connect(renameListAction, &QAction::triggered, window, &LibraryWindow::showRenameCurrentList);
 
-    QObject::connect(updateLibraryAction, &QAction::triggered, window, &LibraryWindow::updateLibrary);
-    QObject::connect(backupLibraryAction, &QAction::triggered, window, &LibraryWindow::backupLibrary);
-    QObject::connect(restoreLibraryAction, &QAction::triggered, window, &LibraryWindow::restoreLibrary);
-    QObject::connect(repairLibraryAction, &QAction::triggered, window, &LibraryWindow::repairLibrary);
-    QObject::connect(renameLibraryAction, &QAction::triggered, window, &LibraryWindow::renameLibrary);
+    QObject::connect(updateLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentLibrary);
+    QObject::connect(backupLibraryAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, [this, libraryDatabaseMaintenanceCoordinator] {
+        libraryDatabaseMaintenanceCoordinator->backupCurrentLibrary(backupLibraryAction->text());
+    });
+    QObject::connect(restoreLibraryAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, [this, libraryDatabaseMaintenanceCoordinator] {
+        libraryDatabaseMaintenanceCoordinator->restoreCurrentLibrary(restoreLibraryAction->text());
+    });
+    QObject::connect(repairLibraryAction, &QAction::triggered, libraryRepairCoordinator, [this, libraryRepairCoordinator] {
+        libraryRepairCoordinator->repairCurrentLibrary(repairLibraryAction->text());
+    });
+    QObject::connect(renameLibraryAction, &QAction::triggered, renameLibraryDialog, &QDialog::open);
+    QObject::connect(renameLibraryDialog, &RenameLibraryDialog::renameLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::renameCurrentLibrary);
+    QObject::connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRenamed, renameLibraryDialog, &QDialog::close);
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
-    QObject::connect(removeLibraryAction, &QAction::triggered, window, &LibraryWindow::removeLibrary);
+    QObject::connect(removeLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::askToRemoveCurrentLibrary);
     QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, window, &LibraryWindow::rescanLibraryForXMLInfo);
-    QObject::connect(openLibraryFolderAction, &QAction::triggered, window, &LibraryWindow::openLibraryFolder);
-    QObject::connect(showLibraryInfo, &QAction::triggered, window, &LibraryWindow::showLibraryInfo);
+    QObject::connect(openLibraryFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::openCurrentLibraryFolder);
+    QObject::connect(showLibraryInfo, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showCurrentLibraryInfo);
 
     QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
     QObject::connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);

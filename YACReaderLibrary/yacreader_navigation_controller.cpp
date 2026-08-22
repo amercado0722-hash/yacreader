@@ -341,7 +341,6 @@ void YACReaderNavigationController::setupConnections()
     connect(gridView, &GridComicsView::folderSelected, this, [this](const QModelIndex &index) {
         libraryWindow->foldersView->setCurrentIndex(libraryWindow->foldersModelProxy->mapFromSource(index));
     });
-    connect(gridView, &GridComicsView::openLibraryFolderRequested, libraryWindow, &LibraryWindow::openLibraryFolder);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);
 }
 

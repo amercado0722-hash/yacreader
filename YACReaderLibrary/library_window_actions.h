@@ -20,6 +20,10 @@ class RecentVisibilityCoordinator;
 class ComicManagementCoordinator;
 class FolderManagementCoordinator;
 class OrganizeFilesCoordinator;
+class LibraryManagementCoordinator;
+class LibraryDatabaseMaintenanceCoordinator;
+class LibraryRepairCoordinator;
+class RenameLibraryDialog;
 struct Theme;
 
 class LibraryWindowActions
@@ -146,7 +150,11 @@ public:
                            RecentVisibilityCoordinator *recentVisibilityCoordinator,
                            ComicManagementCoordinator *comicManagementCoordinator,
                            FolderManagementCoordinator *folderManagementCoordinator,
-                           OrganizeFilesCoordinator *organizeFilesCoordinator);
+                           OrganizeFilesCoordinator *organizeFilesCoordinator,
+                           LibraryManagementCoordinator *libraryManagementCoordinator,
+                           LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator,
+                           LibraryRepairCoordinator *libraryRepairCoordinator,
+                           RenameLibraryDialog *renameLibraryDialog);
 
     void setComicActionsDisabled(bool disabled);
     void setComicSelectionActionsEnabled(bool enabled);
