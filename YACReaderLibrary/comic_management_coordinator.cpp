@@ -151,6 +151,17 @@ void ComicManagementCoordinator::setSelectedComicsUnread()
     emit currentComicViewUpdateRequested();
 }
 
+void ComicManagementCoordinator::setComicUnread(qulonglong libraryId, const ComicDB &comic)
+{
+    auto info = comic.info;
+    info.setRead(false);
+    info.currentPage = 1;
+    info.hasBeenOpened = false;
+    info.lastTimeOpened = QVariant();
+    DBHelper::update(libraryId, info);
+    emit rootContinueReadingReloadRequested();
+}
+
 void ComicManagementCoordinator::setSelectedComicsType(YACReader::FileType type)
 {
     comicsModel->setComicsType(selectionProvider(), type);

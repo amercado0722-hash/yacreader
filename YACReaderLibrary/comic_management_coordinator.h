@@ -12,6 +12,7 @@
 #include <functional>
 
 class ComicFilesManager;
+class ComicDB;
 class ComicModel;
 class FolderModel;
 class FolderModelProxy;
@@ -56,6 +57,8 @@ public slots:
     void deleteSelectedComics();
     void saveSelectedCoversTo();
 
+    void setComicUnread(qulonglong libraryId, const ComicDB &comic);
+
 signals:
     void importRequested(qulonglong destinationFolderId);
     void currentComicViewUpdateRequested();
@@ -64,6 +67,7 @@ signals:
     void currentSourceRefreshCancelled();
     void comicNumbersAssigned(qint64 editedComicId);
     void comicDeletionFinished();
+    void rootContinueReadingReloadRequested();
 
 private:
     struct SourceContext {

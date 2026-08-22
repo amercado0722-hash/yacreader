@@ -10,6 +10,7 @@
 #include "grid_comics_view.h"
 #include "info_comics_view.h"
 #include "library_window.h"
+#include "library_window_menus.h"
 #include "no_search_results_widget.h"
 #include "options_dialog.h"
 #include "yacreader_options_dialog.h"
@@ -18,7 +19,7 @@
 #include <utility>
 
 YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent)
-    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), toolbarOwner(nullptr), comicManagementCoordinator(nullptr)
+    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), toolbarOwner(nullptr), comicManagementCoordinator(nullptr), libraryWindowMenus(nullptr)
 {
     comicsViewStack = new QStackedWidget();
     gridComicsView = new GridComicsView();
@@ -78,6 +79,23 @@ void YACReaderContentViewsManager::setComicManagementCoordinator(ComicManagement
     if (comicManagementCoordinator != nullptr) {
         connect(comicsView, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
         connect(comicsView, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+    }
+}
+
+void YACReaderContentViewsManager::setLibraryWindowMenus(LibraryWindowMenus *menus)
+{
+    if (libraryWindowMenus == menus)
+        return;
+
+    if (libraryWindowMenus != nullptr) {
+        disconnect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu);
+        disconnect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu);
+    }
+
+    libraryWindowMenus = menus;
+    if (libraryWindowMenus != nullptr) {
+        connect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu, Qt::UniqueConnection);
     }
 }
 
@@ -233,8 +251,10 @@ void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *w
         disconnect(widget, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder);
         disconnect(widget, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder);
     }
-    disconnect(widget, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
-    disconnect(widget, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
+    if (libraryWindowMenus != nullptr) {
+        disconnect(widget, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu);
+        disconnect(widget, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu);
+    }
 }
 
 void YACReaderContentViewsManager::connectComicsViewConnections(ComicsView *view)
@@ -246,8 +266,10 @@ void YACReaderContentViewsManager::connectComicsViewConnections(ComicsView *view
 
     connect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, view, &ComicsView::selectAll, Qt::UniqueConnection);
 
-    connect(view, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu, Qt::UniqueConnection);
-    connect(view, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu, Qt::UniqueConnection);
+    if (libraryWindowMenus != nullptr) {
+        connect(view, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu, Qt::UniqueConnection);
+        connect(view, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu, Qt::UniqueConnection);
+    }
     // Drops
     if (comicManagementCoordinator != nullptr) {
         connect(view, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);

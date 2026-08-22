@@ -970,53 +970,14 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_window.cpp" line="876"/>
-        <source>Library</source>
-        <translation>라이브러리</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1413"/>
-        <source>Open folder...</source>
-        <translation>폴더 열기...</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="789"/>
-        <location filename="library_window.cpp" line="1312"/>
-        <location filename="library_window.cpp" line="1443"/>
-        <source>western manga (left to right)</source>
-        <translation>서양 만화 (왼쪽 → 오른쪽)</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="795"/>
-        <location filename="library_window.cpp" line="1318"/>
-        <location filename="library_window.cpp" line="1449"/>
-        <source>4koma (top to botom)</source>
-        <oldsource>4koma (top to botom</oldsource>
-        <translation>4컷 (위 → 아래)</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="209"/>
         <source>Do you want remove </source>
         <translation>다음을 제거하시겠습니까: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="224"/>
+        <location filename="library_window.cpp" line="241"/>
         <source>YACReader Library</source>
         <translation>YACReader Library</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="786"/>
-        <location filename="library_window.cpp" line="1309"/>
-        <location filename="library_window.cpp" line="1437"/>
-        <source>manga</source>
-        <translation>망가</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="783"/>
-        <location filename="library_window.cpp" line="1306"/>
-        <location filename="library_window.cpp" line="1440"/>
-        <source>comic</source>
-        <translation>만화</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="208"/>
@@ -1024,30 +985,7 @@
         <translation>확실합니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1422"/>
-        <source>Rescan library for XML info</source>
-        <translation>XML 정보로 라이브러리 재검색</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1431"/>
-        <source>Set as read</source>
-        <translation>읽음으로 표시</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1434"/>
-        <location filename="library_window.cpp" line="1568"/>
-        <source>Set as unread</source>
-        <translation>읽지 않음으로 표시</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="792"/>
-        <location filename="library_window.cpp" line="1315"/>
-        <location filename="library_window.cpp" line="1446"/>
-        <source>web comic</source>
-        <translation>웹 만화</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1206"/>
+        <location filename="library_window.cpp" line="1028"/>
         <source>Add new folder</source>
         <translation>새 폴더 추가</translation>
     </message>
@@ -1055,31 +993,6 @@
         <location filename="folder_management_coordinator.cpp" line="173"/>
         <source>Delete folder</source>
         <translation>폴더 삭제</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1425"/>
-        <source>Set as uncompleted</source>
-        <translation>미완료로 표시</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1428"/>
-        <source>Set as completed</source>
-        <translation>완료로 표시</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1416"/>
-        <source>Update folder</source>
-        <translation>폴더 업데이트</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="908"/>
-        <source>Folder</source>
-        <translation>폴더</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="931"/>
-        <source>Comic</source>
-        <translation>만화</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="28"/>
@@ -1147,7 +1060,7 @@
         <translation>만화 이동 중...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1207"/>
+        <location filename="library_window.cpp" line="1029"/>
         <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>폴더 이름:</translation>
@@ -1182,7 +1095,7 @@
         <translation>선택한 폴더와 그 안의 모든 내용이 디스크에서 삭제됩니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="398"/>
+        <location filename="comic_management_coordinator.cpp" line="409"/>
         <location filename="folder_management_coordinator.cpp" line="207"/>
         <source>Unable to delete</source>
         <translation>삭제할 수 없음</translation>
@@ -1194,66 +1107,58 @@
         <translation>선택한 폴더를 삭제하는 중 문제가 발생했습니다. 쓰기 권한을 확인하고, 다른 응용 프로그램이 이 폴더나 안의 파일을 사용하고 있지 않은지 확인하세요.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1230"/>
+        <location filename="library_window.cpp" line="1052"/>
         <source>Add new reading lists</source>
         <translation>새 읽기 목록 추가</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
-        <location filename="library_window.cpp" line="1280"/>
+        <location filename="library_window.cpp" line="1053"/>
+        <location filename="library_window.cpp" line="1102"/>
         <source>List name:</source>
         <translation>목록 이름:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1249"/>
+        <location filename="library_window.cpp" line="1071"/>
         <source>Delete list/label</source>
         <translation>목록/라벨 삭제</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1249"/>
+        <location filename="library_window.cpp" line="1071"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>선택한 항목이 삭제됩니다. 디스크에서 만화나 폴더는 삭제되지 않습니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1279"/>
+        <location filename="library_window.cpp" line="1101"/>
         <source>Rename list name</source>
         <translation>목록 이름 변경</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="835"/>
-        <location filename="library_window.cpp" line="1375"/>
-        <location filename="library_window.cpp" line="1498"/>
-        <location filename="library_window.cpp" line="2213"/>
-        <source>Set type</source>
-        <translation>유형 설정</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="662"/>
+        <location filename="library_window.cpp" line="680"/>
         <source>Search filters</source>
         <translation>검색 필터</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="672"/>
+        <location filename="library_window.cpp" line="690"/>
         <source>Unread</source>
         <translation>읽지 않음</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="674"/>
+        <location filename="library_window.cpp" line="692"/>
         <source>In progress</source>
         <translation>읽는 중</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="676"/>
+        <location filename="library_window.cpp" line="694"/>
         <source>Highly rated</source>
         <translation>높은 평점</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="678"/>
+        <location filename="library_window.cpp" line="696"/>
         <source>Recently added</source>
         <translation>최근 추가</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="685"/>
+        <location filename="library_window.cpp" line="703"/>
         <source>Search syntax…</source>
         <translation>검색 구문…</translation>
     </message>
@@ -1278,20 +1183,19 @@
         <translation>다른 복구가 실행 중이 아니라고 확신하면 잠금을 해제할 수 있습니다. 잠금을 해제하고 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="985"/>
+        <location filename="library_window.cpp" line="808"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="985"/>
+        <location filename="library_window.cpp" line="808"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1419"/>
         <location filename="folder_management_coordinator.cpp" line="110"/>
         <source>Rename folder</source>
-        <translation type="unfinished"></translation>
+        <translation>폴더 이름 바꾸기</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="125"/>
@@ -1333,17 +1237,7 @@ Folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1452"/>
-        <source>Set custom cover</source>
-        <translation>사용자 지정 표지 설정</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1455"/>
-        <source>Delete custom cover</source>
-        <translation>사용자 지정 표지 삭제</translation>
-    </message>
-    <message>
-        <location filename="comic_management_coordinator.cpp" line="240"/>
+        <location filename="comic_management_coordinator.cpp" line="251"/>
         <source>Save covers</source>
         <translation>표지 저장</translation>
     </message>
@@ -1366,28 +1260,28 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 YACReaderLibrary는 라이브러리를 더 만드는 것을 막지 않지만, 라이브러리 수는 적게 유지하는 것이 좋습니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1669"/>
-        <location filename="library_window.cpp" line="1671"/>
+        <location filename="library_window.cpp" line="1170"/>
+        <location filename="library_window.cpp" line="1172"/>
         <source>YACReader not found</source>
         <translation>YACReader를 찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1669"/>
+        <location filename="library_window.cpp" line="1170"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader를 찾을 수 없습니다. YACReader는 YACReaderLibrary와 같은 폴더에 설치되어야 합니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1671"/>
+        <location filename="library_window.cpp" line="1172"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader를 찾을 수 없습니다. YACReader 설치에 문제가 있을 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1678"/>
+        <location filename="library_window.cpp" line="1179"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1678"/>
+        <location filename="library_window.cpp" line="1179"/>
         <source>Error opening comic with third party reader.</source>
         <translation>타사 뷰어로 만화를 여는 중 오류가 발생했습니다.</translation>
     </message>
@@ -1568,22 +1462,22 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation type="vanished">제거 및 메타데이터 삭제</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1815"/>
+        <location filename="library_window.cpp" line="1316"/>
         <source>Library info</source>
         <translation>라이브러리 정보</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="399"/>
+        <location filename="comic_management_coordinator.cpp" line="410"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>선택한 만화를 삭제하는 중 문제가 발생했습니다. 선택한 파일이나 포함된 폴더의 쓰기 권한을 확인하세요.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="183"/>
+        <location filename="comic_management_coordinator.cpp" line="194"/>
         <source>Assign comics numbers</source>
         <translation>만화에 번호 부여</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="184"/>
+        <location filename="comic_management_coordinator.cpp" line="195"/>
         <source>Assign numbers starting in:</source>
         <translation>다음 번호부터 부여:</translation>
     </message>
@@ -1608,37 +1502,37 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>표지 이미지를 저장하는 중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2121"/>
+        <location filename="library_window.cpp" line="1622"/>
         <source>Error creating the library</source>
         <translation>라이브러리 생성 오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2126"/>
+        <location filename="library_window.cpp" line="1627"/>
         <source>Error updating the library</source>
         <translation>라이브러리 업데이트 오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2131"/>
+        <location filename="library_window.cpp" line="1632"/>
         <source>Error opening the library</source>
         <translation>라이브러리 열기 오류</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="323"/>
+        <location filename="comic_management_coordinator.cpp" line="334"/>
         <source>Delete comics</source>
         <translation>만화 삭제</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="324"/>
+        <location filename="comic_management_coordinator.cpp" line="335"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>선택한 만화가 모두 디스크에서 삭제됩니다. 확실합니까?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="363"/>
+        <location filename="comic_management_coordinator.cpp" line="374"/>
         <source>Remove comics</source>
         <translation>만화 제거</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="364"/>
+        <location filename="comic_management_coordinator.cpp" line="375"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>만화가 현재 라벨/목록에서만 삭제됩니다. 확실합니까?</translation>
     </message>
@@ -1937,7 +1831,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="193"/>
         <source>Rename folder</source>
-        <translation type="unfinished"></translation>
+        <translation>폴더 이름 바꾸기</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="194"/>
@@ -2160,6 +2054,108 @@ Missing files: %3</source>
         <location filename="library_window_actions.cpp" line="310"/>
         <source>Reset rating</source>
         <translation>평점 초기화</translation>
+    </message>
+</context>
+<context>
+    <name>LibraryWindowMenus</name>
+    <message>
+        <location filename="library_window_menus.cpp" line="40"/>
+        <source>comic</source>
+        <translation>만화</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="41"/>
+        <source>manga</source>
+        <translation>망가</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="42"/>
+        <source>western manga (left to right)</source>
+        <translation>서양 만화 (왼쪽 → 오른쪽)</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="43"/>
+        <source>web comic</source>
+        <translation>웹 만화</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="44"/>
+        <source>4koma (top to botom)</source>
+        <translation>4컷 (위 → 아래)</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="136"/>
+        <location filename="library_window_menus.cpp" line="237"/>
+        <location filename="library_window_menus.cpp" line="318"/>
+        <location filename="library_window_menus.cpp" line="405"/>
+        <source>Set type</source>
+        <translation>유형 설정</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="166"/>
+        <source>Library</source>
+        <translation>라이브러리</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="188"/>
+        <source>Folder</source>
+        <translation>폴더</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="210"/>
+        <source>Comic</source>
+        <translation>만화</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="293"/>
+        <source>Open folder...</source>
+        <translation>폴더 열기...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="295"/>
+        <source>Update folder</source>
+        <translation>폴더 업데이트</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="297"/>
+        <source>Rename folder</source>
+        <translation>폴더 이름 바꾸기</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="299"/>
+        <source>Rescan library for XML info</source>
+        <translation>XML 정보로 라이브러리 재검색</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="300"/>
+        <source>Set as uncompleted</source>
+        <translation>미완료로 표시</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="301"/>
+        <source>Set as completed</source>
+        <translation>완료로 표시</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="302"/>
+        <source>Set as read</source>
+        <translation>읽음으로 표시</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="303"/>
+        <location filename="library_window_menus.cpp" line="348"/>
+        <source>Set as unread</source>
+        <translation>읽지 않음으로 표시</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="304"/>
+        <source>Set custom cover</source>
+        <translation>사용자 지정 표지 설정</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="305"/>
+        <source>Delete custom cover</source>
+        <translation>사용자 지정 표지 삭제</translation>
     </message>
 </context>
 <context>

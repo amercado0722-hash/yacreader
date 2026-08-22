@@ -980,12 +980,7 @@
         <translation>Эта библиотека была создана с предыдущей версией YACReaderLibrary. Она должна быть обновлена. Обновить сейчас?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="931"/>
-        <source>Comic</source>
-        <translation>Комикс</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1207"/>
+        <location filename="library_window.cpp" line="1029"/>
         <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>Имя папки:</translation>
@@ -996,13 +991,13 @@
         <translation>Выбранная папка и все ее содержимое будет удалено с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2131"/>
+        <location filename="library_window.cpp" line="1632"/>
         <source>Error opening the library</source>
         <translation>Ошибка открытия библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1669"/>
-        <location filename="library_window.cpp" line="1671"/>
+        <location filename="library_window.cpp" line="1170"/>
+        <location filename="library_window.cpp" line="1172"/>
         <source>YACReader not found</source>
         <translation>YACReader не найден</translation>
     </message>
@@ -1013,7 +1008,7 @@
         <translation>Возникла проблема при удалении выбранных папок. Пожалуйста, проверьте права на запись и убедитесь что другие приложения не используют эти папки или файлы.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1279"/>
+        <location filename="library_window.cpp" line="1101"/>
         <source>Rename list name</source>
         <translation>Изменить имя списка</translation>
     </message>
@@ -1027,22 +1022,12 @@
         <translation>Библиотека из старой версии YACreader</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1428"/>
-        <source>Set as completed</source>
-        <translation>Отметить как завершено</translation>
-    </message>
-    <message>
         <location filename="folder_management_coordinator.cpp" line="167"/>
         <source>There was an error accessing the folder&apos;s path</source>
         <translation>Ошибка доступа к пути папки</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="876"/>
-        <source>Library</source>
-        <translation>Библиотека</translation>
-    </message>
-    <message>
-        <location filename="comic_management_coordinator.cpp" line="364"/>
+        <location filename="comic_management_coordinator.cpp" line="375"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Комиксы будут удалены только из выбранного списка/ярлыка. Вы уверены?</translation>
     </message>
@@ -1067,19 +1052,9 @@
         <translation>Библиотека &apos;%1&apos; больше не доступна. Вы хотите удалить ее?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1413"/>
-        <source>Open folder...</source>
-        <translation>Открыть папку...</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="209"/>
         <source>Do you want remove </source>
         <translation>Вы хотите удалить библиотеку </translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1425"/>
-        <source>Set as uncompleted</source>
-        <translation>Отметить как не завершено</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="166"/>
@@ -1087,23 +1062,18 @@
         <translation>Ошибка в пути</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2126"/>
+        <location filename="library_window.cpp" line="1627"/>
         <source>Error updating the library</source>
         <translation>Ошибка обновления библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="908"/>
-        <source>Folder</source>
-        <translation>Папка</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1249"/>
+        <location filename="library_window.cpp" line="1071"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>Выбранные элементы будут удалены, ваши комиксы или папки НЕ БУДУТ удалены с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
-        <location filename="library_window.cpp" line="1280"/>
+        <location filename="library_window.cpp" line="1053"/>
+        <location filename="library_window.cpp" line="1102"/>
         <source>List name:</source>
         <translation>Имя списка:</translation>
     </message>
@@ -1113,12 +1083,12 @@
         <translation>Библиотека &apos;%1&apos; была создана старой версией YACReaderLibrary. Она должна быть вновь создана. Вы хотите создать библиотеку сейчас?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="240"/>
+        <location filename="comic_management_coordinator.cpp" line="251"/>
         <source>Save covers</source>
         <translation>Сохранить обложки</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1230"/>
+        <location filename="library_window.cpp" line="1052"/>
         <source>Add new reading lists</source>
         <translation>Добавить новый список чтения</translation>
     </message>
@@ -1136,17 +1106,12 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 YACReaderLibrary не помешает вам создать больше библиотек, но вы должны иметь не большое количество библиотек.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1431"/>
-        <source>Set as read</source>
-        <translation>Отметить как прочитано</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1815"/>
+        <location filename="library_window.cpp" line="1316"/>
         <source>Library info</source>
         <translation>Информация о библиотеке</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="183"/>
+        <location filename="comic_management_coordinator.cpp" line="194"/>
         <source>Assign comics numbers</source>
         <translation>Порядковый номер</translation>
     </message>
@@ -1163,17 +1128,17 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Библиотека не доступна</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="399"/>
+        <location filename="comic_management_coordinator.cpp" line="410"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Возникла проблема при удалении выбранных комиксов. Пожалуйста, проверьте права на запись для выбранных файлов или содержащую их папку.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="224"/>
+        <location filename="library_window.cpp" line="241"/>
         <source>YACReader Library</source>
         <translation>Библиотека YACReader</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2121"/>
+        <location filename="library_window.cpp" line="1622"/>
         <source>Error creating the library</source>
         <translation>Ошибка создания библиотеки</translation>
     </message>
@@ -1181,11 +1146,6 @@ YACReaderLibrary не помешает вам создать больше биб
         <location filename="library_management_coordinator.cpp" line="254"/>
         <source>You are adding too many libraries.</source>
         <translation>Вы добавляете слишком много библиотек.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1416"/>
-        <source>Update folder</source>
-        <translation>Обновить папку</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="68"/>
@@ -1208,7 +1168,7 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Удалить папку</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="184"/>
+        <location filename="comic_management_coordinator.cpp" line="195"/>
         <source>Assign numbers starting in:</source>
         <translation>Назначить порядковый номер начиная с:</translation>
     </message>
@@ -1243,17 +1203,17 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Не удалось сохранить изображение обложки.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="323"/>
+        <location filename="comic_management_coordinator.cpp" line="334"/>
         <source>Delete comics</source>
         <translation>Удалить комиксы</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1206"/>
+        <location filename="library_window.cpp" line="1028"/>
         <source>Add new folder</source>
         <translation>Добавить новую папку</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1249"/>
+        <location filename="library_window.cpp" line="1071"/>
         <source>Delete list/label</source>
         <translation>Удалить список/ярлык</translation>
     </message>
@@ -1265,20 +1225,14 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Ни одна папка не была выбрана</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="324"/>
+        <location filename="comic_management_coordinator.cpp" line="335"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Все выбранные комиксы будут удалены с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="363"/>
+        <location filename="comic_management_coordinator.cpp" line="374"/>
         <source>Remove comics</source>
         <translation>Убрать комиксы</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1434"/>
-        <location filename="library_window.cpp" line="1568"/>
-        <source>Set as unread</source>
-        <translation>Отметить как не прочитано</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="178"/>
@@ -1286,83 +1240,40 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Библиотека не найдена</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="786"/>
-        <location filename="library_window.cpp" line="1309"/>
-        <location filename="library_window.cpp" line="1437"/>
-        <source>manga</source>
-        <translation>манга</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="783"/>
-        <location filename="library_window.cpp" line="1306"/>
-        <location filename="library_window.cpp" line="1440"/>
-        <source>comic</source>
-        <translation>комикс</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="792"/>
-        <location filename="library_window.cpp" line="1315"/>
-        <location filename="library_window.cpp" line="1446"/>
-        <source>web comic</source>
-        <translation>веб-комикс</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="789"/>
-        <location filename="library_window.cpp" line="1312"/>
-        <location filename="library_window.cpp" line="1443"/>
-        <source>western manga (left to right)</source>
-        <translation>западная манга (слева направо)</translation>
-    </message>
-    <message>
-        <location filename="comic_management_coordinator.cpp" line="398"/>
+        <location filename="comic_management_coordinator.cpp" line="409"/>
         <location filename="folder_management_coordinator.cpp" line="207"/>
         <source>Unable to delete</source>
         <translation>Не удалось удалить</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="795"/>
-        <location filename="library_window.cpp" line="1318"/>
-        <location filename="library_window.cpp" line="1449"/>
-        <source>4koma (top to botom)</source>
-        <translation>4кома (сверху вниз)</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="662"/>
+        <location filename="library_window.cpp" line="680"/>
         <source>Search filters</source>
         <translation>Фильтры поиска</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="672"/>
+        <location filename="library_window.cpp" line="690"/>
         <source>Unread</source>
         <translation>Непрочитанные</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="674"/>
+        <location filename="library_window.cpp" line="692"/>
         <source>In progress</source>
         <translation>В процессе</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="676"/>
+        <location filename="library_window.cpp" line="694"/>
         <source>Highly rated</source>
         <translation>С высокой оценкой</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="678"/>
+        <location filename="library_window.cpp" line="696"/>
         <source>Recently added</source>
         <translation>Недавно добавленные</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="685"/>
+        <location filename="library_window.cpp" line="703"/>
         <source>Search syntax…</source>
         <translation>Синтаксис поиска…</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="835"/>
-        <location filename="library_window.cpp" line="1375"/>
-        <location filename="library_window.cpp" line="1498"/>
-        <location filename="library_window.cpp" line="2213"/>
-        <source>Set type</source>
-        <translation>Тип установки</translation>
     </message>
     <message>
         <location filename="library_repair_coordinator.cpp" line="58"/>
@@ -1385,12 +1296,12 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Если вы уверены, что никакое другое восстановление не выполняется, блокировку можно снять. Снять блокировку и продолжить?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="985"/>
+        <location filename="library_window.cpp" line="808"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="985"/>
+        <location filename="library_window.cpp" line="808"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1400,10 +1311,9 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Не удалось восстановиться после прерванного восстановления</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1419"/>
         <location filename="folder_management_coordinator.cpp" line="110"/>
         <source>Rename folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать папку</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="125"/>
@@ -1445,22 +1355,12 @@ Folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1452"/>
-        <source>Set custom cover</source>
-        <translation>Установить собственную обложку</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1455"/>
-        <source>Delete custom cover</source>
-        <translation>Удалить пользовательскую обложку</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1678"/>
+        <location filename="library_window.cpp" line="1179"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1678"/>
+        <location filename="library_window.cpp" line="1179"/>
         <source>Error opening comic with third party reader.</source>
         <translation>Ошибка при открытии комикса с помощью сторонней программы чтения.</translation>
     </message>
@@ -1627,11 +1527,6 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>Вы уверены?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1422"/>
-        <source>Rescan library for XML info</source>
-        <translation>Повторное сканирование библиотеки для получения информации XML</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="28"/>
         <source>Upgrade failed</source>
         <translation>Обновление не удалось</translation>
@@ -1642,12 +1537,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>При обновлении библиотеки возникли ошибки: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1669"/>
+        <location filename="library_window.cpp" line="1170"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader не найден. YACReader должен быть установлен в ту же папку, что и YACReaderLibrary.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1671"/>
+        <location filename="library_window.cpp" line="1172"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader не найден. Возможно, возникла проблема с установкой YACReader.</translation>
     </message>
@@ -1936,7 +1831,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="193"/>
         <source>Rename folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать папку</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="194"/>
@@ -2159,6 +2054,108 @@ Missing files: %3</source>
         <location filename="library_window_actions.cpp" line="310"/>
         <source>Reset rating</source>
         <translation>Сбросить рейтинг</translation>
+    </message>
+</context>
+<context>
+    <name>LibraryWindowMenus</name>
+    <message>
+        <location filename="library_window_menus.cpp" line="40"/>
+        <source>comic</source>
+        <translation>комикс</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="41"/>
+        <source>manga</source>
+        <translation>манга</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="42"/>
+        <source>western manga (left to right)</source>
+        <translation>западная манга (слева направо)</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="43"/>
+        <source>web comic</source>
+        <translation>веб-комикс</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="44"/>
+        <source>4koma (top to botom)</source>
+        <translation>4кома (сверху вниз)</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="136"/>
+        <location filename="library_window_menus.cpp" line="237"/>
+        <location filename="library_window_menus.cpp" line="318"/>
+        <location filename="library_window_menus.cpp" line="405"/>
+        <source>Set type</source>
+        <translation>Тип установки</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="166"/>
+        <source>Library</source>
+        <translation>Библиотека</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="188"/>
+        <source>Folder</source>
+        <translation>Папка</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="210"/>
+        <source>Comic</source>
+        <translation>Комикс</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="293"/>
+        <source>Open folder...</source>
+        <translation>Открыть папку...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="295"/>
+        <source>Update folder</source>
+        <translation>Обновить папку</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="297"/>
+        <source>Rename folder</source>
+        <translation>Переименовать папку</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="299"/>
+        <source>Rescan library for XML info</source>
+        <translation>Повторное сканирование библиотеки для получения информации XML</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="300"/>
+        <source>Set as uncompleted</source>
+        <translation>Отметить как не завершено</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="301"/>
+        <source>Set as completed</source>
+        <translation>Отметить как завершено</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="302"/>
+        <source>Set as read</source>
+        <translation>Отметить как прочитано</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="303"/>
+        <location filename="library_window_menus.cpp" line="348"/>
+        <source>Set as unread</source>
+        <translation>Отметить как не прочитано</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="304"/>
+        <source>Set custom cover</source>
+        <translation>Установить собственную обложку</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="305"/>
+        <source>Delete custom cover</source>
+        <translation>Удалить пользовательскую обложку</translation>
     </message>
 </context>
 <context>

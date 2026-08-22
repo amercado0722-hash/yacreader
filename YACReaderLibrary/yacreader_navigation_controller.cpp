@@ -341,12 +341,6 @@ void YACReaderNavigationController::setupConnections()
     connect(gridView, &GridComicsView::folderSelected, this, [this](const QModelIndex &index) {
         libraryWindow->foldersView->setCurrentIndex(libraryWindow->foldersModelProxy->mapFromSource(index));
     });
-    connect(gridView, &GridComicsView::openFolderContextMenu, libraryWindow, [this, gridView](const QPoint &point, const Folder &folder) {
-        libraryWindow->showGridFoldersContextMenu(gridView->mapToGlobal(point), folder);
-    });
-    connect(gridView, &GridComicsView::openContinueReadingComicContextMenu, libraryWindow, [this, gridView](const QPoint &point, const ComicDB &comic) {
-        libraryWindow->showContinueReadingContextMenu(gridView->mapToGlobal(point), comic);
-    });
     connect(gridView, &GridComicsView::openLibraryFolderRequested, libraryWindow, &LibraryWindow::openLibraryFolder);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);
 }

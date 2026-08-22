@@ -86,6 +86,7 @@ class FolderManagementCoordinator;
 class LibraryDatabaseMaintenanceCoordinator;
 class LibraryRepairCoordinator;
 class LibraryManagementCoordinator;
+class LibraryWindowMenus;
 
 namespace YACReader {
 class TrayIconController;
@@ -138,6 +139,7 @@ public:
 
     YACReaderNavigationController *navigationController;
     YACReaderContentViewsManager *contentViewsManager;
+    LibraryWindowMenus *menus;
 
     YACReaderFoldersView *foldersView;
     YACReaderReadingListsView *listsView;
@@ -188,7 +190,6 @@ public:
     void createSettings();
     void setupUI();
     void createToolBars();
-    void createMenus();
     void createConnections();
     void doLayout();
     void doDialogs();
@@ -271,9 +272,6 @@ public slots:
     void manageUpdatingError(const QString &error);
     void manageOpeningLibraryError(const QString &error);
     QModelIndexList getSelectedComics();
-    void showFoldersContextMenu(const QPoint &point);
-    void showGridFoldersContextMenu(QPoint point, Folder folder);
-    void showContinueReadingContextMenu(QPoint point, ComicDB comic);
     void importLibraryPackage();
     void updateViewsOnClientSync();
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
@@ -294,10 +292,6 @@ public slots:
     void deleteSelectedReadingList();
     void showAddNewLabelDialog();
     void showRenameCurrentList();
-    void showComicsViewContextMenu(const QPoint &point);
-    void showComicsItemContextMenu(const QPoint &point);
-    void showComicsContextMenu(const QPoint &point, bool showFullScreenAction);
-    void setupAddToSubmenu(QMenu &menu);
     void setToolbarTitle(const QModelIndex &modelIndex);
     void setCurrentLibraryAs(FileType fileType);
 
