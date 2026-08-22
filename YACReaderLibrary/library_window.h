@@ -204,7 +204,6 @@ public:
     void showSearchSyntax();
 
     QString currentPath();
-    QString currentFolderPath();
 
     // settings
     QSettings *settings;
@@ -284,10 +283,6 @@ public slots:
     void showComicVineScraper();
     void checkSearchNumResults(int numResults);
     void loadCoversFromCurrentModel();
-    void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
-    void moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
-    void copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
-    void moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
     void updateCurrentFolder();
     void updateFolder(const QModelIndex &miFolder);
     void reloadCurrentFolderComicsContent();
@@ -305,12 +300,10 @@ public slots:
     void deleteSelectedReadingList();
     void showAddNewLabelDialog();
     void showRenameCurrentList();
-    void addSelectedComicsToFavorites();
     void showComicsViewContextMenu(const QPoint &point);
     void showComicsItemContextMenu(const QPoint &point);
     void showComicsContextMenu(const QPoint &point, bool showFullScreenAction);
     void setupAddToSubmenu(QMenu &menu);
-    void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex &modelIndex);
     void setCurrentLibraryAs(FileType fileType);
 

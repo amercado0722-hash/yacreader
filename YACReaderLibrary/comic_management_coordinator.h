@@ -14,6 +14,7 @@
 class ComicFilesManager;
 class ComicModel;
 class FolderModel;
+class FolderModelProxy;
 class PropertiesDialog;
 class QProgressDialog;
 class QWidget;
@@ -25,24 +26,26 @@ class ComicManagementCoordinator : public QObject
 public:
     using SelectionProvider = std::function<QModelIndexList()>;
     using CurrentListProvider = std::function<QModelIndex()>;
+    using CurrentFolderProvider = std::function<QModelIndex()>;
     using LibraryPathProvider = std::function<QString()>;
 
     explicit ComicManagementCoordinator(QWidget *window,
                                         ComicModel *comicsModel,
                                         FolderModel *foldersModel,
+                                        FolderModelProxy *foldersModelProxy,
                                         PropertiesDialog *propertiesDialog,
                                         SelectionProvider selectionProvider,
                                         CurrentListProvider currentListProvider,
+                                        CurrentFolderProvider currentFolderProvider,
                                         LibraryPathProvider libraryPathProvider);
 
-    void copyAndImportComics(const QList<QPair<QString, QString>> &comics,
-                             const QString &destinationPath,
-                             qulonglong destinationFolderId);
-    void moveAndImportComics(const QList<QPair<QString, QString>> &comics,
-                             const QString &destinationPath,
-                             qulonglong destinationFolderId);
-
 public slots:
+    void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
+    void moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
+    void copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &folder);
+    void moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &folder);
+    void addSelectedComicsToFavorites();
+    void addSelectedComicsToLabel(qulonglong labelId);
     void showProperties();
     void setSelectedComicsRead();
     void setSelectedComicsUnread();
@@ -70,6 +73,12 @@ private:
     };
 
     QProgressDialog *newProgressDialog(const QString &label, int maximum);
+    void copyAndImportComics(const QList<QPair<QString, QString>> &comics,
+                             const QModelIndex &destinationFolder,
+                             const QString &libraryPath);
+    void moveAndImportComics(const QList<QPair<QString, QString>> &comics,
+                             const QModelIndex &destinationFolder,
+                             const QString &libraryPath);
     void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
     QList<qulonglong> selectedComicIds() const;
     SourceContext currentSource() const;
@@ -82,9 +91,11 @@ private:
     QWidget *window;
     ComicModel *comicsModel;
     FolderModel *foldersModel;
+    FolderModelProxy *foldersModelProxy;
     PropertiesDialog *propertiesDialog;
     SelectionProvider selectionProvider;
     CurrentListProvider currentListProvider;
+    CurrentFolderProvider currentFolderProvider;
     LibraryPathProvider libraryPathProvider;
     bool comicDeletionFailed { false };
 };

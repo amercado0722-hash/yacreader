@@ -417,6 +417,7 @@ void LibraryWindow::setupCoordinators()
             this,
             comicsModel,
             foldersModel,
+            foldersModelProxy,
             propertiesDialog,
             [this] { return getSelectedComics(); },
             [this] {
@@ -424,7 +425,9 @@ void LibraryWindow::setupCoordinators()
                     return QModelIndex();
                 return listsModelProxy->mapToSource(listsView->currentIndex());
             },
+            [this] { return getCurrentFolderIndex(); },
             [this] { return currentPath(); });
+    contentViewsManager->setComicManagementCoordinator(comicManagementCoordinator);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::importRequested, this, [this](qulonglong folderId) {
         updateFolder(foldersModel->getIndexFromFolderId(folderId));
     });
@@ -978,9 +981,9 @@ void LibraryWindow::createConnections()
 
     // drops in folders view
     connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::copyComicsToFolder),
-            this, &LibraryWindow::copyAndImportComicsToFolder);
+            comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToFolder);
     connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::moveComicsToFolder),
-            this, &LibraryWindow::moveAndImportComicsToFolder);
+            comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToFolder);
     connect(foldersView, &QWidget::customContextMenuRequested, this, &LibraryWindow::showFoldersContextMenu);
 
     // comic vine
@@ -1077,32 +1080,6 @@ void LibraryWindow::showLibraryManagementOnly()
 void LibraryWindow::loadCoversFromCurrentModel()
 {
     contentViewsManager->comicsView->setModel(comicsModel);
-}
-
-void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
-{
-    const QModelIndex destinationFolder = getCurrentFolderIndex();
-    comicManagementCoordinator->copyAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
-}
-
-void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
-{
-    const QModelIndex destinationFolder = getCurrentFolderIndex();
-    comicManagementCoordinator->moveAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
-}
-
-void LibraryWindow::copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder)
-{
-    const QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
-    const QString destinationPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
-    comicManagementCoordinator->copyAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
-}
-
-void LibraryWindow::moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder)
-{
-    const QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
-    const QString destinationPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
-    comicManagementCoordinator->moveAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::updateCurrentFolder()
@@ -1366,12 +1343,6 @@ void LibraryWindow::showRenameCurrentList()
                 listsModel->rename(mi, newListName);
         }
     }
-}
-
-void LibraryWindow::addSelectedComicsToFavorites()
-{
-    QModelIndexList indexList = getSelectedComics();
-    comicsModel->addComicsToFavorites(indexList);
 }
 
 void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
@@ -1686,23 +1657,13 @@ void LibraryWindow::setupAddToSubmenu(QMenu &menu)
         action->setIcon(label->getIcon());
         action->setText(label->name());
 
-        action->setData(label->getId());
-
         menu.addAction(action);
 
-        connect(action, &QAction::triggered, this, &LibraryWindow::onAddComicsToLabel);
+        const auto labelId = label->getId();
+        connect(action, &QAction::triggered, comicManagementCoordinator, [coordinator = comicManagementCoordinator, labelId] {
+            coordinator->addSelectedComicsToLabel(labelId);
+        });
     }
-}
-
-void LibraryWindow::onAddComicsToLabel()
-{
-    auto action = static_cast<QAction *>(sender());
-
-    qulonglong labelId = action->data().toULongLong();
-
-    QModelIndexList comics = getSelectedComics();
-
-    comicsModel->addComicsToLabel(comics, labelId);
 }
 
 void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
@@ -2178,20 +2139,6 @@ void LibraryWindow::reloadOptions()
 QString LibraryWindow::currentPath()
 {
     return libraries.getPath(selectedLibrary->currentText());
-}
-
-QString LibraryWindow::currentFolderPath()
-{
-    QString path;
-
-    if (foldersView->selectionModel()->selectedRows().length() > 0)
-        path = foldersModel->getFolderPath(foldersModelProxy->mapToSource(foldersView->currentIndex()));
-    else
-        path = foldersModel->getFolderPath(QModelIndex());
-
-    QLOG_DEBUG() << "current folder path : " << QDir::cleanPath(currentPath() + path);
-
-    return QDir::cleanPath(currentPath() + path);
 }
 
 void LibraryWindow::showExportComicsInfo()

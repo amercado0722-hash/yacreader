@@ -1,6 +1,7 @@
 #include "yacreader_content_views_manager.h"
 
 #include "classic_comics_view.h"
+#include "comic_management_coordinator.h"
 #include "comics_view_transition.h"
 #include "empty_folder_widget.h"
 #include "empty_label_widget.h"
@@ -17,7 +18,7 @@
 #include <utility>
 
 YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent)
-    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), toolbarOwner(nullptr)
+    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), toolbarOwner(nullptr), comicManagementCoordinator(nullptr)
 {
     comicsViewStack = new QStackedWidget();
     gridComicsView = new GridComicsView();
@@ -61,6 +62,23 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     comicsViewStack->setCurrentWidget(comicsView);
 
     initTheme(this);
+}
+
+void YACReaderContentViewsManager::setComicManagementCoordinator(ComicManagementCoordinator *coordinator)
+{
+    if (comicManagementCoordinator == coordinator)
+        return;
+
+    if (comicManagementCoordinator != nullptr) {
+        disconnect(comicsView, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder);
+        disconnect(comicsView, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder);
+    }
+
+    comicManagementCoordinator = coordinator;
+    if (comicManagementCoordinator != nullptr) {
+        connect(comicsView, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+    }
 }
 
 QWidget *YACReaderContentViewsManager::containerWidget()
@@ -211,8 +229,10 @@ void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *w
     disconnect(widget, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
     disconnect(widget, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
     disconnect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, widget, &ComicsView::selectAll);
-    disconnect(widget, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
-    disconnect(widget, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
+    if (comicManagementCoordinator != nullptr) {
+        disconnect(widget, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder);
+        disconnect(widget, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder);
+    }
     disconnect(widget, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
     disconnect(widget, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
 }
@@ -229,8 +249,10 @@ void YACReaderContentViewsManager::connectComicsViewConnections(ComicsView *view
     connect(view, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu, Qt::UniqueConnection);
     connect(view, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu, Qt::UniqueConnection);
     // Drops
-    connect(view, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
-    connect(view, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+    if (comicManagementCoordinator != nullptr) {
+        connect(view, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(view, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+    }
 }
 
 void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsView *to, const ContentViewState &viewState)

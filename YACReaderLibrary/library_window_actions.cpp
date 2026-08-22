@@ -590,7 +590,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(serverConfigAction, &QAction::triggered, serverConfigDialog, &QWidget::show);
 #endif
 
-    QObject::connect(addToFavoritesAction, &QAction::triggered, window, &LibraryWindow::addSelectedComicsToFavorites);
+    QObject::connect(addToFavoritesAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::addSelectedComicsToFavorites);
 
     // save covers
     QObject::connect(saveCoversToAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::saveSelectedCoversTo);

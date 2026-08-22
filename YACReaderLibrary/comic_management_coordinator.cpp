@@ -39,25 +39,63 @@ void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
 ComicManagementCoordinator::ComicManagementCoordinator(QWidget *window,
                                                        ComicModel *comicsModel,
                                                        FolderModel *foldersModel,
+                                                       FolderModelProxy *foldersModelProxy,
                                                        PropertiesDialog *propertiesDialog,
                                                        SelectionProvider selectionProvider,
                                                        CurrentListProvider currentListProvider,
+                                                       CurrentFolderProvider currentFolderProvider,
                                                        LibraryPathProvider libraryPathProvider)
-    : QObject(window), window(window), comicsModel(comicsModel), foldersModel(foldersModel), propertiesDialog(propertiesDialog), selectionProvider(std::move(selectionProvider)), currentListProvider(std::move(currentListProvider)), libraryPathProvider(std::move(libraryPathProvider))
+    : QObject(window), window(window), comicsModel(comicsModel), foldersModel(foldersModel), foldersModelProxy(foldersModelProxy), propertiesDialog(propertiesDialog), selectionProvider(std::move(selectionProvider)), currentListProvider(std::move(currentListProvider)), currentFolderProvider(std::move(currentFolderProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
     connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, comicsModel, &ComicModel::notifyCoverChange);
     connect(propertiesDialog, &QDialog::accepted, this, &ComicManagementCoordinator::currentSourceRefreshAccepted);
     connect(propertiesDialog, &QDialog::rejected, this, &ComicManagementCoordinator::currentSourceRefreshCancelled);
 }
 
-void ComicManagementCoordinator::copyAndImportComics(const QList<QPair<QString, QString>> &comics,
-                                                     const QString &destinationPath,
-                                                     qulonglong destinationFolderId)
+void ComicManagementCoordinator::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
 {
-    QLOG_DEBUG() << "Copying comics to" << destinationPath;
+    copyAndImportComics(comics, currentFolderProvider(), libraryPathProvider());
+}
+
+void ComicManagementCoordinator::moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
+{
+    moveAndImportComics(comics, currentFolderProvider(), libraryPathProvider());
+}
+
+void ComicManagementCoordinator::copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &folder)
+{
+    const auto destinationFolder = foldersModelProxy->mapToSource(folder);
+    if (destinationFolder.isValid())
+        copyAndImportComics(comics, destinationFolder, libraryPathProvider());
+}
+
+void ComicManagementCoordinator::moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &folder)
+{
+    const auto destinationFolder = foldersModelProxy->mapToSource(folder);
+    if (destinationFolder.isValid())
+        moveAndImportComics(comics, destinationFolder, libraryPathProvider());
+}
+
+void ComicManagementCoordinator::addSelectedComicsToFavorites()
+{
+    comicsModel->addComicsToFavorites(selectionProvider());
+}
+
+void ComicManagementCoordinator::addSelectedComicsToLabel(qulonglong labelId)
+{
+    comicsModel->addComicsToLabel(selectionProvider(), labelId);
+}
+
+void ComicManagementCoordinator::copyAndImportComics(const QList<QPair<QString, QString>> &comics,
+                                                     const QModelIndex &destinationFolder,
+                                                     const QString &libraryPath)
+{
     if (comics.isEmpty())
         return;
 
+    const auto destinationPath = QDir::cleanPath(libraryPath + foldersModel->getFolderPath(destinationFolder));
+    const auto destinationFolderId = destinationFolder.data(FolderModel::IdRole).toULongLong();
+    QLOG_DEBUG() << "Copying comics to" << destinationPath;
     auto progressDialog = newProgressDialog(QCoreApplication::translate("LibraryWindow", "Copying comics..."), comics.size());
     auto comicFilesManager = new ComicFilesManager;
     comicFilesManager->copyComicsTo(comics, destinationPath, destinationFolderId);
@@ -65,13 +103,15 @@ void ComicManagementCoordinator::copyAndImportComics(const QList<QPair<QString, 
 }
 
 void ComicManagementCoordinator::moveAndImportComics(const QList<QPair<QString, QString>> &comics,
-                                                     const QString &destinationPath,
-                                                     qulonglong destinationFolderId)
+                                                     const QModelIndex &destinationFolder,
+                                                     const QString &libraryPath)
 {
-    QLOG_DEBUG() << "Moving comics to" << destinationPath;
     if (comics.isEmpty())
         return;
 
+    const auto destinationPath = QDir::cleanPath(libraryPath + foldersModel->getFolderPath(destinationFolder));
+    const auto destinationFolderId = destinationFolder.data(FolderModel::IdRole).toULongLong();
+    QLOG_DEBUG() << "Moving comics to" << destinationPath;
     auto progressDialog = newProgressDialog(QCoreApplication::translate("LibraryWindow", "Moving comics..."), comics.size());
     auto comicFilesManager = new ComicFilesManager;
     comicFilesManager->moveComicsTo(comics, destinationPath, destinationFolderId);

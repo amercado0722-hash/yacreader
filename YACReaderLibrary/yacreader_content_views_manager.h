@@ -23,6 +23,7 @@ class EmptyReadingListWidget;
 class EmptyFolderWidget;
 class NoSearchResultsWidget;
 class FolderModel;
+class ComicManagementCoordinator;
 
 using namespace YACReader;
 
@@ -38,6 +39,7 @@ public:
     void prepareToClose();
     ContentViewState captureViewState() const;
     void restoreViewState(const ContentViewState &state);
+    void setComicManagementCoordinator(ComicManagementCoordinator *coordinator);
 
     ComicsView *comicsView;
 
@@ -58,6 +60,7 @@ protected:
     GridComicsView *gridComicsView;
     InfoComicsView *infoComicsView;
     ComicsView *toolbarOwner;
+    ComicManagementCoordinator *comicManagementCoordinator;
 
     EmptyLabelWidget *emptyLabelWidget;
     EmptySpecialListWidget *emptySpecialList;
