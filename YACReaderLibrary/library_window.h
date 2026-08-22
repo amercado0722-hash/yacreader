@@ -253,9 +253,7 @@ public slots:
     void setFolderAsUnread();
     void setFolderType(FileType type);
     void setFolderCover();
-    void setCustomFolderCover(Folder folder);
     void deleteCustomFolderCover();
-    void resetFolderCover(Folder folder);
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();

@@ -45,7 +45,6 @@
 #include "comic_vine_dialog.h"
 #include "comics_remover.h"
 #include "comics_view.h"
-#include "cover_utils.h"
 #include "create_library_dialog.h"
 #include "data_base_management.h"
 #include "db_helper.h"
@@ -1486,6 +1485,8 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     auto menu = new QMenu(this);
     connect(menu, &QMenu::aboutToHide, menu, &QObject::deleteLater);
 
+    const auto folderId = folder.id;
+    const auto libraryPath = currentPath();
     const auto &menuIcons = theme.menuIcons;
 
     auto openContainingFolderAction = new QAction(menu);
@@ -1621,12 +1622,12 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     connect(setFolderAs4KomaAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
     });
-    connect(setFolderCoverAction, &QAction::triggered, this, [=]() {
-        setCustomFolderCover(folder);
+    connect(setFolderCoverAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->selectAndSetCustomCover(folderId, libraryPath);
     });
 
-    connect(deleteCustomFolderCoverAction, &QAction::triggered, this, [=]() {
-        resetFolderCover(folder);
+    connect(deleteCustomFolderCoverAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->resetCustomCover(folderId, libraryPath);
     });
 
     menu->addSeparator();
@@ -2290,46 +2291,20 @@ void LibraryWindow::setFolderType(FileType type)
 
 void LibraryWindow::setFolderCover()
 {
-    auto folder = foldersModel->getFolder(foldersModelProxy->mapToSource(foldersView->currentIndex()));
-    setCustomFolderCover(folder);
-}
+    const auto folderIndex = foldersModelProxy->mapToSource(foldersView->currentIndex());
+    if (!folderIndex.isValid())
+        return;
 
-void LibraryWindow::setCustomFolderCover(Folder folder)
-{
-    auto customCoverPath = YACReader::imageFileLoader(this);
-    if (!customCoverPath.isEmpty()) {
-        QImage cover(customCoverPath);
-        if (cover.isNull()) {
-            QMessageBox::warning(this, tr("Invalid image"), tr("The selected file is not a valid image."));
-            return;
-        }
-
-        auto folderCoverPath = LibraryPaths::customFolderCoverPath(libraries.getPath(selectedLibrary->currentText()), QString::number(folder.id));
-        if (!YACReader::saveCover(folderCoverPath, cover)) {
-            QMessageBox::warning(this, tr("Error saving cover"), tr("There was an error saving the cover image."));
-        }
-
-        QModelIndex folderIndex = foldersModel->getIndexFromFolder(folder);
-        auto coversPath = LibraryPaths::libraryCoversFolderPath(libraries.getPath(selectedLibrary->currentText()));
-        auto relativePath = folderCoverPath.remove(coversPath);
-        foldersModel->setCustomFolderCover(folderIndex, relativePath);
-    }
+    folderManagementCoordinator->selectAndSetCustomCover(folderIndex.data(FolderModel::IdRole).toULongLong(), currentPath());
 }
 
 void LibraryWindow::deleteCustomFolderCover()
 {
-    auto folder = foldersModel->getFolder(foldersModelProxy->mapToSource(foldersView->currentIndex()));
-    resetFolderCover(folder);
-}
+    const auto folderIndex = foldersModelProxy->mapToSource(foldersView->currentIndex());
+    if (!folderIndex.isValid())
+        return;
 
-void LibraryWindow::resetFolderCover(Folder folder)
-{
-    auto folderCoverPath = LibraryPaths::customFolderCoverPath(libraries.getPath(selectedLibrary->currentText()), QString::number(folder.id));
-    if (QFile::exists(folderCoverPath)) {
-        QFile::remove(folderCoverPath);
-    }
-    QModelIndex folderIndex = foldersModel->getIndexFromFolder(folder);
-    foldersModel->resetFolderCover(folderIndex);
+    folderManagementCoordinator->resetCustomCover(folderIndex.data(FolderModel::IdRole).toULongLong(), currentPath());
 }
 
 void LibraryWindow::exportLibrary(QString destPath)

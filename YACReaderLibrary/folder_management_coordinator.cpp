@@ -1,12 +1,20 @@
 #include "folder_management_coordinator.h"
 
 #include "comics_remover.h"
+#include "cover_utils.h"
 #include "folder_model.h"
+#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
+#include <QCoreApplication>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QImage>
+#include <QMessageBox>
 #include <QRegularExpression>
 #include <QThread>
+#include <QWidget>
 
 namespace {
 bool containsInvalidFolderNameCharacters(const QString &folderName)
@@ -16,8 +24,8 @@ bool containsInvalidFolderNameCharacters(const QString &folderName)
 }
 }
 
-FolderManagementCoordinator::FolderManagementCoordinator(FolderModel *foldersModel, QObject *parent)
-    : QObject(parent), foldersModel(foldersModel)
+FolderManagementCoordinator::FolderManagementCoordinator(FolderModel *foldersModel, QWidget *dialogParent)
+    : QObject(dialogParent), foldersModel(foldersModel), dialogParent(dialogParent)
 {
 }
 
@@ -79,4 +87,58 @@ void FolderManagementCoordinator::deleteFolder(const QModelIndex &folder, const 
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
     thread->start();
+}
+
+void FolderManagementCoordinator::selectAndSetCustomCover(qulonglong folderId, const QString &libraryPath)
+{
+    if (!folderIndex(folderId, libraryPath).isValid())
+        return;
+
+    const auto sourceImagePath = YACReader::imageFileLoader(dialogParent);
+    if (sourceImagePath.isEmpty())
+        return;
+
+    const auto index = folderIndex(folderId, libraryPath);
+    if (!index.isValid())
+        return;
+
+    const QImage cover(sourceImagePath);
+    if (cover.isNull()) {
+        QMessageBox::warning(dialogParent,
+                             QCoreApplication::translate("LibraryWindow", "Invalid image"),
+                             QCoreApplication::translate("LibraryWindow", "The selected file is not a valid image."));
+        return;
+    }
+
+    auto folderCoverPath = YACReader::LibraryPaths::customFolderCoverPath(libraryPath, QString::number(folderId));
+    if (!YACReader::saveCover(folderCoverPath, cover)) {
+        QMessageBox::warning(dialogParent,
+                             QCoreApplication::translate("LibraryWindow", "Error saving cover"),
+                             QCoreApplication::translate("LibraryWindow", "There was an error saving the cover image."));
+        return;
+    }
+
+    const auto coversPath = YACReader::LibraryPaths::libraryCoversFolderPath(libraryPath);
+    foldersModel->setCustomFolderCover(index, folderCoverPath.remove(coversPath));
+}
+
+void FolderManagementCoordinator::resetCustomCover(qulonglong folderId, const QString &libraryPath)
+{
+    const auto index = folderIndex(folderId, libraryPath);
+    if (!index.isValid())
+        return;
+
+    const auto folderCoverPath = YACReader::LibraryPaths::customFolderCoverPath(libraryPath, QString::number(folderId));
+    if (QFile::exists(folderCoverPath))
+        QFile::remove(folderCoverPath);
+
+    foldersModel->resetFolderCover(index);
+}
+
+QModelIndex FolderManagementCoordinator::folderIndex(qulonglong folderId, const QString &libraryPath) const
+{
+    if (QDir::cleanPath(foldersModel->getDatabase()) != QDir::cleanPath(YACReader::LibraryPaths::libraryDataPath(libraryPath)))
+        return { };
+
+    return foldersModel->getIndexFromFolderId(folderId);
 }
