@@ -18,6 +18,7 @@ class YACReaderOptionsDialog;
 class ServerConfigDialog;
 class RecentVisibilityCoordinator;
 class ComicManagementCoordinator;
+class ReadingListManagementCoordinator;
 class FolderManagementCoordinator;
 class OrganizeFilesCoordinator;
 class LibraryManagementCoordinator;
@@ -149,6 +150,7 @@ public:
                            ServerConfigDialog *serverConfigDialog,
                            RecentVisibilityCoordinator *recentVisibilityCoordinator,
                            ComicManagementCoordinator *comicManagementCoordinator,
+                           ReadingListManagementCoordinator *readingListManagementCoordinator,
                            FolderManagementCoordinator *folderManagementCoordinator,
                            OrganizeFilesCoordinator *organizeFilesCoordinator,
                            LibraryManagementCoordinator *libraryManagementCoordinator,

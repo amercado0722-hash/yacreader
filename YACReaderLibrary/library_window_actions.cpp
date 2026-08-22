@@ -11,6 +11,7 @@
 #include "library_repair_coordinator.h"
 #include "library_window.h"
 #include "organize_files_coordinator.h"
+#include "reading_list_management_coordinator.h"
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
 #include "server_config_dialog.h"
@@ -462,6 +463,7 @@ void LibraryWindowActions::createConnections(
         ServerConfigDialog *serverConfigDialog,
         RecentVisibilityCoordinator *recentVisibilityCoordinator,
         ComicManagementCoordinator *comicManagementCoordinator,
+        ReadingListManagementCoordinator *readingListManagementCoordinator,
         FolderManagementCoordinator *folderManagementCoordinator,
         OrganizeFilesCoordinator *organizeFilesCoordinator,
         LibraryManagementCoordinator *libraryManagementCoordinator,
@@ -567,10 +569,10 @@ void LibraryWindowActions::createConnections(
     QObject::connect(rescanXMLFromCurrentFolderAction, &QAction::triggered, window, &LibraryWindow::rescanCurrentFolderForXMLInfo);
 
     // lists
-    QObject::connect(addReadingListAction, &QAction::triggered, window, &LibraryWindow::addNewReadingList);
-    QObject::connect(deleteReadingListAction, &QAction::triggered, window, &LibraryWindow::deleteSelectedReadingList);
-    QObject::connect(addLabelAction, &QAction::triggered, window, &LibraryWindow::showAddNewLabelDialog);
-    QObject::connect(renameListAction, &QAction::triggered, window, &LibraryWindow::showRenameCurrentList);
+    QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
+    QObject::connect(deleteReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::deleteCurrentList);
+    QObject::connect(addLabelAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addLabel);
+    QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
 
     QObject::connect(updateLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentLibrary);
     QObject::connect(backupLibraryAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, [this, libraryDatabaseMaintenanceCoordinator] {

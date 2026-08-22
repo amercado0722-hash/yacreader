@@ -75,6 +75,7 @@ class EmptyReadingListWidget;
 class RecentVisibilityCoordinator;
 class OrganizeFilesCoordinator;
 class ComicManagementCoordinator;
+class ReadingListManagementCoordinator;
 class FolderManagementCoordinator;
 class LibraryDatabaseMaintenanceCoordinator;
 class LibraryRepairCoordinator;
@@ -250,10 +251,6 @@ public slots:
     void setComicActionsDisabled(bool disabled);
     void setComicToolbarEntriesVisible(bool visible);
     void addFolderToCurrentIndex();
-    void addNewReadingList();
-    void deleteSelectedReadingList();
-    void showAddNewLabelDialog();
-    void showRenameCurrentList();
     void setToolbarTitle(const QModelIndex &modelIndex);
     void setCurrentLibraryAs(FileType fileType);
 
@@ -278,6 +275,7 @@ private:
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
     OrganizeFilesCoordinator *organizeFilesCoordinator;
     ComicManagementCoordinator *comicManagementCoordinator;
+    ReadingListManagementCoordinator *readingListManagementCoordinator;
     FolderManagementCoordinator *folderManagementCoordinator;
     LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator;
     LibraryRepairCoordinator *libraryRepairCoordinator;

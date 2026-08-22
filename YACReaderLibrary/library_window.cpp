@@ -1,7 +1,6 @@
 #include "library_window.h"
 
 #include "QsLog.h"
-#include "add_label_dialog.h"
 #include "add_library_dialog.h"
 #include "comic_db.h"
 #include "comic_management_coordinator.h"
@@ -32,6 +31,7 @@
 #include "organize_files_coordinator.h"
 #include "package_manager.h"
 #include "properties_dialog.h"
+#include "reading_list_management_coordinator.h"
 #include "reading_list_model.h"
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
@@ -480,6 +480,17 @@ void LibraryWindow::setupCoordinators()
     });
     connect(comicManagementCoordinator, &ComicManagementCoordinator::comicDeletionFinished, this, &LibraryWindow::checkEmptyFolder);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::rootContinueReadingReloadRequested, navigationController, &YACReaderNavigationController::reloadRootContinueReading);
+    readingListManagementCoordinator = new ReadingListManagementCoordinator(
+            this,
+            listsModel,
+            comicsModel,
+            [this] {
+                if (listsView->selectionModel() == nullptr)
+                    return QModelIndex();
+                const auto selectedLists = listsView->selectionModel()->selectedIndexes();
+                return selectedLists.isEmpty() ? QModelIndex() : listsModelProxy->mapToSource(selectedLists.constFirst());
+            });
+    connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::currentListReselectionRequested, navigationController, &YACReaderNavigationController::reselectCurrentList);
     folderManagementCoordinator = new FolderManagementCoordinator(
             foldersModel,
             this,
@@ -809,6 +820,7 @@ void LibraryWindow::createConnections()
             serverConfigDialog,
             recentVisibilityCoordinator,
             comicManagementCoordinator,
+            readingListManagementCoordinator,
             folderManagementCoordinator,
             organizeFilesCoordinator,
             libraryManagementCoordinator,
@@ -878,11 +890,6 @@ void LibraryWindow::createConnections()
     connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
 #endif
     connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, librarySearchCoordinator, &LibrarySearchCoordinator::search);
-
-    connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
-    connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
-    connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
-    //--
 }
 
 void LibraryWindow::setCurrentLibraryAs(FileType fileType)
@@ -1058,74 +1065,6 @@ void LibraryWindow::addFolderToCurrentIndex()
             foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newIndex));
             navigationController->loadFolderContent(newIndex);
             historyController->updateHistory(YACReaderLibrarySourceContainer(newIndex, YACReaderLibrarySourceContainer::Folder));
-        }
-    }
-}
-
-void LibraryWindow::addNewReadingList()
-{
-    QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
-    QModelIndex sourceMI;
-    if (!selectedLists.isEmpty())
-        sourceMI = listsModelProxy->mapToSource(selectedLists.at(0));
-
-    if (selectedLists.isEmpty() || !listsModel->isReadingSubList(sourceMI)) {
-        bool ok;
-        QString newListName = QInputDialog::getText(this, tr("Add new reading lists"),
-                                                    tr("List name:"), QLineEdit::Normal,
-                                                    "", &ok);
-        if (ok) {
-            if (selectedLists.isEmpty() || !listsModel->isReadingList(sourceMI))
-                listsModel->addReadingList(newListName); // top level
-            else {
-                listsModel->addReadingListAt(newListName, sourceMI); // sublist
-            }
-        }
-    }
-}
-
-void LibraryWindow::deleteSelectedReadingList()
-{
-    QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
-    if (!selectedLists.isEmpty()) {
-        QModelIndex mi = listsModelProxy->mapToSource(selectedLists.at(0));
-        if (listsModel->isEditable(mi)) {
-            int ret = QMessageBox::question(this, tr("Delete list/label"), tr("The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?"), QMessageBox::Yes, QMessageBox::No);
-            if (ret == QMessageBox::Yes) {
-                listsModel->deleteItem(mi);
-                navigationController->reselectCurrentList();
-            }
-        }
-    }
-}
-
-void LibraryWindow::showAddNewLabelDialog()
-{
-    auto dialog = new AddLabelDialog();
-    int ret = dialog->exec();
-
-    if (ret == QDialog::Accepted) {
-        YACReader::LabelColors color = dialog->selectedColor();
-        QString name = dialog->name();
-
-        listsModel->addNewLabel(name, color);
-    }
-}
-
-// TODO implement editors in treeview
-void LibraryWindow::showRenameCurrentList()
-{
-    QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
-    if (!selectedLists.isEmpty()) {
-        QModelIndex mi = listsModelProxy->mapToSource(selectedLists.at(0));
-        if (listsModel->isEditable(mi)) {
-            bool ok;
-            QString newListName = QInputDialog::getText(this, tr("Rename list name"),
-                                                        tr("List name:"), QLineEdit::Normal,
-                                                        listsModel->name(mi), &ok);
-
-            if (ok)
-                listsModel->rename(mi, newListName);
         }
     }
 }
