@@ -29,7 +29,6 @@
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
 #include "organize_files_coordinator.h"
-#include "package_manager.h"
 #include "properties_dialog.h"
 #include "reading_list_management_coordinator.h"
 #include "reading_list_model.h"
@@ -41,7 +40,6 @@
 #include "static.h"
 #include "trayicon_controller.h"
 #include "whats_new_controller.h"
-#include "xml_info_library_scanner.h"
 #include "yacreader_content_views_manager.h"
 #include "yacreader_folders_view.h"
 #include "yacreader_global.h"
@@ -190,9 +188,6 @@ void LibraryWindow::setupUI()
 {
     setUnifiedTitleAndToolBarOnMac(true);
 
-    packageManager = new PackageManager();
-    xmlInfoLibraryScanner = new XMLInfoLibraryScanner();
-
     historyController = new YACReaderHistoryController(this);
 
     actions.createActions(this, settings);
@@ -234,8 +229,8 @@ void LibraryWindow::setupUI()
     menus->setupMenus();
     contentViewsManager->setLibraryWindowMenus(menus);
     connect(menus, &LibraryWindowMenus::currentLibraryTypeChangeRequested, this, &LibraryWindow::setCurrentLibraryAs);
-    connect(menus, &LibraryWindowMenus::folderUpdateRequested, this, &LibraryWindow::updateFolder);
-    connect(menus, &LibraryWindowMenus::folderXmlRescanRequested, this, &LibraryWindow::rescanFolderForXMLInfo);
+    connect(menus, &LibraryWindowMenus::folderUpdateRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::updateFolder);
+    connect(menus, &LibraryWindowMenus::folderXmlRescanRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::rescanFolderForXMLInfo);
 
     createConnections();
 
@@ -370,9 +365,6 @@ void LibraryWindow::doLayout()
     importWidget = new ImportWidget();
     mainWidget->addWidget(importWidget);
 
-    connect(noLibrariesWidget, &NoLibrariesWidget::createNewLibrary, this, &LibraryWindow::createLibrary);
-    connect(noLibrariesWidget, &NoLibrariesWidget::addExistingLibrary, this, &LibraryWindow::showAddLibrary);
-
     // collapsible disabled in macosx (only temporaly)
 #ifdef Y_MAC_UI
     sHorizontal->setCollapsible(0, false);
@@ -440,7 +432,6 @@ void LibraryWindow::setupCoordinators()
                 const auto libraryName = selectedLibrary->currentText();
                 return OrganizeFilesCoordinator::LibraryContext { static_cast<qulonglong>(libraries.getId(libraryName)), libraries.getPath(libraryName) };
             });
-    connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::folderRefreshRequested, this, &LibraryWindow::updateFolder);
     connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::currentSourceReloadRequested, this, &LibraryWindow::reloadCurrentFolderComicsContent);
     comicManagementCoordinator = new ComicManagementCoordinator(
             this,
@@ -462,9 +453,6 @@ void LibraryWindow::setupCoordinators()
             [this] { return static_cast<qulonglong>(libraries.getId(selectedLibrary->currentText())); },
             [this] { return currentPath(); });
     contentViewsManager->setComicManagementCoordinator(comicManagementCoordinator);
-    connect(comicManagementCoordinator, &ComicManagementCoordinator::importRequested, this, [this](qulonglong folderId) {
-        updateFolder(foldersModel->getIndexFromFolderId(folderId));
-    });
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentComicViewUpdateRequested, contentViewsManager, &YACReaderContentViewsManager::updateCurrentComicView);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshStarted, navigationController, &YACReaderNavigationController::beginCurrentSourceRefresh);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshAccepted, navigationController, &YACReaderNavigationController::refreshCurrentSource);
@@ -518,7 +506,6 @@ void LibraryWindow::setupCoordinators()
         listsView->setModel(nullptr);
         actions.disableAllActions();
     });
-    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryReloadRequested, this, &LibraryWindow::loadLibrary);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::invalidDatabaseRestoreCancelled, this, [this] {
         actions.renameLibraryAction->setEnabled(true);
         actions.removeLibraryAction->setEnabled(true);
@@ -545,8 +532,21 @@ void LibraryWindow::setupCoordinators()
             settings,
             libraries,
             this,
+            createLibraryDialog,
+            addLibraryDialog,
+            exportLibraryDialog,
+            importLibraryDialog,
+            foldersModel,
             [this] { return selectedLibrary->currentText(); },
+            [this] { return getCurrentFolderIndex(); },
             tr("Library info"));
+    connect(noLibrariesWidget, &NoLibrariesWidget::createNewLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::showCreateLibraryDialog);
+    connect(noLibrariesWidget, &NoLibrariesWidget::addExistingLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::showAddLibraryDialog);
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryReloadRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::loadLibrary);
+    connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::folderRefreshRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::updateFolder);
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::importRequested, libraryManagementCoordinator, [this](qulonglong folderId) {
+        libraryManagementCoordinator->updateFolder(foldersModel->getIndexFromFolderId(folderId));
+    });
     connect(contentViewsManager->gridView(), &GridComicsView::openLibraryFolderRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::openCurrentLibraryFolder);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryUpdateRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentLibrary);
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::databaseRecoveryRequested, libraryDatabaseMaintenanceCoordinator, [coordinator = libraryDatabaseMaintenanceCoordinator, restoreAction = actions.restoreLibraryAction](const QString &libraryName) {
@@ -556,6 +556,10 @@ void LibraryWindow::setupCoordinators()
         historyController->clear();
         showRootWidget();
     });
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::noLibrariesRequested, this, [this] {
+        actions.disableAllActions();
+        showNoLibrariesWidget();
+    });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryReady, this, &LibraryWindow::applyLoadedLibrary);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryManagementOnlyRequested, this, &LibraryWindow::showLibraryManagementOnly);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::databaseRecoveryRequested, libraryDatabaseMaintenanceCoordinator, [coordinator = libraryDatabaseMaintenanceCoordinator, restoreAction = actions.restoreLibraryAction](const QString &libraryName) {
@@ -563,9 +567,6 @@ void LibraryWindow::setupCoordinators()
     });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::upgradeStarted, importWidget, &ImportWidget::setUpgradeLook);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::upgradeStarted, this, &LibraryWindow::showImportingWidget);
-    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryReloadRequested, this, &LibraryWindow::loadLibrary);
-    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRecreationRequested, createLibraryDialog, &CreateLibraryDialog::setDataAndStart);
-    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::openingError, this, &LibraryWindow::manageOpeningLibraryError);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::creationStarted, importWidget, &ImportWidget::setImportLook);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::creationStarted, this, &LibraryWindow::showImportingWidget);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::updateStarted, importWidget, &ImportWidget::setUpdateLook);
@@ -589,8 +590,14 @@ void LibraryWindow::setupCoordinators()
         reloadAfterCopyMove(foldersModel->getIndexFromFolderId(folderId));
     });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::comicAdded, importWidget, &ImportWidget::newComic);
-    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::creationFailed, this, &LibraryWindow::manageCreatingError);
-    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::updateFailed, this, &LibraryWindow::manageUpdatingError);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::xmlScanStarted, importWidget, &ImportWidget::setXMLScanLook);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::xmlScanStarted, this, &LibraryWindow::showImportingWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::xmlScanFinished, this, &LibraryWindow::showRootWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::xmlScanFinished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::xmlComicScanned, importWidget, &ImportWidget::newComic);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::packageFailed, this, [this](const QString &error) {
+        QMessageBox::critical(this, tr("Package operation failed"), error.isEmpty() ? tr("The covers package operation could not be completed.") : error);
+    });
 
     auto canStartUpdateProvider = [this]() {
         return comicVineDialog->isVisible() == false &&
@@ -812,7 +819,6 @@ void LibraryWindow::createConnections()
             navigationController,
             this,
             had,
-            exportLibraryDialog,
             contentViewsManager,
             editShortcutsDialog,
             foldersView,
@@ -829,43 +835,14 @@ void LibraryWindow::createConnections()
             renameLibraryDialog);
     connect(actions.focusSearchLineAction, &QAction::triggered, this, &LibraryWindow::focusSearchInput);
 
-    connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::createLibrary);
-    connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, libraryManagementCoordinator, &LibraryManagementCoordinator::showLibraryAlreadyExists);
     connect(importComicsInfoDialog, &QDialog::finished, this, &LibraryWindow::reloadCurrentLibrary);
-
-    connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::showRootWidget);
-    connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
-    connect(xmlInfoLibraryScanner, &XMLInfoLibraryScanner::comicScanned, importWidget, &ImportWidget::newComic);
 
     // new import widget
     connect(importWidget, &ImportWidget::stop, libraryManagementCoordinator, &LibraryManagementCoordinator::stop);
-    connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopXMLScanning);
     connect(importWidget, &ImportWidget::stop, libraryRepairCoordinator, &LibraryRepairCoordinator::stop);
 
-    // packageManager connections
-    connect(exportLibraryDialog, &ExportLibraryDialog::exportPath, this, &LibraryWindow::exportLibrary);
-    connect(exportLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
-    connect(packageManager, &PackageManager::exported, exportLibraryDialog, &ExportLibraryDialog::close);
-    connect(importLibraryDialog, &ImportLibraryDialog::unpackCLC, this, &LibraryWindow::importLibrary);
-    connect(importLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
-    connect(importLibraryDialog, &QDialog::rejected, libraryManagementCoordinator, [coordinator = libraryManagementCoordinator] {
-        coordinator->deleteCurrentLibrary(true);
-    });
-    connect(importLibraryDialog, &ImportLibraryDialog::libraryExists, libraryManagementCoordinator, &LibraryManagementCoordinator::showLibraryAlreadyExists);
-    connect(packageManager, &PackageManager::imported, importLibraryDialog, &QWidget::hide);
-    connect(packageManager, &PackageManager::imported, libraryManagementCoordinator, &LibraryManagementCoordinator::finishAddingLibrary);
-    connect(packageManager, &PackageManager::failed, this, [this](const QString &error) {
-        QMessageBox::critical(this, tr("Package operation failed"), error.isEmpty() ? tr("The covers package operation could not be completed.") : error);
-    });
-
-    // create and update dialogs
-    connect(createLibraryDialog, &CreateLibraryDialog::cancelCreate, libraryManagementCoordinator, &LibraryManagementCoordinator::stop);
-
-    // open existing library from dialog.
-    connect(addLibraryDialog, &AddLibraryDialog::addLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::addExistingLibrary);
-
     // load library when selected library changes
-    connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, this, &LibraryWindow::loadLibrary);
+    connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, libraryManagementCoordinator, &LibraryManagementCoordinator::loadLibrary);
 
     // navigations between view modes (tree,list and flow)
     // TODO connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
@@ -895,17 +872,6 @@ void LibraryWindow::createConnections()
 void LibraryWindow::setCurrentLibraryAs(FileType fileType)
 {
     foldersModel->updateTreeType(fileType);
-}
-
-void LibraryWindow::loadLibrary(const QString &name)
-{
-    if (libraries.isEmpty()) {
-        actions.disableAllActions();
-        showNoLibrariesWidget();
-        return;
-    }
-
-    libraryManagementCoordinator->loadLibrary(name, libraries.getPath(name));
 }
 
 void LibraryWindow::applyLoadedLibrary(const QString &libraryDataPath, bool readOnly)
@@ -953,27 +919,6 @@ void LibraryWindow::showLibraryManagementOnly()
 void LibraryWindow::loadCoversFromCurrentModel()
 {
     contentViewsManager->comicsView->setModel(comicsModel);
-}
-
-void LibraryWindow::updateCurrentFolder()
-{
-    updateFolder(getCurrentFolderIndex());
-}
-
-void LibraryWindow::updateFolder(const QModelIndex &miFolder)
-{
-    QLOG_DEBUG() << "UPDATE FOLDER!!!!";
-
-    importWidget->setUpdateLook();
-    showImportingWidget();
-
-    const auto libraryName = selectedLibrary->currentText();
-    const auto libraryPath = QDir::cleanPath(libraries.getPath(libraryName));
-    libraryManagementCoordinator->updateFolder(
-            libraryName,
-            libraryPath,
-            QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)),
-            miFolder.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::reloadCurrentFolderComicsContent()
@@ -1096,12 +1041,6 @@ void LibraryWindow::checkEmptyFolder()
     }
 }
 
-void LibraryWindow::createLibrary()
-{
-    libraryManagementCoordinator->warnIfLibraryCountIsHigh();
-    createLibraryDialog->open(libraries);
-}
-
 void LibraryWindow::reloadCurrentLibrary()
 {
     if (!hasLoadedLibraryModels())
@@ -1111,12 +1050,6 @@ void LibraryWindow::reloadCurrentLibrary()
     navigationController->refreshCurrentSource();
 
     enableNeededActions();
-}
-
-void LibraryWindow::showAddLibrary()
-{
-    libraryManagementCoordinator->warnIfLibraryCountIsHigh();
-    addLibraryDialog->open();
 }
 
 void LibraryWindow::loadLibraries()
@@ -1132,7 +1065,7 @@ void LibraryWindow::addLibraryToSelector(const QString &libraryName, const QStri
     selectedLibrary->addItem(libraryName, libraryPath);
     selectedLibrary->setCurrentIndex(selectedLibrary->findText(libraryName));
     addLibraryDialog->close();
-    loadLibrary(libraryName);
+    libraryManagementCoordinator->loadLibrary(libraryName);
 }
 
 void LibraryWindow::handleLibraryRemoved(const QString &libraryName, bool librariesEmpty)
@@ -1149,39 +1082,6 @@ void LibraryWindow::handleLibraryRemoved(const QString &libraryName, bool librar
     listsView->setModel(nullptr);
     actions.disableAllActions();
     showNoLibrariesWidget();
-}
-
-void LibraryWindow::rescanLibraryForXMLInfo()
-{
-    importWidget->setXMLScanLook();
-    showImportingWidget();
-
-    const auto currentLibrary = selectedLibrary->currentText();
-    const auto path = libraries.getPath(currentLibrary);
-
-    xmlInfoLibraryScanner->scanLibrary(path, LibraryPaths::libraryDataPath(path));
-}
-
-void LibraryWindow::rescanCurrentFolderForXMLInfo()
-{
-    rescanFolderForXMLInfo(getCurrentFolderIndex());
-}
-
-void LibraryWindow::rescanFolderForXMLInfo(QModelIndex modelIndex)
-{
-    importWidget->setXMLScanLook();
-    showImportingWidget();
-
-    const auto currentLibrary = selectedLibrary->currentText();
-    const auto path = libraries.getPath(currentLibrary);
-
-    xmlInfoLibraryScanner->scanFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(modelIndex)), modelIndex);
-}
-
-void LibraryWindow::stopXMLScanning()
-{
-    xmlInfoLibraryScanner->stop();
-    xmlInfoLibraryScanner->wait();
 }
 
 void LibraryWindow::setRootIndex()
@@ -1250,19 +1150,6 @@ void LibraryWindow::openContainingFolder()
     else
         path = QDir::cleanPath(currentPath());
     QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
-}
-
-void LibraryWindow::exportLibrary(QString destPath)
-{
-    QString currentLibrary = selectedLibrary->currentText();
-    QString path = LibraryPaths::libraryDataPath(libraries.getPath(currentLibrary));
-    packageManager->createPackage(path, destPath + "/" + currentLibrary);
-}
-
-void LibraryWindow::importLibrary(QString clc, QString destPath, QString name)
-{
-    packageManager->extractPackage(clc, destPath + "/" + name);
-    libraryManagementCoordinator->prepareImportedLibrary(name, destPath + "/" + name);
 }
 
 void LibraryWindow::reloadOptions()
@@ -1350,21 +1237,6 @@ void LibraryWindow::showImportingWidget()
     mainWidget->setCurrentIndex(2);
 }
 
-void LibraryWindow::manageCreatingError(const QString &error)
-{
-    QMessageBox::critical(this, tr("Error creating the library"), error);
-}
-
-void LibraryWindow::manageUpdatingError(const QString &error)
-{
-    QMessageBox::critical(this, tr("Error updating the library"), error);
-}
-
-void LibraryWindow::manageOpeningLibraryError(const QString &error)
-{
-    QMessageBox::critical(this, tr("Error opening the library"), error);
-}
-
 bool lessThanModelIndexRow(const QModelIndex &m1, const QModelIndex &m2)
 {
     return m1.row() < m2.row();
@@ -1383,11 +1255,6 @@ QModelIndexList LibraryWindow::getSelectedComics()
         selection = contentViewsManager->comicsView->selectionModel()->selectedRows();
     }
     return selection;
-}
-
-void LibraryWindow::importLibraryPackage()
-{
-    importLibraryDialog->open(libraries);
 }
 
 void LibraryWindow::updateViewsOnClientSync()

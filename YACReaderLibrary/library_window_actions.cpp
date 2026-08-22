@@ -2,7 +2,6 @@
 
 #include "comic_management_coordinator.h"
 #include "edit_shortcuts_dialog.h"
-#include "export_library_dialog.h"
 #include "feature_flags.h"
 #include "folder_management_coordinator.h"
 #include "help_about_dialog.h"
@@ -455,7 +454,6 @@ void LibraryWindowActions::createConnections(
         YACReaderNavigationController *navigationController,
         LibraryWindow *window,
         HelpAboutDialog *had,
-        ExportLibraryDialog *exportLibraryDialog,
         YACReaderContentViewsManager *contentViewsManager,
         EditShortcutsDialog *editShortcutsDialog,
         YACReaderFoldersView *foldersView,
@@ -478,11 +476,11 @@ void LibraryWindowActions::createConnections(
     // connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
     // actions
-    QObject::connect(createLibraryAction, &QAction::triggered, window, &LibraryWindow::createLibrary);
-    QObject::connect(exportLibraryAction, &QAction::triggered, exportLibraryDialog, &ExportLibraryDialog::open);
-    QObject::connect(importLibraryAction, &QAction::triggered, window, &LibraryWindow::importLibraryPackage);
+    QObject::connect(createLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showCreateLibraryDialog);
+    QObject::connect(exportLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showExportLibraryDialog);
+    QObject::connect(importLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showImportLibraryDialog);
 
-    QObject::connect(openLibraryAction, &QAction::triggered, window, &LibraryWindow::showAddLibrary);
+    QObject::connect(openLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showAddLibraryDialog);
     QObject::connect(setAsReadAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::setSelectedComicsRead);
     QObject::connect(setAsNonReadAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::setSelectedComicsUnread);
 
@@ -563,10 +561,10 @@ void LibraryWindowActions::createConnections(
     QObject::connect(quitAction, &QAction::triggered, window, &LibraryWindow::closeApp);
 
     // update folders (partial updates)
-    QObject::connect(updateCurrentFolderAction, &QAction::triggered, window, &LibraryWindow::updateCurrentFolder);
-    QObject::connect(updateFolderAction, &QAction::triggered, window, &LibraryWindow::updateCurrentFolder);
+    QObject::connect(updateCurrentFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentFolder);
+    QObject::connect(updateFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentFolder);
 
-    QObject::connect(rescanXMLFromCurrentFolderAction, &QAction::triggered, window, &LibraryWindow::rescanCurrentFolderForXMLInfo);
+    QObject::connect(rescanXMLFromCurrentFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::rescanCurrentFolderForXMLInfo);
 
     // lists
     QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
@@ -589,7 +587,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRenamed, renameLibraryDialog, &QDialog::close);
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
     QObject::connect(removeLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::askToRemoveCurrentLibrary);
-    QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, window, &LibraryWindow::rescanLibraryForXMLInfo);
+    QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::rescanCurrentLibraryForXMLInfo);
     QObject::connect(openLibraryFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::openCurrentLibraryFolder);
     QObject::connect(showLibraryInfo, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showCurrentLibraryInfo);
 

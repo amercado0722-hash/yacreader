@@ -1,8 +1,15 @@
 #include "library_management_coordinator.h"
 
+#include "add_library_dialog.h"
+#include "create_library_dialog.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "export_library_dialog.h"
+#include "folder_model.h"
+#include "import_library_dialog.h"
 #include "library_creator.h"
+#include "package_manager.h"
+#include "xml_info_library_scanner.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
@@ -24,10 +31,22 @@
 
 using namespace YACReader;
 
-LibraryManagementCoordinator::LibraryManagementCoordinator(QSettings *settings, YACReaderLibraries &libraries, QWidget *dialogParent, CurrentLibraryNameProvider currentLibraryNameProvider, QString libraryInfoDialogTitle)
-    : QObject(dialogParent), libraries(libraries), dialogParent(dialogParent), currentLibraryNameProvider(std::move(currentLibraryNameProvider)), libraryInfoDialogTitle(std::move(libraryInfoDialogTitle)), libraryCreator(new LibraryCreator(settings))
+LibraryManagementCoordinator::LibraryManagementCoordinator(QSettings *settings,
+                                                           YACReaderLibraries &libraries,
+                                                           QWidget *dialogParent,
+                                                           CreateLibraryDialog *createLibraryDialog,
+                                                           AddLibraryDialog *addLibraryDialog,
+                                                           ExportLibraryDialog *exportLibraryDialog,
+                                                           ImportLibraryDialog *importLibraryDialog,
+                                                           FolderModel *foldersModel,
+                                                           CurrentLibraryNameProvider currentLibraryNameProvider,
+                                                           CurrentFolderProvider currentFolderProvider,
+                                                           QString libraryInfoDialogTitle)
+    : QObject(dialogParent), libraries(libraries), dialogParent(dialogParent), createLibraryDialog(createLibraryDialog), addLibraryDialog(addLibraryDialog), exportLibraryDialog(exportLibraryDialog), importLibraryDialog(importLibraryDialog), foldersModel(foldersModel), currentLibraryNameProvider(std::move(currentLibraryNameProvider)), currentFolderProvider(std::move(currentFolderProvider)), libraryInfoDialogTitle(std::move(libraryInfoDialogTitle)), libraryCreator(new LibraryCreator(settings)), packageManager(new PackageManager()), xmlInfoLibraryScanner(new XMLInfoLibraryScanner())
 {
     libraryCreator->setParent(this);
+    packageManager->setParent(this);
+    xmlInfoLibraryScanner->setParent(this);
 
     connect(this, &LibraryManagementCoordinator::upgradeFailed, this, [this](const QString &libraryDataPath) { QMessageBox::critical(this->dialogParent,
                                                                                                                                      QCoreApplication::translate("LibraryWindow", "Upgrade failed"),
@@ -40,9 +59,50 @@ LibraryManagementCoordinator::LibraryManagementCoordinator(QSettings *settings, 
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &LibraryManagementCoordinator::comicAdded);
     connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryManagementCoordinator::creationFailed);
     connect(libraryCreator, &LibraryCreator::failedOpeningDB, this, &LibraryManagementCoordinator::handleCreatorOpeningFailure);
+
+    connect(this, &LibraryManagementCoordinator::libraryReloadRequested, this, &LibraryManagementCoordinator::loadLibrary);
+    connect(this, &LibraryManagementCoordinator::libraryRecreationRequested, createLibraryDialog, &CreateLibraryDialog::setDataAndStart);
+    connect(this, &LibraryManagementCoordinator::openingError, this, [this](const QString &error) {
+        QMessageBox::critical(this->dialogParent, tr("Error opening the library"), error);
+    });
+    connect(this, &LibraryManagementCoordinator::creationFailed, this, [this](const QString &error) {
+        QMessageBox::critical(this->dialogParent, tr("Error creating the library"), error);
+    });
+    connect(this, &LibraryManagementCoordinator::updateFailed, this, [this](const QString &error) {
+        QMessageBox::critical(this->dialogParent, tr("Error updating the library"), error);
+    });
+
+    connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, this, &LibraryManagementCoordinator::createLibrary);
+    connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, this, &LibraryManagementCoordinator::showLibraryAlreadyExists);
+    connect(createLibraryDialog, &CreateLibraryDialog::cancelCreate, this, &LibraryManagementCoordinator::stop);
+    connect(addLibraryDialog, &AddLibraryDialog::addLibrary, this, &LibraryManagementCoordinator::addExistingLibrary);
+
+    connect(exportLibraryDialog, &ExportLibraryDialog::exportPath, this, &LibraryManagementCoordinator::exportCurrentLibrary);
+    connect(exportLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
+    connect(packageManager, &PackageManager::exported, exportLibraryDialog, &ExportLibraryDialog::close);
+    connect(importLibraryDialog, &ImportLibraryDialog::unpackCLC, this, &LibraryManagementCoordinator::importLibraryPackage);
+    connect(importLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
+    connect(importLibraryDialog, &QDialog::rejected, this, [this] { deleteCurrentLibrary(true); });
+    connect(importLibraryDialog, &ImportLibraryDialog::libraryExists, this, &LibraryManagementCoordinator::showLibraryAlreadyExists);
+    connect(packageManager, &PackageManager::imported, importLibraryDialog, &QWidget::hide);
+    connect(packageManager, &PackageManager::imported, this, &LibraryManagementCoordinator::finishAddingLibrary);
+    connect(packageManager, &PackageManager::failed, this, &LibraryManagementCoordinator::packageFailed);
+
+    connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryManagementCoordinator::xmlScanFinished);
+    connect(xmlInfoLibraryScanner, &XMLInfoLibraryScanner::comicScanned, this, &LibraryManagementCoordinator::xmlComicScanned);
 }
 
-void LibraryManagementCoordinator::loadLibrary(const QString &libraryName, const QString &libraryPath)
+void LibraryManagementCoordinator::loadLibrary(const QString &libraryName)
+{
+    if (libraries.isEmpty()) {
+        emit noLibrariesRequested();
+        return;
+    }
+
+    loadLibraryAtPath(libraryName, libraries.getPath(libraryName));
+}
+
+void LibraryManagementCoordinator::loadLibraryAtPath(const QString &libraryName, const QString &libraryPath)
 {
     emit loadStarted();
 
@@ -141,6 +201,28 @@ QList<QPair<QString, QString>> LibraryManagementCoordinator::loadLibraries()
     return result;
 }
 
+void LibraryManagementCoordinator::showCreateLibraryDialog()
+{
+    warnIfLibraryCountIsHigh();
+    createLibraryDialog->open(libraries);
+}
+
+void LibraryManagementCoordinator::showAddLibraryDialog()
+{
+    warnIfLibraryCountIsHigh();
+    addLibraryDialog->open();
+}
+
+void LibraryManagementCoordinator::showExportLibraryDialog()
+{
+    exportLibraryDialog->open();
+}
+
+void LibraryManagementCoordinator::showImportLibraryDialog()
+{
+    importLibraryDialog->open(libraries);
+}
+
 void LibraryManagementCoordinator::createLibrary(const QString &source, const QString &destination, const QString &name)
 {
     QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source, destination, name);
@@ -159,6 +241,26 @@ void LibraryManagementCoordinator::updateCurrentLibrary()
     updateLibrary(libraryName, libraries.getPath(libraryName));
 }
 
+void LibraryManagementCoordinator::updateCurrentFolder()
+{
+    updateFolder(currentFolderProvider());
+}
+
+void LibraryManagementCoordinator::updateFolder(const QModelIndex &folderIndex)
+{
+    if (!folderIndex.isValid())
+        return;
+
+    const auto libraryName = currentLibraryNameProvider();
+    const auto libraryPath = QDir::cleanPath(libraries.getPath(libraryName));
+    emit updateStarted();
+    startFolderUpdate(
+            libraryName,
+            libraryPath,
+            QDir::cleanPath(libraryPath + foldersModel->getFolderPath(folderIndex)),
+            folderIndex.data(FolderModel::IdRole).toULongLong());
+}
+
 void LibraryManagementCoordinator::updateLibrary(const QString &libraryName, const QString &libraryPath)
 {
     operationLibraryName = libraryName;
@@ -168,12 +270,51 @@ void LibraryManagementCoordinator::updateLibrary(const QString &libraryName, con
     libraryCreator->start();
 }
 
-void LibraryManagementCoordinator::updateFolder(const QString &libraryName, const QString &libraryPath, const QString &folderPath, qulonglong folderId)
+void LibraryManagementCoordinator::startFolderUpdate(const QString &libraryName, const QString &libraryPath, const QString &folderPath, qulonglong folderId)
 {
     operationLibraryName = libraryName;
     operationLibraryPath = libraryPath;
     libraryCreator->updateFolder(libraryPath, LibraryPaths::libraryDataPath(libraryPath), folderPath, folderId);
     libraryCreator->start();
+}
+
+void LibraryManagementCoordinator::rescanCurrentLibraryForXMLInfo()
+{
+    const auto libraryPath = libraries.getPath(currentLibraryNameProvider());
+    emit xmlScanStarted();
+    xmlInfoLibraryScanner->scanLibrary(libraryPath, LibraryPaths::libraryDataPath(libraryPath));
+}
+
+void LibraryManagementCoordinator::rescanCurrentFolderForXMLInfo()
+{
+    rescanFolderForXMLInfo(currentFolderProvider());
+}
+
+void LibraryManagementCoordinator::rescanFolderForXMLInfo(const QModelIndex &folderIndex)
+{
+    if (!folderIndex.isValid())
+        return;
+
+    const auto libraryPath = libraries.getPath(currentLibraryNameProvider());
+    emit xmlScanStarted();
+    xmlInfoLibraryScanner->scanFolder(
+            libraryPath,
+            LibraryPaths::libraryDataPath(libraryPath),
+            QDir::cleanPath(libraryPath + foldersModel->getFolderPath(folderIndex)),
+            folderIndex);
+}
+
+void LibraryManagementCoordinator::exportCurrentLibrary(const QString &destinationPath)
+{
+    const auto libraryName = currentLibraryNameProvider();
+    packageManager->createPackage(LibraryPaths::libraryDataPath(libraries.getPath(libraryName)), destinationPath + "/" + libraryName);
+}
+
+void LibraryManagementCoordinator::importLibraryPackage(const QString &packagePath, const QString &destinationPath, const QString &libraryName)
+{
+    const auto libraryPath = destinationPath + "/" + libraryName;
+    packageManager->extractPackage(packagePath, libraryPath);
+    prepareImportedLibrary(libraryName, libraryPath);
 }
 
 void LibraryManagementCoordinator::addExistingLibrary(QString libraryPath, const QString &libraryName)
@@ -319,6 +460,8 @@ void LibraryManagementCoordinator::stop()
 {
     libraryCreator->stop();
     libraryCreator->wait();
+    xmlInfoLibraryScanner->stop();
+    xmlInfoLibraryScanner->wait();
 }
 
 void LibraryManagementCoordinator::startUpgrade(const QString &libraryName, const QString &libraryPath, const QString &libraryDataPath)

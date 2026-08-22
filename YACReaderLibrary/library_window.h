@@ -36,7 +36,6 @@ class AddLibraryDialog;
 class HelpAboutDialog;
 class RenameLibraryDialog;
 class PropertiesDialog;
-class PackageManager;
 class QPushButton;
 class ComicModel;
 class QSplitter;
@@ -85,7 +84,6 @@ class LibrarySearchCoordinator;
 
 namespace YACReader {
 class TrayIconController;
-class XMLInfoLibraryScanner;
 }
 
 #include "comic_db.h"
@@ -107,7 +105,6 @@ public:
     ExportComicsInfoDialog *exportComicsInfoDialog;
     ImportComicsInfoDialog *importComicsInfoDialog;
     AddLibraryDialog *addLibraryDialog;
-    XMLInfoLibraryScanner *xmlInfoLibraryScanner;
     HelpAboutDialog *had;
     RenameLibraryDialog *renameLibraryDialog;
     PropertiesDialog *propertiesDialog;
@@ -116,8 +113,6 @@ public:
     bool fullscreen;
     bool importedCovers; // if true, the library is read only (not updates,open comic or properties)
     bool fromMaximized;
-
-    PackageManager *packageManager;
 
     QSize slideSizeW;
     QSize slideSizeF;
@@ -210,40 +205,25 @@ public:
     QString searchText() const;
 
 public slots:
-    void loadLibrary(const QString &path);
     void checkEmptyFolder();
-    void createLibrary();
-    void showAddLibrary();
     void loadLibraries();
     void reloadCurrentLibrary();
     void openContainingFolder();
-    void rescanLibraryForXMLInfo();
-    void rescanCurrentFolderForXMLInfo();
-    void rescanFolderForXMLInfo(QModelIndex modelIndex);
-    void stopXMLScanning();
     void setRootIndex();
     void toggleFullScreen();
     void toNormal();
     void toFullScreen();
-    void exportLibrary(QString destPath);
-    void importLibrary(QString clc, QString destPath, QString name);
     void reloadOptions();
     void showExportComicsInfo();
     void showImportComicsInfo();
     void showNoLibrariesWidget();
     void showRootWidget();
     void showImportingWidget();
-    void manageCreatingError(const QString &error);
-    void manageUpdatingError(const QString &error);
-    void manageOpeningLibraryError(const QString &error);
     QModelIndexList getSelectedComics();
-    void importLibraryPackage();
     void updateViewsOnClientSync();
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
     void updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic);
     void loadCoversFromCurrentModel();
-    void updateCurrentFolder();
-    void updateFolder(const QModelIndex &miFolder);
     void reloadCurrentFolderComicsContent();
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();

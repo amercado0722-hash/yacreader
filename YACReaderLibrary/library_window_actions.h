@@ -11,7 +11,6 @@ class YACReaderHistoryController;
 class YACReaderNavigationController;
 class EditShortcutsDialog;
 class HelpAboutDialog;
-class ExportLibraryDialog;
 class YACReaderContentViewsManager;
 class YACReaderFoldersView;
 class YACReaderOptionsDialog;
@@ -142,7 +141,6 @@ public:
                            YACReaderNavigationController *navigationController,
                            LibraryWindow *window,
                            HelpAboutDialog *had,
-                           ExportLibraryDialog *exportLibraryDialog,
                            YACReaderContentViewsManager *contentViewsManager,
                            EditShortcutsDialog *editShortcutsDialog,
                            YACReaderFoldersView *foldersView,
