@@ -8,6 +8,7 @@
 #include <optional>
 
 class LibraryWindow;
+class LibrarySearchCoordinator;
 class YACReaderLibrarySourceContainer;
 class YACReaderContentViewsManager;
 
@@ -15,7 +16,7 @@ class YACReaderNavigationController : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager);
+    explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager, LibrarySearchCoordinator *librarySearchCoordinator);
 
 public slots:
     void selectedFolder(const QModelIndex &proxyIndex);
@@ -50,6 +51,7 @@ private:
 
     LibraryWindow *libraryWindow;
     YACReaderContentViewsManager *contentViewsManager;
+    LibrarySearchCoordinator *librarySearchCoordinator;
     bool restoringHistorySelection = false;
     std::optional<ContentViewState> pendingRefreshViewState;
 

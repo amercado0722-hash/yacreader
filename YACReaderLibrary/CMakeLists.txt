@@ -86,6 +86,22 @@ qt_add_executable(YACReaderLibrary WIN32
     library_window.cpp
     library_window_actions.h
     library_window_actions.cpp
+    library_window_menus.h
+    library_window_menus.cpp
+    library_search_coordinator.h
+    library_search_coordinator.cpp
+    comic_management_coordinator.h
+    comic_management_coordinator.cpp
+    reading_list_management_coordinator.h
+    reading_list_management_coordinator.cpp
+    folder_management_coordinator.h
+    folder_management_coordinator.cpp
+    library_database_maintenance_coordinator.h
+    library_database_maintenance_coordinator.cpp
+    library_repair_coordinator.h
+    library_repair_coordinator.cpp
+    library_management_coordinator.h
+    library_management_coordinator.cpp
     feature_flags.h
     create_library_dialog.h
     create_library_dialog.cpp
@@ -95,6 +111,8 @@ qt_add_executable(YACReaderLibrary WIN32
     rename_library_dialog.cpp
     organize_files_dialog.h
     organize_files_dialog.cpp
+    organize_files_coordinator.h
+    organize_files_coordinator.cpp
     organize_files_preview_dialog.h
     organize_files_preview_dialog.cpp
     properties_dialog.h
