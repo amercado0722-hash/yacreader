@@ -42,7 +42,6 @@
 #include "api_key_dialog.h"
 #include "comic_db.h"
 #include "comic_files_coordinator.h"
-#include "comic_info_repairer.h"
 #include "comic_model.h"
 #include "comic_vine_dialog.h"
 #include "comics_remover.h"
@@ -65,6 +64,7 @@
 #include "library_comic_opener.h"
 #include "library_creator.h"
 #include "library_database_maintenance_coordinator.h"
+#include "library_repair_coordinator.h"
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
 #include "organize_files_coordinator.h"
@@ -222,7 +222,6 @@ void LibraryWindow::setupUI()
     libraryCreator = new LibraryCreator(settings);
     packageManager = new PackageManager();
     xmlInfoLibraryScanner = new XMLInfoLibraryScanner();
-    comicInfoRepairer = new ComicInfoRepairer(settings);
 
     historyController = new YACReaderHistoryController(this);
 
@@ -458,6 +457,13 @@ void LibraryWindow::setupCoordinators()
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::databaseSalvageFailed, this, [this] {
         actions.restoreLibraryAction->setEnabled(true);
     });
+    libraryRepairCoordinator = new LibraryRepairCoordinator(settings, this);
+    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairStarted, importWidget, &ImportWidget::setRepairLook);
+    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairStarted, this, &LibraryWindow::showImportingWidget);
+    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairFinished, this, &LibraryWindow::showRootWidget);
+    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairFinished, this, &LibraryWindow::reloadCurrentLibrary);
+    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::comicProcessed, importWidget, &ImportWidget::newComic);
+    connect(libraryRepairCoordinator, &LibraryRepairCoordinator::databaseRecoveryRequested, this, &LibraryWindow::offerDatabaseRecovery);
 
     auto canStartUpdateProvider = [this]() {
         return comicVineDialog->isVisible() == false &&
@@ -912,65 +918,10 @@ void LibraryWindow::createConnections()
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
     connect(xmlInfoLibraryScanner, &XMLInfoLibraryScanner::comicScanned, importWidget, &ImportWidget::newComic);
 
-    connect(comicInfoRepairer, &QThread::finished, this, [this]() {
-        const auto summary = comicInfoRepairer->summary();
-        showRootWidget();
-        reloadCurrentLibrary();
-
-        if (summary.lockedByAnotherProcess) {
-            if (summary.lockHolderIsRunningLocally) {
-                QMessageBox::information(this,
-                                         actions.repairLibraryAction->text(),
-                                         tr("A repair of this library is already running (%1). Wait for it to finish.").arg(summary.lockHolderInfo));
-                return;
-            }
-
-            auto text = summary.lockHolderInfo.isEmpty()
-                    ? tr("The library is locked by a repair that did not finish.")
-                    : tr("The library is locked by a repair started by %1.").arg(summary.lockHolderInfo);
-            text += "\n\n";
-            text += tr("If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?");
-
-            const auto answer = QMessageBox::question(this,
-                                                      actions.repairLibraryAction->text(),
-                                                      text,
-                                                      QMessageBox::Yes | QMessageBox::No,
-                                                      QMessageBox::No);
-            if (answer == QMessageBox::Yes) {
-                startLibraryRepair(true);
-            }
-            return;
-        }
-
-        if (summary.canceled || !summary.error.isEmpty()) {
-            return;
-        }
-
-        QMessageBox messageBox(QMessageBox::Information,
-                               actions.repairLibraryAction->text(),
-                               tr("Repaired: %1\nFailed: %2\nMissing files: %3").arg(summary.repaired).arg(summary.failed).arg(summary.missingFiles),
-                               QMessageBox::Ok,
-                               this);
-        if (!summary.failedFilePaths.isEmpty()) {
-            messageBox.setDetailedText(summary.failedFilePaths.join('\n'));
-        }
-        messageBox.exec();
-    });
-    connect(comicInfoRepairer, &ComicInfoRepairer::comicProcessed, importWidget, &ImportWidget::newComic);
-    connect(comicInfoRepairer, &ComicInfoRepairer::failed, this, [this](const QString &error) {
-        const auto libraryName = selectedLibrary->currentText();
-        const auto libraryPath = libraries.getPath(libraryName);
-        if (!libraryPath.isEmpty() && QFile::exists(LibraryPaths::libraryDatabasePath(libraryPath)) && !DataBaseManagement::isLibraryDatabaseValid(libraryPath)) {
-            offerDatabaseRecovery(libraryName);
-            return;
-        }
-        QMessageBox::critical(this, actions.repairLibraryAction->text(), error);
-    });
-
     // new import widget
     connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopLibraryCreator);
     connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopXMLScanning);
-    connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopComicInfoRepair);
+    connect(importWidget, &ImportWidget::stop, libraryRepairCoordinator, &LibraryRepairCoordinator::stop);
 
     // packageManager connections
     connect(exportLibraryDialog, &ExportLibraryDialog::exportPath, this, &LibraryWindow::exportLibrary);
@@ -2122,16 +2073,8 @@ void LibraryWindow::offerDatabaseRecovery(const QString &libraryName)
 
 void LibraryWindow::repairLibrary()
 {
-    startLibraryRepair(false);
-}
-
-void LibraryWindow::startLibraryRepair(bool removeStaleLock)
-{
-    importWidget->setRepairLook();
-    showImportingWidget();
-
-    const auto path = libraries.getPath(selectedLibrary->currentText());
-    comicInfoRepairer->repairLibrary(path, LibraryPaths::libraryDataPath(path), removeStaleLock);
+    const auto libraryName = selectedLibrary->currentText();
+    libraryRepairCoordinator->repairLibrary(libraryName, libraries.getPath(libraryName), actions.repairLibraryAction->text());
 }
 
 void LibraryWindow::deleteCurrentLibrary()
@@ -2281,12 +2224,6 @@ void LibraryWindow::stopXMLScanning()
 {
     xmlInfoLibraryScanner->stop();
     xmlInfoLibraryScanner->wait();
-}
-
-void LibraryWindow::stopComicInfoRepair()
-{
-    comicInfoRepairer->stop();
-    comicInfoRepairer->wait();
 }
 
 void LibraryWindow::setRootIndex()
@@ -2710,7 +2647,7 @@ void LibraryWindow::prepareToCloseApp()
 
     libraryCreator->stop();
     librariesUpdateCoordinator->stop();
-    stopComicInfoRepair();
+    libraryRepairCoordinator->stop();
 
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
     settings->setValue(MAIN_WINDOW_STATE, saveState());

@@ -970,50 +970,50 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_window.cpp" line="2076"/>
+        <location filename="library_window.cpp" line="2027"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>Le dossier sélectionné ne contient aucune librairie.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1106"/>
+        <location filename="library_window.cpp" line="1057"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>Cette librairie a été créée avec une ancienne version de YACReaderLibrary. Mise à jour necessaire. Mettre à jour?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="859"/>
+        <location filename="library_window.cpp" line="865"/>
         <source>Comic</source>
         <translation>Bande dessinée</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2770"/>
+        <location filename="library_window.cpp" line="2707"/>
         <source>Error opening the library</source>
         <translation>Erreur lors de l&apos;ouverture de la librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="714"/>
-        <location filename="library_window.cpp" line="1583"/>
-        <location filename="library_window.cpp" line="1709"/>
+        <location filename="library_window.cpp" line="720"/>
+        <location filename="library_window.cpp" line="1534"/>
+        <location filename="library_window.cpp" line="1660"/>
         <source>manga</source>
         <translation>mangas</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="711"/>
-        <location filename="library_window.cpp" line="1580"/>
-        <location filename="library_window.cpp" line="1712"/>
+        <location filename="library_window.cpp" line="717"/>
+        <location filename="library_window.cpp" line="1531"/>
+        <location filename="library_window.cpp" line="1663"/>
         <source>comic</source>
         <translation>comique</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="717"/>
-        <location filename="library_window.cpp" line="1586"/>
-        <location filename="library_window.cpp" line="1715"/>
+        <location filename="library_window.cpp" line="723"/>
+        <location filename="library_window.cpp" line="1537"/>
+        <location filename="library_window.cpp" line="1666"/>
         <source>western manga (left to right)</source>
         <translation>manga occidental (de gauche à droite)</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="723"/>
-        <location filename="library_window.cpp" line="1592"/>
-        <location filename="library_window.cpp" line="1721"/>
+        <location filename="library_window.cpp" line="729"/>
+        <location filename="library_window.cpp" line="1543"/>
+        <location filename="library_window.cpp" line="1672"/>
         <source>4koma (top to botom)</source>
         <oldsource>4koma (top to botom</oldsource>
         <translation>4koma (de haut en bas)</translation>
@@ -1023,22 +1023,22 @@
         <translation type="vanished">Supprimer les métadata</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1218"/>
+        <location filename="library_window.cpp" line="1169"/>
         <source>Old library</source>
         <translation>Ancienne librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1700"/>
+        <location filename="library_window.cpp" line="1651"/>
         <source>Set as completed</source>
         <translation>Marquer comme complet</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="804"/>
+        <location filename="library_window.cpp" line="810"/>
         <source>Library</source>
         <translation>Librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1175"/>
+        <location filename="library_window.cpp" line="1126"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
         <translation>Cette librairie a été créée avec une version plus récente de YACReaderLibrary. Télécharger la nouvelle version?</translation>
     </message>
@@ -1053,52 +1053,52 @@
         <translation>Copier la bande dessinée...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1197"/>
+        <location filename="library_window.cpp" line="1148"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
         <translation>La librarie &apos;%1&apos; n&apos;est plus disponible. Voulez-vous la supprimer?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1685"/>
+        <location filename="library_window.cpp" line="1636"/>
         <source>Open folder...</source>
         <translation>Ouvrir le dossier...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2163"/>
+        <location filename="library_window.cpp" line="2106"/>
         <source>Do you want remove </source>
         <translation>Voulez-vous supprimer</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1697"/>
+        <location filename="library_window.cpp" line="1648"/>
         <source>Set as uncompleted</source>
         <translation>Marquer comme incomplet</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2765"/>
+        <location filename="library_window.cpp" line="2702"/>
         <source>Error updating the library</source>
         <translation>Erreur lors de la mise à jour de la librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="836"/>
+        <location filename="library_window.cpp" line="842"/>
         <source>Folder</source>
         <translation>Dossier</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1517"/>
+        <location filename="library_window.cpp" line="1468"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>L&apos;élément sélectionné sera supprimé, vos bandes dessinées ou dossiers ne seront pas supprimés de votre disque. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1218"/>
+        <location filename="library_window.cpp" line="1169"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
         <translation>La librarie &apos;%1&apos; a été créée avec une ancienne version de YACReaderLibrary. Elle doit être re-créée. Voulez-vous créer la librairie?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1498"/>
+        <location filename="library_window.cpp" line="1449"/>
         <source>Add new reading lists</source>
         <translation>Ajouter de nouvelles listes de lecture</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1924"/>
+        <location filename="library_window.cpp" line="1875"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
@@ -1111,334 +1111,334 @@ Vous n&apos;avez probablement besoin que d&apos;une bibliothèque dans votre dos
 YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais vous devriez garder le nombre de bibliothèques bas.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1703"/>
+        <location filename="library_window.cpp" line="1654"/>
         <source>Set as read</source>
         <translation>Marquer comme lu</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1197"/>
+        <location filename="library_window.cpp" line="1148"/>
         <source>Library not available</source>
         <translation>Librairie non disponible</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="243"/>
+        <location filename="library_window.cpp" line="242"/>
         <source>YACReader Library</source>
         <translation>Librairie de YACReader</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2760"/>
+        <location filename="library_window.cpp" line="2697"/>
         <source>Error creating the library</source>
         <translation>Erreur lors de la création de la librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1688"/>
+        <location filename="library_window.cpp" line="1639"/>
         <source>Update folder</source>
         <translation>Mettre à jour le dossier</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1106"/>
+        <location filename="library_window.cpp" line="1057"/>
         <source>Update needed</source>
         <translation>Mise à jour requise</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2961"/>
+        <location filename="library_window.cpp" line="2898"/>
         <source>Library name already exists</source>
         <translation>Le nom de la librairie existe déjà</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2961"/>
+        <location filename="library_window.cpp" line="2898"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Une autre librairie a le nom &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1175"/>
+        <location filename="library_window.cpp" line="1126"/>
         <source>Download new version</source>
         <translation>Téléchrger la nouvelle version</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2819"/>
+        <location filename="library_window.cpp" line="2756"/>
         <source>Delete comics</source>
         <translation>Supprimer les comics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2819"/>
+        <location filename="library_window.cpp" line="2756"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Tous les comics sélectionnés vont être supprimés de votre disque. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1706"/>
-        <location filename="library_window.cpp" line="1840"/>
+        <location filename="library_window.cpp" line="1657"/>
+        <location filename="library_window.cpp" line="1791"/>
         <source>Set as unread</source>
         <translation>Marquer comme non-lu</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2076"/>
+        <location filename="library_window.cpp" line="2027"/>
         <source>Library not found</source>
         <translation>Librairie introuvable</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2163"/>
+        <location filename="library_window.cpp" line="2106"/>
         <source> library?</source>
         <translation> la librairie?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2162"/>
+        <location filename="library_window.cpp" line="2105"/>
         <source>Are you sure?</source>
         <translation>Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1694"/>
+        <location filename="library_window.cpp" line="1645"/>
         <source>Rescan library for XML info</source>
         <translation>Réanalyser la bibliothèque pour les informations XML</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="720"/>
-        <location filename="library_window.cpp" line="1589"/>
-        <location filename="library_window.cpp" line="1718"/>
+        <location filename="library_window.cpp" line="726"/>
+        <location filename="library_window.cpp" line="1540"/>
+        <location filename="library_window.cpp" line="1669"/>
         <source>web comic</source>
         <translation>bande dessinée Web</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1363"/>
+        <location filename="library_window.cpp" line="1314"/>
         <source>Add new folder</source>
         <translation>Ajouter un nouveau dossier</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1451"/>
+        <location filename="library_window.cpp" line="1402"/>
         <source>Delete folder</source>
         <translation>Supprimer le dossier</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1058"/>
+        <location filename="library_window.cpp" line="1009"/>
         <source>Upgrade failed</source>
         <translation>La mise à niveau a échoué</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1058"/>
+        <location filename="library_window.cpp" line="1009"/>
         <source>There were errors during library upgrade in: </source>
         <translation>Des erreurs se sont produites lors de la mise à niveau de la bibliothèque dans&#xa0;: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1364"/>
-        <location filename="library_window.cpp" line="1398"/>
+        <location filename="library_window.cpp" line="1315"/>
+        <location filename="library_window.cpp" line="1349"/>
         <source>Folder name:</source>
         <translation>Nom du dossier&#xa0;:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1392"/>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1343"/>
+        <location filename="library_window.cpp" line="1396"/>
         <source>No folder selected</source>
         <translation>Aucun dossier sélectionné</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1392"/>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1343"/>
+        <location filename="library_window.cpp" line="1396"/>
         <source>Please, select a folder first</source>
         <translation>Veuillez d&apos;abord sélectionner un dossier</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1449"/>
+        <location filename="library_window.cpp" line="1400"/>
         <source>Error in path</source>
         <translation>Erreur dans le chemin</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1449"/>
+        <location filename="library_window.cpp" line="1400"/>
         <source>There was an error accessing the folder&apos;s path</source>
         <translation>Une erreur s&apos;est produite lors de l&apos;accès au chemin du dossier</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1451"/>
+        <location filename="library_window.cpp" line="1402"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
         <translation>Le dossier sélectionné et tout son contenu seront supprimés de votre disque. Es-tu sûr?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1486"/>
-        <location filename="library_window.cpp" line="2449"/>
+        <location filename="library_window.cpp" line="1437"/>
+        <location filename="library_window.cpp" line="2386"/>
         <source>Unable to delete</source>
         <translation>Impossible de supprimer</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1486"/>
+        <location filename="library_window.cpp" line="1437"/>
         <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
         <translation>Un problème est survenu lors de la tentative de suppression des dossiers sélectionnés. Veuillez vérifier les autorisations d&apos;écriture et assurez-vous que toutes les applications utilisent ces dossiers ou l&apos;un des fichiers contenus.</translation>
     </message>
     <message>
+        <location filename="library_window.cpp" line="1450"/>
         <location filename="library_window.cpp" line="1499"/>
-        <location filename="library_window.cpp" line="1548"/>
         <source>List name:</source>
         <translation>Nom de la liste&#xa0;:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1517"/>
+        <location filename="library_window.cpp" line="1468"/>
         <source>Delete list/label</source>
         <translation>Supprimer la liste/l&apos;étiquette</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1547"/>
+        <location filename="library_window.cpp" line="1498"/>
         <source>Rename list name</source>
         <translation>Renommer le nom de la liste</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="763"/>
-        <location filename="library_window.cpp" line="1649"/>
-        <location filename="library_window.cpp" line="1770"/>
-        <location filename="library_window.cpp" line="2943"/>
+        <location filename="library_window.cpp" line="769"/>
+        <location filename="library_window.cpp" line="1600"/>
+        <location filename="library_window.cpp" line="1721"/>
+        <location filename="library_window.cpp" line="2880"/>
         <source>Set type</source>
         <translation>Définir le type</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="590"/>
+        <location filename="library_window.cpp" line="596"/>
         <source>Search filters</source>
         <translation>Filtres de recherche</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="600"/>
+        <location filename="library_window.cpp" line="606"/>
         <source>Unread</source>
         <translation>Non lus</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="602"/>
+        <location filename="library_window.cpp" line="608"/>
         <source>In progress</source>
         <translation>En cours</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="604"/>
+        <location filename="library_window.cpp" line="610"/>
         <source>Highly rated</source>
         <translation>Très bien notés</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="606"/>
+        <location filename="library_window.cpp" line="612"/>
         <source>Recently added</source>
         <translation>Ajoutés récemment</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="613"/>
+        <location filename="library_window.cpp" line="619"/>
         <source>Search syntax…</source>
         <translation>Syntaxe de recherche…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="924"/>
+        <location filename="library_repair_coordinator.cpp" line="58"/>
         <source>A repair of this library is already running (%1). Wait for it to finish.</source>
         <translation>Une réparation de cette librairie est déjà en cours (%1). Attendez qu&apos;elle se termine.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="929"/>
+        <location filename="library_repair_coordinator.cpp" line="63"/>
         <source>The library is locked by a repair that did not finish.</source>
         <translation>La librairie est verrouillée par une réparation qui ne s&apos;est pas terminée.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="930"/>
+        <location filename="library_repair_coordinator.cpp" line="64"/>
         <source>The library is locked by a repair started by %1.</source>
         <translation>La librairie est verrouillée par une réparation démarrée par %1.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="932"/>
+        <location filename="library_repair_coordinator.cpp" line="66"/>
         <source>If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?</source>
         <translation>Si vous êtes sûr qu&apos;aucune autre réparation n&apos;est en cours, le verrou peut être supprimé. Supprimer le verrou et continuer ?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="986"/>
+        <location filename="library_window.cpp" line="937"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="986"/>
+        <location filename="library_window.cpp" line="937"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1076"/>
+        <location filename="library_window.cpp" line="1027"/>
         <source>Restore recovery failed</source>
         <translation>Échec de la récupération de la restauration</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1398"/>
-        <location filename="library_window.cpp" line="1691"/>
+        <location filename="library_window.cpp" line="1349"/>
+        <location filename="library_window.cpp" line="1642"/>
         <source>Rename folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1404"/>
+        <location filename="library_window.cpp" line="1355"/>
         <source>Invalid folder name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1404"/>
+        <location filename="library_window.cpp" line="1355"/>
         <source>The folder name is empty or contains characters that are not supported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1414"/>
-        <location filename="library_window.cpp" line="1419"/>
-        <location filename="library_window.cpp" line="1431"/>
+        <location filename="library_window.cpp" line="1365"/>
+        <location filename="library_window.cpp" line="1370"/>
+        <location filename="library_window.cpp" line="1382"/>
         <source>Unable to rename folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1414"/>
+        <location filename="library_window.cpp" line="1365"/>
         <source>A file or folder named &apos;%1&apos; already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1419"/>
+        <location filename="library_window.cpp" line="1370"/>
         <source>The folder could not be renamed on disk. Please check the folder name and write permissions.
 
 Folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1426"/>
+        <location filename="library_window.cpp" line="1377"/>
         <source>The library database could not be updated. The folder rename on disk was reverted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1428"/>
+        <location filename="library_window.cpp" line="1379"/>
         <source>The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1724"/>
+        <location filename="library_window.cpp" line="1675"/>
         <source>Set custom cover</source>
         <translation>Définir une couverture personnalisée</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1727"/>
+        <location filename="library_window.cpp" line="1678"/>
         <source>Delete custom cover</source>
         <translation>Supprimer la couverture personnalisée</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1905"/>
+        <location filename="library_window.cpp" line="1856"/>
         <source>Save covers</source>
         <translation>Enregistrer les couvertures</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1924"/>
+        <location filename="library_window.cpp" line="1875"/>
         <source>You are adding too many libraries.</source>
         <translation>Vous ajoutez trop de bibliothèques.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1977"/>
-        <location filename="library_window.cpp" line="1979"/>
+        <location filename="library_window.cpp" line="1928"/>
+        <location filename="library_window.cpp" line="1930"/>
         <source>YACReader not found</source>
         <translation>YACReader introuvable</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1977"/>
+        <location filename="library_window.cpp" line="1928"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader introuvable. YACReader doit être installé dans le même dossier que YACReaderLibrary.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1979"/>
+        <location filename="library_window.cpp" line="1930"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader introuvable. Il se peut qu&apos;il y ait un problème avec votre installation de YACReader.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1986"/>
+        <location filename="library_window.cpp" line="1937"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1986"/>
+        <location filename="library_window.cpp" line="1937"/>
         <source>Error opening comic with third party reader.</source>
         <translation>Erreur lors de l&apos;ouverture de la bande dessinée avec un lecteur tiers.</translation>
     </message>
@@ -1595,62 +1595,62 @@ You can restore a backup from the Library menu or recreate the library.</source>
 Vous pouvez restaurer une sauvegarde depuis le menu Bibliothèque ou recréer la bibliothèque.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2166"/>
+        <location filename="library_window.cpp" line="2109"/>
         <source>Remove and delete metadata and backups</source>
         <translation>Retirer et supprimer les métadonnées et les sauvegardes</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2235"/>
+        <location filename="library_window.cpp" line="2178"/>
         <source>Library info</source>
         <translation>Informations sur la bibliothèque</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2449"/>
+        <location filename="library_window.cpp" line="2386"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Un problème est survenu lors de la tentative de suppression des bandes dessinées sélectionnées. Veuillez vérifier les autorisations d&apos;écriture dans les fichiers sélectionnés ou le dossier contenant.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2480"/>
+        <location filename="library_window.cpp" line="2417"/>
         <source>Assign comics numbers</source>
         <translation>Attribuer des numéros de bandes dessinées</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2481"/>
+        <location filename="library_window.cpp" line="2418"/>
         <source>Assign numbers starting in:</source>
         <translation>Attribuez des numéros commençant par&#xa0;:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2613"/>
+        <location filename="library_window.cpp" line="2550"/>
         <source>Invalid image</source>
         <translation>Image invalide</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2613"/>
+        <location filename="library_window.cpp" line="2550"/>
         <source>The selected file is not a valid image.</source>
         <translation>Le fichier sélectionné n&apos;est pas une image valide.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2619"/>
+        <location filename="library_window.cpp" line="2556"/>
         <source>Error saving cover</source>
         <translation>Erreur lors de l&apos;enregistrement de la couverture</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2619"/>
+        <location filename="library_window.cpp" line="2556"/>
         <source>There was an error saving the cover image.</source>
         <translation>Une erreur s&apos;est produite lors de l&apos;enregistrement de l&apos;image de couverture.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2856"/>
+        <location filename="library_window.cpp" line="2793"/>
         <source>Remove comics</source>
         <translation>Supprimer les bandes dessinées</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2856"/>
+        <location filename="library_window.cpp" line="2793"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Les bandes dessinées seront uniquement supprimées du label/liste actuelle. Es-tu sûr?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="951"/>
+        <location filename="library_repair_coordinator.cpp" line="83"/>
         <source>Repaired: %1
 Failed: %2
 Missing files: %3</source>

@@ -85,11 +85,11 @@ class RecentVisibilityCoordinator;
 class OrganizeFilesCoordinator;
 class ComicFilesCoordinator;
 class LibraryDatabaseMaintenanceCoordinator;
+class LibraryRepairCoordinator;
 
 namespace YACReader {
 class TrayIconController;
 class XMLInfoLibraryScanner;
-class ComicInfoRepairer;
 }
 
 #include "comic_db.h"
@@ -113,7 +113,6 @@ public:
     AddLibraryDialog *addLibraryDialog;
     LibraryCreator *libraryCreator;
     XMLInfoLibraryScanner *xmlInfoLibraryScanner;
-    ComicInfoRepairer *comicInfoRepairer;
     HelpAboutDialog *had;
     RenameLibraryDialog *renameLibraryDialog;
     PropertiesDialog *propertiesDialog;
@@ -255,7 +254,6 @@ public slots:
     void restoreLibrary();
     void offerDatabaseRecovery(const QString &libraryName);
     void repairLibrary();
-    void startLibraryRepair(bool removeStaleLock);
     // void deleteLibrary();
     void openContainingFolder();
     void organizeFiles();
@@ -282,7 +280,6 @@ public slots:
     void cancelCreating();
     void stopLibraryCreator();
     void stopXMLScanning();
-    void stopComicInfoRepair();
     void setRootIndex();
     void toggleFullScreen();
     void toNormal();
@@ -383,6 +380,7 @@ private:
     OrganizeFilesCoordinator *organizeFilesCoordinator;
     ComicFilesCoordinator *comicFilesCoordinator;
     LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator;
+    LibraryRepairCoordinator *libraryRepairCoordinator;
     bool pendingAfterLaunchTasks;
 };
 
