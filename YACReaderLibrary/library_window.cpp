@@ -450,7 +450,16 @@ void LibraryWindow::setupCoordinators()
             this,
             [this] { return foldersModelProxy->mapToSource(foldersView->currentIndex()); },
             [this] { return currentPath(); });
-    connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFailed, this, &LibraryWindow::errorDeletingFolder);
+    connect(folderManagementCoordinator, &FolderManagementCoordinator::folderRenamed, navigationController, &YACReaderNavigationController::refreshCurrentSource);
+    connect(folderManagementCoordinator, &FolderManagementCoordinator::folderAboutToBeDeleted, this, [this](const QModelIndex &parentFolder) {
+        // The unified grid observes the main folder model directly. Move away
+        // from the folder before removing its model index so the content view
+        // never retains the index being deleted.
+        if (parentFolder.isValid())
+            foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(parentFolder));
+        else
+            setRootIndex();
+    });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
     libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(this);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::backupAvailabilityChanged, actions.backupLibraryAction, &QAction::setEnabled);
@@ -1196,87 +1205,6 @@ void LibraryWindow::addFolderToCurrentIndex()
     }
 }
 
-void LibraryWindow::renameSelectedFolder()
-{
-    renameFolder(getCurrentFolderIndex());
-}
-
-void LibraryWindow::renameFolder(const QModelIndex &folder)
-{
-    if (!folder.isValid()) {
-        QMessageBox::information(this, tr("No folder selected"), tr("Please, select a folder first"));
-        return;
-    }
-
-    const auto oldName = folder.data(FolderModel::FolderNameRole).toString();
-    bool accepted = false;
-    const auto newName = QInputDialog::getText(this, tr("Rename folder"), tr("Folder name:"), QLineEdit::Normal, oldName, &accepted);
-    if (!accepted || newName == oldName)
-        return;
-
-    const auto result = folderManagementCoordinator->renameFolder(folder, currentPath(), newName);
-    switch (result.error) {
-    case FolderManagementCoordinator::RenameError::None:
-        navigationController->refreshCurrentSource();
-        return;
-    case FolderManagementCoordinator::RenameError::InvalidName:
-        QMessageBox::warning(this, tr("Invalid folder name"), tr("The folder name is empty or contains characters that are not supported."));
-        return;
-    case FolderManagementCoordinator::RenameError::TargetAlreadyExists:
-        QMessageBox::warning(this, tr("Unable to rename folder"), tr("A file or folder named '%1' already exists.").arg(newName));
-        return;
-    case FolderManagementCoordinator::RenameError::FileSystemRenameFailed:
-        QMessageBox::critical(this, tr("Unable to rename folder"), tr("The folder could not be renamed on disk. Please check the folder name and write permissions.\n\nFolder: %1").arg(result.folderPath));
-        return;
-    case FolderManagementCoordinator::RenameError::DatabaseUpdateFailed:
-    case FolderManagementCoordinator::RenameError::DatabaseUpdateAndRollbackFailed: {
-        auto message = result.error == FolderManagementCoordinator::RenameError::DatabaseUpdateFailed
-                ? tr("The library database could not be updated. The folder rename on disk was reverted.")
-                : tr("The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.");
-        if (!result.databaseError.isEmpty())
-            message += "\n\n" + result.databaseError;
-        QMessageBox::critical(this, tr("Unable to rename folder"), message);
-        return;
-    }
-    }
-}
-
-void LibraryWindow::deleteSelectedFolder()
-{
-    QModelIndex currentIndex = getCurrentFolderIndex();
-    QString relativePath = foldersModel->getFolderPath(currentIndex);
-    QString folderPath = QDir::cleanPath(currentPath() + relativePath);
-
-    if (!currentIndex.isValid())
-        QMessageBox::information(this, tr("No folder selected"), tr("Please, select a folder first"));
-    else {
-        QString libraryPath = QDir::cleanPath(currentPath());
-        if ((libraryPath == folderPath) || relativePath.isEmpty() || relativePath == "/")
-            QMessageBox::critical(this, tr("Error in path"), tr("There was an error accessing the folder's path"));
-        else {
-            int ret = QMessageBox::question(this, tr("Delete folder"), tr("The selected folder and all its contents will be deleted from your disk. Are you sure?") + "\n\nFolder : " + folderPath, QMessageBox::Yes, QMessageBox::No);
-
-            if (ret == QMessageBox::Yes) {
-                // The unified grid observes the main folder model directly. Move
-                // away from the folder before removing its model index so the
-                // content view never retains the index being deleted.
-                const QModelIndex parentIndex = currentIndex.parent();
-                if (parentIndex.isValid())
-                    foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(parentIndex));
-                else
-                    setRootIndex();
-
-                folderManagementCoordinator->deleteFolder(currentIndex, folderPath);
-            }
-        }
-    }
-}
-
-void LibraryWindow::errorDeletingFolder()
-{
-    QMessageBox::critical(this, tr("Unable to delete"), tr("There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files."));
-}
-
 void LibraryWindow::addNewReadingList()
 {
     QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
@@ -1568,8 +1496,8 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     connect(updateFolderAction, &QAction::triggered, this, [=]() {
         updateFolder(foldersModel->getIndexFromFolder(folder));
     });
-    connect(renameFolderAction, &QAction::triggered, this, [=]() {
-        renameFolder(foldersModel->getIndexFromFolder(folder));
+    connect(renameFolderAction, &QAction::triggered, folderManagementCoordinator, [coordinator = folderManagementCoordinator, folderId, libraryPath]() {
+        coordinator->renameFolder(folderId, libraryPath);
     });
     connect(rescanLibraryForXMLInfoAction, &QAction::triggered, this, [=]() {
         rescanFolderForXMLInfo(foldersModel->getIndexFromFolder(folder));

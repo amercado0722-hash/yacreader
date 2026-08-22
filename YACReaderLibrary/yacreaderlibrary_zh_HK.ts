@@ -977,46 +977,46 @@
         <translation>YACReader 庫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="855"/>
+        <location filename="library_window.cpp" line="864"/>
         <source>Library</source>
         <translation>庫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1490"/>
+        <location filename="library_window.cpp" line="1418"/>
         <source>Set as read</source>
         <translation>設為已讀</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1493"/>
-        <location filename="library_window.cpp" line="1627"/>
+        <location filename="library_window.cpp" line="1421"/>
+        <location filename="library_window.cpp" line="1555"/>
         <source>Set as unread</source>
         <translation>設為未讀</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="765"/>
-        <location filename="library_window.cpp" line="1368"/>
-        <location filename="library_window.cpp" line="1496"/>
+        <location filename="library_window.cpp" line="774"/>
+        <location filename="library_window.cpp" line="1296"/>
+        <location filename="library_window.cpp" line="1424"/>
         <source>manga</source>
         <translation>漫畫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="762"/>
-        <location filename="library_window.cpp" line="1365"/>
-        <location filename="library_window.cpp" line="1499"/>
+        <location filename="library_window.cpp" line="771"/>
+        <location filename="library_window.cpp" line="1293"/>
+        <location filename="library_window.cpp" line="1427"/>
         <source>comic</source>
         <translation>漫畫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="771"/>
-        <location filename="library_window.cpp" line="1374"/>
-        <location filename="library_window.cpp" line="1505"/>
+        <location filename="library_window.cpp" line="780"/>
+        <location filename="library_window.cpp" line="1302"/>
+        <location filename="library_window.cpp" line="1433"/>
         <source>web comic</source>
         <translation>網路漫畫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="768"/>
-        <location filename="library_window.cpp" line="1371"/>
-        <location filename="library_window.cpp" line="1502"/>
+        <location filename="library_window.cpp" line="777"/>
+        <location filename="library_window.cpp" line="1299"/>
+        <location filename="library_window.cpp" line="1430"/>
         <source>western manga (left to right)</source>
         <translation>西方漫畫（從左到右）</translation>
     </message>
@@ -1027,42 +1027,42 @@
         <translation>庫不可用</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1481"/>
+        <location filename="library_window.cpp" line="1409"/>
         <source>Rescan library for XML info</source>
         <translation>重新掃描庫的 XML 資訊</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1257"/>
+        <location filename="folder_management_coordinator.cpp" line="173"/>
         <source>Delete folder</source>
         <translation>刪除檔夾</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1472"/>
+        <location filename="library_window.cpp" line="1400"/>
         <source>Open folder...</source>
         <translation>打開檔夾...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1484"/>
+        <location filename="library_window.cpp" line="1412"/>
         <source>Set as uncompleted</source>
         <translation>設為未完成</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1487"/>
+        <location filename="library_window.cpp" line="1415"/>
         <source>Set as completed</source>
         <translation>設為已完成</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1475"/>
+        <location filename="library_window.cpp" line="1403"/>
         <source>Update folder</source>
         <translation>更新檔夾</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="887"/>
+        <location filename="library_window.cpp" line="896"/>
         <source>Folder</source>
         <translation>檔夾</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="910"/>
+        <location filename="library_window.cpp" line="919"/>
         <source>Comic</source>
         <translation>漫畫</translation>
     </message>
@@ -1147,91 +1147,94 @@
         <translation>移動漫畫中...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1185"/>
-        <location filename="library_window.cpp" line="1213"/>
+        <location filename="library_window.cpp" line="1194"/>
+        <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>檔夾名稱:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1207"/>
-        <location filename="library_window.cpp" line="1251"/>
+        <location filename="folder_management_coordinator.cpp" line="90"/>
+        <location filename="folder_management_coordinator.cpp" line="102"/>
+        <location filename="folder_management_coordinator.cpp" line="156"/>
         <source>No folder selected</source>
         <translation>沒有選中的檔夾</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1207"/>
-        <location filename="library_window.cpp" line="1251"/>
+        <location filename="folder_management_coordinator.cpp" line="91"/>
+        <location filename="folder_management_coordinator.cpp" line="103"/>
+        <location filename="folder_management_coordinator.cpp" line="157"/>
         <source>Please, select a folder first</source>
         <translation>請先選擇一個檔夾</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1255"/>
+        <location filename="folder_management_coordinator.cpp" line="166"/>
         <source>Error in path</source>
         <translation>路徑錯誤</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1255"/>
+        <location filename="folder_management_coordinator.cpp" line="167"/>
         <source>There was an error accessing the folder&apos;s path</source>
         <translation>訪問檔夾的路徑時出錯</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1257"/>
+        <location filename="folder_management_coordinator.cpp" line="174"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
         <translation>所選檔夾及其所有內容將從磁片中刪除。 你確定嗎?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1277"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
+        <location filename="folder_management_coordinator.cpp" line="208"/>
+        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
         <translation>嘗試刪除所選檔夾時出現問題。 請檢查寫入許可權，並確保沒有其他應用程式在使用這些檔夾或檔。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1289"/>
+        <location filename="library_window.cpp" line="1217"/>
         <source>Add new reading lists</source>
         <translation>添加新的閱讀列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1290"/>
-        <location filename="library_window.cpp" line="1339"/>
+        <location filename="library_window.cpp" line="1218"/>
+        <location filename="library_window.cpp" line="1267"/>
         <source>List name:</source>
         <translation>列表名稱:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1308"/>
+        <location filename="library_window.cpp" line="1236"/>
         <source>Delete list/label</source>
         <translation>刪除 列表/標籤</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1308"/>
+        <location filename="library_window.cpp" line="1236"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>所選項目將被刪除，您的漫畫或檔夾將不會從您的磁片中刪除。 你確定嗎?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1338"/>
+        <location filename="library_window.cpp" line="1266"/>
         <source>Rename list name</source>
         <translation>重命名列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="774"/>
-        <location filename="library_window.cpp" line="1377"/>
-        <location filename="library_window.cpp" line="1508"/>
+        <location filename="library_window.cpp" line="783"/>
+        <location filename="library_window.cpp" line="1305"/>
+        <location filename="library_window.cpp" line="1436"/>
         <source>4koma (top to botom)</source>
         <translation>4koma（由上至下）</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="814"/>
-        <location filename="library_window.cpp" line="1434"/>
-        <location filename="library_window.cpp" line="1557"/>
-        <location filename="library_window.cpp" line="2309"/>
+        <location filename="library_window.cpp" line="823"/>
+        <location filename="library_window.cpp" line="1362"/>
+        <location filename="library_window.cpp" line="1485"/>
+        <location filename="library_window.cpp" line="2237"/>
         <source>Set type</source>
         <translation>套裝類型</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1511"/>
+        <location filename="library_window.cpp" line="1439"/>
         <source>Set custom cover</source>
         <translation>設定自訂封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1514"/>
+        <location filename="library_window.cpp" line="1442"/>
         <source>Delete custom cover</source>
         <translation>刪除自訂封面</translation>
     </message>
@@ -1259,18 +1262,18 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低的庫數量來提升性能。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1728"/>
-        <location filename="library_window.cpp" line="1730"/>
+        <location filename="library_window.cpp" line="1656"/>
+        <location filename="library_window.cpp" line="1658"/>
         <source>YACReader not found</source>
         <translation>YACReader 未找到</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1665"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1665"/>
         <source>Error opening comic with third party reader.</source>
         <translation>使用第三方閱讀器開啟漫畫時出錯。</translation>
     </message>
@@ -1304,7 +1307,7 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
         <translation type="vanished">移除並刪除元數據</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1874"/>
+        <location filename="library_window.cpp" line="1802"/>
         <source>Library info</source>
         <translation>圖書館資訊</translation>
     </message>
@@ -1319,108 +1322,108 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
         <translation>從以下位置開始分配編號:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1277"/>
         <location filename="comic_management_coordinator.cpp" line="398"/>
+        <location filename="folder_management_coordinator.cpp" line="207"/>
         <source>Unable to delete</source>
         <translation>無法刪除</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="641"/>
+        <location filename="library_window.cpp" line="650"/>
         <source>Search filters</source>
         <translation>搜尋篩選器</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="651"/>
+        <location filename="library_window.cpp" line="660"/>
         <source>Unread</source>
         <translation>未讀</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="653"/>
+        <location filename="library_window.cpp" line="662"/>
         <source>In progress</source>
         <translation>閱讀中</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="655"/>
+        <location filename="library_window.cpp" line="664"/>
         <source>Highly rated</source>
         <translation>高評分</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="657"/>
+        <location filename="library_window.cpp" line="666"/>
         <source>Recently added</source>
         <translation>最近新增</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="664"/>
+        <location filename="library_window.cpp" line="673"/>
         <source>Search syntax…</source>
         <translation>搜尋語法…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="963"/>
+        <location filename="library_window.cpp" line="972"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="963"/>
+        <location filename="library_window.cpp" line="972"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1184"/>
+        <location filename="library_window.cpp" line="1193"/>
         <source>Add new folder</source>
         <translation>添加新的檔夾</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1213"/>
-        <location filename="library_window.cpp" line="1478"/>
+        <location filename="library_window.cpp" line="1406"/>
+        <location filename="folder_management_coordinator.cpp" line="110"/>
         <source>Rename folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1223"/>
+        <location filename="folder_management_coordinator.cpp" line="125"/>
         <source>Invalid folder name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1223"/>
+        <location filename="folder_management_coordinator.cpp" line="126"/>
         <source>The folder name is empty or contains characters that are not supported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1226"/>
-        <location filename="library_window.cpp" line="1229"/>
-        <location filename="library_window.cpp" line="1238"/>
+        <location filename="folder_management_coordinator.cpp" line="130"/>
+        <location filename="folder_management_coordinator.cpp" line="135"/>
+        <location filename="folder_management_coordinator.cpp" line="145"/>
         <source>Unable to rename folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1226"/>
+        <location filename="folder_management_coordinator.cpp" line="131"/>
         <source>A file or folder named &apos;%1&apos; already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1229"/>
+        <location filename="folder_management_coordinator.cpp" line="136"/>
         <source>The folder could not be renamed on disk. Please check the folder name and write permissions.
 
 Folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1234"/>
+        <location filename="folder_management_coordinator.cpp" line="141"/>
         <source>The library database could not be updated. The folder rename on disk was reverted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1235"/>
+        <location filename="folder_management_coordinator.cpp" line="142"/>
         <source>The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1728"/>
+        <location filename="library_window.cpp" line="1656"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>未找到YACReader. YACReader應安裝在與YACReaderLibrary相同的檔夾中.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1730"/>
+        <location filename="library_window.cpp" line="1658"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>未找到YACReader. YACReader的安裝可能有問題.</translation>
     </message>
@@ -1587,37 +1590,37 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>嘗試刪除所選漫畫時出現問題。 請檢查所選檔或包含檔夾中的寫入許可權。</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="169"/>
+        <location filename="folder_management_coordinator.cpp" line="283"/>
         <source>Invalid image</source>
         <translation>圖片無效</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="170"/>
+        <location filename="folder_management_coordinator.cpp" line="284"/>
         <source>The selected file is not a valid image.</source>
         <translation>所選檔案不是有效影像。</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="177"/>
+        <location filename="folder_management_coordinator.cpp" line="291"/>
         <source>Error saving cover</source>
         <translation>儲存封面時發生錯誤</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="178"/>
+        <location filename="folder_management_coordinator.cpp" line="292"/>
         <source>There was an error saving the cover image.</source>
         <translation>儲存封面圖片時發生錯誤。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2217"/>
+        <location filename="library_window.cpp" line="2145"/>
         <source>Error creating the library</source>
         <translation>創建庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2222"/>
+        <location filename="library_window.cpp" line="2150"/>
         <source>Error updating the library</source>
         <translation>更新庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2227"/>
+        <location filename="library_window.cpp" line="2155"/>
         <source>Error opening the library</source>
         <translation>打開庫時出錯</translation>
     </message>

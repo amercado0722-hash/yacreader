@@ -576,8 +576,8 @@ void LibraryWindowActions::createConnections(
     QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
     QObject::connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
     QObject::connect(addFolderAction, &QAction::triggered, window, &LibraryWindow::addFolderToCurrentIndex);
-    QObject::connect(renameFolderAction, &QAction::triggered, window, &LibraryWindow::renameSelectedFolder);
-    QObject::connect(deleteFolderAction, &QAction::triggered, window, &LibraryWindow::deleteSelectedFolder);
+    QObject::connect(renameFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::renameCurrentFolder);
+    QObject::connect(deleteFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::deleteCurrentFolder);
     QObject::connect(setRootIndexAction, &QAction::triggered, window, &LibraryWindow::setRootIndex);
     QObject::connect(expandAllNodesAction, &QAction::triggered, foldersView, &QTreeView::expandAll);
     QObject::connect(colapseAllNodesAction, &QAction::triggered, foldersView, &QTreeView::collapseAll);
