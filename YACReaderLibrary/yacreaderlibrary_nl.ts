@@ -302,6 +302,35 @@
     </message>
 </context>
 <context>
+    <name>ComicManagementCoordinator</name>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="134"/>
+        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <source>YACReader not found</source>
+        <translation>YACReader niet gevonden</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="134"/>
+        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation>YACReader niet gevonden. YACReader moet in dezelfde map worden geïnstalleerd als YACReaderLibrary.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
+        <translation>YACReader niet gevonden. Er is mogelijk een probleem met uw YACReader-installatie.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <source>Error</source>
+        <translation>Fout</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <source>Error opening comic with third party reader.</source>
+        <translation>Fout bij het openen van een strip met een lezer van een derde partij.</translation>
+    </message>
+</context>
+<context>
     <name>ComicModel</name>
     <message>
         <location filename="db/comic_model.cpp" line="378"/>
@@ -980,7 +1009,7 @@
         <translation>Deze bibliotheek is gemaakt met een vorige versie van YACReaderLibrary. Het moet worden bijgewerkt. Nu bijwerken?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1531"/>
+        <location filename="library_window.cpp" line="1426"/>
         <source>Error opening the library</source>
         <translation>Fout bij openen Bibliotheek</translation>
     </message>
@@ -1009,7 +1038,7 @@
         <translation>Wilt u verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1526"/>
+        <location filename="library_window.cpp" line="1421"/>
         <source>Error updating the library</source>
         <translation>Fout bij bijwerken Bibliotheek</translation>
     </message>
@@ -1024,12 +1053,12 @@
         <translation>Bibliotheek niet beschikbaar </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="253"/>
+        <location filename="library_window.cpp" line="242"/>
         <source>YACReader Library</source>
         <translation>YACReader Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1521"/>
+        <location filename="library_window.cpp" line="1416"/>
         <source>Error creating the library</source>
         <translation>Fout bij aanmaken Bibliotheek</translation>
     </message>
@@ -1054,12 +1083,12 @@
         <translation>Nieuwe versie ophalen</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="334"/>
+        <location filename="comic_management_coordinator.cpp" line="436"/>
         <source>Delete comics</source>
         <translation>Strips verwijderen</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="335"/>
+        <location filename="comic_management_coordinator.cpp" line="437"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Alle geselecteerde strips worden verwijderd van uw schijf. Weet u het zeker?</translation>
     </message>
@@ -1079,7 +1108,7 @@
         <translation>Weet u het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1060"/>
+        <location filename="library_window.cpp" line="1050"/>
         <source>Add new folder</source>
         <translation>Nieuwe map toevoegen</translation>
     </message>
@@ -1099,17 +1128,17 @@
         <translation>Er zijn fouten opgetreden tijdens de bibliotheekupgrade in: </translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="99"/>
+        <location filename="comic_management_coordinator.cpp" line="201"/>
         <source>Copying comics...</source>
         <translation>Strips kopiëren...</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="115"/>
+        <location filename="comic_management_coordinator.cpp" line="217"/>
         <source>Moving comics...</source>
         <translation>Strips verplaatsen...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1061"/>
+        <location filename="library_window.cpp" line="1051"/>
         <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>Mapnaam:</translation>
@@ -1144,7 +1173,7 @@
         <translation>De geselecteerde map en de volledige inhoud ervan worden van uw schijf verwijderd. Weet je het zeker?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="409"/>
+        <location filename="comic_management_coordinator.cpp" line="511"/>
         <location filename="folder_management_coordinator.cpp" line="207"/>
         <source>Unable to delete</source>
         <translation>Kan niet verwijderen</translation>
@@ -1156,58 +1185,58 @@
         <translation>Er is een probleem opgetreden bij het verwijderen van de geselecteerde mappen. Controleer de schrijfrechten en zorg ervoor dat geen toepassingen deze mappen of bestanden daarin gebruiken.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1084"/>
+        <location filename="library_window.cpp" line="1074"/>
         <source>Add new reading lists</source>
         <translation>Voeg nieuwe leeslijsten toe</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1085"/>
-        <location filename="library_window.cpp" line="1134"/>
+        <location filename="library_window.cpp" line="1075"/>
+        <location filename="library_window.cpp" line="1124"/>
         <source>List name:</source>
         <translation>Lijstnaam:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1103"/>
+        <location filename="library_window.cpp" line="1093"/>
         <source>Delete list/label</source>
         <translation>Lijst/label verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1103"/>
+        <location filename="library_window.cpp" line="1093"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>Het geselecteerde item wordt verwijderd, uw strips of mappen worden NIET van uw schijf verwijderd. Weet je het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1133"/>
+        <location filename="library_window.cpp" line="1123"/>
         <source>Rename list name</source>
         <translation>Hernoem de lijstnaam</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="718"/>
+        <location filename="library_window.cpp" line="712"/>
         <source>Search filters</source>
         <translation>Zoekfilters</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="728"/>
+        <location filename="library_window.cpp" line="722"/>
         <source>Unread</source>
         <translation>Ongelezen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="730"/>
+        <location filename="library_window.cpp" line="724"/>
         <source>In progress</source>
         <translation>Bezig</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="732"/>
+        <location filename="library_window.cpp" line="726"/>
         <source>Highly rated</source>
         <translation>Hoog gewaardeerd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="734"/>
+        <location filename="library_window.cpp" line="728"/>
         <source>Recently added</source>
         <translation>Onlangs toegevoegd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="741"/>
+        <location filename="library_window.cpp" line="735"/>
         <source>Search syntax…</source>
         <translation>Zoeksyntaxis…</translation>
     </message>
@@ -1232,12 +1261,12 @@
         <translation>Als u zeker weet dat er geen ander herstel bezig is, kan de vergrendeling worden verwijderd. Vergrendeling verwijderen en doorgaan?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="852"/>
+        <location filename="library_window.cpp" line="846"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="852"/>
+        <location filename="library_window.cpp" line="846"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1291,7 +1320,7 @@ Folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="251"/>
+        <location filename="comic_management_coordinator.cpp" line="353"/>
         <source>Save covers</source>
         <translation>Bewaar hoesjes</translation>
     </message>
@@ -1312,32 +1341,6 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 Je hebt waarschijnlijk maar één bibliotheek nodig in je stripmap op het hoogste niveau. Je kunt door alle submappen bladeren met behulp van het mappengedeelte in de linkerzijbalk.
 
 YACReaderLibrary zal u er niet van weerhouden om meer bibliotheken te creëren, maar u moet het aantal bibliotheken laag houden.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1202"/>
-        <location filename="library_window.cpp" line="1204"/>
-        <source>YACReader not found</source>
-        <translation>YACReader niet gevonden</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1202"/>
-        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation>YACReader niet gevonden. YACReader moet in dezelfde map worden geïnstalleerd als YACReaderLibrary.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1204"/>
-        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
-        <translation>YACReader niet gevonden. Er is mogelijk een probleem met uw YACReader-installatie.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1211"/>
-        <source>Error</source>
-        <translation>Fout</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1211"/>
-        <source>Error opening comic with third party reader.</source>
-        <translation>Fout bij het openen van een strip met een lezer van een derde partij.</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="51"/>
@@ -1497,22 +1500,22 @@ Je kunt een back-up herstellen via het menu Bibliotheek of de bibliotheek opnieu
         <translation>Metagegevens en back-ups verwijderen en wissen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="544"/>
+        <location filename="library_window.cpp" line="538"/>
         <source>Library info</source>
         <translation>Bibliotheekinformatie</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="410"/>
+        <location filename="comic_management_coordinator.cpp" line="512"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Er is een probleem opgetreden bij het verwijderen van de geselecteerde strips. Controleer of er schrijfrechten zijn voor de geselecteerde bestanden of de map waarin deze zich bevinden.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="194"/>
+        <location filename="comic_management_coordinator.cpp" line="296"/>
         <source>Assign comics numbers</source>
         <translation>Wijs stripnummers toe</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="195"/>
+        <location filename="comic_management_coordinator.cpp" line="297"/>
         <source>Assign numbers starting in:</source>
         <translation>Nummers toewijzen beginnend met:</translation>
     </message>
@@ -1537,12 +1540,12 @@ Je kunt een back-up herstellen via het menu Bibliotheek of de bibliotheek opnieu
         <translation>Er is een fout opgetreden bij het opslaan van de omslagafbeelding.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="374"/>
+        <location filename="comic_management_coordinator.cpp" line="476"/>
         <source>Remove comics</source>
         <translation>Verwijder strips</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="375"/>
+        <location filename="comic_management_coordinator.cpp" line="477"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Strips worden alleen verwijderd van het huidige label/de huidige lijst. Weet je het zeker?</translation>
     </message>

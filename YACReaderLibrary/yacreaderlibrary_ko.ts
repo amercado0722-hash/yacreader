@@ -302,6 +302,35 @@
     </message>
 </context>
 <context>
+    <name>ComicManagementCoordinator</name>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="134"/>
+        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <source>YACReader not found</source>
+        <translation>YACReader를 찾을 수 없음</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="134"/>
+        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation>YACReader를 찾을 수 없습니다. YACReader는 YACReaderLibrary와 같은 폴더에 설치되어야 합니다.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
+        <translation>YACReader를 찾을 수 없습니다. YACReader 설치에 문제가 있을 수 있습니다.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <source>Error</source>
+        <translation>오류</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <source>Error opening comic with third party reader.</source>
+        <translation>타사 뷰어로 만화를 여는 중 오류가 발생했습니다.</translation>
+    </message>
+</context>
+<context>
     <name>ComicModel</name>
     <message>
         <location filename="db/comic_model.cpp" line="378"/>
@@ -975,7 +1004,7 @@
         <translation>다음을 제거하시겠습니까: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="253"/>
+        <location filename="library_window.cpp" line="242"/>
         <source>YACReader Library</source>
         <translation>YACReader Library</translation>
     </message>
@@ -985,7 +1014,7 @@
         <translation>확실합니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1060"/>
+        <location filename="library_window.cpp" line="1050"/>
         <source>Add new folder</source>
         <translation>새 폴더 추가</translation>
     </message>
@@ -1050,17 +1079,17 @@
         <translation>&apos;%1&apos; 라이브러리는 이전 버전의 YACReaderLibrary로 만들어졌습니다. 다시 만들어야 합니다. 지금 만드시겠습니까?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="99"/>
+        <location filename="comic_management_coordinator.cpp" line="201"/>
         <source>Copying comics...</source>
         <translation>만화 복사 중...</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="115"/>
+        <location filename="comic_management_coordinator.cpp" line="217"/>
         <source>Moving comics...</source>
         <translation>만화 이동 중...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1061"/>
+        <location filename="library_window.cpp" line="1051"/>
         <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>폴더 이름:</translation>
@@ -1095,7 +1124,7 @@
         <translation>선택한 폴더와 그 안의 모든 내용이 디스크에서 삭제됩니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="409"/>
+        <location filename="comic_management_coordinator.cpp" line="511"/>
         <location filename="folder_management_coordinator.cpp" line="207"/>
         <source>Unable to delete</source>
         <translation>삭제할 수 없음</translation>
@@ -1107,58 +1136,58 @@
         <translation>선택한 폴더를 삭제하는 중 문제가 발생했습니다. 쓰기 권한을 확인하고, 다른 응용 프로그램이 이 폴더나 안의 파일을 사용하고 있지 않은지 확인하세요.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1084"/>
+        <location filename="library_window.cpp" line="1074"/>
         <source>Add new reading lists</source>
         <translation>새 읽기 목록 추가</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1085"/>
-        <location filename="library_window.cpp" line="1134"/>
+        <location filename="library_window.cpp" line="1075"/>
+        <location filename="library_window.cpp" line="1124"/>
         <source>List name:</source>
         <translation>목록 이름:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1103"/>
+        <location filename="library_window.cpp" line="1093"/>
         <source>Delete list/label</source>
         <translation>목록/라벨 삭제</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1103"/>
+        <location filename="library_window.cpp" line="1093"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>선택한 항목이 삭제됩니다. 디스크에서 만화나 폴더는 삭제되지 않습니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1133"/>
+        <location filename="library_window.cpp" line="1123"/>
         <source>Rename list name</source>
         <translation>목록 이름 변경</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="718"/>
+        <location filename="library_window.cpp" line="712"/>
         <source>Search filters</source>
         <translation>검색 필터</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="728"/>
+        <location filename="library_window.cpp" line="722"/>
         <source>Unread</source>
         <translation>읽지 않음</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="730"/>
+        <location filename="library_window.cpp" line="724"/>
         <source>In progress</source>
         <translation>읽는 중</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="732"/>
+        <location filename="library_window.cpp" line="726"/>
         <source>Highly rated</source>
         <translation>높은 평점</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="734"/>
+        <location filename="library_window.cpp" line="728"/>
         <source>Recently added</source>
         <translation>최근 추가</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="741"/>
+        <location filename="library_window.cpp" line="735"/>
         <source>Search syntax…</source>
         <translation>검색 구문…</translation>
     </message>
@@ -1183,12 +1212,12 @@
         <translation>다른 복구가 실행 중이 아니라고 확신하면 잠금을 해제할 수 있습니다. 잠금을 해제하고 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="852"/>
+        <location filename="library_window.cpp" line="846"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="852"/>
+        <location filename="library_window.cpp" line="846"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1237,7 +1266,7 @@ Folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="251"/>
+        <location filename="comic_management_coordinator.cpp" line="353"/>
         <source>Save covers</source>
         <translation>표지 저장</translation>
     </message>
@@ -1258,32 +1287,6 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 최상위 만화 폴더에 라이브러리 하나만 있으면 충분합니다. 좌측 사이드바의 폴더 섹션으로 하위 폴더를 탐색할 수 있습니다.
 
 YACReaderLibrary는 라이브러리를 더 만드는 것을 막지 않지만, 라이브러리 수는 적게 유지하는 것이 좋습니다.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1202"/>
-        <location filename="library_window.cpp" line="1204"/>
-        <source>YACReader not found</source>
-        <translation>YACReader를 찾을 수 없음</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1202"/>
-        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation>YACReader를 찾을 수 없습니다. YACReader는 YACReaderLibrary와 같은 폴더에 설치되어야 합니다.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1204"/>
-        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
-        <translation>YACReader를 찾을 수 없습니다. YACReader 설치에 문제가 있을 수 있습니다.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1211"/>
-        <source>Error</source>
-        <translation>오류</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1211"/>
-        <source>Error opening comic with third party reader.</source>
-        <translation>타사 뷰어로 만화를 여는 중 오류가 발생했습니다.</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="189"/>
@@ -1462,22 +1465,22 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation type="vanished">제거 및 메타데이터 삭제</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="544"/>
+        <location filename="library_window.cpp" line="538"/>
         <source>Library info</source>
         <translation>라이브러리 정보</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="410"/>
+        <location filename="comic_management_coordinator.cpp" line="512"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>선택한 만화를 삭제하는 중 문제가 발생했습니다. 선택한 파일이나 포함된 폴더의 쓰기 권한을 확인하세요.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="194"/>
+        <location filename="comic_management_coordinator.cpp" line="296"/>
         <source>Assign comics numbers</source>
         <translation>만화에 번호 부여</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="195"/>
+        <location filename="comic_management_coordinator.cpp" line="297"/>
         <source>Assign numbers starting in:</source>
         <translation>다음 번호부터 부여:</translation>
     </message>
@@ -1502,37 +1505,37 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>표지 이미지를 저장하는 중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1521"/>
+        <location filename="library_window.cpp" line="1416"/>
         <source>Error creating the library</source>
         <translation>라이브러리 생성 오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1526"/>
+        <location filename="library_window.cpp" line="1421"/>
         <source>Error updating the library</source>
         <translation>라이브러리 업데이트 오류</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1531"/>
+        <location filename="library_window.cpp" line="1426"/>
         <source>Error opening the library</source>
         <translation>라이브러리 열기 오류</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="334"/>
+        <location filename="comic_management_coordinator.cpp" line="436"/>
         <source>Delete comics</source>
         <translation>만화 삭제</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="335"/>
+        <location filename="comic_management_coordinator.cpp" line="437"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>선택한 만화가 모두 디스크에서 삭제됩니다. 확실합니까?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="374"/>
+        <location filename="comic_management_coordinator.cpp" line="476"/>
         <source>Remove comics</source>
         <translation>만화 제거</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="375"/>
+        <location filename="comic_management_coordinator.cpp" line="477"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>만화가 현재 라벨/목록에서만 삭제됩니다. 확실합니까?</translation>
     </message>

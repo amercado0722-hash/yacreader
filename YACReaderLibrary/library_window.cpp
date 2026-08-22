@@ -1,42 +1,8 @@
 #include "library_window.h"
 
-#include "yacreader_global.h"
-#include "yacreader_global_gui.h"
-
-#include <QApplication>
-#include <QDesktopServices>
-#include <QDir>
-#include <QFile>
-#include <QFileIconProvider>
-#include <QFileInfo>
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QInputDialog>
-#include <QLabel>
-#include <QMenu>
-#include <QMessageBox>
-#include <QProcess>
-#include <QSettings>
-#include <QShowEvent>
-#include <QSplitter>
-#include <QSqlError>
-#include <QStackedWidget>
-#include <QToolBar>
-#include <QToolButton>
-#include <QtCore>
-
-#include <algorithm>
-
-#ifdef Q_OS_WIN
-#include <qt_windows.h>
-
-#include <shellapi.h>
-#endif
-
 #include "QsLog.h"
 #include "add_label_dialog.h"
 #include "add_library_dialog.h"
-#include "api_key_dialog.h"
 #include "comic_db.h"
 #include "comic_management_coordinator.h"
 #include "comic_model.h"
@@ -56,7 +22,6 @@
 #include "import_comics_info_dialog.h"
 #include "import_library_dialog.h"
 #include "import_widget.h"
-#include "library_comic_opener.h"
 #include "library_database_maintenance_coordinator.h"
 #include "library_management_coordinator.h"
 #include "library_repair_coordinator.h"
@@ -79,6 +44,8 @@
 #include "xml_info_library_scanner.h"
 #include "yacreader_content_views_manager.h"
 #include "yacreader_folders_view.h"
+#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 #include "yacreader_history_controller.h"
 #include "yacreader_http_server.h"
 #include "yacreader_library_list_widget.h"
@@ -88,6 +55,28 @@
 #include "yacreader_sidebar.h"
 #include "yacreader_titled_toolbar.h"
 #include "yacreader_tool_bar_stretch.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFile>
+#include <QFileIconProvider>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QInputDialog>
+#include <QLabel>
+#include <QMenu>
+#include <QMessageBox>
+#include <QSettings>
+#include <QShowEvent>
+#include <QSplitter>
+#include <QSqlError>
+#include <QStackedWidget>
+#include <QToolBar>
+#include <QToolButton>
+#include <QtCore>
+
+#include <algorithm>
 extern YACReaderHttpServer *httpServer;
 
 #include <KDSignalThrottler.h>
@@ -455,10 +444,12 @@ void LibraryWindow::setupCoordinators()
     connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::currentSourceReloadRequested, this, &LibraryWindow::reloadCurrentFolderComicsContent);
     comicManagementCoordinator = new ComicManagementCoordinator(
             this,
+            settings,
             comicsModel,
             foldersModel,
             foldersModelProxy,
             propertiesDialog,
+            comicVineDialog,
             [this] { return getSelectedComics(); },
             [this] {
                 if (listsView->selectionModel() == nullptr || listsView->selectionModel()->selectedRows().isEmpty())
@@ -466,6 +457,9 @@ void LibraryWindow::setupCoordinators()
                 return listsModelProxy->mapToSource(listsView->currentIndex());
             },
             [this] { return getCurrentFolderIndex(); },
+            [this] { return contentViewsManager->comicsView->currentIndex(); },
+            [this] { return !importedCovers; },
+            [this] { return static_cast<qulonglong>(libraries.getId(selectedLibrary->currentText())); },
             [this] { return currentPath(); });
     contentViewsManager->setComicManagementCoordinator(comicManagementCoordinator);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::importRequested, this, [this](qulonglong folderId) {
@@ -871,10 +865,6 @@ void LibraryWindow::createConnections()
     connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::moveComicsToFolder),
             comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToFolder);
 
-    // comic vine
-    connect(comicVineDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::refreshCurrentSource, Qt::QueuedConnection);
-    connect(comicVineDialog, &QDialog::rejected, navigationController, &YACReaderNavigationController::cancelCurrentSourceRefresh);
-
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
@@ -1167,52 +1157,6 @@ void LibraryWindow::checkEmptyFolder()
     }
 }
 
-void LibraryWindow::openComic()
-{
-    if (!importedCovers) {
-
-        auto comic = comicsModel->getComic(contentViewsManager->comicsView->currentIndex());
-        auto mode = comicsModel->getMode();
-
-        openComic(comic, mode);
-    }
-}
-
-void LibraryWindow::openComic(const ComicDB &comic, const ComicModel::Mode mode)
-{
-    auto libraryId = libraries.getId(selectedLibrary->currentText());
-
-    OpenComicSource::Source source;
-
-    if (mode == ComicModel::ReadingList) {
-        source = OpenComicSource::Source::ReadingList;
-    } else if (mode == ComicModel::Reading) {
-        // TODO check where the comic was opened from the last time it was read
-        source = OpenComicSource::Source::Folder;
-    } else {
-        source = OpenComicSource::Source::Folder;
-    }
-
-    auto thirdPartyReaderCommand = settings->value(THIRD_PARTY_READER_COMMAND, "").toString();
-    if (thirdPartyReaderCommand.isEmpty()) {
-        auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
-
-        if (!yacreaderFound) {
-#ifdef Q_OS_WIN
-            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
-#else
-            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
-#endif
-        }
-    } else {
-        auto exec = YACReader::openComicInThirdPartyApp(thirdPartyReaderCommand, QDir::cleanPath(currentPath() + comic.path));
-
-        if (!exec) {
-            QMessageBox::critical(this, tr("Error"), tr("Error opening comic with third party reader."));
-        }
-    }
-}
-
 void LibraryWindow::createLibrary()
 {
     libraryManagementCoordinator->warnIfLibraryCountIsHigh();
@@ -1355,55 +1299,6 @@ void LibraryWindow::toNormal()
     connect(timer, &QTimer::timeout, timer, &QTimer::deleteLater);
 #else
     libraryToolBar->show();
-#endif
-}
-
-void LibraryWindow::showComicVineScraper()
-{
-    QSettings s(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
-    s.beginGroup("ComicVine");
-
-    if (!s.contains(COMIC_VINE_API_KEY)) {
-        ApiKeyDialog d;
-        d.exec();
-    }
-
-    // check if the api key was inserted
-    if (s.contains(COMIC_VINE_API_KEY)) {
-        QModelIndexList indexList = getSelectedComics();
-
-        const auto comics = comicsModel->getComics(indexList);
-        comicVineDialog->databasePath = foldersModel->getDatabase();
-        comicVineDialog->basePath = currentPath();
-        comicVineDialog->setComics(comics);
-
-        navigationController->beginCurrentSourceRefresh();
-        comicVineDialog->show();
-    }
-}
-
-void LibraryWindow::openContainingFolderComic()
-{
-    QModelIndex modelIndex = contentViewsManager->comicsView->currentIndex();
-    QFileInfo file(QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex)));
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    QString path = file.absolutePath();
-    QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
-#endif
-
-#ifdef Q_OS_MACOS
-    // `open -R` reveals and selects the file in Finder without sending an Apple
-    // Event, so it doesn't trigger the macOS automation permission prompt.
-    QStringList args;
-    args << "-R";
-    args << file.absoluteFilePath();
-    QProcess::startDetached("open", args);
-#endif
-
-#ifdef Q_OS_WIN
-    QString filePath = file.absoluteFilePath();
-    QString cmdArgs = QString("/select,\"") + QDir::toNativeSeparators(filePath) + QStringLiteral("\"");
-    ShellExecuteW(0, L"open", L"explorer.exe", reinterpret_cast<LPCWSTR>(cmdArgs.utf16()), 0, SW_NORMAL);
 #endif
 }
 

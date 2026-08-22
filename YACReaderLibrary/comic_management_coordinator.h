@@ -1,6 +1,7 @@
 #ifndef COMIC_MANAGEMENT_COORDINATOR_H
 #define COMIC_MANAGEMENT_COORDINATOR_H
 
+#include "comic_model.h"
 #include "yacreader_global.h"
 
 #include <QList>
@@ -13,11 +14,12 @@
 
 class ComicFilesManager;
 class ComicDB;
-class ComicModel;
+class ComicVineDialog;
 class FolderModel;
 class FolderModelProxy;
 class PropertiesDialog;
 class QProgressDialog;
+class QSettings;
 class QWidget;
 
 class ComicManagementCoordinator : public QObject
@@ -28,16 +30,24 @@ public:
     using SelectionProvider = std::function<QModelIndexList()>;
     using CurrentListProvider = std::function<QModelIndex()>;
     using CurrentFolderProvider = std::function<QModelIndex()>;
+    using CurrentComicProvider = std::function<QModelIndex()>;
+    using ComicOpeningAllowedProvider = std::function<bool()>;
+    using LibraryIdProvider = std::function<qulonglong()>;
     using LibraryPathProvider = std::function<QString()>;
 
     explicit ComicManagementCoordinator(QWidget *window,
+                                        QSettings *settings,
                                         ComicModel *comicsModel,
                                         FolderModel *foldersModel,
                                         FolderModelProxy *foldersModelProxy,
                                         PropertiesDialog *propertiesDialog,
+                                        ComicVineDialog *comicVineDialog,
                                         SelectionProvider selectionProvider,
                                         CurrentListProvider currentListProvider,
                                         CurrentFolderProvider currentFolderProvider,
+                                        CurrentComicProvider currentComicProvider,
+                                        ComicOpeningAllowedProvider comicOpeningAllowedProvider,
+                                        LibraryIdProvider libraryIdProvider,
                                         LibraryPathProvider libraryPathProvider);
 
 public slots:
@@ -47,6 +57,10 @@ public slots:
     void moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &folder);
     void addSelectedComicsToFavorites();
     void addSelectedComicsToLabel(qulonglong labelId);
+    void openCurrentComic();
+    void openComic(const ComicDB &comic, ComicModel::Mode mode);
+    void openContainingFolderOfCurrentComic();
+    void showComicVineScraper();
     void showProperties();
     void setSelectedComicsRead();
     void setSelectedComicsUnread();
@@ -93,13 +107,18 @@ private:
     void finishComicDeletion();
 
     QWidget *window;
+    QSettings *settings;
     ComicModel *comicsModel;
     FolderModel *foldersModel;
     FolderModelProxy *foldersModelProxy;
     PropertiesDialog *propertiesDialog;
+    ComicVineDialog *comicVineDialog;
     SelectionProvider selectionProvider;
     CurrentListProvider currentListProvider;
     CurrentFolderProvider currentFolderProvider;
+    CurrentComicProvider currentComicProvider;
+    ComicOpeningAllowedProvider comicOpeningAllowedProvider;
+    LibraryIdProvider libraryIdProvider;
     LibraryPathProvider libraryPathProvider;
     bool comicDeletionFailed { false };
 };

@@ -505,7 +505,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(importComicsInfoAction, &QAction::triggered, window, &LibraryWindow::showImportComicsInfo);
 
     // ContextMenus
-    QObject::connect(openContainingFolderComicAction, &QAction::triggered, window, &LibraryWindow::openContainingFolderComic);
+    QObject::connect(openContainingFolderComicAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::openContainingFolderOfCurrentComic);
     if (YACReader::FeatureFlags::organizeFiles)
         QObject::connect(organizeComicsFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeSelectedComics);
     QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
@@ -552,7 +552,7 @@ void LibraryWindowActions::createConnections(
 
     QObject::connect(deleteComicsAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::deleteSelectedComics);
 
-    QObject::connect(getInfoAction, &QAction::triggered, window, &LibraryWindow::showComicVineScraper);
+    QObject::connect(getInfoAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showComicVineScraper);
 
     QObject::connect(focusComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::focusComicsViewViaShortcut);
 
@@ -591,7 +591,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(openLibraryFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::openCurrentLibraryFolder);
     QObject::connect(showLibraryInfo, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showCurrentLibraryInfo);
 
-    QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
+    QObject::connect(openComicAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::openCurrentComic);
     QObject::connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
     QObject::connect(addFolderAction, &QAction::triggered, window, &LibraryWindow::addFolderToCurrentIndex);
     QObject::connect(renameFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::renameCurrentFolder);

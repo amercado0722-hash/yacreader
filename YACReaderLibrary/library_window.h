@@ -11,7 +11,6 @@
 #include "yacreader_libraries.h"
 #include "yacreader_navigation_controller.h"
 
-#include <QFileInfo>
 #include <QMainWindow>
 #include <QModelIndex>
 
@@ -212,14 +211,11 @@ public:
 public slots:
     void loadLibrary(const QString &path);
     void checkEmptyFolder();
-    void openComic();
-    void openComic(const ComicDB &comic, const ComicModel::Mode mode);
     void createLibrary();
     void showAddLibrary();
     void loadLibraries();
     void reloadCurrentLibrary();
     void openContainingFolder();
-    void openContainingFolderComic();
     void rescanLibraryForXMLInfo();
     void rescanCurrentFolderForXMLInfo();
     void rescanFolderForXMLInfo(QModelIndex modelIndex);
@@ -244,7 +240,6 @@ public slots:
     void updateViewsOnClientSync();
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
     void updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic);
-    void showComicVineScraper();
     void loadCoversFromCurrentModel();
     void updateCurrentFolder();
     void updateFolder(const QModelIndex &miFolder);

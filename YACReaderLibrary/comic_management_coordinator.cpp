@@ -1,26 +1,40 @@
 #include "comic_management_coordinator.h"
 
+#include "api_key_dialog.h"
 #include "comic_files_manager.h"
-#include "comic_model.h"
+#include "comic_vine_dialog.h"
 #include "comics_remover.h"
 #include "db_helper.h"
 #include "folder_model.h"
+#include "library_comic_opener.h"
 #include "properties_dialog.h"
 #include "reading_list_model.h"
+#include "yacreader_global_gui.h"
 
 #include <QCoreApplication>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QProcess>
 #include <QProgressDialog>
+#include <QSettings>
 #include <QStandardPaths>
 #include <QThread>
+#include <QUrl>
 #include <QWidget>
 #include <QsLog.h>
 
 #include <algorithm>
+
+#ifdef Q_OS_WIN
+#include <qt_windows.h>
+
+#include <shellapi.h>
+#endif
 
 namespace {
 template<class Remover>
@@ -37,19 +51,26 @@ void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
 }
 
 ComicManagementCoordinator::ComicManagementCoordinator(QWidget *window,
+                                                       QSettings *settings,
                                                        ComicModel *comicsModel,
                                                        FolderModel *foldersModel,
                                                        FolderModelProxy *foldersModelProxy,
                                                        PropertiesDialog *propertiesDialog,
+                                                       ComicVineDialog *comicVineDialog,
                                                        SelectionProvider selectionProvider,
                                                        CurrentListProvider currentListProvider,
                                                        CurrentFolderProvider currentFolderProvider,
+                                                       CurrentComicProvider currentComicProvider,
+                                                       ComicOpeningAllowedProvider comicOpeningAllowedProvider,
+                                                       LibraryIdProvider libraryIdProvider,
                                                        LibraryPathProvider libraryPathProvider)
-    : QObject(window), window(window), comicsModel(comicsModel), foldersModel(foldersModel), foldersModelProxy(foldersModelProxy), propertiesDialog(propertiesDialog), selectionProvider(std::move(selectionProvider)), currentListProvider(std::move(currentListProvider)), currentFolderProvider(std::move(currentFolderProvider)), libraryPathProvider(std::move(libraryPathProvider))
+    : QObject(window), window(window), settings(settings), comicsModel(comicsModel), foldersModel(foldersModel), foldersModelProxy(foldersModelProxy), propertiesDialog(propertiesDialog), comicVineDialog(comicVineDialog), selectionProvider(std::move(selectionProvider)), currentListProvider(std::move(currentListProvider)), currentFolderProvider(std::move(currentFolderProvider)), currentComicProvider(std::move(currentComicProvider)), comicOpeningAllowedProvider(std::move(comicOpeningAllowedProvider)), libraryIdProvider(std::move(libraryIdProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
     connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, comicsModel, &ComicModel::notifyCoverChange);
     connect(propertiesDialog, &QDialog::accepted, this, &ComicManagementCoordinator::currentSourceRefreshAccepted);
     connect(propertiesDialog, &QDialog::rejected, this, &ComicManagementCoordinator::currentSourceRefreshCancelled);
+    connect(comicVineDialog, &QDialog::accepted, this, &ComicManagementCoordinator::currentSourceRefreshAccepted, Qt::QueuedConnection);
+    connect(comicVineDialog, &QDialog::rejected, this, &ComicManagementCoordinator::currentSourceRefreshCancelled);
 }
 
 void ComicManagementCoordinator::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
@@ -84,6 +105,90 @@ void ComicManagementCoordinator::addSelectedComicsToFavorites()
 void ComicManagementCoordinator::addSelectedComicsToLabel(qulonglong labelId)
 {
     comicsModel->addComicsToLabel(selectionProvider(), labelId);
+}
+
+void ComicManagementCoordinator::openCurrentComic()
+{
+    if (!comicOpeningAllowedProvider())
+        return;
+
+    const auto currentComic = currentComicProvider();
+    if (!currentComic.isValid())
+        return;
+
+    openComic(comicsModel->getComic(currentComic), comicsModel->getMode());
+}
+
+void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mode mode)
+{
+    const auto source = mode == ComicModel::ReadingList
+            ? OpenComicSource::Source::ReadingList
+            : OpenComicSource::Source::Folder;
+    const auto libraryPath = libraryPathProvider();
+    const auto thirdPartyReaderCommand = settings->value(THIRD_PARTY_READER_COMMAND, "").toString();
+
+    if (thirdPartyReaderCommand.isEmpty()) {
+        const auto yacreaderFound = YACReader::openComic(comic, libraryIdProvider(), libraryPath, OpenComicSource { source, comicsModel->getSourceId() });
+        if (!yacreaderFound) {
+#ifdef Q_OS_WIN
+            QMessageBox::critical(window, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
+#else
+            QMessageBox::critical(window, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
+#endif
+        }
+        return;
+    }
+
+    if (!YACReader::openComicInThirdPartyApp(thirdPartyReaderCommand, QDir::cleanPath(libraryPath + comic.path)))
+        QMessageBox::critical(window, tr("Error"), tr("Error opening comic with third party reader."));
+}
+
+void ComicManagementCoordinator::openContainingFolderOfCurrentComic()
+{
+    const auto currentComic = currentComicProvider();
+    if (!currentComic.isValid())
+        return;
+
+    const QFileInfo file(QDir::cleanPath(libraryPathProvider() + comicsModel->getComicPath(currentComic)));
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
+    QDesktopServices::openUrl(QUrl("file:///" + file.absolutePath(), QUrl::TolerantMode));
+#endif
+
+#ifdef Q_OS_MACOS
+    // `open -R` reveals and selects the file in Finder without sending an Apple
+    // Event, so it doesn't trigger the macOS automation permission prompt.
+    QStringList arguments;
+    arguments << "-R";
+    arguments << file.absoluteFilePath();
+    QProcess::startDetached("open", arguments);
+#endif
+
+#ifdef Q_OS_WIN
+    const auto cmdArgs = QString("/select,\"") + QDir::toNativeSeparators(file.absoluteFilePath()) + QStringLiteral("\"");
+    ShellExecuteW(0, L"open", L"explorer.exe", reinterpret_cast<LPCWSTR>(cmdArgs.utf16()), 0, SW_NORMAL);
+#endif
+}
+
+void ComicManagementCoordinator::showComicVineScraper()
+{
+    QSettings comicVineSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
+    comicVineSettings.beginGroup("ComicVine");
+
+    if (!comicVineSettings.contains(COMIC_VINE_API_KEY)) {
+        ApiKeyDialog dialog;
+        dialog.exec();
+    }
+
+    if (!comicVineSettings.contains(COMIC_VINE_API_KEY))
+        return;
+
+    const auto comics = comicsModel->getComics(selectionProvider());
+    comicVineDialog->databasePath = foldersModel->getDatabase();
+    comicVineDialog->basePath = libraryPathProvider();
+    comicVineDialog->setComics(comics);
+
+    emit currentSourceRefreshStarted();
+    comicVineDialog->show();
 }
 
 void ComicManagementCoordinator::copyAndImportComics(const QList<QPair<QString, QString>> &comics,
