@@ -33,8 +33,9 @@ bool containsInvalidFolderNameCharacters(const QString &folderName)
 FolderManagementCoordinator::FolderManagementCoordinator(FolderModel *foldersModel,
                                                          QWidget *dialogParent,
                                                          CurrentFolderProvider currentFolderProvider,
+                                                         SelectedFolderProvider selectedFolderProvider,
                                                          LibraryPathProvider libraryPathProvider)
-    : QObject(dialogParent), foldersModel(foldersModel), dialogParent(dialogParent), currentFolderProvider(std::move(currentFolderProvider)), libraryPathProvider(std::move(libraryPathProvider))
+    : QObject(dialogParent), foldersModel(foldersModel), dialogParent(dialogParent), currentFolderProvider(std::move(currentFolderProvider)), selectedFolderProvider(std::move(selectedFolderProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
 }
 
@@ -55,7 +56,7 @@ void FolderManagementCoordinator::addFolderToCurrentFolder()
 {
     emit folderCreationStarted();
 
-    const auto parent = currentFolderProvider();
+    const auto parent = selectedFolderProvider();
     bool accepted = false;
     const auto folderName = QInputDialog::getText(dialogParent,
                                                   tr("Add new folder"),
@@ -126,7 +127,7 @@ void FolderManagementCoordinator::renameFolder(qulonglong folderId, const QStrin
 void FolderManagementCoordinator::renameCurrentFolder()
 {
     const auto libraryPath = libraryPathProvider();
-    const auto folder = currentFolderProvider();
+    const auto folder = selectedFolderProvider();
     if (!folder.isValid()) {
         QMessageBox::information(dialogParent,
                                  QCoreApplication::translate("LibraryWindow", "No folder selected"),
@@ -192,7 +193,7 @@ void FolderManagementCoordinator::renameFolder(const QModelIndex &folder, const 
 
 void FolderManagementCoordinator::deleteCurrentFolder()
 {
-    const auto folder = currentFolderProvider();
+    const auto folder = selectedFolderProvider();
     if (!folder.isValid()) {
         QMessageBox::information(dialogParent,
                                  QCoreApplication::translate("LibraryWindow", "No folder selected"),

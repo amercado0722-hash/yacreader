@@ -18,11 +18,13 @@ class FolderManagementCoordinator : public QObject
 
 public:
     using CurrentFolderProvider = std::function<QModelIndex()>;
+    using SelectedFolderProvider = std::function<QModelIndex()>;
     using LibraryPathProvider = std::function<QString()>;
 
     explicit FolderManagementCoordinator(FolderModel *foldersModel,
                                          QWidget *dialogParent,
                                          CurrentFolderProvider currentFolderProvider,
+                                         SelectedFolderProvider selectedFolderProvider,
                                          LibraryPathProvider libraryPathProvider);
 
     void renameFolder(qulonglong folderId, const QString &libraryPath);
@@ -78,6 +80,7 @@ private:
     FolderModel *foldersModel;
     QWidget *dialogParent;
     CurrentFolderProvider currentFolderProvider;
+    SelectedFolderProvider selectedFolderProvider;
     LibraryPathProvider libraryPathProvider;
 };
 

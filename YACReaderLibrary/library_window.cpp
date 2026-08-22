@@ -481,6 +481,7 @@ void LibraryWindow::setupCoordinators()
             foldersModel,
             this,
             [this] { return foldersModelProxy->mapToSource(foldersView->currentIndex()); },
+            [this] { return getCurrentFolderIndex(); },
             [this] { return currentPath(); });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderRenamed, navigationController, &YACReaderNavigationController::refreshCurrentSource);
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderCreationStarted, this, [this] { librarySearchCoordinator->exitSearchMode(); });
