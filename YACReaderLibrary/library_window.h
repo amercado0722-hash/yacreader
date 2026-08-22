@@ -243,13 +243,6 @@ public slots:
     void openContainingFolder();
     void organizeFiles();
     void organizeComicsFiles();
-    void setFolderAsNotCompleted();
-    void setFolderAsCompleted();
-    void setFolderAsRead();
-    void setFolderAsUnread();
-    void setFolderType(FileType type);
-    void setFolderCover();
-    void deleteCustomFolderCover();
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();

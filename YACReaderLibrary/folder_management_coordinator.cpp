@@ -16,6 +16,8 @@
 #include <QThread>
 #include <QWidget>
 
+#include <utility>
+
 namespace {
 bool containsInvalidFolderNameCharacters(const QString &folderName)
 {
@@ -24,8 +26,11 @@ bool containsInvalidFolderNameCharacters(const QString &folderName)
 }
 }
 
-FolderManagementCoordinator::FolderManagementCoordinator(FolderModel *foldersModel, QWidget *dialogParent)
-    : QObject(dialogParent), foldersModel(foldersModel), dialogParent(dialogParent)
+FolderManagementCoordinator::FolderManagementCoordinator(FolderModel *foldersModel,
+                                                         QWidget *dialogParent,
+                                                         CurrentFolderProvider currentFolderProvider,
+                                                         LibraryPathProvider libraryPathProvider)
+    : QObject(dialogParent), foldersModel(foldersModel), dialogParent(dialogParent), currentFolderProvider(std::move(currentFolderProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
 }
 
@@ -87,6 +92,62 @@ void FolderManagementCoordinator::deleteFolder(const QModelIndex &folder, const 
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
     thread->start();
+}
+
+void FolderManagementCoordinator::setFolderCompleted(qulonglong folderId, const QString &libraryPath, bool completed)
+{
+    const auto index = folderIndex(folderId, libraryPath);
+    if (index.isValid())
+        foldersModel->updateFolderCompletedStatus({ index }, completed);
+}
+
+void FolderManagementCoordinator::setFolderRead(qulonglong folderId, const QString &libraryPath, bool read)
+{
+    const auto index = folderIndex(folderId, libraryPath);
+    if (index.isValid())
+        foldersModel->updateFolderFinishedStatus({ index }, read);
+}
+
+void FolderManagementCoordinator::setFolderType(qulonglong folderId, const QString &libraryPath, YACReader::FileType type)
+{
+    const auto index = folderIndex(folderId, libraryPath);
+    if (index.isValid())
+        foldersModel->updateFolderType({ index }, type);
+}
+
+void FolderManagementCoordinator::setCurrentFolderCompleted(bool completed)
+{
+    const auto index = currentFolderProvider();
+    if (index.isValid())
+        setFolderCompleted(index.data(FolderModel::IdRole).toULongLong(), libraryPathProvider(), completed);
+}
+
+void FolderManagementCoordinator::setCurrentFolderRead(bool read)
+{
+    const auto index = currentFolderProvider();
+    if (index.isValid())
+        setFolderRead(index.data(FolderModel::IdRole).toULongLong(), libraryPathProvider(), read);
+}
+
+void FolderManagementCoordinator::setCurrentFolderType(YACReader::FileType type)
+{
+    const auto index = currentFolderProvider();
+    if (index.isValid())
+        setFolderType(index.data(FolderModel::IdRole).toULongLong(), libraryPathProvider(), type);
+}
+
+void FolderManagementCoordinator::selectAndSetCurrentFolderCover()
+{
+    const auto index = currentFolderProvider();
+    if (index.isValid())
+        selectAndSetCustomCover(index.data(FolderModel::IdRole).toULongLong(), libraryPathProvider());
+}
+
+void FolderManagementCoordinator::resetCurrentFolderCover()
+{
+    const auto index = currentFolderProvider();
+    if (index.isValid())
+        resetCustomCover(index.data(FolderModel::IdRole).toULongLong(), libraryPathProvider());
 }
 
 void FolderManagementCoordinator::selectAndSetCustomCover(qulonglong folderId, const QString &libraryPath)

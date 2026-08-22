@@ -4,6 +4,7 @@
 #include "edit_shortcuts_dialog.h"
 #include "export_library_dialog.h"
 #include "feature_flags.h"
+#include "folder_management_coordinator.h"
 #include "help_about_dialog.h"
 #include "library_window.h"
 #include "recent_visibility_coordinator.h"
@@ -455,7 +456,8 @@ void LibraryWindowActions::createConnections(
         YACReaderOptionsDialog *optionsDialog,
         ServerConfigDialog *serverConfigDialog,
         RecentVisibilityCoordinator *recentVisibilityCoordinator,
-        ComicManagementCoordinator *comicManagementCoordinator)
+        ComicManagementCoordinator *comicManagementCoordinator,
+        FolderManagementCoordinator *folderManagementCoordinator)
 {
     QObject::connect(backAction, &QAction::triggered, navigationController, &YACReaderNavigationController::backward);
     QObject::connect(forwardAction, &QAction::triggered, navigationController, &YACReaderNavigationController::forward);
@@ -496,30 +498,38 @@ void LibraryWindowActions::createConnections(
     QObject::connect(openContainingFolderComicAction, &QAction::triggered, window, &LibraryWindow::openContainingFolderComic);
     if (YACReader::FeatureFlags::organizeFiles)
         QObject::connect(organizeComicsFilesAction, &QAction::triggered, window, &LibraryWindow::organizeComicsFiles);
-    QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsNotCompleted);
-    QObject::connect(setFolderAsCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsCompleted);
-    QObject::connect(setFolderAsReadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsRead);
-    QObject::connect(setFolderAsUnreadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsUnread);
+    QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderCompleted(false);
+    });
+    QObject::connect(setFolderAsCompletedAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderCompleted(true);
+    });
+    QObject::connect(setFolderAsReadAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderRead(true);
+    });
+    QObject::connect(setFolderAsUnreadAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderRead(false);
+    });
     QObject::connect(openContainingFolderAction, &QAction::triggered, window, &LibraryWindow::openContainingFolder);
     if (YACReader::FeatureFlags::organizeFiles)
         QObject::connect(organizeFilesAction, &QAction::triggered, window, &LibraryWindow::organizeFiles);
-    QObject::connect(setFolderCoverAction, &QAction::triggered, window, &LibraryWindow::setFolderCover);
-    QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, window, &LibraryWindow::deleteCustomFolderCover);
+    QObject::connect(setFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::selectAndSetCurrentFolderCover);
+    QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::resetCurrentFolderCover);
 
     QObject::connect(setFolderAsMangaAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::Manga);
+        folderManagementCoordinator->setCurrentFolderType(FileType::Manga);
     });
     QObject::connect(setFolderAsNormalAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::Comic);
+        folderManagementCoordinator->setCurrentFolderType(FileType::Comic);
     });
     QObject::connect(setFolderAsWesternMangaAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::WesternManga);
+        folderManagementCoordinator->setCurrentFolderType(FileType::WesternManga);
     });
     QObject::connect(setFolderAsWebComicAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::WebComic);
+        folderManagementCoordinator->setCurrentFolderType(FileType::WebComic);
     });
     QObject::connect(setFolderAsYonkomaAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::Yonkoma);
+        folderManagementCoordinator->setCurrentFolderType(FileType::Yonkoma);
     });
 
     QObject::connect(resetComicRatingAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::resetSelectedComicRatings);

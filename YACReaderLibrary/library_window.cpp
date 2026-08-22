@@ -442,7 +442,11 @@ void LibraryWindow::setupCoordinators()
         }
     });
     connect(comicManagementCoordinator, &ComicManagementCoordinator::comicDeletionFinished, this, &LibraryWindow::checkEmptyFolder);
-    folderManagementCoordinator = new FolderManagementCoordinator(foldersModel, this);
+    folderManagementCoordinator = new FolderManagementCoordinator(
+            foldersModel,
+            this,
+            [this] { return foldersModelProxy->mapToSource(foldersView->currentIndex()); },
+            [this] { return currentPath(); });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFailed, this, &LibraryWindow::errorDeletingFolder);
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
     libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(this);
@@ -925,7 +929,8 @@ void LibraryWindow::createConnections()
             optionsDialog,
             serverConfigDialog,
             recentVisibilityCoordinator,
-            comicManagementCoordinator);
+            comicManagementCoordinator,
+            folderManagementCoordinator);
     connect(actions.focusSearchLineAction, &QAction::triggered, this, &LibraryWindow::focusSearchInput);
 
     connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::createLibrary);
@@ -1598,32 +1603,32 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     connect(rescanLibraryForXMLInfoAction, &QAction::triggered, this, [=]() {
         rescanFolderForXMLInfo(foldersModel->getIndexFromFolder(folder));
     });
-    connect(setFolderAsNotCompletedAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+    connect(setFolderAsNotCompletedAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderCompleted(folderId, libraryPath, false);
     });
-    connect(setFolderAsCompletedAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+    connect(setFolderAsCompletedAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderCompleted(folderId, libraryPath, true);
     });
-    connect(setFolderAsReadAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+    connect(setFolderAsReadAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderRead(folderId, libraryPath, true);
     });
-    connect(setFolderAsUnreadAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+    connect(setFolderAsUnreadAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderRead(folderId, libraryPath, false);
     });
-    connect(setFolderAsMangaAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Manga);
+    connect(setFolderAsMangaAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderType(folderId, libraryPath, FileType::Manga);
     });
-    connect(setFolderAsNormalAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Comic);
+    connect(setFolderAsNormalAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderType(folderId, libraryPath, FileType::Comic);
     });
-    connect(setFolderAsWesternMangaAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WesternManga);
+    connect(setFolderAsWesternMangaAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderType(folderId, libraryPath, FileType::WesternManga);
     });
-    connect(setFolderAsWebComicAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WebComic);
+    connect(setFolderAsWebComicAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderType(folderId, libraryPath, FileType::WebComic);
     });
-    connect(setFolderAs4KomaAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
+    connect(setFolderAs4KomaAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
+        folderManagementCoordinator->setFolderType(folderId, libraryPath, FileType::Yonkoma);
     });
     connect(setFolderCoverAction, &QAction::triggered, this, [this, folderId, libraryPath]() {
         folderManagementCoordinator->selectAndSetCustomCover(folderId, libraryPath);
@@ -2146,53 +2151,6 @@ void LibraryWindow::organizeComicsFiles()
         else
             reloadCurrentFolderComicsContent();
     }
-}
-
-void LibraryWindow::setFolderAsNotCompleted()
-{
-    // foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
-    foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
-}
-
-void LibraryWindow::setFolderAsCompleted()
-{
-    // foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
-    foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), true);
-}
-
-void LibraryWindow::setFolderAsRead()
-{
-    // foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
-    foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), true);
-}
-
-void LibraryWindow::setFolderAsUnread()
-{
-    // foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
-    foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
-}
-
-void LibraryWindow::setFolderType(FileType type)
-{
-    foldersModel->updateFolderType(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), type);
-}
-
-void LibraryWindow::setFolderCover()
-{
-    const auto folderIndex = foldersModelProxy->mapToSource(foldersView->currentIndex());
-    if (!folderIndex.isValid())
-        return;
-
-    folderManagementCoordinator->selectAndSetCustomCover(folderIndex.data(FolderModel::IdRole).toULongLong(), currentPath());
-}
-
-void LibraryWindow::deleteCustomFolderCover()
-{
-    const auto folderIndex = foldersModelProxy->mapToSource(foldersView->currentIndex());
-    if (!folderIndex.isValid())
-        return;
-
-    folderManagementCoordinator->resetCustomCover(folderIndex.data(FolderModel::IdRole).toULongLong(), currentPath());
 }
 
 void LibraryWindow::exportLibrary(QString destPath)
