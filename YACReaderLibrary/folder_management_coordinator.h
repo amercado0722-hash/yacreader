@@ -25,7 +25,6 @@ public:
                                          CurrentFolderProvider currentFolderProvider,
                                          LibraryPathProvider libraryPathProvider);
 
-    QModelIndex createFolder(const QModelIndex &parent, const QString &parentPath, const QString &folderName);
     void renameFolder(qulonglong folderId, const QString &libraryPath);
     void setFolderCompleted(qulonglong folderId, const QString &libraryPath, bool completed);
     void setFolderRead(qulonglong folderId, const QString &libraryPath, bool read);
@@ -53,6 +52,8 @@ signals:
     void folderDeletionFinished();
 
 private:
+    QModelIndex createFolder(const QModelIndex &parent, const QString &parentPath, const QString &folderName);
+
     enum class RenameError {
         None,
         InvalidName,
