@@ -84,6 +84,7 @@ class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
 class RecentVisibilityCoordinator;
+class OrganizeFilesCoordinator;
 
 namespace YACReader {
 class TrayIconController;
@@ -340,7 +341,6 @@ public slots:
     void reloadCurrentFolderComicsContent();
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
-    bool runOrganizeFilesFlow(const QList<ComicDB> &comics, const QString &cleanupPath);
     void enableNeededActions();
     void setComicActionsDisabled(bool disabled);
     void setComicToolbarEntriesVisible(bool visible);
@@ -385,6 +385,7 @@ private:
     std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
 
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
+    OrganizeFilesCoordinator *organizeFilesCoordinator;
     bool pendingAfterLaunchTasks;
 };
 
