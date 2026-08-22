@@ -92,6 +92,8 @@ qt_add_executable(YACReaderLibrary WIN32
     library_database_maintenance_coordinator.cpp
     library_repair_coordinator.h
     library_repair_coordinator.cpp
+    library_management_coordinator.h
+    library_management_coordinator.cpp
     feature_flags.h
     create_library_dialog.h
     create_library_dialog.cpp

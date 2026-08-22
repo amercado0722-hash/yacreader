@@ -18,7 +18,6 @@
 #include <QMap>
 #include <QModelIndex>
 
-#include <future>
 #include <memory>
 
 #ifdef Y_MAC_UI
@@ -40,7 +39,6 @@ class ImportLibraryDialog;
 class ExportComicsInfoDialog;
 class ImportComicsInfoDialog;
 class AddLibraryDialog;
-class LibraryCreator;
 class HelpAboutDialog;
 class RenameLibraryDialog;
 class PropertiesDialog;
@@ -86,6 +84,7 @@ class OrganizeFilesCoordinator;
 class ComicFilesCoordinator;
 class LibraryDatabaseMaintenanceCoordinator;
 class LibraryRepairCoordinator;
+class LibraryManagementCoordinator;
 
 namespace YACReader {
 class TrayIconController;
@@ -111,7 +110,6 @@ public:
     ExportComicsInfoDialog *exportComicsInfoDialog;
     ImportComicsInfoDialog *importComicsInfoDialog;
     AddLibraryDialog *addLibraryDialog;
-    LibraryCreator *libraryCreator;
     XMLInfoLibraryScanner *xmlInfoLibraryScanner;
     HelpAboutDialog *had;
     RenameLibraryDialog *renameLibraryDialog;
@@ -179,9 +177,6 @@ public:
     QString libraryPath;
     QString comicsPath;
 
-    QString _lastAdded;
-    QString _sourceLastAdded;
-
     quint64 _comicIdEdited;
 
     enum NavigationStatus {
@@ -233,22 +228,15 @@ public:
     LibraryWindow();
     QString searchText() const;
 
-signals:
-    void libraryUpgraded(const QString &libraryName);
-    void errorUpgradingLibrary(const QString &path);
 public slots:
     void loadLibrary(const QString &path);
     void checkEmptyFolder();
     void openComic();
     void openComic(const ComicDB &comic, const ComicModel::Mode mode);
     void createLibrary();
-    void create(QString source, QString dest, QString name);
     void showAddLibrary();
-    void openLibrary(QString path, QString name);
     void loadLibraries();
-    void saveLibraries();
     void reloadCurrentLibrary();
-    void openLastCreated();
     void updateLibrary();
     void backupLibrary();
     void restoreLibrary();
@@ -277,8 +265,6 @@ public slots:
     void rescanCurrentFolderForXMLInfo();
     void rescanFolderForXMLInfo(QModelIndex modelIndex);
     void rename(QString newName);
-    void cancelCreating();
-    void stopLibraryCreator();
     void stopXMLScanning();
     void setRootIndex();
     void toggleFullScreen();
@@ -313,7 +299,6 @@ public slots:
     void showFoldersContextMenu(const QPoint &point);
     void showGridFoldersContextMenu(QPoint point, Folder folder);
     void showContinueReadingContextMenu(QPoint point, ComicDB comic);
-    void libraryAlreadyExists(const QString &name);
     void importLibraryPackage();
     void updateViewsOnClientSync();
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
@@ -353,8 +338,6 @@ public slots:
     void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex &modelIndex);
     void saveSelectedCoversTo();
-    void checkMaxNumLibraries();
-    void showErrorUpgradingLibrary(const QString &path);
     void setCurrentLibraryAs(FileType fileType);
 
     void prepareToCloseApp();
@@ -370,7 +353,10 @@ private:
     bool exitSearchMode();
     bool startsHiddenInTray() const;
 
-    std::future<void> upgradeLibraryFuture;
+    void applyLoadedLibrary(const QString &libraryDataPath, bool readOnly);
+    void showLibraryManagementOnly();
+    void addLibraryToSelector(const QString &libraryName, const QString &libraryPath);
+    void handleLibraryRemoved(const QString &libraryName, bool librariesEmpty);
 
     TrayIconController *trayIconController;
     ComicQueryResultProcessor comicQueryResultProcessor;
@@ -381,6 +367,7 @@ private:
     ComicFilesCoordinator *comicFilesCoordinator;
     LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator;
     LibraryRepairCoordinator *libraryRepairCoordinator;
+    LibraryManagementCoordinator *libraryManagementCoordinator;
     bool pendingAfterLaunchTasks;
 };
 

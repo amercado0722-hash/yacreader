@@ -28,7 +28,6 @@
 #include <QtCore>
 
 #include <algorithm>
-#include <future>
 
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
@@ -62,8 +61,8 @@
 #include "import_library_dialog.h"
 #include "import_widget.h"
 #include "library_comic_opener.h"
-#include "library_creator.h"
 #include "library_database_maintenance_coordinator.h"
+#include "library_management_coordinator.h"
 #include "library_repair_coordinator.h"
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
@@ -219,7 +218,6 @@ void LibraryWindow::setupUI()
 {
     setUnifiedTitleAndToolBarOnMac(true);
 
-    libraryCreator = new LibraryCreator(settings);
     packageManager = new PackageManager();
     xmlInfoLibraryScanner = new XMLInfoLibraryScanner();
 
@@ -464,6 +462,34 @@ void LibraryWindow::setupCoordinators()
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::repairFinished, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::comicProcessed, importWidget, &ImportWidget::newComic);
     connect(libraryRepairCoordinator, &LibraryRepairCoordinator::databaseRecoveryRequested, this, &LibraryWindow::offerDatabaseRecovery);
+    libraryManagementCoordinator = new LibraryManagementCoordinator(settings, libraries, this);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::loadStarted, this, [this] {
+        historyController->clear();
+        showRootWidget();
+    });
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryReady, this, &LibraryWindow::applyLoadedLibrary);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryManagementOnlyRequested, this, &LibraryWindow::showLibraryManagementOnly);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::databaseRecoveryRequested, this, &LibraryWindow::offerDatabaseRecovery);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::upgradeStarted, importWidget, &ImportWidget::setUpgradeLook);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::upgradeStarted, this, &LibraryWindow::showImportingWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryReloadRequested, this, &LibraryWindow::loadLibrary);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRecreationRequested, createLibraryDialog, &CreateLibraryDialog::setDataAndStart);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::openingError, this, &LibraryWindow::manageOpeningLibraryError);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::creationStarted, importWidget, &ImportWidget::setImportLook);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::creationStarted, this, &LibraryWindow::showImportingWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::updateStarted, importWidget, &ImportWidget::setUpdateLook);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::updateStarted, this, &LibraryWindow::showImportingWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::operationUiResetRequested, this, &LibraryWindow::showRootWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::operationFinished, this, &LibraryWindow::showRootWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::currentLibraryReloadRequested, this, &LibraryWindow::reloadCurrentLibrary);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryAdded, this, &LibraryWindow::addLibraryToSelector);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRemoved, this, &LibraryWindow::handleLibraryRemoved);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::folderUpdateFinished, this, [this](qulonglong folderId) {
+        reloadAfterCopyMove(foldersModel->getIndexFromFolderId(folderId));
+    });
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::comicAdded, importWidget, &ImportWidget::newComic);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::creationFailed, this, &LibraryWindow::manageCreatingError);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::updateFailed, this, &LibraryWindow::manageUpdatingError);
 
     auto canStartUpdateProvider = [this]() {
         return comicVineDialog->isVisible() == false &&
@@ -477,7 +503,7 @@ void LibraryWindow::setupCoordinators()
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, sideBar->librariesTitle, &YACReaderTitledToolBar::showBusyIndicator);
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, sideBar->librariesTitle, &YACReaderTitledToolBar::hideBusyIndicator);
 
-    connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, this, [=]() {
+    connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, this, [=, this]() {
         actions.disableAllActions();
     });
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, this, &LibraryWindow::reloadCurrentLibrary);
@@ -889,37 +915,16 @@ void LibraryWindow::createConnections()
             recentVisibilityCoordinator);
     connect(actions.focusSearchLineAction, &QAction::triggered, this, &LibraryWindow::focusSearchInput);
 
-    // libraryCreator connections
-    connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, this, QOverload<QString, QString, QString>::of(&LibraryWindow::create));
-    connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
+    connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::createLibrary);
+    connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, libraryManagementCoordinator, &LibraryManagementCoordinator::showLibraryAlreadyExists);
     connect(importComicsInfoDialog, &QDialog::finished, this, &LibraryWindow::reloadCurrentLibrary);
-
-    connect(libraryCreator, &LibraryCreator::finished, this, &LibraryWindow::showRootWidget);
-    connect(libraryCreator, &LibraryCreator::updated, this, &LibraryWindow::reloadCurrentLibrary);
-    connect(libraryCreator, &LibraryCreator::created, this, &LibraryWindow::openLastCreated);
-    connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, [this](qulonglong folderId) {
-        reloadAfterCopyMove(foldersModel->getIndexFromFolderId(folderId));
-    });
-    connect(libraryCreator, &LibraryCreator::comicAdded, importWidget, &ImportWidget::newComic);
-    // libraryCreator errors
-    connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
-    connect(libraryCreator, &LibraryCreator::failedOpeningDB, this, [this](const QString &error) {
-        showRootWidget();
-        const auto libraryName = selectedLibrary->currentText();
-        const auto libraryPath = libraries.getPath(libraryName);
-        if (!libraryPath.isEmpty() && QFile::exists(LibraryPaths::libraryDatabasePath(libraryPath)) && !DataBaseManagement::isLibraryDatabaseValid(libraryPath)) {
-            offerDatabaseRecovery(libraryName);
-            return;
-        }
-        manageUpdatingError(error);
-    });
 
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::showRootWidget);
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
     connect(xmlInfoLibraryScanner, &XMLInfoLibraryScanner::comicScanned, importWidget, &ImportWidget::newComic);
 
     // new import widget
-    connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopLibraryCreator);
+    connect(importWidget, &ImportWidget::stop, libraryManagementCoordinator, &LibraryManagementCoordinator::stop);
     connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopXMLScanning);
     connect(importWidget, &ImportWidget::stop, libraryRepairCoordinator, &LibraryRepairCoordinator::stop);
 
@@ -930,18 +935,18 @@ void LibraryWindow::createConnections()
     connect(importLibraryDialog, &ImportLibraryDialog::unpackCLC, this, &LibraryWindow::importLibrary);
     connect(importLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
     connect(importLibraryDialog, &QDialog::rejected, this, &LibraryWindow::deleteCurrentLibrary);
-    connect(importLibraryDialog, &ImportLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
+    connect(importLibraryDialog, &ImportLibraryDialog::libraryExists, libraryManagementCoordinator, &LibraryManagementCoordinator::showLibraryAlreadyExists);
     connect(packageManager, &PackageManager::imported, importLibraryDialog, &QWidget::hide);
-    connect(packageManager, &PackageManager::imported, this, &LibraryWindow::openLastCreated);
+    connect(packageManager, &PackageManager::imported, libraryManagementCoordinator, &LibraryManagementCoordinator::finishAddingLibrary);
     connect(packageManager, &PackageManager::failed, this, [this](const QString &error) {
         QMessageBox::critical(this, tr("Package operation failed"), error.isEmpty() ? tr("The covers package operation could not be completed.") : error);
     });
 
     // create and update dialogs
-    connect(createLibraryDialog, &CreateLibraryDialog::cancelCreate, this, &LibraryWindow::cancelCreating);
+    connect(createLibraryDialog, &CreateLibraryDialog::cancelCreate, libraryManagementCoordinator, &LibraryManagementCoordinator::stop);
 
     // open existing library from dialog.
-    connect(addLibraryDialog, &AddLibraryDialog::addLibrary, this, &LibraryWindow::openLibrary);
+    connect(addLibraryDialog, &AddLibraryDialog::addLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::addExistingLibrary);
 
     // load library when selected library changes
     connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, this, &LibraryWindow::loadLibrary);
@@ -998,15 +1003,6 @@ void LibraryWindow::createConnections()
     connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
     connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
     //--
-
-    // upgrade library
-    connect(this, &LibraryWindow::libraryUpgraded, this, &LibraryWindow::loadLibrary, Qt::QueuedConnection);
-    connect(this, &LibraryWindow::errorUpgradingLibrary, this, &LibraryWindow::showErrorUpgradingLibrary, Qt::QueuedConnection);
-}
-
-void LibraryWindow::showErrorUpgradingLibrary(const QString &path)
-{
-    QMessageBox::critical(this, tr("Upgrade failed"), tr("There were errors during library upgrade in: ") + path + "/library.ydb");
 }
 
 void LibraryWindow::setCurrentLibraryAs(FileType fileType)
@@ -1016,171 +1012,55 @@ void LibraryWindow::setCurrentLibraryAs(FileType fileType)
 
 void LibraryWindow::loadLibrary(const QString &name)
 {
-    if (!libraries.isEmpty()) // si hay bibliotecas...
-    {
-        historyController->clear();
-
-        showRootWidget();
-        QString rootPath = libraries.getPath(name);
-        QString recoveryError;
-        if (!DataBaseManagement::recoverInterruptedRestore(rootPath, &recoveryError)) {
-            QMessageBox::critical(this, tr("Restore recovery failed"), recoveryError);
-            return;
-        }
-        QString path = LibraryPaths::libraryDataPath(rootPath);
-        QString customFolderCoversPath = LibraryPaths::libraryCustomFoldersCoverPath(rootPath);
-        QString databasePath = LibraryPaths::libraryDatabasePath(rootPath);
-        QDir d; // TODO change this by static methods (utils class?? with delTree for example)
-        QString dbVersion;
-        if (d.exists(path) && d.exists(databasePath) && (dbVersion = DataBaseManagement::checkValidDB(databasePath)) != "") // si existe en disco la biblioteca seleccionada, y es válida..
-        {
-            // this folde was added in 9.16, it needs to exist before the user starts importing custom covers for folders
-            d.mkdir(customFolderCoversPath);
-
-            int comparation = DataBaseManagement::compareVersions(dbVersion, DB_VERSION);
-
-            if (comparation < 0) {
-                // a database that fails validation would block the upgrade backup and
-                // trap the user in the update-needed/upgrade-failed dialog cycle;
-                // offer recovery instead of the upgrade question
-                if (!DataBaseManagement::isLibraryDatabaseValid(rootPath)) {
-                    contentViewsManager->comicsView->setModel(NULL);
-                    foldersView->setModel(NULL);
-                    listsView->setModel(NULL);
-                    actions.disableAllActions();
-                    actions.renameLibraryAction->setEnabled(true);
-                    actions.removeLibraryAction->setEnabled(true);
-                    actions.restoreLibraryAction->setEnabled(true);
-                    offerDatabaseRecovery(name);
-                    return;
-                }
-                int ret = QMessageBox::question(this, tr("Update needed"), tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"), QMessageBox::Yes, QMessageBox::No);
-                if (ret == QMessageBox::Yes) {
-                    importWidget->setUpgradeLook();
-                    showImportingWidget();
-
-                    upgradeLibraryFuture = std::async(std::launch::async, [this, name, path, rootPath] {
-                        bool updated = DataBaseManagement::updateToCurrentVersion(rootPath);
-
-                        if (!updated)
-                            emit errorUpgradingLibrary(path);
-
-                        emit libraryUpgraded(name);
-                    });
-
-                    return;
-                } else {
-                    contentViewsManager->comicsView->setModel(NULL);
-                    foldersView->setModel(NULL);
-                    listsView->setModel(NULL);
-                    actions.disableAllActions(); // TODO comprobar que se deben deshabilitar
-                    // será possible renombrar y borrar estas bibliotecas
-                    actions.renameLibraryAction->setEnabled(true);
-                    actions.removeLibraryAction->setEnabled(true);
-                    actions.restoreLibraryAction->setEnabled(true);
-                }
-            }
-
-            if (comparation == 0) // en caso de que la versión se igual que la actual
-            {
-                foldersModel->setupModelData(path);
-                foldersModelProxy->setSourceModel(foldersModel);
-                foldersView->setModel(foldersModelProxy);
-                foldersView->setCurrentIndex(QModelIndex()); // why is this necesary?? by default it seems that returns an arbitrary index.
-
-                listsModel->setupReadingListsData(path);
-                listsModelProxy->setSourceModel(listsModel);
-                listsView->setModel(listsModelProxy);
-
-                if (foldersModel->rowCount(QModelIndex()) > 0)
-                    actions.disableFoldersActions(false);
-                else
-                    actions.disableFoldersActions(true);
-
-                d.setCurrent(libraries.getPath(name));
-                d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-                if (d.count() <= 1) // read only library
-                {
-                    actions.disableLibrariesActions(false);
-                    actions.updateLibraryAction->setDisabled(true);
-                    actions.repairLibraryAction->setDisabled(true);
-                    actions.openContainingFolderAction->setDisabled(true);
-                    actions.rescanLibraryForXMLInfoAction->setDisabled(true);
-
-                    setComicActionsDisabled(true);
-#ifndef Q_OS_MACOS
-                    actions.toggleFullScreenAction->setEnabled(true);
-#endif
-
-                    importedCovers = true;
-                } else // librería normal abierta
-                {
-                    actions.disableLibrariesActions(false);
-                    importedCovers = false;
-                }
-
-                setRootIndex();
-
-                clearSearchInput(true);
-            } else if (comparation > 0) {
-                int ret = QMessageBox::question(this, tr("Download new version"), tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"), QMessageBox::Yes, QMessageBox::No);
-                if (ret == QMessageBox::Yes)
-                    QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
-
-                contentViewsManager->comicsView->setModel(NULL);
-                foldersView->setModel(NULL);
-                listsView->setModel(NULL);
-                actions.disableAllActions(); // TODO comprobar que se deben deshabilitar
-                // será possible renombrar y borrar estas bibliotecas
-                actions.renameLibraryAction->setEnabled(true);
-                actions.removeLibraryAction->setEnabled(true);
-                actions.restoreLibraryAction->setEnabled(true);
-            }
-        } else {
-            contentViewsManager->comicsView->setModel(NULL);
-            foldersView->setModel(NULL);
-            listsView->setModel(NULL);
-            actions.disableAllActions(); // TODO comprobar que se deben deshabilitar
-
-            // si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
-            if (!d.exists(path)) {
-                QString currentLibrary = selectedLibrary->currentText() + " -> " + libraries.getPath(name);
-                if (QMessageBox::question(this, tr("Library not available"), tr("Library '%1' is no longer available. Do you want to remove it?").arg(currentLibrary), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
-                    deleteCurrentLibrary();
-                }
-                // será possible renombrar y borrar estas bibliotecas
-                actions.renameLibraryAction->setEnabled(true);
-                actions.removeLibraryAction->setEnabled(true);
-                actions.restoreLibraryAction->setEnabled(true);
-
-            } else // si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
-            {
-
-                if (d.exists(path + "/library.ydb")) {
-                    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
-                    manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
-                    // será possible renombrar y borrar estas bibliotecas
-                    actions.renameLibraryAction->setEnabled(true);
-                    actions.removeLibraryAction->setEnabled(true);
-                    actions.restoreLibraryAction->setEnabled(true);
-                } else {
-                    QString currentLibrary = selectedLibrary->currentText();
-                    QString path = libraries.getPath(selectedLibrary->currentText());
-                    if (QMessageBox::question(this, tr("Old library"), tr("Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?").arg(currentLibrary), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
-                        createLibraryDialog->setDataAndStart(currentLibrary, path);
-                    }
-                    // será possible renombrar y borrar estas bibliotecas
-                    actions.renameLibraryAction->setEnabled(true);
-                    actions.removeLibraryAction->setEnabled(true);
-                    actions.restoreLibraryAction->setEnabled(true);
-                }
-            }
-        }
-    } else // en caso de que no exista ninguna biblioteca se desactivan los botones pertinentes
-    {
+    if (libraries.isEmpty()) {
         actions.disableAllActions();
         showNoLibrariesWidget();
+        return;
     }
+
+    libraryManagementCoordinator->loadLibrary(name, libraries.getPath(name));
+}
+
+void LibraryWindow::applyLoadedLibrary(const QString &libraryDataPath, bool readOnly)
+{
+    foldersModel->setupModelData(libraryDataPath);
+    foldersModelProxy->setSourceModel(foldersModel);
+    foldersView->setModel(foldersModelProxy);
+    foldersView->setCurrentIndex(QModelIndex()); // By default this can return an arbitrary index.
+
+    listsModel->setupReadingListsData(libraryDataPath);
+    listsModelProxy->setSourceModel(listsModel);
+    listsView->setModel(listsModelProxy);
+
+    actions.disableFoldersActions(foldersModel->rowCount(QModelIndex()) == 0);
+    actions.disableLibrariesActions(false);
+
+    if (readOnly) {
+        actions.updateLibraryAction->setDisabled(true);
+        actions.repairLibraryAction->setDisabled(true);
+        actions.openContainingFolderAction->setDisabled(true);
+        actions.rescanLibraryForXMLInfoAction->setDisabled(true);
+
+        setComicActionsDisabled(true);
+#ifndef Q_OS_MACOS
+        actions.toggleFullScreenAction->setEnabled(true);
+#endif
+    }
+    importedCovers = readOnly;
+
+    setRootIndex();
+    clearSearchInput(true);
+}
+
+void LibraryWindow::showLibraryManagementOnly()
+{
+    contentViewsManager->comicsView->setModel(nullptr);
+    foldersView->setModel(nullptr);
+    listsView->setModel(nullptr);
+    actions.disableAllActions();
+    actions.renameLibraryAction->setEnabled(true);
+    actions.removeLibraryAction->setEnabled(true);
+    actions.restoreLibraryAction->setEnabled(true);
 }
 
 void LibraryWindow::loadCoversFromCurrentModel()
@@ -1226,11 +1106,13 @@ void LibraryWindow::updateFolder(const QModelIndex &miFolder)
     importWidget->setUpdateLook();
     showImportingWidget();
 
-    QString currentLibrary = selectedLibrary->currentText();
-    QString path = QDir::cleanPath(libraries.getPath(currentLibrary));
-    _lastAdded = currentLibrary;
-    libraryCreator->updateFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder.data(FolderModel::IdRole).toULongLong());
-    libraryCreator->start();
+    const auto libraryName = selectedLibrary->currentText();
+    const auto libraryPath = QDir::cleanPath(libraries.getPath(libraryName));
+    libraryManagementCoordinator->updateFolder(
+            libraryName,
+            libraryPath,
+            QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)),
+            miFolder.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::reloadCurrentFolderComicsContent()
@@ -1868,14 +1750,6 @@ void LibraryWindow::saveSelectedCoversTo()
     }
 }
 
-void LibraryWindow::checkMaxNumLibraries()
-{
-    int numLibraries = libraries.getNames().length();
-    if (numLibraries >= MAX_LIBRARIES_WARNING_NUM) {
-        QMessageBox::warning(this, tr("You are adding too many libraries."), tr("You are adding too many libraries.\n\nYou probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.\n\nYACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low."));
-    }
-}
-
 // this methods is only using after deleting comics
 // TODO broken window :)
 void LibraryWindow::checkEmptyFolder()
@@ -1962,20 +1836,8 @@ void LibraryWindow::setSelectedComicsType(FileType type)
 
 void LibraryWindow::createLibrary()
 {
-    checkMaxNumLibraries();
+    libraryManagementCoordinator->warnIfLibraryCountIsHigh();
     createLibraryDialog->open(libraries);
-}
-
-void LibraryWindow::create(QString source, QString dest, QString name)
-{
-    QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source, dest, name);
-    libraryCreator->createLibrary(source, dest);
-    libraryCreator->start();
-    _lastAdded = name;
-    _sourceLastAdded = source;
-
-    importWidget->setImportLook();
-    showImportingWidget();
 }
 
 void LibraryWindow::reloadCurrentLibrary()
@@ -1989,70 +1851,48 @@ void LibraryWindow::reloadCurrentLibrary()
     enableNeededActions();
 }
 
-void LibraryWindow::openLastCreated()
-{
-
-    selectedLibrary->disconnect();
-
-    selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
-    libraries.addLibrary(_lastAdded, _sourceLastAdded);
-    selectedLibrary->addItem(_lastAdded, _sourceLastAdded);
-    selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
-    libraries.save();
-
-    connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, this, &LibraryWindow::loadLibrary);
-
-    loadLibrary(_lastAdded);
-}
-
 void LibraryWindow::showAddLibrary()
 {
-    checkMaxNumLibraries();
+    libraryManagementCoordinator->warnIfLibraryCountIsHigh();
     addLibraryDialog->open();
-}
-
-void LibraryWindow::openLibrary(QString path, QString name)
-{
-    if (!libraries.contains(name)) {
-        // TODO: fix bug, /a/b/c/.yacreaderlibrary/d/e
-        path.remove("/.yacreaderlibrary");
-        QDir d; // TODO change this by static methods (utils class?? with delTree for example)
-        auto libraryDataPath = LibraryPaths::libraryDataPath(path);
-        if (d.exists(libraryDataPath)) {
-            _lastAdded = name;
-            _sourceLastAdded = path;
-            openLastCreated();
-            addLibraryDialog->close();
-        } else
-            QMessageBox::warning(this, tr("Library not found"), tr("The selected folder doesn't contain any library."));
-    } else {
-        libraryAlreadyExists(name);
-    }
 }
 
 void LibraryWindow::loadLibraries()
 {
-    libraries.load();
-    const auto libraryNames = libraries.getNames();
-    for (const auto &name : libraryNames)
-        selectedLibrary->addItem(name, libraries.getPath(name));
+    const auto storedLibraries = libraryManagementCoordinator->loadLibraries();
+    for (const auto &[name, path] : storedLibraries)
+        selectedLibrary->addItem(name, path);
 }
 
-void LibraryWindow::saveLibraries()
+void LibraryWindow::addLibraryToSelector(const QString &libraryName, const QString &libraryPath)
 {
-    libraries.save();
+    const QSignalBlocker blocker(selectedLibrary);
+    selectedLibrary->addItem(libraryName, libraryPath);
+    selectedLibrary->setCurrentIndex(selectedLibrary->findText(libraryName));
+    addLibraryDialog->close();
+    loadLibrary(libraryName);
+}
+
+void LibraryWindow::handleLibraryRemoved(const QString &libraryName, bool librariesEmpty)
+{
+    const auto index = selectedLibrary->findText(libraryName);
+    if (index >= 0)
+        selectedLibrary->removeItem(index);
+
+    if (!librariesEmpty)
+        return;
+
+    contentViewsManager->comicsView->setModel(nullptr);
+    foldersView->setModel(nullptr);
+    listsView->setModel(nullptr);
+    actions.disableAllActions();
+    showNoLibrariesWidget();
 }
 
 void LibraryWindow::updateLibrary()
 {
-    importWidget->setUpdateLook();
-    showImportingWidget();
-
-    QString currentLibrary = selectedLibrary->currentText();
-    QString path = libraries.getPath(currentLibrary);
-    _lastAdded = currentLibrary;
-    libraryCreator->updateLibrary(path, LibraryPaths::libraryDataPath(path));
-    libraryCreator->start();
+    const auto libraryName = selectedLibrary->currentText();
+    libraryManagementCoordinator->updateLibrary(libraryName, libraries.getPath(libraryName));
 }
 
 void LibraryWindow::backupLibrary()
@@ -2079,53 +1919,12 @@ void LibraryWindow::repairLibrary()
 
 void LibraryWindow::deleteCurrentLibrary()
 {
-    QString path = libraries.getPath(selectedLibrary->currentText());
-    libraries.remove(selectedLibrary->currentText());
-    selectedLibrary->removeItem(selectedLibrary->currentIndex());
-    path = LibraryPaths::libraryDataPath(path);
-
-    QDir d(path);
-    d.removeRecursively();
-    if (libraries.isEmpty()) // no more libraries available.
-    {
-        contentViewsManager->comicsView->setModel(NULL);
-        foldersView->setModel(NULL);
-        listsView->setModel(NULL);
-
-        actions.disableAllActions();
-        showNoLibrariesWidget();
-    }
-    libraries.save();
+    libraryManagementCoordinator->deleteLibrary(selectedLibrary->currentText(), true);
 }
 
 void LibraryWindow::removeLibrary()
 {
-    QString currentLibrary = selectedLibrary->currentText();
-    QMessageBox *messageBox = new QMessageBox(QMessageBox::Question,
-                                              tr("Are you sure?"),
-                                              tr("Do you want remove ") + currentLibrary + tr(" library?"),
-                                              QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No,
-                                              this);
-    messageBox->button(QMessageBox::YesToAll)->setText(tr("Remove and delete metadata and backups"));
-    messageBox->setWindowModality(Qt::WindowModal);
-    int ret = messageBox->exec();
-    if (ret == QMessageBox::Yes) {
-        libraries.remove(currentLibrary);
-        selectedLibrary->removeItem(selectedLibrary->currentIndex());
-        // selectedLibrary->setCurrentIndex(0);
-        if (libraries.isEmpty()) // no more libraries available.
-        {
-            contentViewsManager->comicsView->setModel(NULL);
-            foldersView->setModel(NULL);
-            listsView->setModel(NULL);
-
-            actions.disableAllActions();
-            showNoLibrariesWidget();
-        }
-        libraries.save();
-    } else if (ret == QMessageBox::YesToAll) {
-        deleteCurrentLibrary();
-    }
+    libraryManagementCoordinator->askToRemoveLibrary(selectedLibrary->currentText());
 }
 
 void LibraryWindow::renameLibrary()
@@ -2135,25 +1934,18 @@ void LibraryWindow::renameLibrary()
 
 void LibraryWindow::rename(QString newName) // TODO replace
 {
-    QString currentLibrary = selectedLibrary->currentText();
+    const auto currentLibrary = selectedLibrary->currentText();
+    if (!libraryManagementCoordinator->renameLibrary(currentLibrary, newName))
+        return;
+
     if (newName != currentLibrary) {
-        if (!libraries.contains(newName)) {
-            libraries.rename(currentLibrary, newName);
-            // selectedLibrary->removeItem(selectedLibrary->currentIndex());
-            // libraries.addLibrary(newName,path);
-            selectedLibrary->renameCurrentLibrary(newName);
-            libraries.save();
-            renameLibraryDialog->close();
+        selectedLibrary->renameCurrentLibrary(newName);
 #ifndef Y_MAC_UI
-            if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
-                libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
+        if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
+            libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
 #endif
-        } else {
-            libraryAlreadyExists(newName);
-        }
-    } else
-        renameLibraryDialog->close();
-    // selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
+    }
+    renameLibraryDialog->close();
 }
 
 void LibraryWindow::rescanLibraryForXMLInfo()
@@ -2161,9 +1953,8 @@ void LibraryWindow::rescanLibraryForXMLInfo()
     importWidget->setXMLScanLook();
     showImportingWidget();
 
-    QString currentLibrary = selectedLibrary->currentText();
-    QString path = libraries.getPath(currentLibrary);
-    _lastAdded = currentLibrary;
+    const auto currentLibrary = selectedLibrary->currentText();
+    const auto path = libraries.getPath(currentLibrary);
 
     xmlInfoLibraryScanner->scanLibrary(path, LibraryPaths::libraryDataPath(path));
 }
@@ -2202,22 +1993,10 @@ void LibraryWindow::rescanFolderForXMLInfo(QModelIndex modelIndex)
     importWidget->setXMLScanLook();
     showImportingWidget();
 
-    QString currentLibrary = selectedLibrary->currentText();
-    QString path = libraries.getPath(currentLibrary);
-    _lastAdded = currentLibrary;
+    const auto currentLibrary = selectedLibrary->currentText();
+    const auto path = libraries.getPath(currentLibrary);
 
     xmlInfoLibraryScanner->scanFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(modelIndex)), modelIndex);
-}
-
-void LibraryWindow::cancelCreating()
-{
-    stopLibraryCreator();
-}
-
-void LibraryWindow::stopLibraryCreator()
-{
-    libraryCreator->stop();
-    libraryCreator->wait();
 }
 
 void LibraryWindow::stopXMLScanning()
@@ -2589,8 +2368,7 @@ void LibraryWindow::exportLibrary(QString destPath)
 void LibraryWindow::importLibrary(QString clc, QString destPath, QString name)
 {
     packageManager->extractPackage(clc, destPath + "/" + name);
-    _lastAdded = name;
-    _sourceLastAdded = destPath + "/" + name;
+    libraryManagementCoordinator->prepareImportedLibrary(name, destPath + "/" + name);
 }
 
 void LibraryWindow::reloadOptions()
@@ -2645,7 +2423,7 @@ void LibraryWindow::prepareToCloseApp()
 {
     httpServer->stop();
 
-    libraryCreator->stop();
+    libraryManagementCoordinator->stop();
     librariesUpdateCoordinator->stop();
     libraryRepairCoordinator->stop();
 
@@ -2891,11 +2669,6 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     }
 
     menu.exec(foldersView->mapToGlobal(point));
-}
-
-void LibraryWindow::libraryAlreadyExists(const QString &name)
-{
-    QMessageBox::information(this, tr("Library name already exists"), tr("There is another library with the name '%1'.").arg(name));
 }
 
 void LibraryWindow::importLibraryPackage()
