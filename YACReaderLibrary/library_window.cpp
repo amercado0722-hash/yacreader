@@ -57,6 +57,7 @@
 #include "edit_shortcuts_dialog.h"
 #include "export_comics_info_dialog.h"
 #include "export_library_dialog.h"
+#include "feature_flags.h"
 #include "folder_item.h"
 #include "folder_model.h"
 #include "grid_comics_view.h"
@@ -1692,7 +1693,8 @@ void LibraryWindow::showComicsContextMenu(const QPoint &point, bool showFullScre
     menu->addAction(actions.saveCoversToAction);
     menu->addSeparator();
     menu->addAction(actions.openContainingFolderComicAction);
-    menu->addAction(actions.organizeComicsFilesAction);
+    if (YACReader::FeatureFlags::organizeFiles)
+        menu->addAction(actions.organizeComicsFilesAction);
     menu->addAction(actions.updateCurrentFolderAction);
     menu->addSeparator();
     menu->addAction(actions.editSelectedComicsAction);
@@ -3356,7 +3358,8 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 
     menu.addAction(actions.openContainingFolderAction);
     menu.addAction(actions.renameFolderAction);
-    menu.addAction(actions.organizeFilesAction);
+    if (YACReader::FeatureFlags::organizeFiles)
+        menu.addAction(actions.organizeFilesAction);
     menu.addAction(actions.updateFolderAction);
     menu.addSeparator(); //-------------------------------
     menu.addAction(actions.rescanXMLFromCurrentFolderAction);

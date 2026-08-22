@@ -86,6 +86,7 @@ qt_add_executable(YACReaderLibrary WIN32
     library_window.cpp
     library_window_actions.h
     library_window_actions.cpp
+    feature_flags.h
     create_library_dialog.h
     create_library_dialog.cpp
     add_library_dialog.h
