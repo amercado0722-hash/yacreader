@@ -29,7 +29,7 @@ protected:
     bool canceled;
     QList<QPair<QString, QString>> comics;
     QString folder;
-    qulonglong destinationFolderId;
+    qulonglong destinationFolderId = 0;
 };
 
 #endif // COMIC_FILES_MANAGER_H
