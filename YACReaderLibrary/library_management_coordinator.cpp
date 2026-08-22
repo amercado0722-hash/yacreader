@@ -248,9 +248,6 @@ void LibraryManagementCoordinator::updateCurrentFolder()
 
 void LibraryManagementCoordinator::updateFolder(const QModelIndex &folderIndex)
 {
-    if (!folderIndex.isValid())
-        return;
-
     const auto libraryName = currentLibraryNameProvider();
     const auto libraryPath = QDir::cleanPath(libraries.getPath(libraryName));
     emit updateStarted();
