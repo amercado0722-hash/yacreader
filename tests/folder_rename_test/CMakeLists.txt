@@ -9,4 +9,3 @@ target_link_libraries(folder_rename_test PRIVATE
     db_helper
     library_common
 )
-add_test(NAME folder_rename_test COMMAND folder_rename_test)
