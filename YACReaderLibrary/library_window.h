@@ -208,7 +208,6 @@ public slots:
     void checkEmptyFolder();
     void loadLibraries();
     void reloadCurrentLibrary();
-    void openContainingFolder();
     void setRootIndex();
     void toggleFullScreen();
     void toNormal();
@@ -230,7 +229,6 @@ public slots:
     void enableNeededActions();
     void setComicActionsDisabled(bool disabled);
     void setComicToolbarEntriesVisible(bool visible);
-    void addFolderToCurrentIndex();
     void setToolbarTitle(const QModelIndex &modelIndex);
     void setCurrentLibraryAs(FileType fileType);
 

@@ -7,6 +7,7 @@
 #include "yacreader_global_gui.h"
 
 #include <QCoreApplication>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -16,6 +17,7 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QThread>
+#include <QUrl>
 #include <QWidget>
 
 #include <utility>
@@ -47,6 +49,46 @@ QModelIndex FolderManagementCoordinator::createFolder(const QModelIndex &parent,
         return { };
 
     return foldersModel->addFolderAtParent(folderName, parent);
+}
+
+void FolderManagementCoordinator::addFolderToCurrentFolder()
+{
+    emit folderCreationStarted();
+
+    const auto parent = currentFolderProvider();
+    bool accepted = false;
+    const auto folderName = QInputDialog::getText(dialogParent,
+                                                  tr("Add new folder"),
+                                                  tr("Folder name:"),
+                                                  QLineEdit::Normal,
+                                                  QString(),
+                                                  &accepted);
+    if (!accepted)
+        return;
+
+    const auto parentPath = QDir::cleanPath(libraryPathProvider() + foldersModel->getFolderPath(parent));
+    const auto folder = createFolder(parent, parentPath, folderName);
+    if (folder.isValid())
+        emit folderNavigationRequested(folder);
+}
+
+void FolderManagementCoordinator::openCurrentFolder()
+{
+    const auto libraryPath = libraryPathProvider();
+    const auto folder = currentFolderProvider();
+    const auto path = folder.isValid()
+            ? QDir::cleanPath(libraryPath + foldersModel->getFolderPath(folder))
+            : QDir::cleanPath(libraryPath);
+    QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
+}
+
+void FolderManagementCoordinator::openFolder(qulonglong folderId, const QString &libraryPath)
+{
+    const auto folder = folderIndex(folderId, libraryPath);
+    if (!folder.isValid())
+        return;
+
+    QDesktopServices::openUrl(QUrl("file:///" + QDir::cleanPath(libraryPath + foldersModel->getFolderPath(folder)), QUrl::TolerantMode));
 }
 
 FolderManagementCoordinator::RenameResult FolderManagementCoordinator::renameFolder(const QModelIndex &folder, const QString &libraryPath, const QString &newName)

@@ -16,12 +16,9 @@
 #include "yacreader_library_list_widget.h"
 
 #include <QAction>
-#include <QDesktopServices>
-#include <QDir>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
-#include <QUrl>
 
 #include <utility>
 
@@ -320,9 +317,7 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     setCheckedType(typeActions, folder.type);
     menu->addMenu(typeMenu);
 
-    connect(openContainingFolderAction, &QAction::triggered, menu, [folder, libraryPath] {
-        QDesktopServices::openUrl(QUrl("file:///" + QDir::cleanPath(libraryPath + "/" + folder.path), QUrl::TolerantMode));
-    });
+    connect(openContainingFolderAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->openFolder(folderId, libraryPath); });
     connect(updateFolderAction, &QAction::triggered, menu, [this, folder] { emit folderUpdateRequested(foldersModel->getIndexFromFolder(folder)); });
     connect(renameFolderAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->renameFolder(folderId, libraryPath); });
     connect(rescanLibraryForXMLInfoAction, &QAction::triggered, menu, [this, folder] { emit folderXmlRescanRequested(foldersModel->getIndexFromFolder(folder)); });

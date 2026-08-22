@@ -30,10 +30,13 @@ public:
     void setFolderCompleted(qulonglong folderId, const QString &libraryPath, bool completed);
     void setFolderRead(qulonglong folderId, const QString &libraryPath, bool read);
     void setFolderType(qulonglong folderId, const QString &libraryPath, YACReader::FileType type);
+    void openFolder(qulonglong folderId, const QString &libraryPath);
     void selectAndSetCustomCover(qulonglong folderId, const QString &libraryPath);
     void resetCustomCover(qulonglong folderId, const QString &libraryPath);
 
 public slots:
+    void addFolderToCurrentFolder();
+    void openCurrentFolder();
     void renameCurrentFolder();
     void deleteCurrentFolder();
     void setCurrentFolderCompleted(bool completed);
@@ -43,6 +46,8 @@ public slots:
     void resetCurrentFolderCover();
 
 signals:
+    void folderCreationStarted();
+    void folderNavigationRequested(const QModelIndex &folder);
     void folderRenamed();
     void folderAboutToBeDeleted(const QModelIndex &parentFolder);
     void folderDeletionFinished();

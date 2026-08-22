@@ -520,7 +520,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(setFolderAsUnreadAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
         folderManagementCoordinator->setCurrentFolderRead(false);
     });
-    QObject::connect(openContainingFolderAction, &QAction::triggered, window, &LibraryWindow::openContainingFolder);
+    QObject::connect(openContainingFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::openCurrentFolder);
     if (YACReader::FeatureFlags::organizeFiles)
         QObject::connect(organizeFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeCurrentFolder);
     QObject::connect(setFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::selectAndSetCurrentFolderCover);
@@ -593,7 +593,7 @@ void LibraryWindowActions::createConnections(
 
     QObject::connect(openComicAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::openCurrentComic);
     QObject::connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
-    QObject::connect(addFolderAction, &QAction::triggered, window, &LibraryWindow::addFolderToCurrentIndex);
+    QObject::connect(addFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::addFolderToCurrentFolder);
     QObject::connect(renameFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::renameCurrentFolder);
     QObject::connect(deleteFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::deleteCurrentFolder);
     QObject::connect(setRootIndexAction, &QAction::triggered, window, &LibraryWindow::setRootIndex);

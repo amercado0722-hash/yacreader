@@ -55,13 +55,11 @@
 #include "yacreader_tool_bar_stretch.h"
 
 #include <QApplication>
-#include <QDesktopServices>
 #include <QDir>
 #include <QFile>
 #include <QFileIconProvider>
 #include <QHBoxLayout>
 #include <QHeaderView>
-#include <QInputDialog>
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
@@ -485,6 +483,12 @@ void LibraryWindow::setupCoordinators()
             [this] { return foldersModelProxy->mapToSource(foldersView->currentIndex()); },
             [this] { return currentPath(); });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderRenamed, navigationController, &YACReaderNavigationController::refreshCurrentSource);
+    connect(folderManagementCoordinator, &FolderManagementCoordinator::folderCreationStarted, this, [this] { librarySearchCoordinator->exitSearchMode(); });
+    connect(folderManagementCoordinator, &FolderManagementCoordinator::folderNavigationRequested, this, [this](const QModelIndex &folder) {
+        foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(folder));
+        navigationController->loadFolderContent(folder);
+        historyController->updateHistory(YACReaderLibrarySourceContainer(folder, YACReaderLibrarySourceContainer::Folder));
+    });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderAboutToBeDeleted, this, [this](const QModelIndex &parentFolder) {
         // The unified grid observes the main folder model directly. Move away
         // from the folder before removing its model index so the content view
@@ -992,28 +996,6 @@ void LibraryWindow::setComicToolbarEntriesVisible(bool visible)
     }
 }
 
-void LibraryWindow::addFolderToCurrentIndex()
-{
-    librarySearchCoordinator->exitSearchMode(); // Creating a folder in search mode is broken => exit it.
-
-    const auto currentIndex = getCurrentFolderIndex();
-
-    bool ok;
-    const auto newFolderName = QInputDialog::getText(this, tr("Add new folder"),
-                                                     tr("Folder name:"), QLineEdit::Normal,
-                                                     "", &ok);
-
-    if (ok) {
-        const auto parentPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(currentIndex));
-        const auto newIndex = folderManagementCoordinator->createFolder(currentIndex, parentPath, newFolderName);
-        if (newIndex.isValid()) {
-            foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newIndex));
-            navigationController->loadFolderContent(newIndex);
-            historyController->updateHistory(YACReaderLibrarySourceContainer(newIndex, YACReaderLibrarySourceContainer::Folder));
-        }
-    }
-}
-
 void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
 {
 #ifndef Y_MAC_UI
@@ -1139,17 +1121,6 @@ void LibraryWindow::toNormal()
 #else
     libraryToolBar->show();
 #endif
-}
-
-void LibraryWindow::openContainingFolder()
-{
-    QModelIndex modelIndex = foldersModelProxy->mapToSource(foldersView->currentIndex());
-    QString path;
-    if (modelIndex.isValid())
-        path = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(modelIndex));
-    else
-        path = QDir::cleanPath(currentPath());
-    QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
 }
 
 void LibraryWindow::reloadOptions()
