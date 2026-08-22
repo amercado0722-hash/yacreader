@@ -240,8 +240,6 @@ public slots:
     void repairLibrary();
     // void deleteLibrary();
     void openContainingFolder();
-    void organizeFiles();
-    void organizeComicsFiles();
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();

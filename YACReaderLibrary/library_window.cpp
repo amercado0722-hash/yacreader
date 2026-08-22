@@ -412,7 +412,19 @@ void LibraryWindow::doModels()
 void LibraryWindow::setupCoordinators()
 {
     recentVisibilityCoordinator = new RecentVisibilityCoordinator(settings, foldersModel, comicsModel);
-    organizeFilesCoordinator = new OrganizeFilesCoordinator(settings, this);
+    organizeFilesCoordinator = new OrganizeFilesCoordinator(
+            settings,
+            this,
+            comicsModel,
+            foldersModel,
+            [this] { return getSelectedComics(); },
+            [this] { return getCurrentFolderIndex(); },
+            [this] {
+                const auto libraryName = selectedLibrary->currentText();
+                return OrganizeFilesCoordinator::LibraryContext { static_cast<qulonglong>(libraries.getId(libraryName)), libraries.getPath(libraryName) };
+            });
+    connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::folderRefreshRequested, this, &LibraryWindow::updateFolder);
+    connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::currentSourceReloadRequested, this, &LibraryWindow::reloadCurrentFolderComicsContent);
     comicManagementCoordinator = new ComicManagementCoordinator(
             this,
             comicsModel,
@@ -942,7 +954,8 @@ void LibraryWindow::createConnections()
             serverConfigDialog,
             recentVisibilityCoordinator,
             comicManagementCoordinator,
-            folderManagementCoordinator);
+            folderManagementCoordinator,
+            organizeFilesCoordinator);
     connect(actions.focusSearchLineAction, &QAction::triggered, this, &LibraryWindow::focusSearchInput);
 
     connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::createLibrary);
@@ -2003,43 +2016,6 @@ void LibraryWindow::openContainingFolder()
     else
         path = QDir::cleanPath(currentPath());
     QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
-}
-
-void LibraryWindow::organizeFiles()
-{
-    const QModelIndex sourceIndex = getCurrentFolderIndex();
-    if (!sourceIndex.isValid())
-        return;
-
-    const auto libraryId = libraries.getId(selectedLibrary->currentText());
-    const auto folder = foldersModel->getFolder(sourceIndex);
-    const QString folderAbsolutePath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(sourceIndex));
-
-    if (organizeFilesCoordinator->organizeFolder(libraryId, folder.id, currentPath(), folderAbsolutePath))
-        updateFolder(sourceIndex);
-}
-
-void LibraryWindow::organizeComicsFiles()
-{
-    const QModelIndexList indexList = getSelectedComics();
-    if (indexList.isEmpty())
-        return;
-
-    const QList<ComicDB> comics = comicsModel->getComics(indexList);
-    if (comics.isEmpty())
-        return;
-
-    const QModelIndex folderIndex = getCurrentFolderIndex();
-    const QString folderAbsolutePath = folderIndex.isValid()
-            ? QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderIndex))
-            : QDir::cleanPath(currentPath());
-
-    if (organizeFilesCoordinator->organizeComics(comics, currentPath(), folderAbsolutePath)) {
-        if (folderIndex.isValid())
-            updateFolder(folderIndex);
-        else
-            reloadCurrentFolderComicsContent();
-    }
 }
 
 void LibraryWindow::exportLibrary(QString destPath)

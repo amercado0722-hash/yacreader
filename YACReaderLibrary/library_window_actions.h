@@ -19,6 +19,7 @@ class ServerConfigDialog;
 class RecentVisibilityCoordinator;
 class ComicManagementCoordinator;
 class FolderManagementCoordinator;
+class OrganizeFilesCoordinator;
 struct Theme;
 
 class LibraryWindowActions
@@ -144,7 +145,8 @@ public:
                            ServerConfigDialog *serverConfigDialog,
                            RecentVisibilityCoordinator *recentVisibilityCoordinator,
                            ComicManagementCoordinator *comicManagementCoordinator,
-                           FolderManagementCoordinator *folderManagementCoordinator);
+                           FolderManagementCoordinator *folderManagementCoordinator,
+                           OrganizeFilesCoordinator *organizeFilesCoordinator);
 
     void setComicActionsDisabled(bool disabled);
     void setComicSelectionActionsEnabled(bool enabled);

@@ -1,6 +1,8 @@
 #include "organize_files_coordinator.h"
 
+#include "comic_model.h"
 #include "db_helper.h"
+#include "folder_model.h"
 #include "organize_files_dialog.h"
 #include "organize_files_preview_dialog.h"
 
@@ -14,6 +16,7 @@
 #include <QWidget>
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 void collectComicsRecursively(qulonglong libraryId, qulonglong folderId, QList<ComicDB> &out)
@@ -61,9 +64,54 @@ QString uniqueDestination(const QString &destination, const QSet<QString> &taken
 }
 }
 
-OrganizeFilesCoordinator::OrganizeFilesCoordinator(QSettings *settings, QWidget *window)
-    : QObject(window), settings(settings), window(window)
+OrganizeFilesCoordinator::OrganizeFilesCoordinator(QSettings *settings,
+                                                   QWidget *window,
+                                                   ComicModel *comicsModel,
+                                                   FolderModel *foldersModel,
+                                                   SelectionProvider selectionProvider,
+                                                   CurrentFolderProvider currentFolderProvider,
+                                                   CurrentLibraryProvider currentLibraryProvider)
+    : QObject(window), settings(settings), window(window), comicsModel(comicsModel), foldersModel(foldersModel), selectionProvider(std::move(selectionProvider)), currentFolderProvider(std::move(currentFolderProvider)), currentLibraryProvider(std::move(currentLibraryProvider))
 {
+}
+
+void OrganizeFilesCoordinator::organizeCurrentFolder()
+{
+    const auto folderIndex = currentFolderProvider();
+    if (!folderIndex.isValid())
+        return;
+
+    const auto library = currentLibraryProvider();
+    const auto folder = foldersModel->getFolder(folderIndex);
+    const auto folderPath = QDir::cleanPath(library.rootPath + foldersModel->getFolderPath(folderIndex));
+
+    if (organizeFolder(library.id, folder.id, library.rootPath, folderPath))
+        emit folderRefreshRequested(folderIndex);
+}
+
+void OrganizeFilesCoordinator::organizeSelectedComics()
+{
+    const auto selection = selectionProvider();
+    if (selection.isEmpty())
+        return;
+
+    const auto comics = comicsModel->getComics(selection);
+    if (comics.isEmpty())
+        return;
+
+    const auto folderIndex = currentFolderProvider();
+    const auto library = currentLibraryProvider();
+    const auto cleanupPath = folderIndex.isValid()
+            ? QDir::cleanPath(library.rootPath + foldersModel->getFolderPath(folderIndex))
+            : QDir::cleanPath(library.rootPath);
+
+    if (!organizeComics(comics, library.rootPath, cleanupPath))
+        return;
+
+    if (folderIndex.isValid())
+        emit folderRefreshRequested(folderIndex);
+    else
+        emit currentSourceReloadRequested();
 }
 
 bool OrganizeFilesCoordinator::organizeFolder(qulonglong libraryId,

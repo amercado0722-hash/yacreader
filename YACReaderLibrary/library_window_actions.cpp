@@ -7,6 +7,7 @@
 #include "folder_management_coordinator.h"
 #include "help_about_dialog.h"
 #include "library_window.h"
+#include "organize_files_coordinator.h"
 #include "recent_visibility_coordinator.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
@@ -457,7 +458,8 @@ void LibraryWindowActions::createConnections(
         ServerConfigDialog *serverConfigDialog,
         RecentVisibilityCoordinator *recentVisibilityCoordinator,
         ComicManagementCoordinator *comicManagementCoordinator,
-        FolderManagementCoordinator *folderManagementCoordinator)
+        FolderManagementCoordinator *folderManagementCoordinator,
+        OrganizeFilesCoordinator *organizeFilesCoordinator)
 {
     QObject::connect(backAction, &QAction::triggered, navigationController, &YACReaderNavigationController::backward);
     QObject::connect(forwardAction, &QAction::triggered, navigationController, &YACReaderNavigationController::forward);
@@ -497,7 +499,7 @@ void LibraryWindowActions::createConnections(
     // ContextMenus
     QObject::connect(openContainingFolderComicAction, &QAction::triggered, window, &LibraryWindow::openContainingFolderComic);
     if (YACReader::FeatureFlags::organizeFiles)
-        QObject::connect(organizeComicsFilesAction, &QAction::triggered, window, &LibraryWindow::organizeComicsFiles);
+        QObject::connect(organizeComicsFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeSelectedComics);
     QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
         folderManagementCoordinator->setCurrentFolderCompleted(false);
     });
@@ -512,7 +514,7 @@ void LibraryWindowActions::createConnections(
     });
     QObject::connect(openContainingFolderAction, &QAction::triggered, window, &LibraryWindow::openContainingFolder);
     if (YACReader::FeatureFlags::organizeFiles)
-        QObject::connect(organizeFilesAction, &QAction::triggered, window, &LibraryWindow::organizeFiles);
+        QObject::connect(organizeFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeCurrentFolder);
     QObject::connect(setFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::selectAndSetCurrentFolderCover);
     QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::resetCurrentFolderCover);
 
