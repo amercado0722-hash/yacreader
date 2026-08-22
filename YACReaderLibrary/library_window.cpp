@@ -42,7 +42,7 @@
 #include "add_library_dialog.h"
 #include "api_key_dialog.h"
 #include "comic_db.h"
-#include "comic_files_manager.h"
+#include "comic_files_coordinator.h"
 #include "comic_info_repairer.h"
 #include "comic_model.h"
 #include "comic_vine_dialog.h"
@@ -432,6 +432,10 @@ void LibraryWindow::setupCoordinators()
 {
     recentVisibilityCoordinator = new RecentVisibilityCoordinator(settings, foldersModel, comicsModel);
     organizeFilesCoordinator = new OrganizeFilesCoordinator(settings, this);
+    comicFilesCoordinator = new ComicFilesCoordinator(this);
+    connect(comicFilesCoordinator, &ComicFilesCoordinator::importRequested, this, [this](qulonglong folderId) {
+        updateFolder(foldersModel->getIndexFromFolderId(folderId));
+    });
 
     auto canStartUpdateProvider = [this]() {
         return comicVineDialog->isVisible() == false &&
@@ -1213,103 +1217,28 @@ void LibraryWindow::loadCoversFromCurrentModel()
 
 void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
 {
-    QLOG_DEBUG() << "-copyAndImportComicsToCurrentFolder-";
-    if (comics.size() > 0) {
-        QString destFolderPath = currentFolderPath();
-
-        QModelIndex folderDestination = getCurrentFolderIndex();
-
-        QProgressDialog *progressDialog = newProgressDialog(tr("Copying comics..."), comics.size());
-
-        auto comicFilesManager = new ComicFilesManager();
-        comicFilesManager->copyComicsTo(comics, destFolderPath, folderDestination);
-
-        processComicFiles(comicFilesManager, progressDialog);
-    }
+    const QModelIndex destinationFolder = getCurrentFolderIndex();
+    comicFilesCoordinator->copyAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics)
 {
-    QLOG_DEBUG() << "-moveAndImportComicsToCurrentFolder-";
-    if (comics.size() > 0) {
-        QString destFolderPath = currentFolderPath();
-
-        QModelIndex folderDestination = getCurrentFolderIndex();
-
-        QProgressDialog *progressDialog = newProgressDialog(tr("Moving comics..."), comics.size());
-
-        auto comicFilesManager = new ComicFilesManager();
-        comicFilesManager->moveComicsTo(comics, destFolderPath, folderDestination);
-
-        processComicFiles(comicFilesManager, progressDialog);
-    }
+    const QModelIndex destinationFolder = getCurrentFolderIndex();
+    comicFilesCoordinator->moveAndImportComics(comics, currentFolderPath(), destinationFolder.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder)
 {
-    QLOG_DEBUG() << "-copyAndImportComicsToFolder-";
-    if (comics.size() > 0) {
-        QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
-
-        QString destFolderPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
-
-        QLOG_DEBUG() << "Coping to " << destFolderPath;
-
-        QProgressDialog *progressDialog = newProgressDialog(tr("Copying comics..."), comics.size());
-
-        auto comicFilesManager = new ComicFilesManager();
-        comicFilesManager->copyComicsTo(comics, destFolderPath, folderDestination);
-
-        processComicFiles(comicFilesManager, progressDialog);
-    }
+    const QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
+    const QString destinationPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
+    comicFilesCoordinator->copyAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder)
 {
-    QLOG_DEBUG() << "-moveAndImportComicsToFolder-";
-    if (comics.size() > 0) {
-        QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
-
-        QString destFolderPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
-
-        QLOG_DEBUG() << "Moving to " << destFolderPath;
-
-        QProgressDialog *progressDialog = newProgressDialog(tr("Moving comics..."), comics.size());
-
-        auto comicFilesManager = new ComicFilesManager();
-        comicFilesManager->moveComicsTo(comics, destFolderPath, folderDestination);
-
-        processComicFiles(comicFilesManager, progressDialog);
-    }
-}
-
-void LibraryWindow::processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog)
-{
-    connect(comicFilesManager, &ComicFilesManager::progress, progressDialog, &QProgressDialog::setValue);
-
-    QThread *thread = NULL;
-
-    thread = new QThread();
-
-    comicFilesManager->moveToThread(thread);
-
-    connect(progressDialog, &QProgressDialog::canceled, comicFilesManager, &ComicFilesManager::cancel, Qt::DirectConnection);
-
-    connect(thread, &QThread::started, comicFilesManager, &ComicFilesManager::process);
-    connect(comicFilesManager, &ComicFilesManager::success, this, &LibraryWindow::updateCopyMoveFolderDestination);
-    connect(comicFilesManager, &ComicFilesManager::finished, thread, &QThread::quit);
-    connect(comicFilesManager, &ComicFilesManager::finished, comicFilesManager, &QObject::deleteLater);
-    connect(comicFilesManager, &ComicFilesManager::finished, progressDialog, &QWidget::close);
-    connect(comicFilesManager, &ComicFilesManager::finished, progressDialog, &QObject::deleteLater);
-    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-
-    if (thread != NULL)
-        thread->start();
-}
-
-void LibraryWindow::updateCopyMoveFolderDestination(const QModelIndex &mi)
-{
-    updateFolder(mi);
+    const QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
+    const QString destinationPath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(folderDestination));
+    comicFilesCoordinator->moveAndImportComics(comics, destinationPath, folderDestination.data(FolderModel::IdRole).toULongLong());
 }
 
 void LibraryWindow::updateCurrentFolder()
@@ -1329,15 +1258,6 @@ void LibraryWindow::updateFolder(const QModelIndex &miFolder)
     _lastAdded = currentLibrary;
     libraryCreator->updateFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder.data(FolderModel::IdRole).toULongLong());
     libraryCreator->start();
-}
-
-QProgressDialog *LibraryWindow::newProgressDialog(const QString &label, int maxValue)
-{
-    QProgressDialog *progressDialog = new QProgressDialog(label, "Cancel", 0, maxValue, this);
-    progressDialog->setWindowModality(Qt::WindowModal);
-    progressDialog->setMinimumWidth(350);
-    progressDialog->show();
-    return progressDialog;
 }
 
 void LibraryWindow::reloadCurrentFolderComicsContent()

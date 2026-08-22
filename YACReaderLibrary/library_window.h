@@ -74,8 +74,6 @@ class GridComicsView;
 class ComicsViewTransition;
 class NoSearchResultsWidget;
 class EditShortcutsDialog;
-class ComicFilesManager;
-class QProgressDialog;
 class ReadingListModel;
 class ReadingListModelProxy;
 class YACReaderReadingListsView;
@@ -85,6 +83,7 @@ class EmptySpecialListWidget;
 class EmptyReadingListWidget;
 class RecentVisibilityCoordinator;
 class OrganizeFilesCoordinator;
+class ComicFilesCoordinator;
 
 namespace YACReader {
 class TrayIconController;
@@ -333,11 +332,8 @@ public slots:
     void moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
     void copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
     void moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
-    void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
-    void updateCopyMoveFolderDestination(const QModelIndex &mi); // imports new comics from the current folder
     void updateCurrentFolder();
     void updateFolder(const QModelIndex &miFolder);
-    QProgressDialog *newProgressDialog(const QString &label, int maxValue);
     void reloadCurrentFolderComicsContent();
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
@@ -386,6 +382,7 @@ private:
 
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
     OrganizeFilesCoordinator *organizeFilesCoordinator;
+    ComicFilesCoordinator *comicFilesCoordinator;
     bool pendingAfterLaunchTasks;
 };
 

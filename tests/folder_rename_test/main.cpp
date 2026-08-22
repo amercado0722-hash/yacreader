@@ -125,6 +125,6 @@ void FolderRenameTest::missingFolderLeavesPathsUntouched()
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-QTEST_MAIN(FolderRenameTest)
+QTEST_GUILESS_MAIN(FolderRenameTest)
 
 #include "main.moc"
