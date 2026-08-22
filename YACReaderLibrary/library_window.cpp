@@ -80,7 +80,7 @@ extern YACReaderHttpServer *httpServer;
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), fetching(false), pendingAfterLaunchTasks(false)
+    : QMainWindow(), fullscreen(false), pendingAfterLaunchTasks(false)
 {
     createSettings();
 

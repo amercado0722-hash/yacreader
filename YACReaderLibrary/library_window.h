@@ -143,10 +143,6 @@ public:
     NoLibrariesWidget *noLibrariesWidget;
     ImportWidget *importWidget;
 
-    bool fetching;
-
-    int i;
-
     LibraryWindowActions actions;
 
 #ifdef Y_MAC_UI
@@ -162,9 +158,6 @@ public:
 
     OptionsDialog *optionsDialog;
     ServerConfigDialog *serverConfigDialog;
-
-    QString libraryPath;
-    QString comicsPath;
 
     void createSettings();
     void setupUI();
