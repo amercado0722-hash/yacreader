@@ -2,6 +2,7 @@
 
 #include "edit_shortcuts_dialog.h"
 #include "export_library_dialog.h"
+#include "feature_flags.h"
 #include "help_about_dialog.h"
 #include "library_window.h"
 #include "recent_visibility_coordinator.h"
@@ -232,6 +233,10 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
     openContainingFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_ACTION_YL));
 
+    organizeFilesAction = new QAction(window);
+    organizeFilesAction->setText(tr("Organize files"));
+    organizeFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+
     setFolderAsNotCompletedAction = new QAction(window);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
     setFolderAsNotCompletedAction->setData(SET_FOLDER_AS_NOT_COMPLETED_ACTION_YL);
@@ -293,6 +298,10 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderComicAction->setText(tr("Open containing folder..."));
     openContainingFolderComicAction->setData(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL);
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
+
+    organizeComicsFilesAction = new QAction(window);
+    organizeComicsFilesAction->setText(tr("Organize files"));
+    organizeComicsFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
 
     resetComicRatingAction = new QAction(window);
     resetComicRatingAction->setText(tr("Reset rating"));
@@ -405,6 +414,8 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     // actions not asigned to any widget
     window->addAction(saveCoversToAction);
     window->addAction(openContainingFolderAction);
+    if (YACReader::FeatureFlags::organizeFiles)
+        window->addAction(organizeFilesAction);
     window->addAction(updateCurrentFolderAction);
     window->addAction(resetComicRatingAction);
     window->addAction(setFolderAsCompletedAction);
@@ -421,6 +432,8 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     window->addAction(deleteMetadataAction);
     window->addAction(rescanXMLFromCurrentFolderAction);
     window->addAction(openContainingFolderComicAction);
+    if (YACReader::FeatureFlags::organizeFiles)
+        window->addAction(organizeComicsFilesAction);
 #ifndef Q_OS_MACOS
     window->addAction(toggleFullScreenAction);
 #endif
@@ -479,11 +492,15 @@ void LibraryWindowActions::createConnections(
 
     // ContextMenus
     QObject::connect(openContainingFolderComicAction, &QAction::triggered, window, &LibraryWindow::openContainingFolderComic);
+    if (YACReader::FeatureFlags::organizeFiles)
+        QObject::connect(organizeComicsFilesAction, &QAction::triggered, window, &LibraryWindow::organizeComicsFiles);
     QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsNotCompleted);
     QObject::connect(setFolderAsCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsCompleted);
     QObject::connect(setFolderAsReadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsRead);
     QObject::connect(setFolderAsUnreadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsUnread);
     QObject::connect(openContainingFolderAction, &QAction::triggered, window, &LibraryWindow::openContainingFolder);
+    if (YACReader::FeatureFlags::organizeFiles)
+        QObject::connect(organizeFilesAction, &QAction::triggered, window, &LibraryWindow::organizeFiles);
     QObject::connect(setFolderCoverAction, &QAction::triggered, window, &LibraryWindow::setFolderCover);
     QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, window, &LibraryWindow::deleteCustomFolderCover);
 
@@ -587,44 +604,50 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     // Get current theme for initial icons
     const auto &theme = ThemeManager::instance().getCurrentTheme();
 
-    editShortcutsDialog->addActionsGroup("Comics", theme.shortcutsIcons.comicsIcon,
-                                         tmpList = QList<QAction *>()
-                                                 << openComicAction
-                                                 << saveCoversToAction
-                                                 << setAsReadAction
-                                                 << setAsNonReadAction
-                                                 << setMangaAction
-                                                 << setNormalAction
-                                                 << openContainingFolderComicAction
-                                                 << resetComicRatingAction
-                                                 << selectAllComicsAction
-                                                 << editSelectedComicsAction
-                                                 << asignOrderAction
-                                                 << deleteMetadataAction
-                                                 << deleteComicsAction
-                                                 << getInfoAction);
+    tmpList = QList<QAction *>()
+            << openComicAction
+            << saveCoversToAction
+            << setAsReadAction
+            << setAsNonReadAction
+            << setMangaAction
+            << setNormalAction
+            << openContainingFolderComicAction
+            << organizeComicsFilesAction
+            << resetComicRatingAction
+            << selectAllComicsAction
+            << editSelectedComicsAction
+            << asignOrderAction
+            << deleteMetadataAction
+            << deleteComicsAction
+            << getInfoAction;
+    if (!YACReader::FeatureFlags::organizeFiles)
+        tmpList.removeOne(organizeComicsFilesAction);
+    editShortcutsDialog->addActionsGroup("Comics", theme.shortcutsIcons.comicsIcon, tmpList);
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Folders", theme.shortcutsIcons.foldersIcon,
-                                         tmpList = QList<QAction *>()
-                                                 << addFolderAction
-                                                 << renameFolderAction
-                                                 << deleteFolderAction
-                                                 << setRootIndexAction
-                                                 << expandAllNodesAction
-                                                 << colapseAllNodesAction
-                                                 << openContainingFolderAction
-                                                 << setFolderAsNotCompletedAction
-                                                 << setFolderAsCompletedAction
-                                                 << setFolderAsReadAction
-                                                 << setFolderAsUnreadAction
-                                                 << setFolderAsMangaAction
-                                                 << setFolderAsNormalAction
-                                                 << updateCurrentFolderAction
-                                                 << rescanXMLFromCurrentFolderAction
-                                                 << setFolderCoverAction
-                                                 << deleteCustomFolderCoverAction);
+    tmpList = QList<QAction *>()
+            << addFolderAction
+            << renameFolderAction
+            << deleteFolderAction
+            << setRootIndexAction
+            << expandAllNodesAction
+            << colapseAllNodesAction
+            << openContainingFolderAction
+            << organizeFilesAction
+            << setFolderAsNotCompletedAction
+            << setFolderAsCompletedAction
+            << setFolderAsReadAction
+            << setFolderAsUnreadAction
+            << setFolderAsMangaAction
+            << setFolderAsNormalAction
+            << updateCurrentFolderAction
+            << rescanXMLFromCurrentFolderAction
+            << setFolderCoverAction
+            << deleteCustomFolderCoverAction;
+    if (!YACReader::FeatureFlags::organizeFiles)
+        tmpList.removeOne(organizeFilesAction);
+    editShortcutsDialog->addActionsGroup("Folders", theme.shortcutsIcons.foldersIcon, tmpList);
     allActions << tmpList;
 
     editShortcutsDialog->addActionsGroup("Lists", theme.shortcutsIcons.foldersIcon, // TODO change icon
@@ -714,6 +737,7 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
     deleteMetadataAction->setEnabled(enabled);
     deleteComicsAction->setEnabled(enabled);
     openContainingFolderComicAction->setEnabled(enabled);
+    organizeComicsFilesAction->setEnabled(enabled);
     resetComicRatingAction->setEnabled(enabled);
     getInfoAction->setEnabled(enabled);
     addToMenuAction->setEnabled(enabled);
@@ -753,6 +777,7 @@ void LibraryWindowActions::disableFoldersActions(bool disabled)
     colapseAllNodesAction->setDisabled(disabled);
 
     openContainingFolderAction->setDisabled(disabled);
+    organizeFilesAction->setDisabled(disabled);
 
     renameFolderAction->setDisabled(disabled);
     updateFolderAction->setDisabled(disabled);

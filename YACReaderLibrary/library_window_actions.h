@@ -65,6 +65,7 @@ public:
     QAction *colapseAllNodesAction;
 
     QAction *openContainingFolderAction;
+    QAction *organizeFilesAction;
     QAction *saveCoversToAction;
     //--
     QAction *setFolderAsNotCompletedAction;
@@ -83,6 +84,7 @@ public:
     QAction *deleteCustomFolderCoverAction;
 
     QAction *openContainingFolderComicAction;
+    QAction *organizeComicsFilesAction;
     QAction *setAsReadAction;
     QAction *setAsNonReadAction;
 
