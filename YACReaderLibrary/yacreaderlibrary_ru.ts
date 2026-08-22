@@ -980,7 +980,7 @@
         <translation>Эта библиотека была создана с предыдущей версией YACReaderLibrary. Она должна быть обновлена. Обновить сейчас?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1059"/>
+        <location filename="library_window.cpp" line="1061"/>
         <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>Имя папки:</translation>
@@ -991,13 +991,13 @@
         <translation>Выбранная папка и все ее содержимое будет удалено с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1579"/>
+        <location filename="library_window.cpp" line="1531"/>
         <source>Error opening the library</source>
         <translation>Ошибка открытия библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1200"/>
         <location filename="library_window.cpp" line="1202"/>
+        <location filename="library_window.cpp" line="1204"/>
         <source>YACReader not found</source>
         <translation>YACReader не найден</translation>
     </message>
@@ -1008,7 +1008,7 @@
         <translation>Возникла проблема при удалении выбранных папок. Пожалуйста, проверьте права на запись и убедитесь что другие приложения не используют эти папки или файлы.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1131"/>
+        <location filename="library_window.cpp" line="1133"/>
         <source>Rename list name</source>
         <translation>Изменить имя списка</translation>
     </message>
@@ -1062,18 +1062,18 @@
         <translation>Ошибка в пути</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1574"/>
+        <location filename="library_window.cpp" line="1526"/>
         <source>Error updating the library</source>
         <translation>Ошибка обновления библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1101"/>
+        <location filename="library_window.cpp" line="1103"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>Выбранные элементы будут удалены, ваши комиксы или папки НЕ БУДУТ удалены с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1083"/>
-        <location filename="library_window.cpp" line="1132"/>
+        <location filename="library_window.cpp" line="1085"/>
+        <location filename="library_window.cpp" line="1134"/>
         <source>List name:</source>
         <translation>Имя списка:</translation>
     </message>
@@ -1088,7 +1088,7 @@
         <translation>Сохранить обложки</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1082"/>
+        <location filename="library_window.cpp" line="1084"/>
         <source>Add new reading lists</source>
         <translation>Добавить новый список чтения</translation>
     </message>
@@ -1106,7 +1106,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 YACReaderLibrary не помешает вам создать больше библиотек, но вы должны иметь не большое количество библиотек.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="533"/>
+        <location filename="library_window.cpp" line="544"/>
         <source>Library info</source>
         <translation>Информация о библиотеке</translation>
     </message>
@@ -1133,12 +1133,12 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Возникла проблема при удалении выбранных комиксов. Пожалуйста, проверьте права на запись для выбранных файлов или содержащую их папку.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="241"/>
+        <location filename="library_window.cpp" line="253"/>
         <source>YACReader Library</source>
         <translation>Библиотека YACReader</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1569"/>
+        <location filename="library_window.cpp" line="1521"/>
         <source>Error creating the library</source>
         <translation>Ошибка создания библиотеки</translation>
     </message>
@@ -1208,12 +1208,12 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Удалить комиксы</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1058"/>
+        <location filename="library_window.cpp" line="1060"/>
         <source>Add new folder</source>
         <translation>Добавить новую папку</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1101"/>
+        <location filename="library_window.cpp" line="1103"/>
         <source>Delete list/label</source>
         <translation>Удалить список/ярлык</translation>
     </message>
@@ -1246,32 +1246,32 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Не удалось удалить</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="707"/>
+        <location filename="library_window.cpp" line="718"/>
         <source>Search filters</source>
         <translation>Фильтры поиска</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="717"/>
+        <location filename="library_window.cpp" line="728"/>
         <source>Unread</source>
         <translation>Непрочитанные</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="719"/>
+        <location filename="library_window.cpp" line="730"/>
         <source>In progress</source>
         <translation>В процессе</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="721"/>
+        <location filename="library_window.cpp" line="732"/>
         <source>Highly rated</source>
         <translation>С высокой оценкой</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="723"/>
+        <location filename="library_window.cpp" line="734"/>
         <source>Recently added</source>
         <translation>Недавно добавленные</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="730"/>
+        <location filename="library_window.cpp" line="741"/>
         <source>Search syntax…</source>
         <translation>Синтаксис поиска…</translation>
     </message>
@@ -1296,12 +1296,12 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Если вы уверены, что никакое другое восстановление не выполняется, блокировку можно снять. Снять блокировку и продолжить?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="841"/>
+        <location filename="library_window.cpp" line="852"/>
         <source>Package operation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="841"/>
+        <location filename="library_window.cpp" line="852"/>
         <source>The covers package operation could not be completed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1355,12 +1355,12 @@ Folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1209"/>
+        <location filename="library_window.cpp" line="1211"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1209"/>
+        <location filename="library_window.cpp" line="1211"/>
         <source>Error opening comic with third party reader.</source>
         <translation>Ошибка при открытии комикса с помощью сторонней программы чтения.</translation>
     </message>
@@ -1537,12 +1537,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>При обновлении библиотеки возникли ошибки: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1200"/>
+        <location filename="library_window.cpp" line="1202"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader не найден. YACReader должен быть установлен в ту же папку, что и YACReaderLibrary.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1202"/>
+        <location filename="library_window.cpp" line="1204"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader не найден. Возможно, возникла проблема с установкой YACReader.</translation>
     </message>

@@ -989,7 +989,7 @@
         <translation>更新失败</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1059"/>
+        <location filename="library_window.cpp" line="1061"/>
         <location filename="folder_management_coordinator.cpp" line="111"/>
         <source>Folder name:</source>
         <translation>文件夹名称:</translation>
@@ -1000,13 +1000,13 @@
         <translation>所选文件夹及其所有内容将从磁盘中删除。 你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1579"/>
+        <location filename="library_window.cpp" line="1531"/>
         <source>Error opening the library</source>
         <translation>打开库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1200"/>
         <location filename="library_window.cpp" line="1202"/>
+        <location filename="library_window.cpp" line="1204"/>
         <source>YACReader not found</source>
         <translation>YACReader 未找到</translation>
     </message>
@@ -1017,7 +1017,7 @@
         <translation>尝试删除所选文件夹时出现问题。 请检查写入权限，并确保没有其他应用程序在使用这些文件夹或文件。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1131"/>
+        <location filename="library_window.cpp" line="1133"/>
         <source>Rename list name</source>
         <translation>重命名列表</translation>
     </message>
@@ -1026,7 +1026,7 @@
         <translation type="vanished">移除并删除元数据</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1200"/>
+        <location filename="library_window.cpp" line="1202"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>未找到YACReader. YACReader应安装在与YACReaderLibrary相同的文件夹中.</translation>
     </message>
@@ -1066,12 +1066,12 @@
         <translation>库 &apos;%1&apos; 不再可用。 你想删除它吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1209"/>
+        <location filename="library_window.cpp" line="1211"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1209"/>
+        <location filename="library_window.cpp" line="1211"/>
         <source>Error opening comic with third party reader.</source>
         <translation>使用第三方阅读器打开漫画时出错。</translation>
     </message>
@@ -1086,18 +1086,18 @@
         <translation>路径错误</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1574"/>
+        <location filename="library_window.cpp" line="1526"/>
         <source>Error updating the library</source>
         <translation>更新库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1101"/>
+        <location filename="library_window.cpp" line="1103"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>所选项目将被删除，您的漫画或文件夹将不会从您的磁盘中删除。 你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1083"/>
-        <location filename="library_window.cpp" line="1132"/>
+        <location filename="library_window.cpp" line="1085"/>
+        <location filename="library_window.cpp" line="1134"/>
         <source>List name:</source>
         <translation>列表名称:</translation>
     </message>
@@ -1112,12 +1112,12 @@
         <translation>保存封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1202"/>
+        <location filename="library_window.cpp" line="1204"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>未找到YACReader. YACReader的安装可能有问题.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1082"/>
+        <location filename="library_window.cpp" line="1084"/>
         <source>Add new reading lists</source>
         <translation>添加新的阅读列表</translation>
     </message>
@@ -1162,12 +1162,12 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>尝试删除所选漫画时出现问题。 请检查所选文件或包含文件夹中的写入权限。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="241"/>
+        <location filename="library_window.cpp" line="253"/>
         <source>YACReader Library</source>
         <translation>YACReader 库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1569"/>
+        <location filename="library_window.cpp" line="1521"/>
         <source>Error creating the library</source>
         <translation>创建库时出错</translation>
     </message>
@@ -1207,32 +1207,32 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>下载新版本</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="707"/>
+        <location filename="library_window.cpp" line="718"/>
         <source>Search filters</source>
         <translation>搜索筛选条件</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="717"/>
+        <location filename="library_window.cpp" line="728"/>
         <source>Unread</source>
         <translation>未读</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="719"/>
+        <location filename="library_window.cpp" line="730"/>
         <source>In progress</source>
         <translation>阅读中</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="721"/>
+        <location filename="library_window.cpp" line="732"/>
         <source>Highly rated</source>
         <translation>高评分</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="723"/>
+        <location filename="library_window.cpp" line="734"/>
         <source>Recently added</source>
         <translation>最近添加</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="730"/>
+        <location filename="library_window.cpp" line="741"/>
         <source>Search syntax…</source>
         <translation>搜索语法…</translation>
     </message>
@@ -1257,12 +1257,12 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>如果您确定没有其他修复正在运行，可以移除该锁定。移除锁定并继续？</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="841"/>
+        <location filename="library_window.cpp" line="852"/>
         <source>Package operation failed</source>
         <translation>打包操作失败</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="841"/>
+        <location filename="library_window.cpp" line="852"/>
         <source>The covers package operation could not be completed.</source>
         <translation>封面包操作无法完成。</translation>
     </message>
@@ -1473,7 +1473,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>移除并删除元数据和备份</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="533"/>
+        <location filename="library_window.cpp" line="544"/>
         <source>Library info</source>
         <translation>图书馆信息</translation>
     </message>
@@ -1503,12 +1503,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>删除漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1058"/>
+        <location filename="library_window.cpp" line="1060"/>
         <source>Add new folder</source>
         <translation>添加新的文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1101"/>
+        <location filename="library_window.cpp" line="1103"/>
         <source>Delete list/label</source>
         <translation>删除 列表/标签</translation>
     </message>

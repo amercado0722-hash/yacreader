@@ -60,6 +60,7 @@
 #include "library_database_maintenance_coordinator.h"
 #include "library_management_coordinator.h"
 #include "library_repair_coordinator.h"
+#include "library_search_coordinator.h"
 #include "library_window_menus.h"
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
@@ -94,7 +95,7 @@ extern YACReaderHttpServer *httpServer;
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), pendingAfterLaunchTasks(false)
+    : QMainWindow(), fullscreen(false), fetching(false), pendingAfterLaunchTasks(false)
 {
     createSettings();
 
@@ -212,7 +213,18 @@ void LibraryWindow::setupUI()
     doLayout();
     createToolBars();
 
-    navigationController = new YACReaderNavigationController(this, contentViewsManager);
+    librarySearchCoordinator = new LibrarySearchCoordinator(
+            foldersModel,
+            foldersModelProxy,
+            comicsModel,
+            foldersView,
+            contentViewsManager,
+            [this] { clearSearchInput(false); },
+            this);
+    navigationController = new YACReaderNavigationController(this, contentViewsManager, librarySearchCoordinator);
+    connect(librarySearchCoordinator, &LibrarySearchCoordinator::previousNavigationStateRequested, navigationController, &YACReaderNavigationController::loadPreviousStatus);
+    connect(librarySearchCoordinator, &LibrarySearchCoordinator::comicActionsDisabledChanged, this, &LibraryWindow::setComicActionsDisabled);
+
     setupCoordinators();
 
     menus = new LibraryWindowMenus(
@@ -417,7 +429,6 @@ void LibraryWindow::doModels()
     // folders
     foldersModel = new FolderModel(this);
     foldersModelProxy = new FolderModelProxy(this);
-    folderQueryResultProcessor.reset(new FolderQueryResultProcessor(foldersModel));
     // foldersModelProxy->setSourceModel(foldersModel);
     // comics
     comicsModel = new ComicModel(this);
@@ -873,19 +884,10 @@ void LibraryWindow::createConnections()
 // Search filter
 #ifdef Y_MAC_UI
     connect(libraryToolBar, &YACReaderMacOSXToolbar::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-    connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
-        setSearchFilter(filter);
-    });
 #else
     connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-    connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
-        setSearchFilter(filter);
-    });
 #endif
-    connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
-    qRegisterMetaType<FolderItem *>("FolderItem *");
-    qRegisterMetaType<QMap<unsigned long long int, FolderItem *> *>("QMap<unsigned long long int, FolderItem *> *");
-    connect(folderQueryResultProcessor.get(), &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
+    connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, librarySearchCoordinator, &LibrarySearchCoordinator::search);
 
     connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
     connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
@@ -1050,7 +1052,7 @@ void LibraryWindow::setComicToolbarEntriesVisible(bool visible)
 
 void LibraryWindow::addFolderToCurrentIndex()
 {
-    exitSearchMode(); // Creating a folder in search mode is broken => exit it.
+    librarySearchCoordinator->exitSearchMode(); // Creating a folder in search mode is broken => exit it.
 
     const auto currentIndex = getCurrentFolderIndex();
 
@@ -1356,48 +1358,6 @@ void LibraryWindow::toNormal()
 #endif
 }
 
-void LibraryWindow::setSearchFilter(QString filter)
-{
-    if (!filter.isEmpty()) {
-        folderQueryResultProcessor->createModelData(filter);
-        comicQueryResultProcessor.createModelData(filter, foldersModel->getDatabase());
-    } else if (status == LibraryWindow::Searching) { // if no searching, then ignore this
-        clearSearchFilter();
-        navigationController->loadPreviousStatus();
-    }
-}
-
-void LibraryWindow::setComicSearchFilterData(QList<ComicItem *> *data, const QString &databasePath)
-{
-    status = LibraryWindow::Searching;
-
-    comicsModel->setModelData(data, databasePath);
-    contentViewsManager->comicsView->enableFilterMode(true);
-    contentViewsManager->comicsView->setModel(comicsModel); // TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
-
-    if (comicsModel->rowCount() == 0) {
-        contentViewsManager->showNoSearchResults();
-        setComicActionsDisabled(true);
-    } else {
-        contentViewsManager->showComicsView();
-        setComicActionsDisabled(false);
-    }
-}
-
-void LibraryWindow::setFolderSearchFilterData(QMap<unsigned long long, FolderItem *> *filteredItems, FolderItem *root)
-{
-    foldersModelProxy->setFilterData(filteredItems, root);
-    foldersView->expandAll();
-}
-
-void LibraryWindow::clearSearchFilter()
-{
-    foldersModelProxy->clear();
-    contentViewsManager->comicsView->enableFilterMode(false);
-    foldersView->collapseAll();
-    status = LibraryWindow::Normal;
-}
-
 void LibraryWindow::showComicVineScraper()
 {
     QSettings s(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
@@ -1420,14 +1380,6 @@ void LibraryWindow::showComicVineScraper()
         navigationController->beginCurrentSourceRefresh();
         comicVineDialog->show();
     }
-}
-
-void LibraryWindow::checkSearchNumResults(int numResults)
-{
-    if (numResults == 0)
-        contentViewsManager->showNoSearchResults();
-    else
-        contentViewsManager->showComicsView();
 }
 
 void LibraryWindow::openContainingFolderComic()
@@ -1641,13 +1593,4 @@ void LibraryWindow::updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &c
         contentViewsManager->updateCurrentComicView();
         navigationController->reloadRootContinueReading();
     }
-}
-
-bool LibraryWindow::exitSearchMode()
-{
-    if (status != LibraryWindow::Searching)
-        return false;
-    clearSearchInput(false);
-    clearSearchFilter();
-    return true;
 }

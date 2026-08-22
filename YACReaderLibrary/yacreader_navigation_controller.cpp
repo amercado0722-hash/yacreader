@@ -9,6 +9,7 @@
 #include "folder_item.h"
 #include "folder_model.h"
 #include "grid_comics_view.h"
+#include "library_search_coordinator.h"
 #include "library_window.h"
 #include "reading_list_model.h"
 #include "yacreader_content_views_manager.h"
@@ -22,8 +23,8 @@
 
 #include <memory>
 
-YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager)
-    : QObject(parent), libraryWindow(parent), contentViewsManager(contentViewsManager)
+YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager, LibrarySearchCoordinator *librarySearchCoordinator)
+    : QObject(parent), libraryWindow(parent), contentViewsManager(contentViewsManager), librarySearchCoordinator(librarySearchCoordinator)
 {
     setupConnections();
 }
@@ -38,7 +39,7 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &proxyIndex
     }
 
     // when a folder is selected the search mode has to be reset
-    if (libraryWindow->exitSearchMode()) {
+    if (librarySearchCoordinator->exitSearchMode()) {
         libraryWindow->foldersView->scrollTo(folderIndex, QAbstractItemView::PositionAtTop);
         libraryWindow->foldersView->setCurrentIndex(folderIndex);
     }
@@ -181,7 +182,7 @@ void YACReaderNavigationController::selectedList(const QModelIndex &proxyIndex)
     libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(listIndex, YACReaderLibrarySourceContainer::List));
 
     // when a list is selected the search mode has to be reset
-    if (libraryWindow->exitSearchMode()) {
+    if (librarySearchCoordinator->exitSearchMode()) {
 
         libraryWindow->listsView->scrollTo(proxyIndex, QAbstractItemView::PositionAtTop);
         libraryWindow->listsView->setCurrentIndex(proxyIndex);
@@ -232,7 +233,7 @@ void YACReaderNavigationController::refreshCurrentSource()
     const auto viewState = pendingRefreshViewState.value_or(contentViewsManager->captureViewState());
     pendingRefreshViewState.reset();
 
-    if (libraryWindow->status == LibraryWindow::Searching) {
+    if (librarySearchCoordinator->isSearching()) {
         libraryWindow->comicsModel->reload();
 
         if (contentViewsManager->isComicsViewVisible())
@@ -269,7 +270,7 @@ void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibr
 {
     // TODO NO searching allowed, just disable backward/forward actions in searching mode
     // when a folder or a list is selected the search mode has to be reset
-    libraryWindow->exitSearchMode();
+    librarySearchCoordinator->exitSearchMode();
     restoringHistorySelection = true;
     loadIndexFromHistory(sourceContainer);
     contentViewsManager->restoreViewState(sourceContainer.getViewState());

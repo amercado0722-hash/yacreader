@@ -3,9 +3,7 @@
 
 #include "comic_db.h"
 #include "comic_model.h"
-#include "comic_query_result_processor.h"
 #include "folder.h"
-#include "folder_query_result_processor.h"
 #include "libraries_update_coordinator.h"
 #include "library_window_actions.h"
 #include "themable.h"
@@ -15,10 +13,7 @@
 
 #include <QFileInfo>
 #include <QMainWindow>
-#include <QMap>
 #include <QModelIndex>
-
-#include <memory>
 
 #ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"
@@ -43,7 +38,6 @@ class HelpAboutDialog;
 class RenameLibraryDialog;
 class PropertiesDialog;
 class PackageManager;
-class QCheckBox;
 class QPushButton;
 class ComicModel;
 class QSplitter;
@@ -87,6 +81,7 @@ class LibraryDatabaseMaintenanceCoordinator;
 class LibraryRepairCoordinator;
 class LibraryManagementCoordinator;
 class LibraryWindowMenus;
+class LibrarySearchCoordinator;
 
 namespace YACReader {
 class TrayIconController;
@@ -133,10 +128,6 @@ public:
     YACReaderSearchLineEdit *searchEdit;
 #endif
 
-    QString previousFilter;
-    QCheckBox *includeComicsCheckBox;
-    //-------------
-
     YACReaderNavigationController *navigationController;
     YACReaderContentViewsManager *contentViewsManager;
     LibraryWindowMenus *menus;
@@ -179,13 +170,6 @@ public:
 
     QString libraryPath;
     QString comicsPath;
-
-    enum NavigationStatus {
-        Normal, //
-        Searching
-    };
-
-    NavigationStatus status;
 
     void createSettings();
     void setupUI();
@@ -244,10 +228,6 @@ public slots:
     void toggleFullScreen();
     void toNormal();
     void toFullScreen();
-    void setSearchFilter(QString filter);
-    void setComicSearchFilterData(QList<ComicItem *> *, const QString &);
-    void setFolderSearchFilterData(QMap<unsigned long long int, FolderItem *> *filteredItems, FolderItem *root);
-    void clearSearchFilter();
     void exportLibrary(QString destPath);
     void importLibrary(QString clc, QString destPath, QString name);
     void reloadOptions();
@@ -265,7 +245,6 @@ public slots:
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
     void updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic);
     void showComicVineScraper();
-    void checkSearchNumResults(int numResults);
     void loadCoversFromCurrentModel();
     void updateCurrentFolder();
     void updateFolder(const QModelIndex &miFolder);
@@ -291,9 +270,6 @@ public slots:
     bool eventFilter(QObject *object, QEvent *event) override;
 
 private:
-    //! @brief Exits search mode if it is active.
-    //! @return true If the search mode was active when this function was called.
-    bool exitSearchMode();
     bool startsHiddenInTray() const;
 
     void applyLoadedLibrary(const QString &libraryDataPath, bool readOnly);
@@ -302,9 +278,8 @@ private:
     void handleLibraryRemoved(const QString &libraryName, bool librariesEmpty);
 
     TrayIconController *trayIconController;
-    ComicQueryResultProcessor comicQueryResultProcessor;
-    std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
 
+    LibrarySearchCoordinator *librarySearchCoordinator;
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
     OrganizeFilesCoordinator *organizeFilesCoordinator;
     ComicManagementCoordinator *comicManagementCoordinator;
