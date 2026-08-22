@@ -88,6 +88,8 @@ qt_add_executable(YACReaderLibrary WIN32
     library_window_actions.cpp
     comic_files_coordinator.h
     comic_files_coordinator.cpp
+    library_database_maintenance_coordinator.h
+    library_database_maintenance_coordinator.cpp
     feature_flags.h
     create_library_dialog.h
     create_library_dialog.cpp

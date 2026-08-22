@@ -18,7 +18,6 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QProcess>
-#include <QProgressDialog>
 #include <QSettings>
 #include <QShowEvent>
 #include <QSplitter>
@@ -65,6 +64,7 @@
 #include "import_widget.h"
 #include "library_comic_opener.h"
 #include "library_creator.h"
+#include "library_database_maintenance_coordinator.h"
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
 #include "organize_files_coordinator.h"
@@ -435,6 +435,28 @@ void LibraryWindow::setupCoordinators()
     comicFilesCoordinator = new ComicFilesCoordinator(this);
     connect(comicFilesCoordinator, &ComicFilesCoordinator::importRequested, this, [this](qulonglong folderId) {
         updateFolder(foldersModel->getIndexFromFolderId(folderId));
+    });
+    libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(this);
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::backupAvailabilityChanged, actions.backupLibraryAction, &QAction::setEnabled);
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::maintenanceStarted, this, [this] {
+        contentViewsManager->comicsView->setModel(nullptr);
+        foldersView->setModel(nullptr);
+        listsView->setModel(nullptr);
+        actions.disableAllActions();
+    });
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryReloadRequested, this, &LibraryWindow::loadLibrary);
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryUpdateRequested, this, &LibraryWindow::updateLibrary);
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::invalidDatabaseRestoreCancelled, this, [this] {
+        actions.renameLibraryAction->setEnabled(true);
+        actions.removeLibraryAction->setEnabled(true);
+        actions.restoreLibraryAction->setEnabled(true);
+    });
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::databaseUnavailableAfterRestore, this, [this] {
+        actions.restoreLibraryAction->setEnabled(true);
+        actions.removeLibraryAction->setEnabled(true);
+    });
+    connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::databaseSalvageFailed, this, [this] {
+        actions.restoreLibraryAction->setEnabled(true);
     });
 
     auto canStartUpdateProvider = [this]() {
@@ -2084,232 +2106,18 @@ void LibraryWindow::updateLibrary()
 
 void LibraryWindow::backupLibrary()
 {
-    const auto path = libraries.getPath(selectedLibrary->currentText());
-    if (path.isEmpty())
-        return;
-
-    auto version = DataBaseManagement::checkValidDB(LibraryPaths::libraryDatabasePath(path));
-    if (version.isEmpty())
-        version = "unknown";
-    const auto suggestedName = QString("library-%1-db-%2-manual.ydb")
-                                       .arg(QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss"), version);
-    const auto destination = QFileDialog::getSaveFileName(this,
-                                                          actions.backupLibraryAction->text(),
-                                                          QDir::home().filePath(suggestedName),
-                                                          tr("YACReader library database (*.ydb)"));
-    if (destination.isEmpty())
-        return;
-
-    struct BackupResult {
-        bool success { false };
-        QString error;
-    };
-
-    auto result = std::make_shared<BackupResult>();
-    auto worker = QThread::create([path, destination, result] {
-        result->success = DataBaseManagement::backupLibrary(path, DatabaseBackupReason::Manual, &result->error, destination);
-    });
-
-    actions.backupLibraryAction->setDisabled(true);
-    connect(worker, &QThread::finished, this, [this, destination, result] {
-        actions.backupLibraryAction->setDisabled(false);
-        if (result->success) {
-            QMessageBox::information(this,
-                                     actions.backupLibraryAction->text(),
-                                     tr("The library database backup was created at:\n%1").arg(destination));
-        } else {
-            QMessageBox::critical(this,
-                                  actions.backupLibraryAction->text(),
-                                  tr("Unable to create the library database backup:\n%1").arg(result->error));
-        }
-    });
-    connect(worker, &QThread::finished, worker, &QObject::deleteLater);
-    worker->start();
+    libraryDatabaseMaintenanceCoordinator->backupLibrary(libraries.getPath(selectedLibrary->currentText()), actions.backupLibraryAction->text());
 }
 
 void LibraryWindow::restoreLibrary()
 {
-    const auto libraryPath = libraries.getPath(selectedLibrary->currentText());
-    if (libraryPath.isEmpty())
-        return;
-
-    const auto backupPath = QFileDialog::getOpenFileName(this,
-                                                         actions.restoreLibraryAction->text(),
-                                                         QDir(LibraryPaths::libraryDataPath(libraryPath)).filePath("backups"),
-                                                         tr("YACReader library database (*.ydb)"));
-    if (backupPath.isEmpty())
-        return;
-
-    const auto answer = QMessageBox::warning(this,
-                                             actions.restoreLibraryAction->text(),
-                                             tr("Close YACReaderLibraryServer and any other YACReader application using this library before restoring. Continue?"),
-                                             QMessageBox::Yes | QMessageBox::Cancel,
-                                             QMessageBox::Cancel);
-    if (answer == QMessageBox::Yes)
-        startLibraryRestore(backupPath);
-}
-
-void LibraryWindow::startLibraryRestore(const QString &backupPath, bool allowInvalidCurrent, bool removeStaleLock)
-{
     const auto libraryName = selectedLibrary->currentText();
-    const auto libraryPath = libraries.getPath(libraryName);
-    auto result = std::make_shared<DatabaseRestoreResult>();
-    auto progress = new QProgressDialog(tr("Restoring library database..."), QString(), 0, 0, this);
-    progress->setCancelButton(nullptr);
-    progress->setWindowModality(Qt::WindowModal);
-    progress->setMinimumDuration(0);
-
-    contentViewsManager->comicsView->setModel(nullptr);
-    foldersView->setModel(nullptr);
-    listsView->setModel(nullptr);
-    actions.disableAllActions();
-
-    auto worker = QThread::create([libraryPath, backupPath, allowInvalidCurrent, removeStaleLock, result] {
-        *result = DataBaseManagement::restoreLibrary(libraryPath, backupPath, allowInvalidCurrent, removeStaleLock);
-    });
-    connect(worker, &QThread::finished, this, [this, libraryName, backupPath, allowInvalidCurrent, result, progress] {
-        progress->deleteLater();
-
-        if (result->status == DatabaseRestoreStatus::InvalidCurrentDatabase && !allowInvalidCurrent) {
-            const auto answer = QMessageBox::warning(this,
-                                                     actions.restoreLibraryAction->text(),
-                                                     tr("The current library database is invalid. Restore the selected backup anyway?"),
-                                                     QMessageBox::Yes | QMessageBox::Cancel,
-                                                     QMessageBox::Cancel);
-            if (answer == QMessageBox::Yes) {
-                startLibraryRestore(backupPath, true);
-                return;
-            }
-            actions.renameLibraryAction->setEnabled(true);
-            actions.removeLibraryAction->setEnabled(true);
-            actions.restoreLibraryAction->setEnabled(true);
-            return;
-        } else if (result->status == DatabaseRestoreStatus::LockFailed && !result->lockHolderIsRunningLocally) {
-            const auto answer = QMessageBox::warning(this,
-                                                     actions.restoreLibraryAction->text(),
-                                                     tr("The library maintenance lock may be stale. Remove it and retry?"),
-                                                     QMessageBox::Yes | QMessageBox::Cancel,
-                                                     QMessageBox::Cancel);
-            if (answer == QMessageBox::Yes) {
-                startLibraryRestore(backupPath, allowInvalidCurrent, true);
-                return;
-            }
-            loadLibrary(libraryName);
-            return;
-        }
-
-        if (!result->success()) {
-            auto error = result->error;
-            if (result->status == DatabaseRestoreStatus::RollbackFailed)
-                error += tr("\n\nRestart YACReaderLibrary before attempting recovery again.");
-            QMessageBox::critical(this, actions.restoreLibraryAction->text(), error);
-            if (result->status != DatabaseRestoreStatus::RollbackFailed) {
-                loadLibrary(libraryName);
-            } else {
-                actions.restoreLibraryAction->setEnabled(true);
-                actions.removeLibraryAction->setEnabled(true);
-            }
-            return;
-        }
-
-        loadLibrary(libraryName);
-        const auto answer = QMessageBox::question(this,
-                                                  actions.restoreLibraryAction->text(),
-                                                  tr("The library database was restored successfully. Update the library now?"),
-                                                  QMessageBox::Yes | QMessageBox::No,
-                                                  QMessageBox::Yes);
-        if (answer == QMessageBox::Yes)
-            updateLibrary();
-    });
-    connect(worker, &QThread::finished, worker, &QObject::deleteLater);
-    worker->start();
+    libraryDatabaseMaintenanceCoordinator->restoreLibrary(libraryName, libraries.getPath(libraryName), actions.restoreLibraryAction->text());
 }
 
 void LibraryWindow::offerDatabaseRecovery(const QString &libraryName)
 {
-    QMessageBox messageBox(QMessageBox::Warning,
-                           tr("Library database damaged"),
-                           tr("The database of library '%1' is damaged, so normal updates, maintenance, and backups are unavailable. YACReader can attempt to repair the database. Some damaged data may not be recoverable. Existing backups will not be changed.").arg(libraryName),
-                           QMessageBox::NoButton,
-                           this);
-    const auto repairButton = messageBox.addButton(tr("Attempt repair"), QMessageBox::AcceptRole);
-    const auto restoreButton = messageBox.addButton(tr("Restore a backup..."), QMessageBox::ActionRole);
-    messageBox.addButton(QMessageBox::Cancel);
-    messageBox.setWindowModality(Qt::WindowModal);
-    messageBox.exec();
-
-    if (messageBox.clickedButton() == repairButton)
-        startDatabaseSalvage(libraryName);
-    else if (messageBox.clickedButton() == restoreButton)
-        restoreLibrary();
-}
-
-void LibraryWindow::startDatabaseSalvage(const QString &libraryName, bool removeStaleLock)
-{
-    const auto libraryPath = libraries.getPath(libraryName);
-    if (libraryPath.isEmpty())
-        return;
-
-    auto result = std::make_shared<DatabaseSalvageResult>();
-    auto progress = new QProgressDialog(tr("Repairing library database..."), QString(), 0, 0, this);
-    progress->setCancelButton(nullptr);
-    progress->setWindowModality(Qt::WindowModal);
-    progress->setMinimumDuration(0);
-
-    auto worker = QThread::create([libraryPath, removeStaleLock, result] {
-        *result = DataBaseManagement::salvageLibrary(libraryPath, removeStaleLock);
-    });
-    connect(worker, &QThread::finished, this, [this, libraryName, result, progress] {
-        progress->deleteLater();
-
-        if (result->status == DatabaseSalvageStatus::LockFailed) {
-            if (!result->lockHolderIsRunningLocally) {
-                const auto answer = QMessageBox::warning(this,
-                                                         tr("Library database repair"),
-                                                         tr("The library maintenance lock may be stale. Remove it and retry?"),
-                                                         QMessageBox::Yes | QMessageBox::Cancel,
-                                                         QMessageBox::Cancel);
-                if (answer == QMessageBox::Yes)
-                    startDatabaseSalvage(libraryName, true);
-            } else {
-                QMessageBox::warning(this,
-                                     tr("Library database repair"),
-                                     tr("Another maintenance operation is currently using this library. Try again after it finishes."));
-            }
-            return;
-        }
-
-        if (result->success()) {
-            loadLibrary(libraryName);
-            if (result->status == DatabaseSalvageStatus::AlreadyValid) {
-                QMessageBox::information(this,
-                                         tr("Library database repair"),
-                                         tr("The library database is already valid."));
-            } else if (result->status == DatabaseSalvageStatus::Reindexed) {
-                QMessageBox::information(this,
-                                         tr("Library database repaired"),
-                                         tr("The library database was repaired by rebuilding its indexes. The damaged original was preserved at:\n%1").arg(result->preservedDatabasePath));
-            } else {
-                const auto answer = QMessageBox::question(this,
-                                                          tr("Library database rebuilt"),
-                                                          tr("The library database was rebuilt successfully. The damaged original was preserved at:\n%1\n\nUpdate the library now?").arg(result->preservedDatabasePath),
-                                                          QMessageBox::Yes | QMessageBox::No,
-                                                          QMessageBox::Yes);
-                if (answer == QMessageBox::Yes)
-                    updateLibrary();
-            }
-        } else {
-            auto recovery = result->preservedDatabasePath.isEmpty()
-                    ? QString()
-                    : tr("\n\nThe damaged original was preserved at:\n%1").arg(result->preservedDatabasePath);
-            QMessageBox::critical(this,
-                                  tr("Library database repair failed"),
-                                  tr("The library database could not be repaired:\n%1%2\n\nYou can restore a backup from the Library menu or recreate the library.").arg(result->error, recovery));
-            actions.restoreLibraryAction->setEnabled(true);
-        }
-    });
-    connect(worker, &QThread::finished, worker, &QObject::deleteLater);
-    worker->start();
+    libraryDatabaseMaintenanceCoordinator->offerDatabaseRecovery(libraryName, libraries.getPath(libraryName), actions.restoreLibraryAction->text());
 }
 
 void LibraryWindow::repairLibrary()

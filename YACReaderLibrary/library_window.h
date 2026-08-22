@@ -84,6 +84,7 @@ class EmptyReadingListWidget;
 class RecentVisibilityCoordinator;
 class OrganizeFilesCoordinator;
 class ComicFilesCoordinator;
+class LibraryDatabaseMaintenanceCoordinator;
 
 namespace YACReader {
 class TrayIconController;
@@ -252,9 +253,7 @@ public slots:
     void updateLibrary();
     void backupLibrary();
     void restoreLibrary();
-    void startLibraryRestore(const QString &backupPath, bool allowInvalidCurrent = false, bool removeStaleLock = false);
     void offerDatabaseRecovery(const QString &libraryName);
-    void startDatabaseSalvage(const QString &libraryName, bool removeStaleLock = false);
     void repairLibrary();
     void startLibraryRepair(bool removeStaleLock);
     // void deleteLibrary();
@@ -383,6 +382,7 @@ private:
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
     OrganizeFilesCoordinator *organizeFilesCoordinator;
     ComicFilesCoordinator *comicFilesCoordinator;
+    LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator;
     bool pendingAfterLaunchTasks;
 };
 
