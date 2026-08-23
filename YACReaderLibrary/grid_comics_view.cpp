@@ -994,7 +994,7 @@ void GridComicsView::startDrag()
 {
     auto drag = new QDrag(this);
     drag->setMimeData(model->mimeData(selectionHelper->selectedRows()));
-    drag->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/openInYACReader.svg", QSize(18, 18))); // TODO add better image
+    drag->setPixmap(theme.comicsViewToolbar.openInYACReaderIcon.pixmap(18, 18)); // TODO add better image
 
     /*Qt::DropAction dropAction =*/drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
