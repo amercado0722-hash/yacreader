@@ -432,7 +432,7 @@ QList<PlannedMove> PlanBuilder::build(const QString &pattern, const Overrides &o
         if (entry.missing) {
             move.status = PlannedMove::Status::Missing;
             move.destinationRelative = baseDir.relativeFilePath(entry.sourceAbsolute);
-            drafts.append({ move, QString(), {}, false });
+            drafts.append({ move, QString(), { }, false });
             continue;
         }
 
@@ -453,7 +453,7 @@ QList<PlannedMove> PlanBuilder::build(const QString &pattern, const Overrides &o
             move.destinationRelative = patterned;
             // The file stays where it is, so nothing else may be placed on it.
             claimed.insert(pathKey(entry.sourceAbsolute));
-            drafts.append({ move, QString(), {}, false });
+            drafts.append({ move, QString(), { }, false });
             continue;
         }
 
@@ -468,7 +468,7 @@ QList<PlannedMove> PlanBuilder::build(const QString &pattern, const Overrides &o
             move.status = PlannedMove::Status::Unchanged;
             move.destinationRelative = baseDir.relativeFilePath(destination);
             claimed.insert(pathKey(destination));
-            drafts.append({ move, QString(), {}, false });
+            drafts.append({ move, QString(), { }, false });
             continue;
         }
 

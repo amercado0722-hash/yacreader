@@ -1104,7 +1104,7 @@ void OrganizeFilesDialog::undoFinished()
 
     if (success) {
         resultLabel->setText(tr("Everything was moved back."));
-        showFailures({});
+        showFailures({ });
         undoButton->setEnabled(false);
     } else {
         resultLabel->setText(tr("The undo did not finish: %1").arg(error));

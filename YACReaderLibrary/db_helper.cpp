@@ -1572,8 +1572,7 @@ bool DBHelper::restoreFolderRows(const QList<QVariantMap> &rows, QSqlDatabase &d
     // key into the same table.
     auto ordered = rows;
     std::sort(ordered.begin(), ordered.end(), [](const QVariantMap &a, const QVariantMap &b) {
-        return a.value(QStringLiteral("path")).toString().count(QLatin1Char('/'))
-                < b.value(QStringLiteral("path")).toString().count(QLatin1Char('/'));
+        return a.value(QStringLiteral("path")).toString().count(QLatin1Char('/')) < b.value(QStringLiteral("path")).toString().count(QLatin1Char('/'));
     });
 
     bool success = true;

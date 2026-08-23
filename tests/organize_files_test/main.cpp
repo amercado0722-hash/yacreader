@@ -418,7 +418,7 @@ void OrganizeFilesTest::adoptsTheOnDiskCasingOfExistingFolders()
     writeFile(entry.sourceAbsolute);
 
     PlanBuilder builder({ entry }, base, Mode::Organize);
-    const auto moves = builder.build(QStringLiteral("{publisher}/{number:000}"), {});
+    const auto moves = builder.build(QStringLiteral("{publisher}/{number:000}"), { });
 
     QCOMPARE(moves.size(), 1);
 #if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
@@ -457,7 +457,7 @@ void OrganizeFilesTest::mergesPlannedFolderCasingsIntoOne()
     writeFile(second.sourceAbsolute);
 
     PlanBuilder builder({ first, second }, base, Mode::Organize);
-    const auto moves = builder.build(QStringLiteral("{publisher}/{number:000}"), {});
+    const auto moves = builder.build(QStringLiteral("{publisher}/{number:000}"), { });
 
     QCOMPARE(moves.size(), 2);
     QCOMPARE(moves.at(0).destinationRelative, QStringLiteral("Marvel/001.cbz"));

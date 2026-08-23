@@ -178,7 +178,7 @@ void OrganizeFilesCoordinator::organizeComics(OrganizeFiles::Mode mode, const QL
 
     OrganizeFilesDialog dialog(context, settings, window);
     dialog.setApplier([this, cleanLibraryRoot](const QList<FileMove> &moves, const QStringList &removedDirectories, const QString &journalPath, QString *error) {
-        return applyToDatabase(moves, removedDirectories, cleanLibraryRoot, journalPath, {}, {}, error);
+        return applyToDatabase(moves, removedDirectories, cleanLibraryRoot, journalPath, { }, { }, error);
     });
     dialog.setUndoer([this, cleanLibraryRoot](const QString &journalPath, QList<OrganizeFiles::FileFailure> *failures, QString *error,
                                               const std::function<void(int, int, const QString &)> &fileProgress,
