@@ -72,6 +72,7 @@ public:
     QAction *colapseAllNodesAction;
 
     QAction *openContainingFolderAction;
+    QAction *renameFilesAction;
     QAction *organizeFilesAction;
     QAction *saveCoversToAction;
     //--
@@ -91,6 +92,7 @@ public:
     QAction *deleteCustomFolderCoverAction;
 
     QAction *openContainingFolderComicAction;
+    QAction *renameComicsFilesAction;
     QAction *organizeComicsFilesAction;
     QAction *setAsReadAction;
     QAction *setAsNonReadAction;

@@ -240,9 +240,17 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
     openContainingFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_ACTION_YL));
 
+    renameFilesAction = new QAction(window);
+    renameFilesAction->setText(tr("Rename files..."));
+    renameFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    renameFilesAction->setData(RENAME_FILES_ACTION_YL);
+    renameFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_FILES_ACTION_YL));
+
     organizeFilesAction = new QAction(window);
-    organizeFilesAction->setText(tr("Organize files"));
+    organizeFilesAction->setText(tr("Organize into folders..."));
     organizeFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    organizeFilesAction->setData(ORGANIZE_FILES_ACTION_YL);
+    organizeFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ORGANIZE_FILES_ACTION_YL));
 
     setFolderAsNotCompletedAction = new QAction(window);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
@@ -306,9 +314,17 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderComicAction->setData(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL);
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
 
+    renameComicsFilesAction = new QAction(window);
+    renameComicsFilesAction->setText(tr("Rename files..."));
+    renameComicsFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    renameComicsFilesAction->setData(RENAME_COMICS_FILES_ACTION_YL);
+    renameComicsFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_COMICS_FILES_ACTION_YL));
+
     organizeComicsFilesAction = new QAction(window);
-    organizeComicsFilesAction->setText(tr("Organize files"));
+    organizeComicsFilesAction->setText(tr("Organize into folders..."));
     organizeComicsFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    organizeComicsFilesAction->setData(ORGANIZE_COMICS_FILES_ACTION_YL);
+    organizeComicsFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ORGANIZE_COMICS_FILES_ACTION_YL));
 
     resetComicRatingAction = new QAction(window);
     resetComicRatingAction->setText(tr("Reset rating"));
@@ -421,8 +437,10 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     // actions not asigned to any widget
     window->addAction(saveCoversToAction);
     window->addAction(openContainingFolderAction);
-    if (YACReader::FeatureFlags::organizeFiles)
+    if (YACReader::FeatureFlags::organizeFiles) {
+        window->addAction(renameFilesAction);
         window->addAction(organizeFilesAction);
+    }
     window->addAction(updateCurrentFolderAction);
     window->addAction(resetComicRatingAction);
     window->addAction(setFolderAsCompletedAction);
@@ -439,8 +457,10 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     window->addAction(deleteMetadataAction);
     window->addAction(rescanXMLFromCurrentFolderAction);
     window->addAction(openContainingFolderComicAction);
-    if (YACReader::FeatureFlags::organizeFiles)
+    if (YACReader::FeatureFlags::organizeFiles) {
+        window->addAction(renameComicsFilesAction);
         window->addAction(organizeComicsFilesAction);
+    }
 #ifndef Q_OS_MACOS
     window->addAction(toggleFullScreenAction);
 #endif
@@ -506,8 +526,10 @@ void LibraryWindowActions::createConnections(
 
     // ContextMenus
     QObject::connect(openContainingFolderComicAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::openContainingFolderOfCurrentComic);
-    if (YACReader::FeatureFlags::organizeFiles)
+    if (YACReader::FeatureFlags::organizeFiles) {
+        QObject::connect(renameComicsFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::renameSelectedComics);
         QObject::connect(organizeComicsFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeSelectedComics);
+    }
     QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
         folderManagementCoordinator->setCurrentFolderCompleted(false);
     });
@@ -521,8 +543,10 @@ void LibraryWindowActions::createConnections(
         folderManagementCoordinator->setCurrentFolderRead(false);
     });
     QObject::connect(openContainingFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::openCurrentFolder);
-    if (YACReader::FeatureFlags::organizeFiles)
+    if (YACReader::FeatureFlags::organizeFiles) {
+        QObject::connect(renameFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::renameCurrentFolder);
         QObject::connect(organizeFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeCurrentFolder);
+    }
     QObject::connect(setFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::selectAndSetCurrentFolderCover);
     QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::resetCurrentFolderCover);
 
@@ -642,6 +666,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
             << setMangaAction
             << setNormalAction
             << openContainingFolderComicAction
+            << renameComicsFilesAction
             << organizeComicsFilesAction
             << resetComicRatingAction
             << selectAllComicsAction
@@ -650,8 +675,10 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
             << deleteMetadataAction
             << deleteComicsAction
             << getInfoAction;
-    if (!YACReader::FeatureFlags::organizeFiles)
+    if (!YACReader::FeatureFlags::organizeFiles) {
+        tmpList.removeOne(renameComicsFilesAction);
         tmpList.removeOne(organizeComicsFilesAction);
+    }
     editShortcutsDialog->addActionsGroup("Comics", theme.shortcutsIcons.comicsIcon, tmpList);
 
     allActions << tmpList;
@@ -664,6 +691,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
             << expandAllNodesAction
             << colapseAllNodesAction
             << openContainingFolderAction
+            << renameFilesAction
             << organizeFilesAction
             << setFolderAsNotCompletedAction
             << setFolderAsCompletedAction
@@ -675,8 +703,10 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
             << rescanXMLFromCurrentFolderAction
             << setFolderCoverAction
             << deleteCustomFolderCoverAction;
-    if (!YACReader::FeatureFlags::organizeFiles)
+    if (!YACReader::FeatureFlags::organizeFiles) {
+        tmpList.removeOne(renameFilesAction);
         tmpList.removeOne(organizeFilesAction);
+    }
     editShortcutsDialog->addActionsGroup("Folders", theme.shortcutsIcons.foldersIcon, tmpList);
     allActions << tmpList;
 
@@ -767,6 +797,7 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
     deleteMetadataAction->setEnabled(enabled);
     deleteComicsAction->setEnabled(enabled);
     openContainingFolderComicAction->setEnabled(enabled);
+    renameComicsFilesAction->setEnabled(enabled);
     organizeComicsFilesAction->setEnabled(enabled);
     resetComicRatingAction->setEnabled(enabled);
     getInfoAction->setEnabled(enabled);
@@ -807,6 +838,7 @@ void LibraryWindowActions::disableFoldersActions(bool disabled)
     colapseAllNodesAction->setDisabled(disabled);
 
     openContainingFolderAction->setDisabled(disabled);
+    renameFilesAction->setDisabled(disabled);
     organizeFilesAction->setDisabled(disabled);
 
     renameFolderAction->setDisabled(disabled);

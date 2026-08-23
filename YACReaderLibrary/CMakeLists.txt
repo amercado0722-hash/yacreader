@@ -109,12 +109,6 @@ qt_add_executable(YACReaderLibrary WIN32
     add_library_dialog.cpp
     rename_library_dialog.h
     rename_library_dialog.cpp
-    organize_files_dialog.h
-    organize_files_dialog.cpp
-    organize_files_coordinator.h
-    organize_files_coordinator.cpp
-    organize_files_preview_dialog.h
-    organize_files_preview_dialog.cpp
     properties_dialog.h
     properties_dialog.cpp
     options_dialog.h
@@ -252,6 +246,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/getInfo.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/hideComicFlow.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/openInYACReader.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/organize.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/selectAll.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setReadButton.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setUnread.svg
@@ -515,6 +510,7 @@ qt_add_translations(YACReaderLibrary
         custom_widgets_library
         shortcuts_library
         comic_vine
+        organize_files
     # Keep extraction scoped to targets used by this app and add the QML files
     # directly so qsTr() strings in QML are collected too.
     TS_FILES
@@ -558,6 +554,7 @@ target_link_libraries(YACReaderLibrary PRIVATE
     shortcuts_library
     server
     comic_vine
+    organize_files
     cbx_backend
     concurrent_queue
     worker

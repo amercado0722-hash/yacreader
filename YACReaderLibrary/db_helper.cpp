@@ -24,6 +24,7 @@
 #include <QTextStream>
 
 #include <algorithm>
+#include <utility>
 
 using namespace YACReader;
 
@@ -1456,6 +1457,153 @@ bool DBHelper::renameFolder(qulonglong id, const QString &name, const QString &o
     updateComics.bindValue(":newPath", newPath);
     updateComics.bindValue(":oldPath", oldPath);
     return execute(updateComics);
+}
+
+bool DBHelper::moveComic(qulonglong comicId, qulonglong newParentId, const QString &newFileName, const QString &newRelativePath, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("UPDATE comic SET parentId = :parentId, fileName = :fileName, path = :path WHERE id = :id");
+    query.bindValue(":parentId", newParentId);
+    query.bindValue(":fileName", newFileName);
+    query.bindValue(":path", newRelativePath);
+    query.bindValue(":id", comicId);
+
+    return query.exec() && query.numRowsAffected() == 1;
+}
+
+qulonglong DBHelper::ensureFolderPath(const QString &relativePath, QSqlDatabase &db, QList<qulonglong> *createdFolderIds)
+{
+    const auto segments = relativePath.split('/', Qt::SkipEmptyParts);
+
+    qulonglong parentId = 1;
+    auto inheritedType = DBHelper::loadFolder(parentId, db).type;
+    QString currentPath;
+
+    for (const auto &segment : segments) {
+        currentPath += '/' + segment;
+
+        const auto existing = DBHelper::loadFolder(segment, parentId, db);
+        if (existing.knownId) {
+            parentId = existing.id;
+            inheritedType = existing.type;
+            continue;
+        }
+
+        Folder folder(segment, currentPath);
+        folder.setFather(parentId);
+        folder.type = inheritedType;
+
+        parentId = DBHelper::insert(&folder, db);
+        if (createdFolderIds != nullptr)
+            createdFolderIds->append(parentId);
+    }
+
+    return parentId;
+}
+
+void DBHelper::syncFolderAddedFromContents(const QList<qulonglong> &folderIds, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("UPDATE folder SET added = COALESCE("
+                  "(SELECT MIN(ci.added) FROM comic c INNER JOIN comic_info ci ON c.comicInfoId = ci.id WHERE c.parentId = folder.id), added) "
+                  "WHERE id = :id");
+
+    for (const auto id : folderIds) {
+        query.bindValue(":id", id);
+        if (!query.exec())
+            QLOG_ERROR() << "syncFolderAddedFromContents: update failed for folder" << id << query.lastError().text();
+    }
+}
+
+void DBHelper::removeEmptyFolderPaths(const QStringList &relativePaths, QSqlDatabase &db, QList<QVariantMap> *removedRows)
+{
+    QSqlQuery select(db);
+    select.prepare("SELECT * FROM folder WHERE path = :path AND id <> 1"
+                   " AND NOT EXISTS (SELECT 1 FROM comic WHERE comic.parentId = folder.id)"
+                   " AND NOT EXISTS (SELECT 1 FROM folder AS child WHERE child.parentId = folder.id)");
+
+    QSqlQuery remove(db);
+    remove.prepare("DELETE FROM folder WHERE id = :id");
+
+    for (const auto &path : relativePaths) {
+        select.bindValue(":path", path);
+        if (!select.exec()) {
+            QLOG_ERROR() << "removeEmptyFolderPaths: select failed for" << path << select.lastError().text();
+            continue;
+        }
+
+        if (!select.next())
+            continue;
+
+        const auto record = select.record();
+
+        QVariantMap row;
+        for (int i = 0; i < record.count(); ++i)
+            row.insert(record.fieldName(i), record.value(i));
+
+        remove.bindValue(":id", row.value(QStringLiteral("id")));
+        if (!remove.exec()) {
+            QLOG_ERROR() << "removeEmptyFolderPaths: delete failed for" << path << remove.lastError().text();
+            continue;
+        }
+
+        if (removedRows != nullptr)
+            removedRows->append(row);
+    }
+}
+
+void DBHelper::removeEmptyFolderRows(const QList<qulonglong> &folderIds, QSqlDatabase &db)
+{
+    QSqlQuery remove(db);
+    remove.prepare("DELETE FROM folder WHERE id = :id AND id <> 1"
+                   " AND NOT EXISTS (SELECT 1 FROM comic WHERE comic.parentId = folder.id)"
+                   " AND NOT EXISTS (SELECT 1 FROM folder AS child WHERE child.parentId = folder.id)");
+
+    for (const auto id : folderIds) {
+        remove.bindValue(":id", id);
+        if (!remove.exec())
+            QLOG_ERROR() << "removeEmptyFolderRows: delete failed for folder" << id << remove.lastError().text();
+    }
+}
+
+bool DBHelper::restoreFolderRows(const QList<QVariantMap> &rows, QSqlDatabase &db)
+{
+    // A child cannot be inserted before its parent, because parentId is a foreign
+    // key into the same table.
+    auto ordered = rows;
+    std::sort(ordered.begin(), ordered.end(), [](const QVariantMap &a, const QVariantMap &b) {
+        return a.value(QStringLiteral("path")).toString().count(QLatin1Char('/'))
+                < b.value(QStringLiteral("path")).toString().count(QLatin1Char('/'));
+    });
+
+    bool success = true;
+
+    for (const auto &row : std::as_const(ordered)) {
+        if (row.value(QStringLiteral("id")).toULongLong() == 0)
+            continue;
+
+        QStringList columns;
+        QStringList placeholders;
+        for (auto it = row.constBegin(); it != row.constEnd(); ++it) {
+            columns << it.key();
+            placeholders << QLatin1Char(':') + it.key();
+        }
+
+        QSqlQuery insert(db);
+        insert.prepare(QStringLiteral("INSERT OR IGNORE INTO folder (%1) VALUES (%2)")
+                               .arg(columns.join(QStringLiteral(", ")), placeholders.join(QStringLiteral(", "))));
+
+        for (auto it = row.constBegin(); it != row.constEnd(); ++it)
+            insert.bindValue(QLatin1Char(':') + it.key(), it.value());
+
+        if (!insert.exec()) {
+            QLOG_ERROR() << "restoreFolderRows: insert failed for"
+                         << row.value(QStringLiteral("path")).toString() << insert.lastError().text();
+            success = false;
+        }
+    }
+
+    return success;
 }
 
 // inserts

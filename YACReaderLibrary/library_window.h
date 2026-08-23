@@ -73,6 +73,7 @@ class EmptySpecialListWidget;
 class EmptyReadingListWidget;
 class RecentVisibilityCoordinator;
 class OrganizeFilesCoordinator;
+class QToolButton;
 class ComicManagementCoordinator;
 class ReadingListManagementCoordinator;
 class FolderManagementCoordinator;
@@ -153,6 +154,8 @@ public:
     QToolBar *treeActions;
     QToolBar *comicsToolBar;
     QToolBar *editInfoToolBar;
+    QToolButton *organizeToolButton = nullptr;
+    QToolButton *setTypeToolButton = nullptr;
     QList<QAction *> comicToolbarEntries;
     QAction *comicToolbarEndAnchor = nullptr;
 
