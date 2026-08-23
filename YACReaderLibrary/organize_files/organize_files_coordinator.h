@@ -2,9 +2,11 @@
 #define ORGANIZE_FILES_COORDINATOR_H
 
 #include "comic_db.h"
+#include "organize_files_worker.h"
 
 #include <QModelIndex>
 #include <QObject>
+#include <QVariantMap>
 
 #include <functional>
 
@@ -35,19 +37,33 @@ public:
                                       CurrentLibraryProvider currentLibraryProvider);
 
 public slots:
+    void renameCurrentFolder();
     void organizeCurrentFolder();
+    void renameSelectedComics();
     void organizeSelectedComics();
 
 signals:
-    void folderRefreshRequested(const QModelIndex &folder);
-    void currentSourceReloadRequested();
+    void libraryContentChanged();
 
 private:
-    bool organizeFolder(qulonglong libraryId,
-                        qulonglong folderId,
-                        const QString &libraryRoot,
-                        const QString &folderPath);
-    bool organizeComics(const QList<ComicDB> &comics, const QString &libraryRoot, const QString &cleanupPath);
+    void runOnCurrentFolder(OrganizeFiles::Mode mode);
+    void runOnSelectedComics(OrganizeFiles::Mode mode);
+    void organizeComics(OrganizeFiles::Mode mode, const QList<ComicDB> &comics, const QString &libraryRoot, const QString &folderPath);
+
+    bool applyToDatabase(const QList<OrganizeFiles::FileMove> &moves,
+                         const QStringList &removedDirectories,
+                         const QString &libraryRoot,
+                         const QString &journalPath,
+                         const QList<QVariantMap> &foldersToRestore,
+                         const QList<qulonglong> &createdFolderIdsToRemove,
+                         QString *error);
+    // Runs on a worker thread; must not touch the GUI.
+    bool undo(const QString &journalPath,
+              const QString &libraryRoot,
+              QList<OrganizeFiles::FileFailure> *failures,
+              QString *error,
+              const std::function<void(int done, int total, const QString &currentFile)> &fileProgress,
+              const std::function<void()> &databasePhase);
 
     QSettings *settings;
     QWidget *window;

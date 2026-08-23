@@ -423,6 +423,7 @@ struct ComicsViewToolbarTheme {
     QIcon setAsMangaIcon;
     QIcon editComicIcon;
     QIcon getInfoIcon;
+    QIcon organizeIcon;
     QIcon assignNumberIcon;
     QIcon selectAllIcon;
     QIcon deleteIcon;

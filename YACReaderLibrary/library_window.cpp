@@ -13,6 +13,7 @@
 #include "edit_shortcuts_dialog.h"
 #include "export_comics_info_dialog.h"
 #include "export_library_dialog.h"
+#include "feature_flags.h"
 #include "folder_item.h"
 #include "folder_management_coordinator.h"
 #include "folder_model.h"
@@ -267,6 +268,12 @@ void LibraryWindow::setupUI()
 void LibraryWindow::applyTheme(const Theme &theme)
 {
     editInfoToolBar->setStyleSheet(theme.comicsViewToolbar.toolbarQSS);
+    // Both menu buttons carry their own icon, because neither has a default action
+    // to take one from. See createMenuToolButton().
+    if (organizeToolButton != nullptr)
+        organizeToolButton->setIcon(theme.comicsViewToolbar.organizeIcon);
+    if (setTypeToolButton != nullptr)
+        setTypeToolButton->setIcon(theme.comicsViewToolbar.setAsNormalIcon);
     mainSplitter->setStyleSheet(theme.contentSplitter.horizontalSplitterQSS);
 
     // Update main toolbar and comics view toolbar icons
@@ -425,12 +432,19 @@ void LibraryWindow::setupCoordinators()
             comicsModel,
             foldersModel,
             [this] { return getSelectedComics(); },
-            [this] { return getCurrentFolderIndex(); },
+            [this] {
+                // A search shows comics from the whole library while the folder
+                // tree keeps its old selection. That folder says nothing about the
+                // results, so the base is the library root, forced.
+                if (librarySearchCoordinator != nullptr && librarySearchCoordinator->isSearching())
+                    return QModelIndex();
+                return getCurrentFolderIndex();
+            },
             [this] {
                 const auto libraryName = selectedLibrary->currentText();
                 return OrganizeFilesCoordinator::LibraryContext { static_cast<qulonglong>(libraries.getId(libraryName)), libraries.getPath(libraryName) };
             });
-    connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::currentSourceReloadRequested, this, &LibraryWindow::reloadCurrentFolderComicsContent);
+    connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::libraryContentChanged, this, &LibraryWindow::reloadCurrentLibrary);
     comicManagementCoordinator = new ComicManagementCoordinator(
             this,
             settings,
@@ -548,7 +562,6 @@ void LibraryWindow::setupCoordinators()
     connect(noLibrariesWidget, &NoLibrariesWidget::createNewLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::showCreateLibraryDialog);
     connect(noLibrariesWidget, &NoLibrariesWidget::addExistingLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::showAddLibraryDialog);
     connect(libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::libraryReloadRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::loadLibrary);
-    connect(organizeFilesCoordinator, &OrganizeFilesCoordinator::folderRefreshRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::updateFolder);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::importRequested, libraryManagementCoordinator, [this](qulonglong folderId) {
         libraryManagementCoordinator->updateFolder(foldersModel->getIndexFromFolderId(folderId));
     });
@@ -634,6 +647,29 @@ bool LibraryWindow::hasLoadedLibraryModels() const
             listsModelProxy->sourceModel() == listsModel;
 }
 
+namespace {
+
+QToolButton *createMenuToolButton(const QList<QAction *> &entries, const QString &toolTip)
+{
+    Q_ASSERT(!entries.isEmpty());
+
+    auto button = new QToolButton();
+    for (auto *entry : entries)
+        button->addAction(entry);
+
+    button->setPopupMode(QToolButton::InstantPopup);
+    button->setToolTip(toolTip);
+
+    auto *first = entries.first();
+    const auto followFirstEntry = [button, first] { button->setEnabled(first->isEnabled()); };
+    QObject::connect(first, &QAction::changed, button, followFirstEntry);
+    followFirstEntry();
+
+    return button;
+}
+
+}
+
 void LibraryWindow::createToolBars()
 {
 
@@ -690,6 +726,11 @@ void LibraryWindow::createToolBars()
     editInfoToolBar->addAction(actions.openComicAction);
     editInfoToolBar->addSeparator();
     editInfoToolBar->addAction(actions.editSelectedComicsAction);
+    if (YACReader::FeatureFlags::organizeFiles) {
+        organizeToolButton = createMenuToolButton({ actions.renameComicsFilesAction, actions.organizeComicsFilesAction },
+                                                  tr("Rename or organize files"));
+        editInfoToolBar->addWidget(organizeToolButton);
+    }
     editInfoToolBar->addAction(actions.getInfoAction);
     editInfoToolBar->addAction(actions.asignOrderAction);
 
@@ -706,14 +747,10 @@ void LibraryWindow::createToolBars()
 
     editInfoToolBar->addSeparator();
 
-    auto setTypeToolButton = new QToolButton();
-    setTypeToolButton->addAction(actions.setNormalAction);
-    setTypeToolButton->addAction(actions.setMangaAction);
-    setTypeToolButton->addAction(actions.setWesternMangaAction);
-    setTypeToolButton->addAction(actions.setWebComicAction);
-    setTypeToolButton->addAction(actions.setYonkomaAction);
-    setTypeToolButton->setPopupMode(QToolButton::InstantPopup);
-    setTypeToolButton->setDefaultAction(actions.setNormalAction);
+    setTypeToolButton = createMenuToolButton({ actions.setNormalAction, actions.setMangaAction,
+                                               actions.setWesternMangaAction, actions.setWebComicAction,
+                                               actions.setYonkomaAction },
+                                             tr("Set the type of the selected comics"));
     editInfoToolBar->addWidget(setTypeToolButton);
 
     editInfoToolBar->addSeparator();

@@ -825,6 +825,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.comicsViewToolbar.setAsMangaIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setManga.svg");
     theme.comicsViewToolbar.editComicIcon = makeComicsViewIcon(":/images/comics_view_toolbar/editComic.svg");
     theme.comicsViewToolbar.getInfoIcon = makeComicsViewIcon(":/images/comics_view_toolbar/getInfo.svg");
+    theme.comicsViewToolbar.organizeIcon = makeComicsViewIcon(":/images/comics_view_toolbar/organize.svg");
     theme.comicsViewToolbar.assignNumberIcon = makeComicsViewIcon(":/images/comics_view_toolbar/asignNumber.svg");
     theme.comicsViewToolbar.selectAllIcon = makeComicsViewIcon(":/images/comics_view_toolbar/selectAll.svg");
     theme.comicsViewToolbar.deleteIcon = makeComicsViewIcon(":/images/comics_view_toolbar/trash.svg");

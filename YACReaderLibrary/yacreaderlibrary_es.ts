@@ -519,9 +519,9 @@
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="db_helper.cpp" line="1441"/>
+        <location filename="db_helper.cpp" line="1442"/>
         <source>The folder entry could not be found in the library database.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha encontrado la entrada de la carpeta en la base de datos de la biblioteca.</translation>
     </message>
 </context>
 <context>
@@ -775,12 +775,12 @@
 <context>
     <name>FolderManagementCoordinator</name>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="61"/>
+        <location filename="folder_management_coordinator.cpp" line="62"/>
         <source>Add new folder</source>
         <translation>Añadir carpeta</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="62"/>
+        <location filename="folder_management_coordinator.cpp" line="63"/>
         <source>Folder name:</source>
         <translation>Nombre de la carpeta:</translation>
     </message>
@@ -1030,7 +1030,7 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_management_coordinator.cpp" line="331"/>
+        <location filename="library_management_coordinator.cpp" line="328"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>La carpeta seleccionada no contiene ninguna biblioteca.</translation>
     </message>
@@ -1059,7 +1059,7 @@
         <translation>La biblioteca &apos;%1&apos; no está disponible. ¿Deseas eliminarla?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="403"/>
+        <location filename="library_management_coordinator.cpp" line="400"/>
         <source>Do you want remove </source>
         <translation>¿Deseas eliminar la biblioteca  </translation>
     </message>
@@ -1079,7 +1079,7 @@
         <translation>Ha habido algún problema intentando borrar los cómics selecionados. Por favor, verifica los permisos de escritura en los arhicovs seleccionados o los directorios que los conienen.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="235"/>
+        <location filename="library_window.cpp" line="236"/>
         <source>YACReader Library</source>
         <translation>Biblioteca YACReader</translation>
     </message>
@@ -1089,12 +1089,12 @@
         <translation>Se necesita actualizar</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="455"/>
+        <location filename="library_management_coordinator.cpp" line="452"/>
         <source>Library name already exists</source>
         <translation>Ya existe el nombre de la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="456"/>
+        <location filename="library_management_coordinator.cpp" line="453"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Hay otra biblioteca con el nombre &apos;%1&apos;.</translation>
     </message>
@@ -1114,28 +1114,28 @@
         <translation>Todos los cómics seleccionados serán borrados de tu disco. ¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="330"/>
+        <location filename="library_management_coordinator.cpp" line="327"/>
         <source>Library not found</source>
         <translation>Biblioteca no encontrada</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="514"/>
-        <location filename="folder_management_coordinator.cpp" line="249"/>
+        <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>No se ha podido borrar</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="403"/>
+        <location filename="library_management_coordinator.cpp" line="400"/>
         <source> library?</source>
         <translation>?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="402"/>
+        <location filename="library_management_coordinator.cpp" line="399"/>
         <source>Are you sure?</source>
         <translation>¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="215"/>
+        <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>Borrar carpeta</translation>
     </message>
@@ -1160,72 +1160,82 @@
         <translation>Moviendo cómics...</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="153"/>
+        <location filename="folder_management_coordinator.cpp" line="154"/>
         <source>Folder name:</source>
         <translation>Nombre de la carpeta:</translation>
-    </message>
-    <message>
-        <location filename="folder_management_coordinator.cpp" line="132"/>
-        <location filename="folder_management_coordinator.cpp" line="144"/>
-        <location filename="folder_management_coordinator.cpp" line="198"/>
-        <source>No folder selected</source>
-        <translation>No has selecionado ninguna carpeta</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="133"/>
         <location filename="folder_management_coordinator.cpp" line="145"/>
         <location filename="folder_management_coordinator.cpp" line="199"/>
+        <source>No folder selected</source>
+        <translation>No has selecionado ninguna carpeta</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="134"/>
+        <location filename="folder_management_coordinator.cpp" line="146"/>
+        <location filename="folder_management_coordinator.cpp" line="200"/>
         <source>Please, select a folder first</source>
         <translation>Por favor, selecciona una carpeta primero</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="208"/>
+        <location filename="folder_management_coordinator.cpp" line="209"/>
         <source>Error in path</source>
         <translation>Error en la ruta</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="209"/>
+        <location filename="folder_management_coordinator.cpp" line="210"/>
         <source>There was an error accessing the folder&apos;s path</source>
         <translation>Hubo un error al acceder a la ruta de la carpeta</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="216"/>
+        <location filename="folder_management_coordinator.cpp" line="217"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
         <translation>¿Estás seguro de que deseas eliminar la carpeta seleccionada y todo su contenido de tu disco?</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="250"/>
+        <location filename="folder_management_coordinator.cpp" line="251"/>
         <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
         <translation>Se produjo un problema al intentar eliminar las carpetas seleccionadas. Por favor, verifica los permisos de escritura y asegúrate de que no haya aplicaciones usando estas carpetas o alguno de los archivos contenidos en ellas.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="734"/>
+        <location filename="library_window.cpp" line="731"/>
+        <source>Rename or organize files</source>
+        <translation>Renombrar u organizar archivos</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="753"/>
+        <source>Set the type of the selected comics</source>
+        <translation>Establecer el tipo de los cómics seleccionados</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="772"/>
         <source>Search filters</source>
         <translation>Filtros de búsqueda</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="744"/>
+        <location filename="library_window.cpp" line="782"/>
         <source>Unread</source>
         <translation>No leído</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="746"/>
+        <location filename="library_window.cpp" line="784"/>
         <source>In progress</source>
         <translation>En curso</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="748"/>
+        <location filename="library_window.cpp" line="786"/>
         <source>Highly rated</source>
         <translation>Con valoración alta</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="750"/>
+        <location filename="library_window.cpp" line="788"/>
         <source>Recently added</source>
         <translation>Añadido recientemente</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="757"/>
+        <location filename="library_window.cpp" line="795"/>
         <source>Search syntax…</source>
         <translation>Sintaxis de búsqueda…</translation>
     </message>
@@ -1250,14 +1260,14 @@
         <translation>Si está seguro de que no se está ejecutando ninguna otra reparación, se puede eliminar el bloqueo. ¿Eliminar el bloqueo y continuar?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="603"/>
+        <location filename="library_window.cpp" line="617"/>
         <source>Package operation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en la operación de empaquetado</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="603"/>
+        <location filename="library_window.cpp" line="617"/>
         <source>The covers package operation could not be completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha podido completar la operación con el paquete de portadas.</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="111"/>
@@ -1265,48 +1275,50 @@
         <translation>Error al recuperar la restauración</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="152"/>
+        <location filename="folder_management_coordinator.cpp" line="153"/>
         <source>Rename folder</source>
         <translation>Renombrar carpeta</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="167"/>
-        <source>Invalid folder name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="folder_management_coordinator.cpp" line="168"/>
-        <source>The folder name is empty or contains characters that are not supported.</source>
-        <translation type="unfinished"></translation>
+        <source>Invalid folder name</source>
+        <translation>Nombre de carpeta no válido</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="172"/>
-        <location filename="folder_management_coordinator.cpp" line="177"/>
-        <location filename="folder_management_coordinator.cpp" line="187"/>
-        <source>Unable to rename folder</source>
-        <translation type="unfinished"></translation>
+        <location filename="folder_management_coordinator.cpp" line="169"/>
+        <source>The folder name is empty or contains characters that are not supported.</source>
+        <translation>El nombre de la carpeta está vacío o contiene caracteres que no se admiten.</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="173"/>
-        <source>A file or folder named &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
+        <location filename="folder_management_coordinator.cpp" line="178"/>
+        <location filename="folder_management_coordinator.cpp" line="188"/>
+        <source>Unable to rename folder</source>
+        <translation>No se ha podido renombrar la carpeta</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="178"/>
+        <location filename="folder_management_coordinator.cpp" line="174"/>
+        <source>A file or folder named &apos;%1&apos; already exists.</source>
+        <translation>Ya existe un archivo o una carpeta con el nombre '%1'.</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="179"/>
         <source>The folder could not be renamed on disk. Please check the folder name and write permissions.
 
 Folder: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="folder_management_coordinator.cpp" line="183"/>
-        <source>The library database could not be updated. The folder rename on disk was reverted.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha podido renombrar la carpeta en el disco. Comprueba el nombre de la carpeta y los permisos de escritura.
+
+Carpeta: %1</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="184"/>
+        <source>The library database could not be updated. The folder rename on disk was reverted.</source>
+        <translation>No se ha podido actualizar la base de datos de la biblioteca. Se ha deshecho el cambio de nombre de la carpeta en el disco.</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="185"/>
         <source>The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha podido actualizar la base de datos de la biblioteca ni deshacer el cambio de nombre de la carpeta en el disco. Ahora hay que actualizar la biblioteca a mano.</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="356"/>
@@ -1314,12 +1326,12 @@ Folder: %1</source>
         <translation>Guardar portadas</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="448"/>
+        <location filename="library_management_coordinator.cpp" line="445"/>
         <source>You are adding too many libraries.</source>
         <translation>Estás añadiendo demasiadas bibliotecas.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="449"/>
+        <location filename="library_management_coordinator.cpp" line="446"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
@@ -1484,12 +1496,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
 Puedes restaurar una copia de seguridad desde el menú Biblioteca o volver a crear la biblioteca.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="406"/>
+        <location filename="library_management_coordinator.cpp" line="403"/>
         <source>Remove and delete metadata and backups</source>
         <translation>Eliminar y borrar metadatos y copias de seguridad</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="546"/>
+        <location filename="library_window.cpp" line="561"/>
         <source>Library info</source>
         <translation>Información de la biblioteca</translation>
     </message>
@@ -1504,22 +1516,22 @@ Puedes restaurar una copia de seguridad desde el menú Biblioteca o volver a cre
         <translation>Asignar números comenzando en:</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="325"/>
+        <location filename="folder_management_coordinator.cpp" line="326"/>
         <source>Invalid image</source>
         <translation>Imagen inválida</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="326"/>
+        <location filename="folder_management_coordinator.cpp" line="327"/>
         <source>The selected file is not a valid image.</source>
         <translation>El archivo seleccionado no es una imagen válida.</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="333"/>
+        <location filename="folder_management_coordinator.cpp" line="334"/>
         <source>Error saving cover</source>
         <translation>Error guardando portada</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="334"/>
+        <location filename="folder_management_coordinator.cpp" line="335"/>
         <source>There was an error saving the cover image.</source>
         <translation>Hubo un error guardando la image de portada.</translation>
     </message>
@@ -1700,7 +1712,7 @@ Archivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="130"/>
-        <location filename="library_window_actions.cpp" line="258"/>
+        <location filename="library_window_actions.cpp" line="266"/>
         <source>Set as read</source>
         <translation>Marcar como leído</translation>
     </message>
@@ -1711,7 +1723,7 @@ Archivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="135"/>
-        <location filename="library_window_actions.cpp" line="263"/>
+        <location filename="library_window_actions.cpp" line="271"/>
         <source>Set as unread</source>
         <translation>Marcar como no leído</translation>
     </message>
@@ -1722,7 +1734,7 @@ Archivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="140"/>
-        <location filename="library_window_actions.cpp" line="278"/>
+        <location filename="library_window_actions.cpp" line="286"/>
         <source>manga</source>
         <translation>historieta manga</translation>
     </message>
@@ -1733,7 +1745,7 @@ Archivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="145"/>
-        <location filename="library_window_actions.cpp" line="283"/>
+        <location filename="library_window_actions.cpp" line="291"/>
         <source>comic</source>
         <translation>cómic</translation>
     </message>
@@ -1754,7 +1766,7 @@ Archivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="156"/>
-        <location filename="library_window_actions.cpp" line="293"/>
+        <location filename="library_window_actions.cpp" line="301"/>
         <source>web comic</source>
         <translation>cómic web</translation>
     </message>
@@ -1765,7 +1777,7 @@ Archivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="162"/>
-        <location filename="library_window_actions.cpp" line="298"/>
+        <location filename="library_window_actions.cpp" line="306"/>
         <source>yonkoma</source>
         <translation>tira yonkoma</translation>
     </message>
@@ -1823,7 +1835,7 @@ Archivos ausentes: %3</translation>
     <message>
         <location filename="library_window_actions.cpp" line="198"/>
         <source>Rename the current folder on disk and in the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Renombrar la carpeta actual en el disco y en la biblioteca</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="200"/>
@@ -1873,37 +1885,44 @@ Archivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="244"/>
-        <location filename="library_window_actions.cpp" line="310"/>
-        <source>Organize files</source>
-        <translation type="unfinished"></translation>
+        <location filename="library_window_actions.cpp" line="318"/>
+        <source>Rename files...</source>
+        <oldsource>Organize files</oldsource>
+        <translation>Renombrar archivos...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="248"/>
+        <location filename="library_window_actions.cpp" line="250"/>
+        <location filename="library_window_actions.cpp" line="324"/>
+        <source>Organize into folders...</source>
+        <translation>Organizar en carpetas...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="256"/>
         <source>Set as uncompleted</source>
         <translation>Marcar como incompleto</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="253"/>
+        <location filename="library_window_actions.cpp" line="261"/>
         <source>Set as completed</source>
         <translation>Marcar como completo</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="268"/>
+        <location filename="library_window_actions.cpp" line="276"/>
         <source>Set custom cover</source>
         <translation>Establecer portada personalizada</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="273"/>
+        <location filename="library_window_actions.cpp" line="281"/>
         <source>Delete custom cover</source>
         <translation>Eliminar portada personalizada</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="288"/>
+        <location filename="library_window_actions.cpp" line="296"/>
         <source>western manga (left to right)</source>
         <translation>manga occidental (izquierda a derecha)</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="305"/>
+        <location filename="library_window_actions.cpp" line="313"/>
         <source>Open containing folder...</source>
         <translation>Abrir carpeta contenedora...</translation>
     </message>
@@ -1912,133 +1931,133 @@ Archivos ausentes: %3</translation>
         <translation type="vanished">Reseteal cómic rating</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="320"/>
+        <location filename="library_window_actions.cpp" line="336"/>
         <source>Select all comics</source>
         <translation>Seleccionar todos los cómics</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="325"/>
+        <location filename="library_window_actions.cpp" line="341"/>
         <source>Edit</source>
         <translation>Editar</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="330"/>
+        <location filename="library_window_actions.cpp" line="346"/>
         <source>Assign current order to comics</source>
         <translation>Asignar el orden actual a los cómics</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="335"/>
+        <location filename="library_window_actions.cpp" line="351"/>
         <source>Update cover</source>
         <translation>Actualizar portada</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="341"/>
+        <location filename="library_window_actions.cpp" line="357"/>
         <source>Delete selected comics</source>
         <translation>Borrar los cómics seleccionados</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="346"/>
+        <location filename="library_window_actions.cpp" line="362"/>
         <source>Delete metadata from selected comics</source>
         <translation>Borrar metadatos de los cómics seleccionados</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="353"/>
+        <location filename="library_window_actions.cpp" line="369"/>
         <source>Download tags from Comic Vine</source>
         <translation>Descargar etiquetas de Comic Vine</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="356"/>
+        <location filename="library_window_actions.cpp" line="372"/>
         <source>Focus search line</source>
         <translation>Selecionar el campo de búsqueda</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="362"/>
+        <location filename="library_window_actions.cpp" line="378"/>
         <source>Focus comics view</source>
         <translation>Selecionar la vista de cómics</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="367"/>
+        <location filename="library_window_actions.cpp" line="383"/>
         <source>Edit shortcuts</source>
         <translation>Editar atajos</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="373"/>
+        <location filename="library_window_actions.cpp" line="389"/>
         <source>&amp;Quit</source>
         <translation>&amp;Salir</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="380"/>
+        <location filename="library_window_actions.cpp" line="396"/>
         <source>Update folder</source>
         <translation>Actualizar carpeta</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="382"/>
+        <location filename="library_window_actions.cpp" line="398"/>
         <source>Update current folder</source>
         <translation>Actualizar carpeta actual</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="386"/>
+        <location filename="library_window_actions.cpp" line="402"/>
         <source>Scan legacy XML metadata</source>
         <translation>Escaneal metadatos XML</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="390"/>
+        <location filename="library_window_actions.cpp" line="406"/>
         <source>Add new reading list</source>
         <translation>Añadir lista de lectura</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="393"/>
+        <location filename="library_window_actions.cpp" line="409"/>
         <source>Add a new reading list to the current library</source>
         <translation>Añadir una nueva lista de lectura a la biblioteca actual</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="395"/>
+        <location filename="library_window_actions.cpp" line="411"/>
         <source>Remove reading list</source>
         <translation>Eliminar lista de lectura</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="398"/>
+        <location filename="library_window_actions.cpp" line="414"/>
         <source>Remove current reading list from the library</source>
         <translation>Eliminar la lista de lectura actual de la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="400"/>
+        <location filename="library_window_actions.cpp" line="416"/>
         <source>Add new label</source>
         <translation>Añadir etiqueta</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="403"/>
+        <location filename="library_window_actions.cpp" line="419"/>
         <source>Add a new label to this library</source>
         <translation>Añadir etiqueta a esta biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="405"/>
+        <location filename="library_window_actions.cpp" line="421"/>
         <source>Rename selected list</source>
         <translation>Renombrar la lista seleccionada</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="408"/>
+        <location filename="library_window_actions.cpp" line="424"/>
         <source>Rename any selected labels or lists</source>
         <translation>Renombrar las etiquetas o listas seleccionadas</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="411"/>
+        <location filename="library_window_actions.cpp" line="427"/>
         <source>Add to...</source>
         <translation>Añadir a...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="413"/>
+        <location filename="library_window_actions.cpp" line="429"/>
         <source>Favorites</source>
         <translation>Favoritos</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="416"/>
+        <location filename="library_window_actions.cpp" line="432"/>
         <source>Add selected comics to favorites list</source>
         <translation>Añadir cómics seleccionados a la lista de favoritos</translation>
     </message>
     <message>
         <location filename="qml/ComicGridDelegate.qml" line="300"/>
-        <location filename="library_window_actions.cpp" line="314"/>
+        <location filename="library_window_actions.cpp" line="330"/>
         <source>Reset rating</source>
         <translation>Restablecer valoración</translation>
     </message>
@@ -2073,8 +2092,8 @@ Archivos ausentes: %3</translation>
     <message>
         <location filename="library_window_menus.cpp" line="133"/>
         <location filename="library_window_menus.cpp" line="234"/>
-        <location filename="library_window_menus.cpp" line="315"/>
-        <location filename="library_window_menus.cpp" line="400"/>
+        <location filename="library_window_menus.cpp" line="319"/>
+        <location filename="library_window_menus.cpp" line="407"/>
         <source>Set type</source>
         <translation>Establecer tipo</translation>
     </message>
@@ -2094,53 +2113,53 @@ Archivos ausentes: %3</translation>
         <translation>Cómic</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="290"/>
+        <location filename="library_window_menus.cpp" line="294"/>
         <source>Open folder...</source>
         <translation>Abrir carpeta...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="292"/>
+        <location filename="library_window_menus.cpp" line="296"/>
         <source>Update folder</source>
         <translation>Actualizar carpeta</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="294"/>
+        <location filename="library_window_menus.cpp" line="298"/>
         <source>Rename folder</source>
         <translation>Renombrar carpeta</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="296"/>
+        <location filename="library_window_menus.cpp" line="300"/>
         <source>Rescan library for XML info</source>
         <translation>Volver a escanear la biblioteca en busca de información XML</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="297"/>
+        <location filename="library_window_menus.cpp" line="301"/>
         <source>Set as uncompleted</source>
         <translation>Marcar como incompleto</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="298"/>
+        <location filename="library_window_menus.cpp" line="302"/>
         <source>Set as completed</source>
         <translation>Marcar como completo</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="299"/>
+        <location filename="library_window_menus.cpp" line="303"/>
         <source>Set as read</source>
         <translation>Marcar como leído</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="300"/>
-        <location filename="library_window_menus.cpp" line="343"/>
+        <location filename="library_window_menus.cpp" line="304"/>
+        <location filename="library_window_menus.cpp" line="347"/>
         <source>Set as unread</source>
         <translation>Marcar como no leído</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="301"/>
+        <location filename="library_window_menus.cpp" line="305"/>
         <source>Set custom cover</source>
         <translation>Establecer portada personalizada</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="302"/>
+        <location filename="library_window_menus.cpp" line="306"/>
         <source>Delete custom cover</source>
         <translation>Eliminar portada personalizada</translation>
     </message>
@@ -2477,122 +2496,546 @@ Para detener una actualización automática, toca en el indicador de carga junto
     </message>
 </context>
 <context>
+    <name>OrganizeFiles</name>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="513"/>
+        <source>Renamed, %1 is already in use</source>
+        <translation>Renombrado, %1 ya está en uso</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="516"/>
+        <source>Missing metadata: %1</source>
+        <translation>Faltan metadatos: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_journal.cpp" line="53"/>
+        <source>%1 could not be created</source>
+        <translation>No se ha podido crear %1</translation>
+    </message>
+</context>
+<context>
     <name>OrganizeFilesCoordinator</name>
     <message>
-        <location filename="organize_files_coordinator.cpp" line="126"/>
-        <location filename="organize_files_coordinator.cpp" line="195"/>
-        <location filename="organize_files_coordinator.cpp" line="233"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="135"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="167"/>
         <source>Organize files</source>
-        <translation type="unfinished"></translation>
+        <translation>Organizar archivos</translation>
     </message>
     <message>
-        <location filename="organize_files_coordinator.cpp" line="126"/>
-        <source>This folder does not contain any comics to organize.</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="135"/>
+        <source>This folder does not contain any comics.</source>
+        <translation>Esta carpeta no contiene ningún cómic.</translation>
     </message>
     <message>
-        <location filename="organize_files_coordinator.cpp" line="195"/>
-        <source>All files are already organized according to this format.</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="168"/>
+        <source>This library is busy: %1</source>
+        <translation>Esta biblioteca está ocupada: %1</translation>
     </message>
     <message>
-        <location filename="organize_files_coordinator.cpp" line="234"/>
-        <source>%1 of %2 file(s) were moved. %3 file(s) could not be moved.</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="211"/>
+        <source>the library database could not be opened</source>
+        <translation>no se ha podido abrir la base de datos de la biblioteca</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="218"/>
+        <source>the library database could not be locked for writing</source>
+        <translation>no se ha podido bloquear la base de datos de la biblioteca para escritura</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="227"/>
+        <source>a folder entry could not be restored</source>
+        <translation>no se ha podido restaurar una entrada de carpeta</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="238"/>
+        <source>a comic entry could not be updated</source>
+        <translation>no se ha podido actualizar una entrada de cómic</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="257"/>
+        <source>the library database could not be saved: %1</source>
+        <translation>no se ha podido guardar la base de datos de la biblioteca: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="302"/>
+        <source>the record of the last organize run could not be read</source>
+        <translation>no se ha podido leer el registro de la última organización</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="327"/>
+        <source>the folder %1 could not be created</source>
+        <translation>no se ha podido crear la carpeta %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_coordinator.cpp" line="375"/>
+        <source>%n file(s) could not be moved back</source>
+        <translation>
+            <numerusform>no se ha podido devolver %n archivo a su sitio</numerusform>
+            <numerusform>no se han podido devolver %n archivos a su sitio</numerusform>
+        </translation>
     </message>
 </context>
 <context>
     <name>OrganizeFilesDialog</name>
     <message>
-        <location filename="organize_files_dialog.cpp" line="30"/>
-        <source>Files will be moved into subfolders following the format below. Each part separated by &quot;/&quot; becomes a folder, except the last one which becomes the file name.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="organize_files_dialog.cpp" line="34"/>
-        <source>Available tokens: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="organize_files_dialog.cpp" line="38"/>
-        <source>{title} falls back to the series name when the comic has no title.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="organize_files_dialog.cpp" line="44"/>
-        <source>Place folders relative to the library root</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="organize_files_dialog.cpp" line="45"/>
-        <source>When enabled, the format is applied from the library root instead of the selected folder, so it is not nested inside the folder being organized.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="organize_files_dialog.cpp" line="65"/>
         <source>Format:</source>
-        <translation type="unfinished">Formato:</translation>
+        <translation type="obsolete">Formato:</translation>
     </message>
     <message>
-        <location filename="organize_files_dialog.cpp" line="77"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="151"/>
         <source>Organize files</source>
-        <translation type="unfinished"></translation>
+        <translation>Organizar archivos</translation>
     </message>
     <message>
-        <location filename="organize_files_dialog.cpp" line="106"/>
-        <source>Example: %1</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="151"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="399"/>
+        <source>Rename files</source>
+        <translation>Renombrar archivos</translation>
     </message>
     <message>
-        <location filename="organize_files_dialog.cpp" line="152"/>
-        <source>Unknown Series</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="216"/>
+        <source>Preparing the preview...</source>
+        <translation>Preparando la vista previa...</translation>
     </message>
     <message>
-        <location filename="organize_files_dialog.cpp" line="153"/>
-        <source>Unknown Publisher</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="237"/>
+        <source>&amp;Filename format:</source>
+        <translation>&amp;Formato del nombre de archivo:</translation>
     </message>
-</context>
-<context>
-    <name>OrganizeFilesPreviewDialog</name>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="237"/>
+        <source>&amp;Path format:</source>
+        <translation>Formato de la &amp;ruta:</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="239"/>
+        <source>Filename format</source>
+        <translation>Formato del nombre de archivo</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="239"/>
+        <source>Path format</source>
+        <translation>Formato de la ruta</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="243"/>
+        <source>Presets</source>
+        <translation>Predefinidos</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="254"/>
+        <source>Insert</source>
+        <translation>Insertar</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="269"/>
+        <source>Optional part &lt; &gt;</source>
+        <translation>Parte opcional &lt; &gt;</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="270"/>
+        <source>Disappears completely when the fields inside it are empty.</source>
+        <translation>Desaparece por completo cuando los campos que contiene están vacíos.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="273"/>
+        <source>Padded number {number:000}</source>
+        <translation>Número con ceros {number:000}</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="280"/>
+        <source>Format help...</source>
+        <translation>Ayuda sobre el formato...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="294"/>
+        <source>selected folder</source>
+        <translation>carpeta seleccionada</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="298"/>
+        <source>library root</source>
+        <translation>raíz de la biblioteca</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="339"/>
+        <source>Move into</source>
+        <translation>Mover a</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="348"/>
+        <source>Reset changes</source>
+        <translation>Descartar los cambios</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="352"/>
+        <source>Remove selected</source>
+        <translation>Quitar los seleccionados</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="356"/>
+        <source>Show unchanged</source>
+        <translation>Mostrar los que no cambian</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="375"/>
+        <source>New name</source>
+        <translation>Nombre nuevo</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="375"/>
+        <source>Renamed from</source>
+        <translation>Nombre anterior</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="376"/>
+        <source>New location</source>
+        <translation>Ubicación nueva</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="376"/>
+        <source>Moved from</source>
+        <translation>Ubicación anterior</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="388"/>
+        <source>Remove from list</source>
+        <translation>Quitar de la lista</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="399"/>
+        <source>Move files</source>
+        <translation>Mover los archivos</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="403"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="456"/>
+        <source>Copy the list</source>
+        <translation>Copiar la lista</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="460"/>
+        <source>Undo</source>
+        <translation>Deshacer</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="463"/>
+        <source>Close</source>
+        <translation>Cerrar</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="541"/>
+        <source>A filename format cannot contain &quot;/&quot;. Use Organize files to move comics into folders.</source>
+        <translation>Un formato de nombre de archivo no puede contener "/". Usa Organizar archivos para mover cómics a carpetas.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="543"/>
+        <source>This format cannot be used: %1</source>
+        <translation>No se puede usar este formato: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="694"/>
+        <source>new folder</source>
+        <translation>carpeta nueva</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="695"/>
+        <source>This folder does not exist yet. It will be created.</source>
+        <translation>Esta carpeta todavía no existe. Se creará.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="720"/>
+        <source>file not found</source>
+        <translation>archivo no encontrado</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="721"/>
+        <source>This comic is in the library but not on disk. It is skipped.</source>
+        <translation>Este cómic está en la biblioteca pero no en el disco. Se omite.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="725"/>
+        <source>name in use</source>
+        <translation>nombre en uso</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="728"/>
+        <source>no metadata</source>
+        <translation>sin metadatos</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="731"/>
+        <source>already here</source>
+        <translation>ya está aquí</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="732"/>
+        <source>This file is already in the right place.</source>
+        <translation>Este archivo ya está en el sitio correcto.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="736"/>
+        <source>edited</source>
+        <translation>editado</translation>
+    </message>
     <message numerus="yes">
-        <location filename="organize_files_preview_dialog.cpp" line="47"/>
-        <source>%n file(s) will be moved as shown below. Double-click an item in the &quot;New location&quot; column to rename a folder or file, or remove items to leave them where they are, before applying the changes.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <location filename="organize_files/organize_files_dialog.cpp" line="788"/>
+        <source>%n will be renamed</source>
+        <translation>
+            <numerusform>%n se renombrará</numerusform>
+            <numerusform>%n se renombrarán</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="788"/>
+        <source>%n will move</source>
+        <translation>
+            <numerusform>%n se moverá</numerusform>
+            <numerusform>%n se moverán</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="789"/>
+        <source>%n unchanged</source>
+        <translation>
+            <numerusform>%n sin cambios</numerusform>
+            <numerusform>%n sin cambios</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="791"/>
+        <source>%n renamed</source>
+        <translation>
+            <numerusform>%n renombrado</numerusform>
+            <numerusform>%n renombrados</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="793"/>
+        <source>%n removed</source>
+        <translation>
+            <numerusform>%n quitado</numerusform>
+            <numerusform>%n quitados</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="795"/>
+        <source>%n missing</source>
+        <translation>
+            <numerusform>%n no encontrado</numerusform>
+            <numerusform>%n no encontrados</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="797"/>
+        <source>%n new folder(s)</source>
+        <translation>
+            <numerusform>%n carpeta nueva</numerusform>
+            <numerusform>%n carpetas nuevas</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="802"/>
+        <source>%n manual change(s) kept</source>
+        <translation>
+            <numerusform>Se mantiene %n cambio manual</numerusform>
+            <numerusform>Se mantienen %n cambios manuales</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files_preview_dialog.cpp" line="55"/>
-        <source>New location</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="807"/>
+        <source>Nothing would be renamed with this format.</source>
+        <translation>Con este formato no se renombraría nada.</translation>
     </message>
     <message>
-        <location filename="organize_files_preview_dialog.cpp" line="55"/>
-        <source>Current location</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="808"/>
+        <source>Nothing would move with this format.</source>
+        <translation>Con este formato no se movería nada.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="810"/>
+        <source>%n file(s) will be renamed. The folders do not change. You can undo it afterwards.</source>
+        <translation>
+            <numerusform>Se renombrará %n archivo. Las carpetas no cambian. Después puedes deshacerlo.</numerusform>
+            <numerusform>Se renombrarán %n archivos. Las carpetas no cambian. Después puedes deshacerlo.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="812"/>
+        <source>%n file(s) will move into %1. This changes your files on disk. You can undo it afterwards.</source>
+        <translation>
+            <numerusform>%n archivo se moverá a %1. Esto cambia tus archivos en el disco. Después puedes deshacerlo.</numerusform>
+            <numerusform>%n archivos se moverán a %1. Esto cambia tus archivos en el disco. Después puedes deshacerlo.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="organize_files_preview_dialog.cpp" line="62"/>
-        <source>Remove from list</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="965"/>
+        <source>Moving %1 of %2
+%3</source>
+        <translation>Moviendo %1 de %2
+%3</translation>
     </message>
     <message>
-        <location filename="organize_files_preview_dialog.cpp" line="78"/>
-        <source>Move files</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="971"/>
+        <source>Updating the library...</source>
+        <translation>Actualizando la biblioteca...</translation>
     </message>
     <message>
-        <location filename="organize_files_preview_dialog.cpp" line="79"/>
-        <source>Remove selected</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1003"/>
+        <source>Nothing was moved.</source>
+        <translation>No se ha movido nada.</translation>
     </message>
     <message>
-        <location filename="organize_files_preview_dialog.cpp" line="91"/>
-        <source>Organize files</source>
-        <translation type="unfinished"></translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1004"/>
+        <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
+        <translation>No se ha podido escribir el registro con el que se podría deshacer esta operación, así que la operación no ha empezado: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1006"/>
+        <source>%n file(s) renamed.</source>
+        <translation>
+            <numerusform>Se ha renombrado %n archivo.</numerusform>
+            <numerusform>Se han renombrado %n archivos.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1007"/>
+        <source>%n file(s) moved into %1.</source>
+        <translation>
+            <numerusform>Se ha movido %n archivo a %1.</numerusform>
+            <numerusform>Se han movido %n archivos a %1.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1010"/>
+        <source>The record of this run stopped early, so the run stopped with it: %1</source>
+        <translation>El registro de esta operación se ha interrumpido, así que la operación se ha detenido con él: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1012"/>
+        <source>%n file(s) were not moved.</source>
+        <translation>
+            <numerusform>No se ha movido %n archivo.</numerusform>
+            <numerusform>No se han movido %n archivos.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1020"/>
+        <source>The library database could not be updated: %1</source>
+        <translation>No se ha podido actualizar la base de datos de la biblioteca: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1021"/>
+        <source>Use Undo to move the files back, or update the library to make it match the files.</source>
+        <translation>Usa Deshacer para devolver los archivos a su sitio, o actualiza la biblioteca para que coincida con los archivos.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1025"/>
+        <source>%n empty folder(s) were removed.</source>
+        <translation>
+            <numerusform>Se ha eliminado %n carpeta vacía.</numerusform>
+            <numerusform>Se han eliminado %n carpetas vacías.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1028"/>
+        <source>%n file(s) could not be moved.</source>
+        <translation>
+            <numerusform>No se ha podido mover %n archivo.</numerusform>
+            <numerusform>No se han podido mover %n archivos.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1058"/>
+        <source>Moving the files back...</source>
+        <translation>Devolviendo los archivos a su sitio...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1084"/>
+        <source>Moving back %1 of %2
+%3</source>
+        <translation>Devolviendo %1 de %2
+%3</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1106"/>
+        <source>Everything was moved back.</source>
+        <translation>Se ha devuelto todo a su sitio.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1110"/>
+        <source>The undo did not finish: %1</source>
+        <translation>No se ha podido deshacer del todo: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1169"/>
+        <source>Format help</source>
+        <translation>Ayuda sobre el formato</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1196"/>
+        <source>Fields</source>
+        <translation>Campos</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
+        <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
+        <translation>Cada campo se escribe entre llaves y se sustituye por los metadatos del cómic. El menú Insertar los muestra todos.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1199"/>
+        <source>{series} gives %1</source>
+        <translation>{series} da %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1201"/>
+        <source>Optional parts</source>
+        <translation>Partes opcionales</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1202"/>
+        <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
+        <translation>Una parte escrita entre los signos &lt; y &gt; desaparece por completo cuando todos los campos que contiene están vacíos. Úsala para la puntuación que acompaña a un campo, como los paréntesis o una almohadilla inicial. El texto al principio o al final de un nombre se recorta sin ella.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1205"/>
+        <source>{series} ({year})     with no year gives %1</source>
+        <translation>{series} ({year})     sin año da %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1205"/>
+        <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
+        <translation>{series}&lt; ({year})&gt;   sin año da %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
+        <source>Numbers</source>
+        <translation>Números</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1208"/>
+        <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
+        <translation>Escribe dos puntos y varios ceros para rellenar el número del ejemplar. Así los ejemplares se mantienen en orden en un explorador de archivos.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1213"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1218"/>
+        <source>Folders</source>
+        <translation>Carpetas</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1214"/>
+        <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
+        <translation>Un formato de nombre de archivo no puede contener una barra. Cada cómic se queda en su carpeta actual. Usa Organizar en carpetas para mover cómics.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1219"/>
+        <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
+        <translation>Cada parte separada por una barra se convierte en una carpeta. La última parte es el nombre del archivo. La extensión original siempre se mantiene.</translation>
     </message>
 </context>
 <context>
