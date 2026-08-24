@@ -259,6 +259,27 @@ QString padNumber(const QString &number, int width)
     return leading + trimmed.mid(digits);
 }
 
+// Every writer of the date column builds it differently: ComicInfo.xml gives
+// "1/7/2018" and writes a 0 where a component is unknown, Comic Vine gives
+// "01/07/2018", and the properties dialog gives whatever was typed. The tokens
+// are normalised here so that one library cannot produce both "7" and "07".
+void applyPublicationDate(ComicEntry &entry, const QString &date)
+{
+    const auto components = date.split(QLatin1Char('/'));
+    if (components.size() != 3)
+        return;
+
+    bool valid = false;
+
+    const int month = components.at(1).toInt(&valid);
+    if (valid && month >= 1 && month <= 12)
+        entry.month = QStringLiteral("%1").arg(month, 2, 10, QLatin1Char('0'));
+
+    const int year = components.at(2).toInt(&valid);
+    if (valid && year > 0)
+        entry.year = QString::number(year);
+}
+
 QString buildRelativePath(const QString &pattern, const ComicEntry &entry, QStringList *fallbackFields)
 {
     QString expanded;

@@ -66,8 +66,7 @@ QList<ComicEntry> buildEntries(const QList<ComicDB> &comics, const QString &libr
         entry.number = comic.info.number.toString();
         entry.count = comic.info.count.toString();
         entry.title = comic.info.title.toString();
-        entry.year = comic.info.year.toString();
-        entry.month = comic.info.month.toString();
+        OrganizeFiles::applyPublicationDate(entry, comic.info.date.toString());
         entry.storyArc = comic.info.storyArc.toString();
         entry.arcNumber = comic.info.arcNumber.toString();
         entry.writer = comic.info.writer.toString();

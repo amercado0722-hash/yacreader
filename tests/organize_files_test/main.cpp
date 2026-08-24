@@ -19,6 +19,7 @@ class OrganizeFilesTest : public QObject
 
 private slots:
     void substitutesEveryToken();
+    void readsTheYearAndTheMonthFromTheDateColumn();
     void keepsPunctuationOutOfEmptyOptionalGroups();
     void padsOnlyTheLeadingDigits();
     void reportsInvalidTokens();
@@ -62,7 +63,7 @@ ComicEntry spiderMan()
     entry.count = QStringLiteral("100");
     entry.title = QStringLiteral("The Sinister Six");
     entry.year = QStringLiteral("2018");
-    entry.month = QStringLiteral("7");
+    entry.month = QStringLiteral("07");
     entry.storyArc = QStringLiteral("Sinister War");
     entry.arcNumber = QStringLiteral("2");
     entry.writer = QStringLiteral("Dan Slott");
@@ -131,9 +132,52 @@ void OrganizeFilesTest::substitutesEveryToken()
     QCOMPARE(buildRelativePath(QStringLiteral("{publisher}/{series}/{number} {title}"), entry),
              QStringLiteral("Marvel/The Amazing Spider-Man/42 The Sinister Six.cbz"));
     QCOMPARE(buildRelativePath(QStringLiteral("{imprint}/{volume}/{count}/{year}/{month}"), entry),
-             QStringLiteral("Epic/1/100/2018/7.cbz"));
+             QStringLiteral("Epic/1/100/2018/07.cbz"));
     QCOMPARE(buildRelativePath(QStringLiteral("{storyArc} {arcNumber}/{writer}/{filename}"), entry),
              QStringLiteral("Sinister War 2/Dan Slott/asm42.cbz"));
+}
+
+void OrganizeFilesTest::readsTheYearAndTheMonthFromTheDateColumn()
+{
+    ComicEntry entry;
+
+    applyPublicationDate(entry, QStringLiteral("1/7/2018"));
+    QCOMPARE(entry.year, QStringLiteral("2018"));
+    QCOMPARE(entry.month, QStringLiteral("07"));
+
+    // Comic Vine pads its components, ComicInfo.xml does not.
+    ComicEntry padded;
+    applyPublicationDate(padded, QStringLiteral("01/07/2018"));
+    QCOMPARE(padded.year, entry.year);
+    QCOMPARE(padded.month, entry.month);
+
+    // A missing year is stored as a 0, which is not a year.
+    ComicEntry monthOnly;
+    applyPublicationDate(monthOnly, QStringLiteral("1/7/0"));
+    QVERIFY(monthOnly.year.isEmpty());
+    QCOMPARE(monthOnly.month, QStringLiteral("07"));
+
+    // A missing month is stored as a 1, so it cannot be told apart from
+    // January. Comics with only a year get {month} 01.
+    ComicEntry yearOnly;
+    applyPublicationDate(yearOnly, QStringLiteral("1/1/2018"));
+    QCOMPARE(yearOnly.year, QStringLiteral("2018"));
+    QCOMPARE(yearOnly.month, QStringLiteral("01"));
+
+    for (const auto &date : { QString(), QStringLiteral("2018"), QStringLiteral("//"), QStringLiteral("1/13/2018") }) {
+        ComicEntry rejected;
+        applyPublicationDate(rejected, date);
+        QVERIFY2(rejected.month.isEmpty(), qPrintable(date));
+    }
+
+    // The tokens are the ones an empty optional group drops.
+    ComicEntry undated;
+    undated.baseName = QStringLiteral("scan001");
+    undated.extension = QStringLiteral(".cbz");
+    undated.series = QStringLiteral("Series");
+    applyPublicationDate(undated, QStringLiteral("1/1/0"));
+    QCOMPARE(buildRelativePath(QStringLiteral("{series}< ({year})>"), undated),
+             QStringLiteral("Series.cbz"));
 }
 
 void OrganizeFilesTest::keepsPunctuationOutOfEmptyOptionalGroups()

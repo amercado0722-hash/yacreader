@@ -75,6 +75,11 @@ QString pathKey(const QString &path);
 
 QString sanitizeSegment(QString segment);
 QString padNumber(const QString &number, int width);
+
+// The database keeps the publication date as one d/M/yyyy string, so the year
+// and the month tokens have to be read back out of it.
+void applyPublicationDate(ComicEntry &entry, const QString &date);
+
 QString buildRelativePath(const QString &pattern, const ComicEntry &entry, QStringList *fallbackFields = nullptr);
 
 QString defaultPattern(Mode mode);
