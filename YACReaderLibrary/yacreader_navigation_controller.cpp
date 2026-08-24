@@ -49,6 +49,22 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &proxyIndex
     libraryWindow->setToolbarTitle(folderIndex);
 }
 
+void YACReaderNavigationController::navigateToFolder(const QModelIndex &sourceIndex)
+{
+    if (!sourceIndex.isValid())
+        return;
+
+    const QModelIndex proxyIndex = libraryWindow->foldersModelProxy->mapFromSource(sourceIndex);
+    if (!proxyIndex.isValid())
+        return;
+
+    disconnect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
+    libraryWindow->foldersView->setCurrentIndex(proxyIndex);
+    connect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
+
+    selectedFolder(proxyIndex);
+}
+
 void YACReaderNavigationController::reselectCurrentFolder()
 {
     selectedFolder(libraryWindow->foldersView->currentIndex());
@@ -339,9 +355,7 @@ void YACReaderNavigationController::setupConnections()
     connect(libraryWindow->foldersView, &YACReaderTreeView::clicked, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
     connect(libraryWindow->historyController, &YACReaderHistoryController::modelIndexSelected, this, &YACReaderNavigationController::selectedIndexFromHistory);
-    connect(gridView, &GridComicsView::folderSelected, this, [this](const QModelIndex &index) {
-        libraryWindow->foldersView->setCurrentIndex(libraryWindow->foldersModelProxy->mapFromSource(index));
-    });
+    connect(gridView, &GridComicsView::folderSelected, this, &YACReaderNavigationController::navigateToFolder);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);
 }
 

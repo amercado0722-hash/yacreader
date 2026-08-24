@@ -20,6 +20,7 @@ public:
 
 public slots:
     void selectedFolder(const QModelIndex &proxyIndex);
+    void navigateToFolder(const QModelIndex &sourceIndex);
     void reselectCurrentFolder();
     void selectedList(const QModelIndex &proxyIndex);
     void reselectCurrentList();
