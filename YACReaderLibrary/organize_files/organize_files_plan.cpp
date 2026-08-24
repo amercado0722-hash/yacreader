@@ -323,7 +323,7 @@ QString defaultPattern(Mode mode)
     if (mode == Mode::Rename)
         return QStringLiteral("{series}< #{number:000}>< - {title}>");
 
-    return QStringLiteral("{publisher}/{series}/{number:000}< - {title}>");
+    return QStringLiteral("{publisher}/{series}/{series}< #{number:000}>< - {title}>");
 }
 
 QList<QPair<QString, QString>> presets(Mode mode)
@@ -331,16 +331,18 @@ QList<QPair<QString, QString>> presets(Mode mode)
     if (mode == Mode::Rename) {
         return {
             { translated("Series #Number - Title"), QStringLiteral("{series}< #{number:000}>< - {title}>") },
-            { translated("Series #Number"), QStringLiteral("{series} #{number:000}") },
+            { translated("Series #Number"), QStringLiteral("{series}< #{number:000}>") },
+            { translated("Series #Number (of Count)"), QStringLiteral("{series}< #{number:000}>< (of {count})>") },
             { translated("Number - Title"), QStringLiteral("{number:000}< - {title}>") },
-            { translated("Series (Year) #Number"), QStringLiteral("{series}< ({year})> #{number:000}") }
+            { translated("Series #Number (Year)"), QStringLiteral("{series}< #{number:000}>< ({year})>") }
         };
     }
 
     return {
-        { translated("Publisher / Series / Number - Title"), QStringLiteral("{publisher}/{series}/{number:000}< - {title}>") },
-        { translated("Series / Series #Number"), QStringLiteral("{series}/{series} #{number:000}") },
-        { translated("Publisher / Series (Year) / Number"), QStringLiteral("{publisher}/{series}< ({year})>/{number:000}") },
+        { translated("Publisher / Series / Series #Number - Title"), QStringLiteral("{publisher}/{series}/{series}< #{number:000}>< - {title}>") },
+        { translated("Publisher / Imprint / Series / Series #Number - Title"), QStringLiteral("{publisher}/<{imprint}/>{series}/{series}< #{number:000}>< - {title}>") },
+        { translated("Series / Series #Number"), QStringLiteral("{series}/{series}< #{number:000}>") },
+        { translated("Publisher / Series / Series #Number (Year)"), QStringLiteral("{publisher}/{series}/{series}< #{number:000}>< ({year})>") },
         { translated("Series / original file name"), QStringLiteral("{series}/{filename}") }
     };
 }

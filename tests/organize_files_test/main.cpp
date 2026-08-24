@@ -152,6 +152,11 @@ void OrganizeFilesTest::keepsPunctuationOutOfEmptyOptionalGroups()
     const auto complete = spiderMan();
     QCOMPARE(buildRelativePath(QStringLiteral("{series}< ({year})>/<#{number}>< - {title}>"), complete),
              QStringLiteral("The Amazing Spider-Man (2018)/#42 - The Sinister Six.cbz"));
+
+    QCOMPARE(buildRelativePath(QStringLiteral("{publisher}/<{imprint}/>{series}"), complete),
+             QStringLiteral("Marvel/Epic/The Amazing Spider-Man.cbz"));
+    QCOMPARE(buildRelativePath(QStringLiteral("{publisher}/<{imprint}/>{series}"), entry),
+             QStringLiteral("Unknown Publisher/Unknown Series.cbz"));
 }
 
 void OrganizeFilesTest::padsOnlyTheLeadingDigits()
@@ -311,11 +316,17 @@ void OrganizeFilesTest::rejectsSeparatorsInAFilenamePattern()
     QVERIFY(!patternCreatesFolders(defaultPattern(Mode::Rename)));
     QVERIFY(patternCreatesFolders(defaultPattern(Mode::Organize)));
 
-    for (const auto &preset : presets(Mode::Rename))
+    for (const auto &preset : presets(Mode::Rename)) {
         QVERIFY2(!patternCreatesFolders(preset.second), qPrintable(preset.second));
+        QVERIFY2(invalidTokens(preset.second).isEmpty(), qPrintable(preset.second));
+    }
+
+    for (const auto &preset : presets(Mode::Organize))
+        QVERIFY2(invalidTokens(preset.second).isEmpty(), qPrintable(preset.second));
 
     QVERIFY(!knownTokens().contains(QStringLiteral("folder")));
     QVERIFY(invalidTokens(defaultPattern(Mode::Rename)).isEmpty());
+    QVERIFY(invalidTokens(defaultPattern(Mode::Organize)).isEmpty());
 }
 
 void OrganizeFilesTest::claimsThePathOfAnExcludedComic()

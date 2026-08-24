@@ -15,6 +15,7 @@ class QCloseEvent;
 class QLabel;
 class QLineEdit;
 class QListWidget;
+class QMenu;
 class QProgressBar;
 class QPushButton;
 class QResizeEvent;
@@ -72,9 +73,11 @@ private slots:
     void copyFailures();
     void wrapSelectionInOptionalGroup();
     void showFormatHelp();
+    void saveCurrentPatternAsPreset();
 
 public slots:
     void reject() override;
+    void done(int result) override;
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -107,6 +110,10 @@ private:
     QList<OrganizeFiles::FileMove> movesToExecute() const;
     void showFailures(const QList<OrganizeFiles::FileFailure> &failures);
     void saveSettings();
+    QString presetsKey() const;
+    QList<QPair<QString, QString>> userPresets() const;
+    void saveUserPresets(const QList<QPair<QString, QString>> &presets);
+    void rebuildPresetsMenu();
 
     Context context;
     QSettings *settings;
@@ -118,6 +125,7 @@ private:
 
     QLineEdit *patternEdit;
     QLabel *patternError;
+    QMenu *presetsMenu;
     QPushButton *folderBaseButton;
     QPushButton *rootBaseButton;
     QWidget *baseSelector;

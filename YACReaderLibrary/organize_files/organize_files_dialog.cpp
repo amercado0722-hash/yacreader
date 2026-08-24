@@ -17,6 +17,7 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QInputDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
@@ -242,14 +243,9 @@ QWidget *OrganizeFilesDialog::createPlanPage()
 
     auto presetsButton = new QPushButton(tr("Presets"));
     presetsButton->setAutoDefault(false);
-    auto presetsMenu = new QMenu(presetsButton);
-    const auto presets = OrganizeFiles::presets(context.mode);
-    for (const auto &preset : presets) {
-        auto action = presetsMenu->addAction(preset.first);
-        const QString pattern = preset.second;
-        connect(action, &QAction::triggered, this, [this, pattern] { patternEdit->setText(pattern); });
-    }
+    presetsMenu = new QMenu(presetsButton);
     presetsButton->setMenu(presetsMenu);
+    rebuildPresetsMenu();
 
     auto insertButton = new QPushButton(tr("Insert"));
     insertButton->setAutoDefault(false);
@@ -527,6 +523,100 @@ void OrganizeFilesDialog::updateBasePathLabel()
 
     basePathLabel->setToolTip(path);
     basePathLabel->setText(basePathLabel->fontMetrics().elidedText(path, Qt::ElideMiddle, qMax(120, basePathLabel->width())));
+}
+
+QString OrganizeFilesDialog::presetsKey() const
+{
+    return renaming() ? QStringLiteral(ORGANIZE_FILES_FILENAME_PRESETS) : QStringLiteral(ORGANIZE_FILES_PATH_PRESETS);
+}
+
+QList<QPair<QString, QString>> OrganizeFilesDialog::userPresets() const
+{
+    QList<QPair<QString, QString>> presets;
+    if (settings == nullptr)
+        return presets;
+
+    const int size = settings->beginReadArray(presetsKey());
+    for (int i = 0; i < size; ++i) {
+        settings->setArrayIndex(i);
+        const QString name = settings->value(QStringLiteral("name")).toString();
+        const QString pattern = settings->value(QStringLiteral("pattern")).toString();
+        if (!name.isEmpty() && !pattern.isEmpty())
+            presets.append({ name, pattern });
+    }
+    settings->endArray();
+
+    return presets;
+}
+
+void OrganizeFilesDialog::saveUserPresets(const QList<QPair<QString, QString>> &presets)
+{
+    if (settings == nullptr)
+        return;
+
+    settings->remove(presetsKey());
+    settings->beginWriteArray(presetsKey());
+    for (int i = 0; i < presets.size(); ++i) {
+        settings->setArrayIndex(i);
+        settings->setValue(QStringLiteral("name"), presets.at(i).first);
+        settings->setValue(QStringLiteral("pattern"), presets.at(i).second);
+    }
+    settings->endArray();
+}
+
+void OrganizeFilesDialog::rebuildPresetsMenu()
+{
+    presetsMenu->clear();
+
+    const auto addPattern = [this](const QString &name, const QString &pattern) {
+        auto action = presetsMenu->addAction(name);
+        connect(action, &QAction::triggered, this, [this, pattern] { patternEdit->setText(pattern); });
+    };
+
+    const auto custom = userPresets();
+    for (const auto &preset : custom)
+        addPattern(preset.first, preset.second);
+
+    if (!custom.isEmpty()) {
+        auto removeMenu = presetsMenu->addMenu(tr("Remove preset"));
+        for (const auto &preset : custom) {
+            const QString name = preset.first;
+            connect(removeMenu->addAction(name), &QAction::triggered, this, [this, name] {
+                auto presets = userPresets();
+                presets.removeIf([&name](const QPair<QString, QString> &preset) { return preset.first == name; });
+                saveUserPresets(presets);
+                rebuildPresetsMenu();
+            });
+        }
+        presetsMenu->addSeparator();
+    }
+
+    const auto builtIn = OrganizeFiles::presets(context.mode);
+    for (const auto &preset : builtIn)
+        addPattern(preset.first, preset.second);
+
+    presetsMenu->addSeparator();
+
+    auto saveAction = presetsMenu->addAction(tr("Save current format as preset..."));
+    saveAction->setEnabled(settings != nullptr);
+    connect(saveAction, &QAction::triggered, this, &OrganizeFilesDialog::saveCurrentPatternAsPreset);
+
+    const QString fallback = OrganizeFiles::defaultPattern(context.mode);
+    connect(presetsMenu->addAction(tr("Reset to default format")), &QAction::triggered, this, [this, fallback] { patternEdit->setText(fallback); });
+}
+
+void OrganizeFilesDialog::saveCurrentPatternAsPreset()
+{
+    bool accepted = false;
+    const QString name = QInputDialog::getText(this, tr("Save preset"), tr("Preset name:"), QLineEdit::Normal, QString(), &accepted).trimmed();
+    if (!accepted || name.isEmpty())
+        return;
+
+    auto presets = userPresets();
+    presets.removeIf([&name](const QPair<QString, QString> &preset) { return preset.first == name; });
+    presets.append({ name, patternEdit->text() });
+    saveUserPresets(presets);
+    rebuildPresetsMenu();
 }
 
 void OrganizeFilesDialog::patternEdited()
@@ -916,7 +1006,8 @@ void OrganizeFilesDialog::saveSettings()
     if (settings == nullptr)
         return;
 
-    settings->setValue(renaming() ? ORGANIZE_FILES_FILENAME_PATTERN : ORGANIZE_FILES_PATH_PATTERN, patternEdit->text());
+    if (patternIsValid)
+        settings->setValue(renaming() ? ORGANIZE_FILES_FILENAME_PATTERN : ORGANIZE_FILES_PATH_PATTERN, patternEdit->text());
     settings->setValue(ORGANIZE_FILES_SHOW_UNCHANGED, showUnchangedCheck->isChecked());
     if (!renaming() && !context.folderPath.isEmpty())
         settings->setValue(ORGANIZE_FILES_RELATIVE_TO_ROOT, rootBaseButton->isChecked());
@@ -1123,6 +1214,12 @@ void OrganizeFilesDialog::reject()
         return;
 
     QDialog::reject();
+}
+
+void OrganizeFilesDialog::done(int result)
+{
+    saveSettings();
+    QDialog::done(result);
 }
 
 void OrganizeFilesDialog::resizeEvent(QResizeEvent *event)
