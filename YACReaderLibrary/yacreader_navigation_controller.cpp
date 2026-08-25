@@ -72,6 +72,8 @@ void YACReaderNavigationController::reselectCurrentFolder()
 
 void YACReaderNavigationController::loadFolderContent(const QModelIndex &folderIndex)
 {
+    loadedFolder = folderIndex;
+
     const qulonglong folderId = folderIdForIndex(folderIndex);
     const bool isRoot = folderId == FolderModel::RootFolderId;
 
@@ -268,7 +270,11 @@ void YACReaderNavigationController::refreshCurrentSource()
         }
     }
 
-    loadFolderContent(libraryWindow->getCurrentFolderIndex());
+    // The folder on screen is the one to reload. The tree selection can point
+    // somewhere else (a right click on the tree selects a folder without
+    // navigating to it), and using it here would move the content view to
+    // another folder, without going through the navigation and history code.
+    loadFolderContent(loadedFolder);
     contentViewsManager->restoreViewState(viewState);
 }
 

@@ -4,6 +4,7 @@
 #include "content_view_state.h"
 
 #include <QObject>
+#include <QPersistentModelIndex>
 
 #include <optional>
 
@@ -55,6 +56,7 @@ private:
     LibrarySearchCoordinator *librarySearchCoordinator;
     bool restoringHistorySelection = false;
     std::optional<ContentViewState> pendingRefreshViewState;
+    QPersistentModelIndex loadedFolder;
 
     qulonglong folderIdForIndex(const QModelIndex &folderIndex) const;
 };
