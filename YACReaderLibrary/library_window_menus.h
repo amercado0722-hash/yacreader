@@ -15,6 +15,7 @@ class FolderManagementCoordinator;
 class FolderModel;
 class FolderModelProxy;
 class LibraryWindowActions;
+class OrganizeFilesCoordinator;
 class QMainWindow;
 class QMenu;
 class QPoint;
@@ -44,6 +45,7 @@ public:
                                 ReadingListModel *listsModel,
                                 FolderManagementCoordinator *folderManagementCoordinator,
                                 ComicManagementCoordinator *comicManagementCoordinator,
+                                OrganizeFilesCoordinator *organizeFilesCoordinator,
                                 ComicSelectionProvider comicSelectionProvider,
                                 LibraryIdProvider libraryIdProvider,
                                 LibraryPathProvider libraryPathProvider,
@@ -77,6 +79,7 @@ private:
     ReadingListModel *listsModel;
     FolderManagementCoordinator *folderManagementCoordinator;
     ComicManagementCoordinator *comicManagementCoordinator;
+    OrganizeFilesCoordinator *organizeFilesCoordinator;
     ComicSelectionProvider comicSelectionProvider;
     LibraryIdProvider libraryIdProvider;
     LibraryPathProvider libraryPathProvider;

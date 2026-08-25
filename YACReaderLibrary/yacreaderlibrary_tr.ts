@@ -1075,7 +1075,7 @@
         <translation>Kütüphane ulaşılabilir değil</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="236"/>
+        <location filename="library_window.cpp" line="237"/>
         <source>YACReader Library</source>
         <translation>YACReader Kütüphane</translation>
     </message>
@@ -1196,42 +1196,42 @@
         <translation>Seçili klasörleri silmeye çalışırken bir sorun oluştu. Lütfen yazma izinlerini kontrol edin ve hiçbir uygulamanın bu klasörleri veya içerdikleri dosyaları kullanmadığından emin olun.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="731"/>
+        <location filename="library_window.cpp" line="732"/>
         <source>Rename or organize files</source>
         <translation>Dosyaları yeniden adlandır veya düzenle</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="753"/>
+        <location filename="library_window.cpp" line="754"/>
         <source>Set the type of the selected comics</source>
         <translation>Seçili çizgi romanların türünü ayarla</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="772"/>
+        <location filename="library_window.cpp" line="773"/>
         <source>Search filters</source>
         <translation>Arama filtreleri</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="782"/>
+        <location filename="library_window.cpp" line="783"/>
         <source>Unread</source>
         <translation>Okunmamış</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="784"/>
+        <location filename="library_window.cpp" line="785"/>
         <source>In progress</source>
         <translation>Devam eden</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="786"/>
+        <location filename="library_window.cpp" line="787"/>
         <source>Highly rated</source>
         <translation>Yüksek puanlı</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="788"/>
+        <location filename="library_window.cpp" line="789"/>
         <source>Recently added</source>
         <translation>Yakın zamanda eklenen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="795"/>
+        <location filename="library_window.cpp" line="796"/>
         <source>Search syntax…</source>
         <translation>Arama söz dizimi…</translation>
     </message>
@@ -1256,12 +1256,12 @@
         <translation>Başka bir onarımın çalışmadığından eminseniz kilit kaldırılabilir. Kilit kaldırılıp devam edilsin mi?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="617"/>
+        <location filename="library_window.cpp" line="618"/>
         <source>Package operation failed</source>
         <translation>Paket işlemi başarısız oldu</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="617"/>
+        <location filename="library_window.cpp" line="618"/>
         <source>The covers package operation could not be completed.</source>
         <translation>Kapak paketi işlemi tamamlanamadı.</translation>
     </message>
@@ -1295,7 +1295,7 @@
     <message>
         <location filename="folder_management_coordinator.cpp" line="174"/>
         <source>A file or folder named &apos;%1&apos; already exists.</source>
-        <translation>'%1' adlı bir dosya veya klasör zaten var.</translation>
+        <translation>&apos;%1&apos; adlı bir dosya veya klasör zaten var.</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="179"/>
@@ -1497,7 +1497,7 @@ Kitaplık menüsünden bir yedeği geri yükleyebilir veya kitaplığı yeniden 
         <translation>Meta verileri ve yedekleri kaldır ve sil</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="561"/>
+        <location filename="library_window.cpp" line="562"/>
         <source>Library info</source>
         <translation>Kütüphane bilgisi</translation>
     </message>
@@ -2066,101 +2066,111 @@ Eksik dosyalar: %3</translation>
 <context>
     <name>LibraryWindowMenus</name>
     <message>
-        <location filename="library_window_menus.cpp" line="37"/>
+        <location filename="library_window_menus.cpp" line="38"/>
         <source>comic</source>
         <translation>komik</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="38"/>
+        <location filename="library_window_menus.cpp" line="39"/>
         <source>manga</source>
         <translation>manga t?r?</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="39"/>
+        <location filename="library_window_menus.cpp" line="40"/>
         <source>western manga (left to right)</source>
         <translation>Batı mangası (soldan sağa)</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="40"/>
+        <location filename="library_window_menus.cpp" line="41"/>
         <source>web comic</source>
         <translation>web çizgi romanı</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="41"/>
+        <location filename="library_window_menus.cpp" line="42"/>
         <source>4koma (top to botom)</source>
         <translation>4koma (yukarıdan aşağıya)</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="133"/>
-        <location filename="library_window_menus.cpp" line="234"/>
-        <location filename="library_window_menus.cpp" line="319"/>
-        <location filename="library_window_menus.cpp" line="407"/>
+        <location filename="library_window_menus.cpp" line="135"/>
+        <location filename="library_window_menus.cpp" line="236"/>
+        <location filename="library_window_menus.cpp" line="328"/>
+        <location filename="library_window_menus.cpp" line="418"/>
         <source>Set type</source>
         <translation>Türü ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="163"/>
+        <location filename="library_window_menus.cpp" line="165"/>
         <source>Library</source>
         <translation>Kütüphane</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="185"/>
+        <location filename="library_window_menus.cpp" line="187"/>
         <source>Folder</source>
         <translation>Klasör</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="207"/>
+        <location filename="library_window_menus.cpp" line="209"/>
         <source>Comic</source>
         <translation>Çizgi roman</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="294"/>
+        <location filename="library_window_menus.cpp" line="296"/>
         <source>Open folder...</source>
         <translation>Dosyayı aç...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="296"/>
+        <location filename="library_window_menus.cpp" line="298"/>
         <source>Update folder</source>
         <translation>Klasörü güncelle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="298"/>
+        <location filename="library_window_menus.cpp" line="300"/>
         <source>Rename folder</source>
         <translation>Klasörü yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="300"/>
+        <location filename="library_window_menus.cpp" line="302"/>
+        <source>Rename files...</source>
+        <translation>Dosyaları yeniden adlandır...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="303"/>
+        <source>Organize into folders...</source>
+        <translation>Klasörlere düzenle...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="304"/>
         <source>Rescan library for XML info</source>
         <translation>XML bilgisi için kitaplığı yeniden tarayın</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="301"/>
+        <location filename="library_window_menus.cpp" line="305"/>
         <source>Set as uncompleted</source>
         <translation>Tamamlanmamış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="302"/>
+        <location filename="library_window_menus.cpp" line="306"/>
         <source>Set as completed</source>
         <translation>Tamamlanmış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="303"/>
+        <location filename="library_window_menus.cpp" line="307"/>
         <source>Set as read</source>
         <translation>Okundu olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="304"/>
-        <location filename="library_window_menus.cpp" line="347"/>
+        <location filename="library_window_menus.cpp" line="308"/>
+        <location filename="library_window_menus.cpp" line="358"/>
         <source>Set as unread</source>
         <translation>Hepsini okunmadı işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="305"/>
+        <location filename="library_window_menus.cpp" line="309"/>
         <source>Set custom cover</source>
         <translation>Özel kapak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="306"/>
+        <location filename="library_window_menus.cpp" line="310"/>
         <source>Delete custom cover</source>
         <translation>Özel kapağı sil</translation>
     </message>
@@ -2499,12 +2509,12 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
 <context>
     <name>OrganizeFiles</name>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="513"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="536"/>
         <source>Renamed, %1 is already in use</source>
         <translation>Yeniden adlandırıldı, %1 zaten kullanımda</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="516"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="539"/>
         <source>Missing metadata: %1</source>
         <translation>Eksik üstveri: %1</translation>
     </message>
@@ -2517,58 +2527,58 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
 <context>
     <name>OrganizeFilesCoordinator</name>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="135"/>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="167"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="175"/>
         <source>Organize files</source>
         <translation>Dosyaları düzenle</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="135"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
         <source>This folder does not contain any comics.</source>
         <translation>Bu klasör hiç çizgi roman içermiyor.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="168"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="176"/>
         <source>This library is busy: %1</source>
         <translation>Bu kütüphane meşgul: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="211"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="219"/>
         <source>the library database could not be opened</source>
         <translation>kütüphane veritabanı açılamadı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="218"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="226"/>
         <source>the library database could not be locked for writing</source>
         <translation>kütüphane veritabanı yazma için kilitlenemedi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="227"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="235"/>
         <source>a folder entry could not be restored</source>
         <translation>bir klasör kaydı geri yüklenemedi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="238"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="246"/>
         <source>a comic entry could not be updated</source>
         <translation>bir çizgi roman kaydı güncellenemedi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="257"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="265"/>
         <source>the library database could not be saved: %1</source>
         <translation>kütüphane veritabanı kaydedilemedi: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="302"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="310"/>
         <source>the record of the last organize run could not be read</source>
         <translation>son düzenleme işleminin kaydı okunamadı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="327"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="335"/>
         <source>the folder %1 could not be created</source>
         <translation>%1 klasörü oluşturulamadı</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_coordinator.cpp" line="375"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="383"/>
         <source>%n file(s) could not be moved back</source>
         <translation>
             <numerusform>%n dosya geri taşınamadı</numerusform>
@@ -2582,443 +2592,468 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
         <translation type="obsolete">Formato:</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="151"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="152"/>
         <source>Organize files</source>
         <translation>Dosyaları düzenle</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="151"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="399"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="152"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="395"/>
         <source>Rename files</source>
         <translation>Dosyaları yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="216"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="217"/>
         <source>Preparing the preview...</source>
         <translation>Önizleme hazırlanıyor...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="237"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="238"/>
         <source>&amp;Filename format:</source>
         <translation>&amp;Dosya adı biçimi:</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="237"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="238"/>
         <source>&amp;Path format:</source>
         <translation>&amp;Yol biçimi:</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="239"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="240"/>
         <source>Filename format</source>
         <translation>Dosya adı biçimi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="239"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="240"/>
         <source>Path format</source>
         <translation>Yol biçimi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="243"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="244"/>
         <source>Presets</source>
         <translation>Hazır ayarlar</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="254"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="250"/>
         <source>Insert</source>
         <translation>Ekle</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="269"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="265"/>
         <source>Optional part &lt; &gt;</source>
         <translation>İsteğe bağlı bölüm &lt; &gt;</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="270"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="266"/>
         <source>Disappears completely when the fields inside it are empty.</source>
         <translation>İçindeki alanlar boşsa tümüyle kaybolur.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="273"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="269"/>
         <source>Padded number {number:000}</source>
         <translation>Sıfırla doldurulmuş numara {number:000}</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="280"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="276"/>
         <source>Format help...</source>
         <translation>Biçim yardımı...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="294"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="290"/>
         <source>selected folder</source>
         <translation>seçili klasör</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="298"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="294"/>
         <source>library root</source>
         <translation>kütüphane kökü</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="339"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="335"/>
         <source>Move into</source>
         <translation>Şuraya taşı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="348"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="344"/>
         <source>Reset changes</source>
         <translation>Değişiklikleri sıfırla</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="352"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="348"/>
         <source>Remove selected</source>
         <translation>Seçilileri çıkar</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="356"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="352"/>
         <source>Show unchanged</source>
         <translation>Değişmeyenleri göster</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="375"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="371"/>
         <source>New name</source>
         <translation>Yeni ad</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="375"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="371"/>
         <source>Renamed from</source>
         <translation>Önceki ad</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="376"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="372"/>
         <source>New location</source>
         <translation>Yeni konum</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="376"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="372"/>
         <source>Moved from</source>
         <translation>Önceki konum</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="388"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="384"/>
         <source>Remove from list</source>
         <translation>Listeden çıkar</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="399"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="395"/>
         <source>Move files</source>
         <translation>Dosyaları taşı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="403"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="399"/>
         <source>Cancel</source>
         <translation>Vazgeç</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="456"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="452"/>
         <source>Copy the list</source>
         <translation>Listeyi kopyala</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="460"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="456"/>
         <source>Undo</source>
         <translation>Geri al</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="463"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="459"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="541"/>
-        <source>A filename format cannot contain &quot;/&quot;. Use Organize files to move comics into folders.</source>
-        <translation>Bir dosya adı biçimi "/" içeremez. Çizgi romanları klasörlere taşımak için Dosyaları düzenle komutunu kullanın.</translation>
+        <location filename="organize_files/organize_files_dialog.cpp" line="581"/>
+        <source>Remove preset</source>
+        <translation>Hazır ayarı kaldır</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="543"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="600"/>
+        <source>Save current format as preset...</source>
+        <translation>Geçerli biçimi hazır ayar olarak kaydet...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="605"/>
+        <source>Reset to default format</source>
+        <translation>Varsayılan biçime sıfırla</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="611"/>
+        <source>Save preset</source>
+        <translation>Hazır ayarı kaydet</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="611"/>
+        <source>Preset name:</source>
+        <translation>Hazır ayar adı:</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="631"/>
+        <source>A filename format cannot contain &quot;/&quot;. Use Organize files to move comics into folders.</source>
+        <translation>Bir dosya adı biçimi &quot;/&quot; içeremez. Çizgi romanları klasörlere taşımak için Dosyaları düzenle komutunu kullanın.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="633"/>
         <source>This format cannot be used: %1</source>
         <translation>Bu biçim kullanılamaz: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="694"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="784"/>
         <source>new folder</source>
         <translation>yeni klasör</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="695"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="785"/>
         <source>This folder does not exist yet. It will be created.</source>
         <translation>Bu klasör henüz yok. Oluşturulacak.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="720"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="810"/>
         <source>file not found</source>
         <translation>dosya bulunamadı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="721"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="811"/>
         <source>This comic is in the library but not on disk. It is skipped.</source>
         <translation>Bu çizgi roman kütüphanede var ama diskte yok. Atlanıyor.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="725"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="815"/>
         <source>name in use</source>
         <translation>ad kullanımda</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="728"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="818"/>
         <source>no metadata</source>
         <translation>üstveri yok</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="731"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="821"/>
         <source>already here</source>
         <translation>zaten burada</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="732"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="822"/>
         <source>This file is already in the right place.</source>
         <translation>Bu dosya zaten doğru yerde.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="736"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="826"/>
         <source>edited</source>
         <translation>düzenlendi</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="788"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="878"/>
         <source>%n will be renamed</source>
         <translation>
             <numerusform>%n yeniden adlandırılacak</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="788"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="878"/>
         <source>%n will move</source>
         <translation>
             <numerusform>%n taşınacak</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="789"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="879"/>
         <source>%n unchanged</source>
         <translation>
             <numerusform>%n değişmedi</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="791"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="881"/>
         <source>%n renamed</source>
         <translation>
             <numerusform>%n yeniden adlandırıldı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="793"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="883"/>
         <source>%n removed</source>
         <translation>
             <numerusform>%n çıkarıldı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="795"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="885"/>
         <source>%n missing</source>
         <translation>
             <numerusform>%n eksik</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="797"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="887"/>
         <source>%n new folder(s)</source>
         <translation>
             <numerusform>%n yeni klasör</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="802"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
         <source>%n manual change(s) kept</source>
         <translation>
             <numerusform>Elle yapılan %n değişiklik korundu</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="807"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="897"/>
         <source>Nothing would be renamed with this format.</source>
         <translation>Bu biçimle hiçbir şey yeniden adlandırılmaz.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="808"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="898"/>
         <source>Nothing would move with this format.</source>
         <translation>Bu biçimle hiçbir şey taşınmaz.</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="810"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="900"/>
         <source>%n file(s) will be renamed. The folders do not change. You can undo it afterwards.</source>
         <translation>
             <numerusform>%n dosya yeniden adlandırılacak. Klasörler değişmez. Bunu sonradan geri alabilirsiniz.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="812"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="902"/>
         <source>%n file(s) will move into %1. This changes your files on disk. You can undo it afterwards.</source>
         <translation>
             <numerusform>%n dosya %1 konumuna taşınacak. Bu, diskteki dosyalarınızı değiştirir. Bunu sonradan geri alabilirsiniz.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="965"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1056"/>
         <source>Moving %1 of %2
 %3</source>
         <translation>%2 dosyadan %1 taşınıyor
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="971"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1062"/>
         <source>Updating the library...</source>
         <translation>Kütüphane güncelleniyor...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1003"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1094"/>
         <source>Nothing was moved.</source>
         <translation>Hiçbir şey taşınmadı.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1004"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1095"/>
         <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
         <translation>Bu işlemin geri alınmasını sağlayacak kayıt yazılamadı, bu yüzden işlem başlamadı: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1006"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
         <source>%n file(s) renamed.</source>
         <translation>
             <numerusform>%n dosya yeniden adlandırıldı.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1007"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
         <source>%n file(s) moved into %1.</source>
         <translation>
             <numerusform>%n dosya %1 konumuna taşındı.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1010"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
         <source>The record of this run stopped early, so the run stopped with it: %1</source>
         <translation>Bu işlemin kaydı erken durdu, bu yüzden işlem de onunla birlikte durdu: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1012"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1103"/>
         <source>%n file(s) were not moved.</source>
         <translation>
             <numerusform>%n dosya taşınmadı.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1020"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1111"/>
         <source>The library database could not be updated: %1</source>
         <translation>Kütüphane veritabanı güncellenemedi: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1021"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1112"/>
         <source>Use Undo to move the files back, or update the library to make it match the files.</source>
-        <translation>Dosyaları geri taşımak için Geri al'ı kullanın veya kütüphaneyi dosyalarla eşleşecek biçimde güncelleyin.</translation>
+        <translation>Dosyaları geri taşımak için Geri al&apos;ı kullanın veya kütüphaneyi dosyalarla eşleşecek biçimde güncelleyin.</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1025"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1116"/>
         <source>%n empty folder(s) were removed.</source>
         <translation>
             <numerusform>%n boş klasör kaldırıldı.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1028"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1119"/>
         <source>%n file(s) could not be moved.</source>
         <translation>
             <numerusform>%n dosya taşınamadı.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1058"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1149"/>
         <source>Moving the files back...</source>
         <translation>Dosyalar geri taşınıyor...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1084"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1175"/>
         <source>Moving back %1 of %2
 %3</source>
         <translation>%2 dosyadan %1 geri taşınıyor
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1106"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
         <source>Everything was moved back.</source>
         <translation>Her şey geri taşındı.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1110"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1201"/>
         <source>The undo did not finish: %1</source>
         <translation>Geri alma tamamlanmadı: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1169"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1266"/>
         <source>Format help</source>
         <translation>Biçim yardımı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1196"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1293"/>
         <source>Fields</source>
         <translation>Alanlar</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
         <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
         <translation>Her alan süslü parantez içinde yazılır ve çizgi romanın üstverisiyle değiştirilir. Ekle menüsü hepsini listeler.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1199"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1296"/>
         <source>{series} gives %1</source>
         <translation>{series} şunu verir: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1201"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1298"/>
         <source>Optional parts</source>
         <translation>İsteğe bağlı bölümler</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1202"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
         <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
         <translation>&lt; ve &gt; işaretleri arasına yazılan bir bölüm, içindeki bütün alanlar boşsa tümüyle kaybolur. Bunu bir alana ait noktalama için kullanın; örneğin parantezler veya baştaki numara işareti. Bir adın başındaki ve sonundaki boşluklar bu bölüm olmadan da kırpılır.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1205"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1302"/>
         <source>{series} ({year})     with no year gives %1</source>
         <translation>{series} ({year})     yıl yoksa şunu verir: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1205"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1302"/>
         <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
         <translation>{series}&lt; ({year})&gt;   yıl yoksa şunu verir: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1304"/>
         <source>Numbers</source>
         <translation>Numaralar</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1208"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1305"/>
         <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
         <translation>Sayı numarasını doldurmak için iki nokta üst üste ve birkaç sıfır yazın. Böylece sayılar dosya yöneticisinde sırada kalır.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1213"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1218"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1310"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1315"/>
         <source>Folders</source>
         <translation>Klasörler</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1214"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1311"/>
         <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
         <translation>Bir dosya adı biçimi eğik çizgi içeremez. Her çizgi roman geçerli klasöründe kalır. Çizgi romanları taşımak için Klasörlere düzenle komutunu kullanın.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1219"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1316"/>
         <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
         <translation>Eğik çizgiyle ayrılan her bölüm bir klasör olur. Son bölüm dosya adı olur. Özgün uzantı her zaman korunur.</translation>
     </message>

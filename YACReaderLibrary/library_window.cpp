@@ -221,6 +221,7 @@ void LibraryWindow::setupUI()
             listsModel,
             folderManagementCoordinator,
             comicManagementCoordinator,
+            organizeFilesCoordinator,
             [this] { return getSelectedComics(); },
             [this] { return static_cast<qulonglong>(libraries.getId(selectedLibrary->currentText())); },
             [this] { return currentPath(); },

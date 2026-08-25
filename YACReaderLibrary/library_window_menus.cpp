@@ -7,6 +7,7 @@
 #include "folder_model.h"
 #include "grid_comics_view.h"
 #include "library_window_actions.h"
+#include "organize_files_coordinator.h"
 #include "reading_list_item.h"
 #include "reading_list_model.h"
 #include "theme.h"
@@ -79,11 +80,12 @@ LibraryWindowMenus::LibraryWindowMenus(QMainWindow *window,
                                        ReadingListModel *listsModel,
                                        FolderManagementCoordinator *folderManagementCoordinator,
                                        ComicManagementCoordinator *comicManagementCoordinator,
+                                       OrganizeFilesCoordinator *organizeFilesCoordinator,
                                        ComicSelectionProvider comicSelectionProvider,
                                        LibraryIdProvider libraryIdProvider,
                                        LibraryPathProvider libraryPathProvider,
                                        ThemeProvider themeProvider)
-    : QObject(window), window(window), actions(actions), selectedLibrary(selectedLibrary), foldersView(foldersView), contentViewsManager(contentViewsManager), foldersModel(foldersModel), foldersModelProxy(foldersModelProxy), listsModel(listsModel), folderManagementCoordinator(folderManagementCoordinator), comicManagementCoordinator(comicManagementCoordinator), comicSelectionProvider(std::move(comicSelectionProvider)), libraryIdProvider(std::move(libraryIdProvider)), libraryPathProvider(std::move(libraryPathProvider)), themeProvider(std::move(themeProvider))
+    : QObject(window), window(window), actions(actions), selectedLibrary(selectedLibrary), foldersView(foldersView), contentViewsManager(contentViewsManager), foldersModel(foldersModel), foldersModelProxy(foldersModelProxy), listsModel(listsModel), folderManagementCoordinator(folderManagementCoordinator), comicManagementCoordinator(comicManagementCoordinator), organizeFilesCoordinator(organizeFilesCoordinator), comicSelectionProvider(std::move(comicSelectionProvider)), libraryIdProvider(std::move(libraryIdProvider)), libraryPathProvider(std::move(libraryPathProvider)), themeProvider(std::move(themeProvider))
 {
 }
 
@@ -297,6 +299,8 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     updateFolderAction->setIcon(theme.menuIcons.updateCurrentFolderIcon);
     auto renameFolderAction = new QAction(tr("Rename folder"), menu);
     renameFolderAction->setIcon(theme.sidebarIcons.renameListIcon);
+    auto renameFilesAction = new QAction(tr("Rename files..."), menu);
+    auto organizeFilesAction = new QAction(tr("Organize into folders..."), menu);
     auto rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), menu);
     auto setFolderAsNotCompletedAction = new QAction(tr("Set as uncompleted"), menu);
     auto setFolderAsCompletedAction = new QAction(tr("Set as completed"), menu);
@@ -308,6 +312,11 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     menu->addAction(openContainingFolderAction);
     menu->addAction(renameFolderAction);
     menu->addAction(updateFolderAction);
+    if (YACReader::FeatureFlags::organizeFiles) {
+        menu->addSeparator();
+        menu->addAction(renameFilesAction);
+        menu->addAction(organizeFilesAction);
+    }
     menu->addSeparator();
     menu->addAction(rescanLibraryForXMLInfoAction);
     menu->addSeparator();
@@ -324,6 +333,8 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     connect(openContainingFolderAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->openFolder(folderId, libraryPath); });
     connect(updateFolderAction, &QAction::triggered, menu, [this, folder] { emit folderUpdateRequested(foldersModel->getIndexFromFolder(folder)); });
     connect(renameFolderAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->renameFolder(folderId, libraryPath); });
+    connect(renameFilesAction, &QAction::triggered, menu, [this, folder] { organizeFilesCoordinator->renameFolder(foldersModel->getIndexFromFolder(folder)); });
+    connect(organizeFilesAction, &QAction::triggered, menu, [this, folder] { organizeFilesCoordinator->organizeFolder(foldersModel->getIndexFromFolder(folder)); });
     connect(rescanLibraryForXMLInfoAction, &QAction::triggered, menu, [this, folder] { emit folderXmlRescanRequested(foldersModel->getIndexFromFolder(folder)); });
     connect(setFolderAsNotCompletedAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->setFolderCompleted(folderId, libraryPath, false); });
     connect(setFolderAsCompletedAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->setFolderCompleted(folderId, libraryPath, true); });

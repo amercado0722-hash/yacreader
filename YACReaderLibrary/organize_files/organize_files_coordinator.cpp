@@ -97,12 +97,22 @@ OrganizeFilesCoordinator::OrganizeFilesCoordinator(QSettings *settings,
 
 void OrganizeFilesCoordinator::renameCurrentFolder()
 {
-    runOnCurrentFolder(OrganizeFiles::Mode::Rename);
+    runOnFolder(OrganizeFiles::Mode::Rename, currentFolderProvider());
 }
 
 void OrganizeFilesCoordinator::organizeCurrentFolder()
 {
-    runOnCurrentFolder(OrganizeFiles::Mode::Organize);
+    runOnFolder(OrganizeFiles::Mode::Organize, currentFolderProvider());
+}
+
+void OrganizeFilesCoordinator::renameFolder(const QModelIndex &folderIndex)
+{
+    runOnFolder(OrganizeFiles::Mode::Rename, folderIndex);
+}
+
+void OrganizeFilesCoordinator::organizeFolder(const QModelIndex &folderIndex)
+{
+    runOnFolder(OrganizeFiles::Mode::Organize, folderIndex);
 }
 
 void OrganizeFilesCoordinator::renameSelectedComics()
@@ -115,9 +125,8 @@ void OrganizeFilesCoordinator::organizeSelectedComics()
     runOnSelectedComics(OrganizeFiles::Mode::Organize);
 }
 
-void OrganizeFilesCoordinator::runOnCurrentFolder(OrganizeFiles::Mode mode)
+void OrganizeFilesCoordinator::runOnFolder(OrganizeFiles::Mode mode, const QModelIndex &folderIndex)
 {
-    const auto folderIndex = currentFolderProvider();
     if (!folderIndex.isValid())
         return;
 

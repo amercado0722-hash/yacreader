@@ -39,6 +39,8 @@ public:
 public slots:
     void renameCurrentFolder();
     void organizeCurrentFolder();
+    void renameFolder(const QModelIndex &folderIndex);
+    void organizeFolder(const QModelIndex &folderIndex);
     void renameSelectedComics();
     void organizeSelectedComics();
 
@@ -46,7 +48,7 @@ signals:
     void libraryContentChanged();
 
 private:
-    void runOnCurrentFolder(OrganizeFiles::Mode mode);
+    void runOnFolder(OrganizeFiles::Mode mode, const QModelIndex &folderIndex);
     void runOnSelectedComics(OrganizeFiles::Mode mode);
     void organizeComics(OrganizeFiles::Mode mode, const QList<ComicDB> &comics, const QString &libraryRoot, const QString &folderPath);
 
