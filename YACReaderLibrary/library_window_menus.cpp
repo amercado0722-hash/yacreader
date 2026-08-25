@@ -243,17 +243,16 @@ void LibraryWindowMenus::showComicsContextMenu(const QPoint &point, bool showFul
     menu->addAction(actions.saveCoversToAction);
     menu->addSeparator();
     menu->addAction(actions.openContainingFolderComicAction);
-    if (YACReader::FeatureFlags::organizeFiles) {
-        menu->addSeparator();
-        menu->addAction(actions.renameComicsFilesAction);
-        menu->addAction(actions.organizeComicsFilesAction);
-        menu->addSeparator();
-    }
     menu->addAction(actions.updateCurrentFolderAction);
     menu->addSeparator();
     menu->addAction(actions.editSelectedComicsAction);
     menu->addAction(actions.getInfoAction);
     menu->addAction(actions.asignOrderAction);
+    if (YACReader::FeatureFlags::organizeFiles) {
+        menu->addSeparator();
+        menu->addAction(actions.renameComicsFilesAction);
+        menu->addAction(actions.organizeComicsFilesAction);
+    }
     menu->addSeparator();
     menu->addAction(actions.selectAllComicsAction);
     menu->addSeparator();

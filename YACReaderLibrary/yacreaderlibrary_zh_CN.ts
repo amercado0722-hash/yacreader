@@ -2096,8 +2096,8 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="236"/>
-        <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="418"/>
+        <location filename="library_window_menus.cpp" line="327"/>
+        <location filename="library_window_menus.cpp" line="417"/>
         <source>Set type</source>
         <translation>设置类型</translation>
     </message>
@@ -2117,63 +2117,63 @@ Missing files: %3</source>
         <translation>漫画</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="296"/>
+        <location filename="library_window_menus.cpp" line="295"/>
         <source>Open folder...</source>
         <translation>打开文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="298"/>
+        <location filename="library_window_menus.cpp" line="297"/>
         <source>Update folder</source>
         <translation>更新文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="300"/>
+        <location filename="library_window_menus.cpp" line="299"/>
         <source>Rename folder</source>
         <translation>重命名文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="302"/>
+        <location filename="library_window_menus.cpp" line="301"/>
         <source>Rename files...</source>
         <translation>重命名文件...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="303"/>
+        <location filename="library_window_menus.cpp" line="302"/>
         <source>Organize into folders...</source>
         <translation>整理到文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="304"/>
+        <location filename="library_window_menus.cpp" line="303"/>
         <source>Rescan library for XML info</source>
         <translation>重新扫描库的 XML 信息</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="305"/>
+        <location filename="library_window_menus.cpp" line="304"/>
         <source>Set as uncompleted</source>
         <translation>设为未完成</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="306"/>
+        <location filename="library_window_menus.cpp" line="305"/>
         <source>Set as completed</source>
         <translation>设为已完成</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="307"/>
+        <location filename="library_window_menus.cpp" line="306"/>
         <source>Set as read</source>
         <translation>设为已读</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="308"/>
-        <location filename="library_window_menus.cpp" line="358"/>
+        <location filename="library_window_menus.cpp" line="307"/>
+        <location filename="library_window_menus.cpp" line="357"/>
         <source>Set as unread</source>
         <translation>设为未读</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="309"/>
+        <location filename="library_window_menus.cpp" line="308"/>
         <source>Set custom cover</source>
         <translation>设置自定义封面</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="310"/>
+        <location filename="library_window_menus.cpp" line="309"/>
         <source>Delete custom cover</source>
         <translation>删除自定义封面</translation>
     </message>

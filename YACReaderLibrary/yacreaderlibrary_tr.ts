@@ -2093,8 +2093,8 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="236"/>
-        <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="418"/>
+        <location filename="library_window_menus.cpp" line="327"/>
+        <location filename="library_window_menus.cpp" line="417"/>
         <source>Set type</source>
         <translation>Türü ayarla</translation>
     </message>
@@ -2114,63 +2114,63 @@ Eksik dosyalar: %3</translation>
         <translation>Çizgi roman</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="296"/>
+        <location filename="library_window_menus.cpp" line="295"/>
         <source>Open folder...</source>
         <translation>Dosyayı aç...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="298"/>
+        <location filename="library_window_menus.cpp" line="297"/>
         <source>Update folder</source>
         <translation>Klasörü güncelle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="300"/>
+        <location filename="library_window_menus.cpp" line="299"/>
         <source>Rename folder</source>
         <translation>Klasörü yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="302"/>
+        <location filename="library_window_menus.cpp" line="301"/>
         <source>Rename files...</source>
         <translation>Dosyaları yeniden adlandır...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="303"/>
+        <location filename="library_window_menus.cpp" line="302"/>
         <source>Organize into folders...</source>
         <translation>Klasörlere düzenle...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="304"/>
+        <location filename="library_window_menus.cpp" line="303"/>
         <source>Rescan library for XML info</source>
         <translation>XML bilgisi için kitaplığı yeniden tarayın</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="305"/>
+        <location filename="library_window_menus.cpp" line="304"/>
         <source>Set as uncompleted</source>
         <translation>Tamamlanmamış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="306"/>
+        <location filename="library_window_menus.cpp" line="305"/>
         <source>Set as completed</source>
         <translation>Tamamlanmış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="307"/>
+        <location filename="library_window_menus.cpp" line="306"/>
         <source>Set as read</source>
         <translation>Okundu olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="308"/>
-        <location filename="library_window_menus.cpp" line="358"/>
+        <location filename="library_window_menus.cpp" line="307"/>
+        <location filename="library_window_menus.cpp" line="357"/>
         <source>Set as unread</source>
         <translation>Hepsini okunmadı işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="309"/>
+        <location filename="library_window_menus.cpp" line="308"/>
         <source>Set custom cover</source>
         <translation>Özel kapak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="310"/>
+        <location filename="library_window_menus.cpp" line="309"/>
         <source>Delete custom cover</source>
         <translation>Özel kapağı sil</translation>
     </message>
