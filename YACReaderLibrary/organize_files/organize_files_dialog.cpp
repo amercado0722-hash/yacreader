@@ -445,27 +445,41 @@ QWidget *OrganizeFilesDialog::createResultPage()
     resultLabel = new QLabel;
     resultLabel->setWordWrap(true);
     resultLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    resultLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+
+    resultTree = new QTreeWidget;
+    resultTree->setColumnCount(3);
+    resultTree->setRootIsDecorated(false);
+    resultTree->setUniformRowHeights(true);
+    resultTree->setAlternatingRowColors(true);
+    resultTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    resultTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    resultTree->header()->setSectionResizeMode(QHeaderView::Interactive);
+    resultTree->header()->setStretchLastSection(true);
+    resultTree->setVisible(false);
 
     failureList = new QListWidget;
     failureList->setVisible(false);
 
-    copyFailuresButton = new QPushButton(tr("Copy the list"));
+    copyFailuresButton = new QPushButton(tr("Copy failure details"));
     copyFailuresButton->setVisible(false);
     connect(copyFailuresButton, &QPushButton::clicked, this, &OrganizeFilesDialog::copyFailures);
 
     undoButton = new QPushButton(tr("Undo"));
     connect(undoButton, &QPushButton::clicked, this, &OrganizeFilesDialog::undo);
 
-    closeButton = new QPushButton(tr("Close"));
-    connect(closeButton, &QPushButton::clicked, this, &QDialog::accept);
+    finishButton = new QPushButton(tr("Finish"));
+    finishButton->setDefault(true);
+    connect(finishButton, &QPushButton::clicked, this, &QDialog::accept);
 
     auto buttons = new QHBoxLayout;
     buttons->addWidget(copyFailuresButton);
     buttons->addStretch();
     buttons->addWidget(undoButton);
-    buttons->addWidget(closeButton);
+    buttons->addWidget(finishButton);
 
     layout->addWidget(resultLabel);
+    layout->addWidget(resultTree, 1);
     layout->addWidget(failureList, 1);
     layout->addLayout(buttons);
 
@@ -1025,6 +1039,7 @@ void OrganizeFilesDialog::startMove()
         return;
 
     saveSettings();
+    lastRequestedMoves = moves;
 
     moveRunning = true;
     moveButton->setEnabled(false);
@@ -1068,8 +1083,88 @@ void OrganizeFilesDialog::showFailures(const QList<FileFailure> &failures)
     for (const auto &failure : failures)
         failureList->addItem(QDir::toNativeSeparators(failure.path) + QStringLiteral(" — ") + failure.reason);
 
-    failureList->setVisible(!failures.isEmpty());
+    // The failures are presented in the result table. This hidden list remains the
+    // source for Copy the list, so detailed diagnostics are still easy to share.
+    failureList->setVisible(false);
     copyFailuresButton->setVisible(!failures.isEmpty());
+}
+
+void OrganizeFilesDialog::showCompletedMoves(const QList<FileMove> &moves, const QList<FileFailure> &failures, bool restored)
+{
+    resultTree->clear();
+
+    if (renaming()) {
+        resultTree->setHeaderLabels(restored ? QStringList { tr("Restored name"), tr("Moved back from"), tr("Status") }
+                                             : QStringList { tr("Final name"), tr("Previous name"), tr("Status") });
+    } else {
+        resultTree->setHeaderLabels(restored ? QStringList { tr("Restored location"), tr("Moved back from"), tr("Status") }
+                                             : QStringList { tr("Final location"), tr("Previous location"), tr("Status") });
+    }
+
+    const QDir libraryDir(context.libraryPath);
+    const auto displayPath = [this, &libraryDir](const QString &path) {
+        return renaming() ? QFileInfo(path).fileName()
+                          : QDir::toNativeSeparators(libraryDir.relativeFilePath(path));
+    };
+    const auto addRow = [this, &displayPath](const QString &finalPath, const QString &previousPath, const QString &status, const QColor &color = QColor()) {
+        auto *item = new QTreeWidgetItem(resultTree);
+        item->setText(0, displayPath(finalPath));
+        item->setText(1, displayPath(previousPath));
+        item->setText(2, status);
+        item->setToolTip(0, QDir::toNativeSeparators(finalPath));
+        item->setToolTip(1, QDir::toNativeSeparators(previousPath));
+        item->setToolTip(2, status);
+        if (color.isValid()) {
+            for (int column = 0; column < resultTree->columnCount(); ++column)
+                item->setForeground(column, color);
+        }
+    };
+
+    QHash<QString, QString> failureReasons;
+    for (const auto &failure : failures)
+        failureReasons.insert(QDir::cleanPath(failure.path), failure.reason);
+
+    QList<FileMove> sortedMoves = moves;
+    std::sort(sortedMoves.begin(), sortedMoves.end(), [restored](const FileMove &a, const FileMove &b) {
+        const QString &aFinal = restored ? a.source : a.destination;
+        const QString &bFinal = restored ? b.source : b.destination;
+        return aFinal.compare(bFinal, Qt::CaseInsensitive) < 0;
+    });
+
+    for (const auto &move : std::as_const(sortedMoves)) {
+        const QString failureKey = QDir::cleanPath(restored ? move.destination : move.source);
+        if (failureReasons.contains(failureKey))
+            continue;
+
+        const QString finalPath = restored ? move.source : move.destination;
+        const QString previousPath = restored ? move.destination : move.source;
+        addRow(finalPath, previousPath, restored ? tr("Restored") : (renaming() ? tr("Renamed") : tr("Moved")));
+    }
+
+    const bool dark = resultTree->palette().color(QPalette::Base).lightness() < 128;
+    const QColor errorColor = dark ? QColor(0xFF, 0x7B, 0x72) : QColor(0xC0, 0x39, 0x2B);
+    for (const auto &failure : failures) {
+        const auto requested = std::find_if(lastRequestedMoves.cbegin(), lastRequestedMoves.cend(), [&failure, restored](const FileMove &move) {
+            const QString relevantPath = restored ? move.destination : move.source;
+            return QDir::cleanPath(relevantPath) == QDir::cleanPath(failure.path);
+        });
+
+        const QString finalPath = requested == lastRequestedMoves.cend()
+                ? failure.path
+                : (restored ? requested->source : requested->destination);
+        const QString previousPath = requested == lastRequestedMoves.cend()
+                ? failure.path
+                : (restored ? requested->destination : requested->source);
+        addRow(finalPath, previousPath, restored ? tr("Undo failed: %1").arg(failure.reason) : tr("Failed: %1").arg(failure.reason),
+               errorColor);
+    }
+
+    resultTree->setVisible(!moves.isEmpty() || !failures.isEmpty());
+    if (resultTree->isVisible()) {
+        const int availableWidth = qMax(resultTree->viewport()->width(), width() - 48);
+        resultTree->setColumnWidth(0, availableWidth * 2 / 5);
+        resultTree->setColumnWidth(1, availableWidth * 2 / 5);
+    }
 }
 
 void OrganizeFilesDialog::moveFinished()
@@ -1119,10 +1214,12 @@ void OrganizeFilesDialog::moveFinished()
         lines << tr("%n file(s) could not be moved.", "", failures.size());
 
     showFailures(failures);
+    showCompletedMoves(completed, failures);
 
     resultLabel->setText(lines.join(QStringLiteral("\n")));
 
     lastJournalPath = journalPath;
+    lastCompletedMoves = completed;
     undoButton->setEnabled(!journalPath.isEmpty() && !completed.isEmpty() && static_cast<bool>(undoer));
 
     // Deleted directly: a deferred delete posted to a stopped thread never runs.
@@ -1195,11 +1292,13 @@ void OrganizeFilesDialog::undoFinished()
 
     if (success) {
         resultLabel->setText(tr("Everything was moved back."));
+        showCompletedMoves(lastCompletedMoves, { }, true);
         showFailures({ });
         undoButton->setEnabled(false);
     } else {
         resultLabel->setText(tr("The undo did not finish: %1").arg(error));
         showFailures(failures);
+        showCompletedMoves(lastCompletedMoves, failures, true);
         // The journal survives a failed undo so it can be retried, and this button
         // is the only way to reach it.
         undoButton->setEnabled(true);

@@ -2723,102 +2723,110 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="452"/>
         <source>Copy the list</source>
-        <translation>Copier la liste</translation>
+        <translation type="vanished">Copier la liste</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="456"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="468"/>
         <source>Undo</source>
         <translation>Revenir en arrière</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="459"/>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation type="vanished">Fermer</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="581"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="464"/>
+        <source>Copy failure details</source>
+        <translation>Copier les détails des échecs</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="471"/>
+        <source>Finish</source>
+        <translation>Terminer</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="595"/>
         <source>Remove preset</source>
         <translation>Supprimer le préréglage</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="600"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="614"/>
         <source>Save current format as preset...</source>
         <translation>Enregistrer le format actuel comme préréglage...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="605"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="619"/>
         <source>Reset to default format</source>
         <translation>Réinitialiser au format par défaut</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="611"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="625"/>
         <source>Save preset</source>
         <translation>Enregistrer le préréglage</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="611"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="625"/>
         <source>Preset name:</source>
         <translation>Nom du préréglage:</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="631"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="645"/>
         <source>A filename format cannot contain &quot;/&quot;. Use Organize files to move comics into folders.</source>
         <translation>Un format de nom de fichier ne peut pas contenir &quot;/&quot;. Utilisez Organiser les fichiers pour déplacer des bandes dessinées dans des dossiers.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="633"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="647"/>
         <source>This format cannot be used: %1</source>
         <translation>Ce format ne peut pas être utilisé : %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="784"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="798"/>
         <source>new folder</source>
         <translation>nouveau dossier</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="785"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="799"/>
         <source>This folder does not exist yet. It will be created.</source>
         <translation>Ce dossier n&apos;existe pas encore. Il sera créé.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="810"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="824"/>
         <source>file not found</source>
         <translation>fichier introuvable</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="811"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="825"/>
         <source>This comic is in the library but not on disk. It is skipped.</source>
         <translation>Cette bande dessinée est dans la bibliothèque mais pas sur le disque. Elle est ignorée.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="815"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="829"/>
         <source>name in use</source>
         <translation>nom déjà utilisé</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="818"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="832"/>
         <source>no metadata</source>
         <translation>pas de métadonnées</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="821"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="835"/>
         <source>already here</source>
         <translation>déjà ici</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="822"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="836"/>
         <source>This file is already in the right place.</source>
         <translation>Ce fichier est déjà au bon endroit.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="826"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="840"/>
         <source>edited</source>
         <translation>modifié</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="878"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
         <source>%n will be renamed</source>
         <translation>
             <numerusform>%n sera renommé</numerusform>
@@ -2826,7 +2834,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="878"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
         <source>%n will move</source>
         <translation>
             <numerusform>%n sera déplacé</numerusform>
@@ -2834,7 +2842,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="879"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="893"/>
         <source>%n unchanged</source>
         <translation>
             <numerusform>%n inchangé</numerusform>
@@ -2842,7 +2850,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="881"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="895"/>
         <source>%n renamed</source>
         <translation>
             <numerusform>%n renommé</numerusform>
@@ -2850,7 +2858,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="883"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="897"/>
         <source>%n removed</source>
         <translation>
             <numerusform>%n retiré</numerusform>
@@ -2858,7 +2866,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="885"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="899"/>
         <source>%n missing</source>
         <translation>
             <numerusform>%n introuvable</numerusform>
@@ -2866,7 +2874,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="887"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="901"/>
         <source>%n new folder(s)</source>
         <translation>
             <numerusform>%n nouveau dossier</numerusform>
@@ -2874,7 +2882,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="906"/>
         <source>%n manual change(s) kept</source>
         <translation>
             <numerusform>%n modification manuelle conservée</numerusform>
@@ -2882,17 +2890,17 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="897"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="911"/>
         <source>Nothing would be renamed with this format.</source>
         <translation>Avec ce format, rien ne serait renommé.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="898"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="912"/>
         <source>Nothing would move with this format.</source>
         <translation>Avec ce format, rien ne serait déplacé.</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="900"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="914"/>
         <source>%n file(s) will be renamed. The folders do not change. You can undo it afterwards.</source>
         <translation>
             <numerusform>%n fichier sera renommé. Les dossiers ne changent pas. Vous pourrez revenir en arrière ensuite.</numerusform>
@@ -2900,7 +2908,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="902"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="916"/>
         <source>%n file(s) will move into %1. This changes your files on disk. You can undo it afterwards.</source>
         <translation>
             <numerusform>%n fichier sera déplacé vers %1. Cela modifie vos fichiers sur le disque. Vous pourrez revenir en arrière ensuite.</numerusform>
@@ -2908,29 +2916,98 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1056"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1071"/>
         <source>Moving %1 of %2
 %3</source>
         <translation>Déplacement de %1 sur %2
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1062"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1077"/>
         <source>Updating the library...</source>
         <translation>Mise à jour de la bibliothèque...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1094"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <source>Restored name</source>
+        <translation>Nom restauré</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <source>Moved back from</source>
+        <translation>Redéplacé depuis</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Status</source>
+        <translation>État</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <source>Final name</source>
+        <translation>Nom final</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <source>Previous name</source>
+        <translation>Nom précédent</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <source>Restored location</source>
+        <translation>Emplacement restauré</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Final location</source>
+        <translation>Emplacement final</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Previous location</source>
+        <translation>Emplacement précédent</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Restored</source>
+        <translation>Restauré</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Renamed</source>
+        <translation>Renommé</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Moved</source>
+        <translation>Déplacé</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1158"/>
+        <source>Undo failed: %1</source>
+        <translation>Échec de l’annulation : %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1159"/>
+        <source>Failed: %1</source>
+        <translation>Échec : %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
         <source>Nothing was moved.</source>
         <translation>Rien n&apos;a été déplacé.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1095"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1191"/>
         <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
         <translation>L&apos;enregistrement permettant d&apos;annuler cette opération n&apos;a pas pu être écrit, l&apos;opération n&apos;a donc pas démarré : %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
         <source>%n file(s) renamed.</source>
         <translation>
             <numerusform>%n fichier renommé.</numerusform>
@@ -2938,7 +3015,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1194"/>
         <source>%n file(s) moved into %1.</source>
         <translation>
             <numerusform>%n fichier déplacé vers %1.</numerusform>
@@ -2946,12 +3023,12 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
         <source>The record of this run stopped early, so the run stopped with it: %1</source>
         <translation>L&apos;enregistrement de cette opération s&apos;est arrêté prématurément, l&apos;opération s&apos;est donc arrêtée avec lui : %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1103"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1199"/>
         <source>%n file(s) were not moved.</source>
         <translation>
             <numerusform>%n fichier n&apos;a pas été déplacé.</numerusform>
@@ -2959,17 +3036,17 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1111"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
         <source>The library database could not be updated: %1</source>
         <translation>La base de données de la bibliothèque n&apos;a pas pu être mise à jour : %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1112"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1208"/>
         <source>Use Undo to move the files back, or update the library to make it match the files.</source>
         <translation>Utilisez Revenir en arrière pour remettre les fichiers en place, ou mettez la bibliothèque à jour pour qu&apos;elle corresponde aux fichiers.</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1116"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1212"/>
         <source>%n empty folder(s) were removed.</source>
         <translation>
             <numerusform>%n dossier vide a été supprimé.</numerusform>
@@ -2977,7 +3054,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1119"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1215"/>
         <source>%n file(s) could not be moved.</source>
         <translation>
             <numerusform>%n fichier n&apos;a pas pu être déplacé.</numerusform>
@@ -2985,90 +3062,90 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1149"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1247"/>
         <source>Moving the files back...</source>
         <translation>Remise en place des fichiers...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1175"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1273"/>
         <source>Moving back %1 of %2
 %3</source>
         <translation>Remise en place de %1 sur %2
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1295"/>
         <source>Everything was moved back.</source>
         <translation>Tout a été remis en place.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1201"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1300"/>
         <source>The undo did not finish: %1</source>
         <translation>Le retour en arrière ne s&apos;est pas terminé : %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1266"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1366"/>
         <source>Format help</source>
         <translation>Aide sur le format</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1293"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
         <source>Fields</source>
         <translation>Champs</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1394"/>
         <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
         <translation>Chaque champ s&apos;écrit entre accolades et est remplacé par les métadonnées de la bande dessinée. Le menu Insérer les liste tous.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1296"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1396"/>
         <source>{series} gives %1</source>
         <translation>{series} donne %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1298"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
         <source>Optional parts</source>
         <translation>Parties facultatives</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1399"/>
         <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
         <translation>Une partie écrite entre les signes &lt; et &gt; disparaît complètement quand tous les champs qu&apos;elle contient sont vides. Utilisez-la pour la ponctuation qui appartient à un champ, comme des parenthèses ou un dièse en tête. Le texte au début ou à la fin d&apos;un nom est rogné sans elle.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1302"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
         <source>{series} ({year})     with no year gives %1</source>
         <translation>{series} ({year})     sans année donne %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1302"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
         <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
         <translation>{series}&lt; ({year})&gt;   sans année donne %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1304"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
         <source>Numbers</source>
         <translation>Numéros</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1305"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1405"/>
         <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
         <translation>Écrivez deux-points et quelques zéros pour compléter le numéro. Les numéros restent ainsi dans l&apos;ordre dans un gestionnaire de fichiers.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1310"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1315"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
         <source>Folders</source>
         <translation>Dossiers</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1311"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1411"/>
         <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
         <translation>Un format de nom de fichier ne peut pas contenir de barre oblique. Chaque bande dessinée reste dans son dossier actuel. Utilisez Organiser en dossiers pour déplacer des bandes dessinées.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1316"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1416"/>
         <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
         <translation>Chaque partie séparée par une barre oblique devient un dossier. La dernière partie devient le nom du fichier. L&apos;extension d&apos;origine est toujours conservée.</translation>
     </message>

@@ -2725,337 +2725,414 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="452"/>
         <source>Copy the list</source>
-        <translation>複製清單</translation>
+        <translation type="vanished">複製清單</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="456"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="468"/>
         <source>Undo</source>
         <translation>復原</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="459"/>
         <source>Close</source>
-        <translation>關閉</translation>
+        <translation type="vanished">關閉</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="581"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="464"/>
+        <source>Copy failure details</source>
+        <translation>複製失敗詳細資訊</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="471"/>
+        <source>Finish</source>
+        <translation>完成</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="595"/>
         <source>Remove preset</source>
         <translation>移除預設組合</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="600"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="614"/>
         <source>Save current format as preset...</source>
         <translation>將目前格式保存為預設組合...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="605"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="619"/>
         <source>Reset to default format</source>
         <translation>重設為預設格式</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="611"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="625"/>
         <source>Save preset</source>
         <translation>保存預設組合</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="611"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="625"/>
         <source>Preset name:</source>
         <translation>預設組合名稱:</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="631"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="645"/>
         <source>A filename format cannot contain &quot;/&quot;. Use Organize files to move comics into folders.</source>
         <translation>檔名格式不能包含 &quot;/&quot;。請使用「整理檔案」把漫畫移動到檔夾中。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="633"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="647"/>
         <source>This format cannot be used: %1</source>
         <translation>無法使用此格式：%1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="784"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="798"/>
         <source>new folder</source>
         <translation>新檔夾</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="785"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="799"/>
         <source>This folder does not exist yet. It will be created.</source>
         <translation>此檔夾尚不存在，將會被建立。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="810"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="824"/>
         <source>file not found</source>
         <translation>找不到檔案</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="811"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="825"/>
         <source>This comic is in the library but not on disk. It is skipped.</source>
         <translation>此漫畫在庫中，但磁碟上沒有。將略過它。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="815"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="829"/>
         <source>name in use</source>
         <translation>名稱已被使用</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="818"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="832"/>
         <source>no metadata</source>
         <translation>無中繼資料</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="821"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="835"/>
         <source>already here</source>
         <translation>已在此處</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="822"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="836"/>
         <source>This file is already in the right place.</source>
         <translation>此檔案已在正確的位置。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="826"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="840"/>
         <source>edited</source>
         <translation>已編輯</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="878"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
         <source>%n will be renamed</source>
         <translation>
             <numerusform>%n 個將被重新命名</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="878"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
         <source>%n will move</source>
         <translation>
             <numerusform>%n 個將被移動</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="879"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="893"/>
         <source>%n unchanged</source>
         <translation>
             <numerusform>%n 個未變更</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="881"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="895"/>
         <source>%n renamed</source>
         <translation>
             <numerusform>%n 個已重新命名</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="883"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="897"/>
         <source>%n removed</source>
         <translation>
             <numerusform>%n 個已移除</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="885"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="899"/>
         <source>%n missing</source>
         <translation>
             <numerusform>%n 個遺失</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="887"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="901"/>
         <source>%n new folder(s)</source>
         <translation>
             <numerusform>%n 個新檔夾</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="906"/>
         <source>%n manual change(s) kept</source>
         <translation>
             <numerusform>已保留 %n 處手動修改</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="897"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="911"/>
         <source>Nothing would be renamed with this format.</source>
         <translation>使用此格式不會重新命名任何檔案。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="898"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="912"/>
         <source>Nothing would move with this format.</source>
         <translation>使用此格式不會移動任何檔案。</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="900"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="914"/>
         <source>%n file(s) will be renamed. The folders do not change. You can undo it afterwards.</source>
         <translation>
             <numerusform>將重新命名 %n 個檔案。檔夾不會改變。之後可以復原。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="902"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="916"/>
         <source>%n file(s) will move into %1. This changes your files on disk. You can undo it afterwards.</source>
         <translation>
             <numerusform>將把 %n 個檔案移動到 %1。這會改變磁碟上的檔案。之後可以復原。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1056"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1071"/>
         <source>Moving %1 of %2
 %3</source>
         <translation>正在移動第 %1 個，共 %2 個
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1062"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1077"/>
         <source>Updating the library...</source>
         <translation>正在更新庫...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1094"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <source>Restored name</source>
+        <translation>已還原名稱</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <source>Moved back from</source>
+        <translation>移回自</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Status</source>
+        <translation>狀態</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <source>Final name</source>
+        <translation>最終名稱</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <source>Previous name</source>
+        <translation>原名稱</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <source>Restored location</source>
+        <translation>已還原位置</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Final location</source>
+        <translation>最終位置</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Previous location</source>
+        <translation>原位置</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Restored</source>
+        <translation>已還原</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Renamed</source>
+        <translation>已重新命名</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Moved</source>
+        <translation>已移動</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1158"/>
+        <source>Undo failed: %1</source>
+        <translation>復原失敗：%1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1159"/>
+        <source>Failed: %1</source>
+        <translation>失敗：%1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
         <source>Nothing was moved.</source>
         <translation>沒有移動任何檔案。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1095"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1191"/>
         <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
         <translation>無法寫入用於復原本次作業的記錄，因此作業沒有開始：%1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
         <source>%n file(s) renamed.</source>
         <translation>
             <numerusform>已重新命名 %n 個檔案。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1194"/>
         <source>%n file(s) moved into %1.</source>
         <translation>
             <numerusform>已把 %n 個檔案移動到 %1。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
         <source>The record of this run stopped early, so the run stopped with it: %1</source>
         <translation>本次作業的記錄提前中斷，因此作業也隨之停止：%1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1103"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1199"/>
         <source>%n file(s) were not moved.</source>
         <translation>
             <numerusform>有 %n 個檔案沒有被移動。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1111"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
         <source>The library database could not be updated: %1</source>
         <translation>無法更新庫資料庫：%1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1112"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1208"/>
         <source>Use Undo to move the files back, or update the library to make it match the files.</source>
         <translation>使用「復原」把檔案移回原處，或更新庫使其與檔案一致。</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1116"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1212"/>
         <source>%n empty folder(s) were removed.</source>
         <translation>
             <numerusform>已移除 %n 個空檔夾。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1119"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1215"/>
         <source>%n file(s) could not be moved.</source>
         <translation>
             <numerusform>有 %n 個檔案無法移動。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1149"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1247"/>
         <source>Moving the files back...</source>
         <translation>正在把檔案移回原處...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1175"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1273"/>
         <source>Moving back %1 of %2
 %3</source>
         <translation>正在移回第 %1 個，共 %2 個
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1295"/>
         <source>Everything was moved back.</source>
         <translation>所有檔案都已移回原處。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1201"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1300"/>
         <source>The undo did not finish: %1</source>
         <translation>復原沒有完成：%1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1266"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1366"/>
         <source>Format help</source>
         <translation>格式說明</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1293"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
         <source>Fields</source>
         <translation>欄位</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1394"/>
         <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
         <translation>每個欄位都寫在大括號中，會被取代為漫畫的中繼資料。「插入」選單中列出了全部欄位。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1296"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1396"/>
         <source>{series} gives %1</source>
         <translation>{series} 得到 %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1298"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
         <source>Optional parts</source>
         <translation>選用部分</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1399"/>
         <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
         <translation>寫在 &lt; 和 &gt; 之間的部分，在其中所有欄位都為空時會完全消失。請把屬於某個欄位的標點寫在裡面，例如括號或前置的井號。名稱開頭和結尾的文字即使不用它也會被修剪。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1302"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
         <source>{series} ({year})     with no year gives %1</source>
         <translation>{series} ({year})     沒有年份時得到 %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1302"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
         <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
         <translation>{series}&lt; ({year})&gt;   沒有年份時得到 %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1304"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
         <source>Numbers</source>
         <translation>編號</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1305"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1405"/>
         <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
         <translation>寫一個冒號和數個零，即可為期號補零。這樣在檔案管理員中各期仍按順序排列。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1310"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1315"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
         <source>Folders</source>
         <translation>檔夾</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1311"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1411"/>
         <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
         <translation>檔名格式不能包含斜線。每本漫畫都保留在目前檔夾中。請使用「整理到檔夾」來移動漫畫。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1316"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1416"/>
         <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
         <translation>用斜線分隔的每一部分都會變成一個檔夾。最後一部分是檔名。原有副檔名一律保留。</translation>
     </message>

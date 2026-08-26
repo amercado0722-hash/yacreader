@@ -108,6 +108,7 @@ private:
     bool isFileItem(QTreeWidgetItem *item) const;
     void collectFileItems(QTreeWidgetItem *item, QList<QTreeWidgetItem *> &out) const;
     QList<OrganizeFiles::FileMove> movesToExecute() const;
+    void showCompletedMoves(const QList<OrganizeFiles::FileMove> &moves, const QList<OrganizeFiles::FileFailure> &failures = { }, bool restored = false);
     void showFailures(const QList<OrganizeFiles::FileFailure> &failures);
     void saveSettings();
     QString presetsKey() const;
@@ -146,10 +147,11 @@ private:
     QLabel *progressLabel;
 
     QLabel *resultLabel;
+    QTreeWidget *resultTree;
     QListWidget *failureList;
     QPushButton *copyFailuresButton;
     QPushButton *undoButton;
-    QPushButton *closeButton;
+    QPushButton *finishButton;
 
     QTimer *buildTimer;
     QThread *planThread;
@@ -166,6 +168,8 @@ private:
     QHash<QString, bool> folderExistsCache;
 
     QString lastJournalPath;
+    QList<OrganizeFiles::FileMove> lastRequestedMoves;
+    QList<OrganizeFiles::FileMove> lastCompletedMoves;
 
     int newFolderCount = 0;
 
