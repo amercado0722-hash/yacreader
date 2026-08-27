@@ -788,7 +788,7 @@
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="111"/>
+        <location filename="grid_comics_view.cpp" line="114"/>
         <source>Show info</source>
         <translation>Info anzeigen</translation>
     </message>
@@ -809,32 +809,32 @@
         <translation type="obsolete">Kürzlich hinzugefügt</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="832"/>
+        <location filename="grid_comics_view.cpp" line="854"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="835"/>
+        <location filename="grid_comics_view.cpp" line="857"/>
         <source>Western manga</source>
         <translation>Westlicher Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="838"/>
+        <location filename="grid_comics_view.cpp" line="860"/>
         <source>Web comic</source>
         <translation>Webcomic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="841"/>
+        <location filename="grid_comics_view.cpp" line="863"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="845"/>
+        <location filename="grid_comics_view.cpp" line="867"/>
         <source>Comic</source>
         <translation>Comic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="849"/>
+        <location filename="grid_comics_view.cpp" line="871"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
@@ -2992,22 +2992,22 @@ Um eine automatische Aktualisierung zu stoppen, tippen Sie auf die Ladeanzeige n
         <translation>Rückgängigmachen fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1159"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1158"/>
         <source>Failed: %1</source>
         <translation>Fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1189"/>
         <source>Nothing was moved.</source>
         <translation>Es wurde nichts verschoben.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1191"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
         <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
         <translation>Die Aufzeichnung, mit der dieser Vorgang rückgängig gemacht werden könnte, konnte nicht geschrieben werden. Der Vorgang wurde daher nicht gestartet: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1192"/>
         <source>%n file(s) renamed.</source>
         <translation>
             <numerusform>%n Datei umbenannt.</numerusform>
@@ -3015,7 +3015,7 @@ Um eine automatische Aktualisierung zu stoppen, tippen Sie auf die Ladeanzeige n
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1194"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
         <source>%n file(s) moved into %1.</source>
         <translation>
             <numerusform>%n Datei nach %1 verschoben.</numerusform>
@@ -3023,12 +3023,12 @@ Um eine automatische Aktualisierung zu stoppen, tippen Sie auf die Ladeanzeige n
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1196"/>
         <source>The record of this run stopped early, so the run stopped with it: %1</source>
         <translation>Die Aufzeichnung dieses Vorgangs endete vorzeitig, deshalb wurde der Vorgang mit ihr beendet: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1199"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1198"/>
         <source>%n file(s) were not moved.</source>
         <translation>
             <numerusform>%n Datei wurde nicht verschoben.</numerusform>
@@ -3036,17 +3036,17 @@ Um eine automatische Aktualisierung zu stoppen, tippen Sie auf die Ladeanzeige n
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1206"/>
         <source>The library database could not be updated: %1</source>
         <translation>Die Datenbank der Bibliothek konnte nicht aktualisiert werden: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1208"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
         <source>Use Undo to move the files back, or update the library to make it match the files.</source>
         <translation>Verwenden Sie Rückgängig, um die Dateien zurückzuverschieben, oder aktualisieren Sie die Bibliothek, damit sie zu den Dateien passt.</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1212"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1211"/>
         <source>%n empty folder(s) were removed.</source>
         <translation>
             <numerusform>%n leerer Ordner wurde entfernt.</numerusform>
@@ -3054,7 +3054,7 @@ Um eine automatische Aktualisierung zu stoppen, tippen Sie auf die Ladeanzeige n
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1215"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1214"/>
         <source>%n file(s) could not be moved.</source>
         <translation>
             <numerusform>%n Datei konnte nicht verschoben werden.</numerusform>
@@ -3062,90 +3062,90 @@ Um eine automatische Aktualisierung zu stoppen, tippen Sie auf die Ladeanzeige n
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1247"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1246"/>
         <source>Moving the files back...</source>
         <translation>Dateien werden zurückverschoben...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1273"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1272"/>
         <source>Moving back %1 of %2
 %3</source>
         <translation>%1 von %2 wird zurückverschoben
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1295"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
         <source>Everything was moved back.</source>
         <translation>Alles wurde zurückverschoben.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1300"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
         <source>The undo did not finish: %1</source>
         <translation>Das Rückgängigmachen wurde nicht abgeschlossen: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1366"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1365"/>
         <source>Format help</source>
         <translation>Hilfe zum Format</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1392"/>
         <source>Fields</source>
         <translation>Felder</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1394"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
         <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
         <translation>Jedes Feld wird in geschweiften Klammern geschrieben und durch die Metadaten des Comics ersetzt. Das Menü Einfügen listet alle Felder auf.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1396"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1395"/>
         <source>{series} gives %1</source>
         <translation>{series} ergibt %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1397"/>
         <source>Optional parts</source>
         <translation>Optionale Teile</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1399"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
         <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
         <translation>Ein Teil zwischen den Zeichen &lt; und &gt; verschwindet vollständig, wenn alle Felder darin leer sind. Verwenden Sie ihn für Satzzeichen, die zu einem Feld gehören, etwa Klammern oder ein vorangestelltes Nummernzeichen. Text am Anfang oder am Ende eines Namens wird auch ohne ihn gekürzt.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
         <source>{series} ({year})     with no year gives %1</source>
         <translation>{series} ({year})     ohne Jahr ergibt %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
         <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
         <translation>{series}&lt; ({year})&gt;   ohne Jahr ergibt %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1403"/>
         <source>Numbers</source>
         <translation>Nummern</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1405"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
         <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
         <translation>Schreiben Sie einen Doppelpunkt und einige Nullen, um die Ausgabennummer aufzufüllen. So bleiben die Ausgaben in einem Dateimanager in der richtigen Reihenfolge.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1409"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1414"/>
         <source>Folders</source>
         <translation>Ordner</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1411"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
         <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
         <translation>Ein Dateinamenformat darf keinen Schrägstrich enthalten. Jeder Comic bleibt in seinem aktuellen Ordner. Verwenden Sie In Ordner organisieren, um Comics zu verschieben.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1416"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
         <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
         <translation>Jeder durch einen Schrägstrich getrennte Teil wird zu einem Ordner. Der letzte Teil wird zum Dateinamen. Die ursprüngliche Erweiterung bleibt immer erhalten.</translation>
     </message>
@@ -4213,6 +4213,61 @@ Use quotes to include spaces in a value.</source>
         <location filename="comic_vine/select_volume.cpp" line="61"/>
         <source>volumes</source>
         <translation>Bände</translation>
+    </message>
+</context>
+<context>
+    <name>SelectedComicsInfoView</name>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
+        <source>Unknown</source>
+        <translation type="unfinished">Unbekannt</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
+        <source>%1 (%2 unknown)</source>
+        <oldsource>%1 (%n unknown)</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
+        <source>%1 series</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
+        <source>%1 comics selected</source>
+        <oldsource>%n comic(s) selected</oldsource>
+        <translation type="unfinished">%1 Comic ausgewählt</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
+        <source>Read</source>
+        <translation type="unfinished">Lesen</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
+        <source>In progress</source>
+        <translation type="unfinished">In Bearbeitung</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
+        <source>Unread</source>
+        <translation type="unfinished">Ungelesen</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
+        <source>Total pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
+        <source>Total size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
+        <source>Series</source>
+        <translation type="unfinished">Serie</translation>
     </message>
 </context>
 <context>

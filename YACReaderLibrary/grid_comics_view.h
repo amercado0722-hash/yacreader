@@ -53,6 +53,8 @@ class GridComicsView : public ComicsView, protected Themable
     Q_PROPERTY(QVariantMap focusedFolderInfo READ folderInfoForFocusedFolder NOTIFY focusedFolderChanged)
     Q_PROPERTY(QVariantMap currentLocationInfo READ locationInfo NOTIFY currentLocationInfoChanged)
     Q_PROPERTY(bool hasComicSelection READ hasComicSelection NOTIFY comicSelectionStateChanged)
+    Q_PROPERTY(int selectedComicCount READ selectedComicCount NOTIFY selectedComicsInfoChanged)
+    Q_PROPERTY(QVariantMap selectedComicsInfo READ selectedComicsInfo NOTIFY selectedComicsInfoChanged)
 public:
     explicit GridComicsView(QWidget *parent = nullptr);
     ComicModel *rootContinueReadingModel() const;
@@ -63,6 +65,8 @@ public:
     QVariantMap folderInfoForFocusedFolder() const;
     QVariantMap locationInfo() const;
     bool hasComicSelection() const;
+    int selectedComicCount() const;
+    QVariantMap selectedComicsInfo() const;
     void setFolderModel(FolderModel *model, const QModelIndex &folderIndex, const QString &rootName = { }, const QVariantMap &libraryInfo = { });
     void clearFolderModel();
     void setCurrentList(const QModelIndex &listIndex);
@@ -145,6 +149,7 @@ signals:
     void openFolderContextMenu(const QPoint &point, const Folder &folder);
     void openContinueReadingComicContextMenu(const QPoint &point, const ComicDB &comic);
     void comicSelectionStateChanged(bool hasSelection);
+    void selectedComicsInfoChanged();
     void rootContinueReadingModelChanged();
     void rootFolderChanged();
     void globalContinueReadingEnabledChanged();

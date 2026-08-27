@@ -5,6 +5,7 @@
 #include <QModelIndex>
 #include <QModelIndexList>
 #include <QObject>
+#include <QVariantMap>
 
 class ComicModel;
 
@@ -28,6 +29,7 @@ public:
     Q_INVOKABLE void selectAll();
     Q_INVOKABLE QModelIndexList selectedIndexes() const;
     Q_INVOKABLE QModelIndexList selectedRows(int column = 0) const;
+    QVariantMap selectionInfo() const;
     qulonglong selectionRevision() const;
 
     QItemSelectionModel *selectionModel();

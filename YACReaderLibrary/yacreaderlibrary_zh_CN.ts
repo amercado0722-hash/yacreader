@@ -792,7 +792,7 @@
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="111"/>
+        <location filename="grid_comics_view.cpp" line="114"/>
         <source>Show info</source>
         <translation>显示信息</translation>
     </message>
@@ -813,32 +813,32 @@
         <translation type="obsolete">最近添加</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="832"/>
+        <location filename="grid_comics_view.cpp" line="854"/>
         <source>Manga</source>
         <translation>日式漫画</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="835"/>
+        <location filename="grid_comics_view.cpp" line="857"/>
         <source>Western manga</source>
         <translation>西式漫画</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="838"/>
+        <location filename="grid_comics_view.cpp" line="860"/>
         <source>Web comic</source>
         <translation>网络漫画</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="841"/>
+        <location filename="grid_comics_view.cpp" line="863"/>
         <source>Yonkoma</source>
         <translation>四格漫画</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="845"/>
+        <location filename="grid_comics_view.cpp" line="867"/>
         <source>Comic</source>
         <translation>漫画</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="849"/>
+        <location filename="grid_comics_view.cpp" line="871"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
@@ -2981,155 +2981,155 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <translation>撤销失败：%1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1159"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1158"/>
         <source>Failed: %1</source>
         <translation>失败：%1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1189"/>
         <source>Nothing was moved.</source>
         <translation>没有移动任何文件。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1191"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
         <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
         <translation>无法写入用于撤销本次操作的记录，因此操作没有开始：%1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1192"/>
         <source>%n file(s) renamed.</source>
         <translation>
             <numerusform>已重命名 %n 个文件。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1194"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
         <source>%n file(s) moved into %1.</source>
         <translation>
             <numerusform>已把 %n 个文件移动到 %1。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1196"/>
         <source>The record of this run stopped early, so the run stopped with it: %1</source>
         <translation>本次操作的记录提前中断，因此操作也随之停止：%1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1199"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1198"/>
         <source>%n file(s) were not moved.</source>
         <translation>
             <numerusform>有 %n 个文件没有被移动。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1206"/>
         <source>The library database could not be updated: %1</source>
         <translation>无法更新库数据库：%1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1208"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
         <source>Use Undo to move the files back, or update the library to make it match the files.</source>
         <translation>使用“撤销”把文件移回原处，或更新库使其与文件一致。</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1212"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1211"/>
         <source>%n empty folder(s) were removed.</source>
         <translation>
             <numerusform>已移除 %n 个空文件夹。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1215"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1214"/>
         <source>%n file(s) could not be moved.</source>
         <translation>
             <numerusform>有 %n 个文件无法移动。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1247"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1246"/>
         <source>Moving the files back...</source>
         <translation>正在把文件移回原处...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1273"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1272"/>
         <source>Moving back %1 of %2
 %3</source>
         <translation>正在移回第 %1 个，共 %2 个
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1295"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
         <source>Everything was moved back.</source>
         <translation>所有文件都已移回原处。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1300"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
         <source>The undo did not finish: %1</source>
         <translation>撤销没有完成：%1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1366"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1365"/>
         <source>Format help</source>
         <translation>格式帮助</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1392"/>
         <source>Fields</source>
         <translation>字段</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1394"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
         <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
         <translation>每个字段都写在花括号中，会被替换为漫画的元数据。“插入”菜单中列出了全部字段。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1396"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1395"/>
         <source>{series} gives %1</source>
         <translation>{series} 得到 %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1397"/>
         <source>Optional parts</source>
         <translation>可选部分</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1399"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
         <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
         <translation>写在 &lt; 和 &gt; 之间的部分，在其中所有字段都为空时会完全消失。请把属于某个字段的标点写在里面，例如括号或前置的井号。名称开头和结尾的文字即使不用它也会被修剪。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
         <source>{series} ({year})     with no year gives %1</source>
         <translation>{series} ({year})     没有年份时得到 %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
         <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
         <translation>{series}&lt; ({year})&gt;   没有年份时得到 %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1403"/>
         <source>Numbers</source>
         <translation>编号</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1405"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
         <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
         <translation>写一个冒号和若干个零，即可为期号补零。这样在文件管理器中各期仍按顺序排列。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1409"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1414"/>
         <source>Folders</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1411"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
         <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
         <translation>文件名格式不能包含斜杠。每本漫画都保留在当前文件夹中。请使用“整理到文件夹”来移动漫画。</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1416"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
         <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
         <translation>用斜杠分隔的每一部分都会变成一个文件夹。最后一部分是文件名。原有扩展名始终保留。</translation>
     </message>
@@ -4197,6 +4197,61 @@ Use quotes to include spaces in a value.</source>
         <location filename="comic_vine/select_volume.cpp" line="61"/>
         <source>volumes</source>
         <translation>卷</translation>
+    </message>
+</context>
+<context>
+    <name>SelectedComicsInfoView</name>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
+        <source>Unknown</source>
+        <translation type="unfinished">未知</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
+        <source>%1 (%2 unknown)</source>
+        <oldsource>%1 (%n unknown)</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
+        <source>%1 series</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
+        <source>%1 comics selected</source>
+        <oldsource>%n comic(s) selected</oldsource>
+        <translation type="unfinished">已选择 %1 本漫画</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
+        <source>Read</source>
+        <translation type="unfinished">阅读</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
+        <source>In progress</source>
+        <translation type="unfinished">阅读中</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
+        <source>Unread</source>
+        <translation type="unfinished">未读</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
+        <source>Total pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
+        <source>Total size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
+        <source>Series</source>
+        <translation type="unfinished">系列</translation>
     </message>
 </context>
 <context>

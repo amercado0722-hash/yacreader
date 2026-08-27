@@ -788,7 +788,7 @@
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="111"/>
+        <location filename="grid_comics_view.cpp" line="114"/>
         <source>Show info</source>
         <translation>Toon informatie</translation>
     </message>
@@ -809,32 +809,32 @@
         <translation type="obsolete">Onlangs toegevoegd</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="832"/>
+        <location filename="grid_comics_view.cpp" line="854"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="835"/>
+        <location filename="grid_comics_view.cpp" line="857"/>
         <source>Western manga</source>
         <translation>Westerse manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="838"/>
+        <location filename="grid_comics_view.cpp" line="860"/>
         <source>Web comic</source>
         <translation>Webcomic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="841"/>
+        <location filename="grid_comics_view.cpp" line="863"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="845"/>
+        <location filename="grid_comics_view.cpp" line="867"/>
         <source>Comic</source>
         <translation>Grappig</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="849"/>
+        <location filename="grid_comics_view.cpp" line="871"/>
         <source>Unknown</source>
         <translation>Onbekend</translation>
     </message>
@@ -2992,22 +2992,22 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         <translation>Ongedaan maken mislukt: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1159"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1158"/>
         <source>Failed: %1</source>
         <translation>Mislukt: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1189"/>
         <source>Nothing was moved.</source>
         <translation>Er is niets verplaatst.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1191"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
         <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
         <translation>Het verslag waarmee deze bewerking ongedaan gemaakt kan worden, kon niet worden geschreven. Daarom is de bewerking niet gestart: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1192"/>
         <source>%n file(s) renamed.</source>
         <translation>
             <numerusform>%n bestand hernoemd.</numerusform>
@@ -3015,7 +3015,7 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1194"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
         <source>%n file(s) moved into %1.</source>
         <translation>
             <numerusform>%n bestand verplaatst naar %1.</numerusform>
@@ -3023,12 +3023,12 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1197"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1196"/>
         <source>The record of this run stopped early, so the run stopped with it: %1</source>
         <translation>Het verslag van deze bewerking is vroegtijdig gestopt, daarom is de bewerking mee gestopt: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1199"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1198"/>
         <source>%n file(s) were not moved.</source>
         <translation>
             <numerusform>%n bestand is niet verplaatst.</numerusform>
@@ -3036,17 +3036,17 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1206"/>
         <source>The library database could not be updated: %1</source>
         <translation>De database van de bibliotheek kon niet worden bijgewerkt: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1208"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
         <source>Use Undo to move the files back, or update the library to make it match the files.</source>
         <translation>Gebruik Ongedaan maken om de bestanden terug te zetten, of werk de bibliotheek bij zodat ze bij de bestanden past.</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1212"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1211"/>
         <source>%n empty folder(s) were removed.</source>
         <translation>
             <numerusform>%n lege map is verwijderd.</numerusform>
@@ -3054,7 +3054,7 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1215"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1214"/>
         <source>%n file(s) could not be moved.</source>
         <translation>
             <numerusform>%n bestand kon niet worden verplaatst.</numerusform>
@@ -3062,90 +3062,90 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1247"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1246"/>
         <source>Moving the files back...</source>
         <translation>Bestanden worden teruggezet...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1273"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1272"/>
         <source>Moving back %1 of %2
 %3</source>
         <translation>%1 van %2 wordt teruggezet
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1295"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
         <source>Everything was moved back.</source>
         <translation>Alles is teruggezet.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1300"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
         <source>The undo did not finish: %1</source>
         <translation>Het ongedaan maken is niet voltooid: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1366"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1365"/>
         <source>Format help</source>
         <translation>Hulp bij de opmaak</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1392"/>
         <source>Fields</source>
         <translation>Velden</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1394"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
         <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
         <translation>Elk veld staat tussen accolades en wordt vervangen door de metagegevens van de strip. Het menu Invoegen toont ze allemaal.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1396"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1395"/>
         <source>{series} gives %1</source>
         <translation>{series} geeft %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1397"/>
         <source>Optional parts</source>
         <translation>Optionele delen</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1399"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
         <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
         <translation>Een deel dat tussen de tekens &lt; en &gt; staat, verdwijnt volledig wanneer alle velden erin leeg zijn. Gebruik het voor leestekens die bij een veld horen, zoals haakjes of een nummerteken ervoor. Tekst aan het begin of het eind van een naam wordt ook zonder dit deel afgekapt.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
         <source>{series} ({year})     with no year gives %1</source>
         <translation>{series} ({year})     zonder jaar geeft %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1402"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
         <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
         <translation>{series}&lt; ({year})&gt;   zonder jaar geeft %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1403"/>
         <source>Numbers</source>
         <translation>Nummers</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1405"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
         <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
         <translation>Schrijf een dubbele punt en enkele nullen om het nummer aan te vullen. Zo blijven de nummers op volgorde in een bestandsbeheerder.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1409"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1414"/>
         <source>Folders</source>
         <translation>Mappen</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1411"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
         <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
         <translation>Een bestandsnaamopmaak mag geen schuine streep bevatten. Elke strip blijft in de huidige map. Gebruik In mappen ordenen om strips te verplaatsen.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1416"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
         <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
         <translation>Elk deel dat door een schuine streep wordt gescheiden, wordt een map. Het laatste deel wordt de bestandsnaam. De oorspronkelijke extensie blijft altijd behouden.</translation>
     </message>
@@ -4213,6 +4213,61 @@ Use quotes to include spaces in a value.</source>
         <location filename="comic_vine/select_volume.cpp" line="203"/>
         <source>volume description unavailable</source>
         <translation>volumebeschrijving niet beschikbaar</translation>
+    </message>
+</context>
+<context>
+    <name>SelectedComicsInfoView</name>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
+        <source>Unknown</source>
+        <translation type="unfinished">Onbekend</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
+        <source>%1 (%2 unknown)</source>
+        <oldsource>%1 (%n unknown)</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
+        <source>%1 series</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
+        <source>%1 comics selected</source>
+        <oldsource>%n comic(s) selected</oldsource>
+        <translation type="unfinished">%1 strips geselecteerd</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
+        <source>Read</source>
+        <translation type="unfinished">Gelezen</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
+        <source>In progress</source>
+        <translation type="unfinished">Bezig</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
+        <source>Unread</source>
+        <translation type="unfinished">Ongelezen</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
+        <source>Total pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
+        <source>Total size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
+        <source>Series</source>
+        <translation type="unfinished">Serie</translation>
     </message>
 </context>
 <context>

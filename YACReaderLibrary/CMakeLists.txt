@@ -372,6 +372,7 @@ set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ContinueReadingGridHeader.qml
@@ -401,6 +402,7 @@ set(yacreaderlibrary_qml_translation_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ContinueReadingGridHeader.qml

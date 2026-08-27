@@ -711,6 +711,8 @@ SplitView {
                 width: info_container.width
                 sourceComponent: currentIndexHelper.focusedFolderRow >= 0
                                  ? folderInfoComponent
+                                 : currentIndexHelper.selectedComicCount > 1
+                                   ? selectedComicsInfoComponent
                                  : currentIndexHelper.hasComicSelection
                                    ? comicInfoComponent
                                    : currentIndexHelper.currentLocationInfo.kind === "folder"
@@ -725,6 +727,14 @@ SplitView {
             Component {
                 id: comicInfoComponent
                 ComicInfoView { width: infoView.width }
+            }
+
+            Component {
+                id: selectedComicsInfoComponent
+                SelectedComicsInfoView {
+                    width: infoView.width
+                    selectionInfo: currentIndexHelper.selectedComicsInfo
+                }
             }
 
             Component {

@@ -348,6 +348,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(HasBeenOpened);
     else if (role == IdRole)
         return item->data(Id);
+    else if (role == HashRole)
+        return item->data(Hash);
     else if (role == PublicationDateRole)
         return QVariant(localizedDate(item->data(PublicationDate).toString()));
     else if (role == AddedRole)

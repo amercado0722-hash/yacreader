@@ -5,7 +5,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ## 10.3.0
 
 ### YACReaderLibrary
-* Unify folder and comic browsing in the grid view. The side information panel can show information about folders and lists. There are settings to decide if folders should be displayed alongside comics and if folders and comics should be kept visually separated.
+* Unify folder and comic browsing in the grid view. The side information panel can show information about folders, lists and selected items. There are settings to decide if folders should be displayed alongside comics and if folders and comics should be kept visually separated.
 * Fix drag & drop for sorting comics in lists.
 * Add state restoration when going back and forth through the navigation history.
 * Add scroll and current item restoration when switching between content views.

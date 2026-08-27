@@ -25,6 +25,8 @@
 #include <QVBoxLayout>
 #include <QWidgetAction>
 
+#include <algorithm>
+
 namespace {
 QString pixmapDataUrl(const QPixmap &pixmap)
 {
@@ -52,6 +54,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, [this]() {
         emit comicSelectionStateChanged(selectionHelper->numItemsSelected() > 0);
+        emit selectedComicsInfoChanged();
     });
 
     comicInfoHelper = new YACReaderComicInfoHelper(this);
@@ -249,6 +252,15 @@ void GridComicsView::setModel(ComicModel *model)
     ComicsView::setModel(model);
 
     modelDataChangedConnection = connect(model, &QAbstractItemModel::dataChanged, this, [this](const QModelIndex &topLeft, const QModelIndex &bottomRight) {
+        if (selectionHelper->numItemsSelected() > 1) {
+            const auto selectedRows = selectionHelper->selectedRows();
+            const bool selectedComicChanged = std::any_of(selectedRows.cbegin(), selectedRows.cend(), [topLeft, bottomRight](const QModelIndex &index) {
+                return index.row() >= topLeft.row() && index.row() <= bottomRight.row();
+            });
+            if (selectedComicChanged)
+                emit selectedComicsInfoChanged();
+        }
+
         if (!showInfoAction->isChecked() || focusedFolderIndex.isValid())
             return;
 
@@ -630,6 +642,16 @@ QVariantMap GridComicsView::locationInfo() const
 bool GridComicsView::hasComicSelection() const
 {
     return selectionHelper->numItemsSelected() > 0;
+}
+
+int GridComicsView::selectedComicCount() const
+{
+    return selectionHelper->numItemsSelected();
+}
+
+QVariantMap GridComicsView::selectedComicsInfo() const
+{
+    return selectionHelper->selectionInfo();
 }
 
 void GridComicsView::reloadRootContinueReadingModel()
