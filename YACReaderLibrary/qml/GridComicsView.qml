@@ -475,6 +475,31 @@ SplitView {
 
                 interactive: true
 
+                // Clears the selection when the click does not land on an item. The
+                // MouseArea must be a child of the view content item, because a plain
+                // child of the view stays behind the flickable itself and never gets
+                // mouse events. Its geometry follows the viewport (in content
+                // coordinates), so the empty space after the last row is included too.
+                MouseArea {
+                    parent: grid.contentItem
+                    z: -1
+                    x: grid.contentX
+                    y: grid.contentY
+                    width: grid.width
+                    height: grid.height
+                    acceptedButtons: Qt.LeftButton
+
+                    onClicked: mouse => {
+                        if (mouse.modifiers !== Qt.NoModifier)
+                            return
+
+                        comicsSelectionHelper.clear()
+                        currentIndexHelper.clearFolderFocus()
+                        grid.currentIndex = -1
+                        grid.forceActiveFocus()
+                    }
+                }
+
                 move: Transition {
                     NumberAnimation { properties: "x,y"; duration: 250 }
                 }
