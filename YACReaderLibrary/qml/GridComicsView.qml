@@ -668,12 +668,33 @@ SplitView {
                 }
 
                 DropArea {
+                    id: gridDropArea
                     anchors.fill: parent
+
+                    function visibleItemIndexAt(x, y) {
+                        const contentPosition = grid.contentItem.mapFromItem(gridDropArea, x, y)
+                        const viewIndex = grid.indexAt(contentPosition.x, contentPosition.y)
+                        if (viewIndex < 0)
+                            return -1
+
+                        const item = grid.itemAtIndex(viewIndex)
+                        if (!item || !item.interactionItem)
+                            return -1
+
+                        const localPosition = item.interactionItem.mapFromItem(gridDropArea, x, y)
+                        return localPosition.x >= 0
+                                && localPosition.x <= item.interactionItem.width
+                                && localPosition.y >= 0
+                                && localPosition.y <= item.interactionItem.height
+                                ? viewIndex
+                                : -1
+                    }
 
                     onEntered: drag => {
                                    if(drag.hasUrls)
                                    {
-                                       if(dropManager.canDropUrls(drag.urls, drag.action))
+                                       if(dropManager.canDropImage(drag.urls)
+                                               || dropManager.canDropUrls(drag.urls, drag.action))
                                        {
                                            drag.accepted = true;
                                        }else
@@ -686,7 +707,15 @@ SplitView {
                                }
 
                     onDropped: drop => {
-                                   if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
+                                   if(drop.hasUrls && dropManager.canDropImage(drop.urls))
+                                   {
+                                       var coverIndex = gridDropArea.visibleItemIndexAt(drop.x, drop.y);
+                                       if (coverIndex !== -1) {
+                                           dropManager.droppedImageAt(drop.urls, coverIndex);
+                                           drop.accepted = true;
+                                       }
+                                   }
+                                   else if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
                                    {
                                        dropManager.droppedFiles(drop.urls, drop.action);
                                    }

@@ -45,7 +45,9 @@ protected slots:
     void setCurrentIndex(int index);
 
     bool canDropUrls(const QList<QUrl> &urls, Qt::DropAction action);
+    bool canDropImage(const QList<QUrl> &urls);
     void droppedFiles(const QList<QUrl> &urls, Qt::DropAction action);
+    void droppedImage(const QList<QUrl> &urls);
 
     void requestedContextMenu(const QPoint &point);
 

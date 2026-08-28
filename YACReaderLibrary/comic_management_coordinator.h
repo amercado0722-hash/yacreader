@@ -50,6 +50,8 @@ public:
                                         LibraryIdProvider libraryIdProvider,
                                         LibraryPathProvider libraryPathProvider);
 
+    bool hasCustomCoverInSelection() const;
+
 public slots:
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
     void moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
@@ -70,6 +72,8 @@ public slots:
     void deleteMetadataFromSelectedComics();
     void deleteSelectedComics();
     void saveSelectedCoversTo();
+    void setCustomCover(qulonglong comicId, const QString &imagePath);
+    void resetSelectedCustomCovers();
 
     void setComicUnread(qulonglong libraryId, const ComicDB &comic);
 

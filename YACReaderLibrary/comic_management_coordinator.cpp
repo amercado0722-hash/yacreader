@@ -4,14 +4,17 @@
 #include "comic_files_manager.h"
 #include "comic_vine_dialog.h"
 #include "comics_remover.h"
+#include "cover_utils.h"
 #include "db_helper.h"
 #include "folder_model.h"
+#include "initial_comic_info_extractor.h"
 #include "library_comic_opener.h"
 #include "properties_dialog.h"
 #include "reading_list_model.h"
 #include "yacreader_global_gui.h"
 
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
@@ -367,6 +370,83 @@ void ComicManagementCoordinator::saveSelectedCoversTo()
         QLOG_DEBUG() << "To : " << destination;
 
         QFile::copy(origin, destination);
+    }
+}
+
+void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QString &imagePath)
+{
+    if (!comicOpeningAllowedProvider())
+        return;
+
+    const auto index = comicsModel->getIndexFromId(comicId);
+    if (!index.isValid())
+        return;
+
+    const QImage cover(imagePath);
+    if (cover.isNull()) {
+        QMessageBox::warning(window,
+                             QCoreApplication::translate("LibraryWindow", "Invalid image"),
+                             QCoreApplication::translate("LibraryWindow", "The selected file is not a valid image."));
+        return;
+    }
+
+    auto comic = comicsModel->getComic(index);
+    const auto coverPath = YACReader::LibraryPaths::coverPath(libraryPathProvider(), comic.info.hash);
+    if (!YACReader::saveCover(coverPath, cover)) {
+        QMessageBox::warning(window,
+                             QCoreApplication::translate("LibraryWindow", "Error saving cover"),
+                             QCoreApplication::translate("LibraryWindow", "There was an error saving the cover image."));
+        return;
+    }
+
+    comic.info.coverPage = QVariant();
+    comic.info.originalCoverSize = QStringLiteral("%1x%2").arg(cover.width()).arg(cover.height());
+    comic.info.coverSizeRatio = static_cast<double>(cover.width()) / cover.height();
+    comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+    comic.info.usesExternalCover = true;
+    DBHelper::update(libraryIdProvider(), comic.info);
+    comicsModel->notifyCoverChange(comic);
+}
+
+bool ComicManagementCoordinator::hasCustomCoverInSelection() const
+{
+    const auto comics = comicsModel->getComics(selectionProvider());
+    return std::any_of(comics.cbegin(), comics.cend(), [](const ComicDB &comic) {
+        return comic.info.usesExternalCover.toBool();
+    });
+}
+
+void ComicManagementCoordinator::resetSelectedCustomCovers()
+{
+    if (!comicOpeningAllowedProvider())
+        return;
+
+    const auto libraryPath = libraryPathProvider();
+    const auto libraryId = libraryIdProvider();
+    const auto indexes = selectionProvider();
+    for (const auto &index : indexes) {
+        auto comic = comicsModel->getComic(index);
+        if (!comic.info.usesExternalCover.toBool())
+            continue;
+
+        YACReader::InitialComicInfoExtractor extractor(QDir::cleanPath(libraryPath + comic.path), QString(), 1);
+        extractor.extract();
+        if (!extractor.hasValidCover())
+            continue;
+
+        const auto cover = extractor.getCoverImage();
+        const auto coverPath = YACReader::LibraryPaths::coverPath(libraryPath, comic.info.hash);
+        if (!YACReader::saveCover(coverPath, cover))
+            continue;
+
+        const auto originalCoverSize = extractor.getOriginalCoverSize();
+        comic.info.coverPage = QVariant();
+        comic.info.originalCoverSize = QStringLiteral("%1x%2").arg(originalCoverSize.first).arg(originalCoverSize.second);
+        comic.info.coverSizeRatio = static_cast<double>(originalCoverSize.first) / originalCoverSize.second;
+        comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+        comic.info.usesExternalCover = false;
+        DBHelper::update(libraryId, comic.info);
+        comicsModel->notifyCoverChange(comic);
     }
 }
 

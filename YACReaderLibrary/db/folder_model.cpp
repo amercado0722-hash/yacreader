@@ -768,7 +768,8 @@ void FolderModel::setCustomFolderCover(const QModelIndex &index, const QString &
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    emit dataChanged(index, index);
+    ++coverRevisions[index.data(FolderModel::IdRole).toULongLong()];
+    emit dataChanged(index, index, { CoverPathRole });
 }
 
 void FolderModel::resetFolderCover(const QModelIndex &index)
@@ -934,7 +935,11 @@ QUrl FolderModel::getCoverUrlPathForComicHash(const QString &hash) const
 QUrl FolderModel::getCoverUrlPathForFolderId(qulonglong folderId) const
 {
     auto coverPath = LibraryPaths::customFolderCoverPathFromDataPath(_databasePath, QString::number(folderId));
-    return QUrl::fromLocalFile(coverPath);
+    auto coverUrl = QUrl::fromLocalFile(coverPath);
+    const auto revision = coverRevisions.value(folderId);
+    if (revision > 0)
+        coverUrl.setQuery(QStringLiteral("revision=%1").arg(revision));
+    return coverUrl;
 }
 
 void FolderModel::setShowRecent(bool showRecent)

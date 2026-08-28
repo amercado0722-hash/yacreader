@@ -1,5 +1,10 @@
 #include "comic_flow_widget.h"
 
+#include "cover_utils.h"
+
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
 #include <QVBoxLayout>
 
 ComicFlowWidget::ComicFlowWidget(QWidget *parent)
@@ -16,6 +21,7 @@ ComicFlowWidget::ComicFlowWidget(QWidget *parent)
     setLayout(l);
 
     setAutoFillBackground(true);
+    setAcceptDrops(true);
 
     initTheme(this);
 }
@@ -152,6 +158,28 @@ void ComicFlowWidget::resizeEvent(QResizeEvent *event)
 void ComicFlowWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     flow->mouseDoubleClickEvent(event);
+}
+
+void ComicFlowWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls() && !YACReader::droppedImagePath(event->mimeData()->urls()).isEmpty()) {
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+    }
+}
+
+void ComicFlowWidget::dropEvent(QDropEvent *event)
+{
+    const auto imagePath = event->mimeData()->hasUrls() ? YACReader::droppedImagePath(event->mimeData()->urls()) : QString();
+    const auto index = centerIndex();
+    if (imagePath.isEmpty() || index < 0) {
+        event->ignore();
+        return;
+    }
+
+    emit customCoverDropped(imagePath, index);
+    event->setDropAction(Qt::CopyAction);
+    event->accept();
 }
 
 void ComicFlowWidget::updateConfig(QSettings *settings)

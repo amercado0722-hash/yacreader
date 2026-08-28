@@ -21,6 +21,7 @@ protected:
 
 signals:
     void comicRated(int, QModelIndex);
+    void customCoverDropped(const QString &imagePath, const QModelIndex &index);
 public slots:
     void closeRatingEditor();
 protected slots:

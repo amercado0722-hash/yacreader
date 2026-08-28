@@ -40,6 +40,7 @@ public slots:
 signals:
     void centerIndexChanged(int);
     void selected(unsigned int);
+    void customCoverDropped(const QString &imagePath, int index);
 
 protected:
     void applyTheme(const Theme &theme) override;
@@ -48,6 +49,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 

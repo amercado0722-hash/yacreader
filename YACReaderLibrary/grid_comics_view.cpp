@@ -4,6 +4,7 @@
 #include "comic.h"
 #include "comic_db.h"
 #include "comic_files_manager.h"
+#include "cover_utils.h"
 #include "current_comic_view_helper.h"
 #include "folder_model.h"
 #include "grid_content_model.h"
@@ -1035,6 +1036,11 @@ bool GridComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
     return false;
 }
 
+bool GridComicsView::canDropImage(const QList<QUrl> &urls)
+{
+    return !YACReader::droppedImagePath(urls).isEmpty();
+}
+
 bool GridComicsView::canDropFormats(const QStringList &formats)
 {
     return (formats.contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat) && model->canBeResorted());
@@ -1048,6 +1054,23 @@ void GridComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);
         emit copyComicsToCurrentFolder(droppedFiles);
     }
+}
+
+void GridComicsView::droppedImageAt(const QList<QUrl> &urls, int viewRow)
+{
+    const auto imagePath = YACReader::droppedImagePath(urls);
+    if (imagePath.isEmpty() || viewRow < 0 || viewRow >= contentModel->rowCount())
+        return;
+
+    if (contentModel->isFolderRow(viewRow)) {
+        emit customFolderCoverRequested(contentModel->folderAt(viewRow).id, imagePath);
+        return;
+    }
+
+    const auto comicRow = contentModel->sourceComicRow(viewRow);
+    const auto comicIndex = model && comicRow >= 0 ? model->index(comicRow, 0) : QModelIndex();
+    if (comicIndex.isValid())
+        emit customComicCoverRequested(comicIndex.data(ComicModel::IdRole).toULongLong(), imagePath);
 }
 
 void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)

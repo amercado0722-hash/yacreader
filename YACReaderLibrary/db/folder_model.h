@@ -7,6 +7,7 @@
 #include "yacreader_global.h"
 
 #include <QAbstractItemModel>
+#include <QHash>
 #include <QIcon>
 #include <QModelIndex>
 #include <QSortFilterProxyModel>
@@ -150,6 +151,7 @@ private:
 
     bool showRecent;
     qlonglong recentDays;
+    QHash<qulonglong, qulonglong> coverRevisions;
 
 protected:
     void applyTheme(const Theme &theme) override;

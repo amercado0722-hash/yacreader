@@ -3,6 +3,7 @@
 #include "QsLog.h"
 #include "comic_item.h"
 #include "comic_model.h"
+#include "cover_utils.h"
 #include "yacreader_global_gui.h"
 
 #include <QApplication>
@@ -128,6 +129,13 @@ void YACReaderTableView::performDrag()
 
 void YACReaderTableView::dragEnterEvent(QDragEnterEvent *event)
 {
+    const auto imagePath = event->mimeData()->hasUrls() ? YACReader::droppedImagePath(event->mimeData()->urls()) : QString();
+    if (!imagePath.isEmpty()) {
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+        return;
+    }
+
     QTableView::dragEnterEvent(event);
 
     if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
@@ -137,6 +145,13 @@ void YACReaderTableView::dragEnterEvent(QDragEnterEvent *event)
 
 void YACReaderTableView::dragMoveEvent(QDragMoveEvent *event)
 {
+    const auto imagePath = event->mimeData()->hasUrls() ? YACReader::droppedImagePath(event->mimeData()->urls()) : QString();
+    if (!imagePath.isEmpty() && indexAt(event->position().toPoint()).isValid()) {
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+        return;
+    }
+
     QTableView::dragMoveEvent(event);
 
     if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
@@ -146,6 +161,15 @@ void YACReaderTableView::dragMoveEvent(QDragMoveEvent *event)
 
 void YACReaderTableView::dropEvent(QDropEvent *event)
 {
+    const auto imagePath = event->mimeData()->hasUrls() ? YACReader::droppedImagePath(event->mimeData()->urls()) : QString();
+    const auto imageIndex = indexAt(event->position().toPoint());
+    if (!imagePath.isEmpty() && imageIndex.isValid()) {
+        emit customCoverDropped(imagePath, imageIndex.siblingAtColumn(0));
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+        return;
+    }
+
     if (!model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex())) {
         event->ignore();
         return;

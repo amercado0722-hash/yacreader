@@ -316,11 +316,24 @@ void FolderManagementCoordinator::selectAndSetCustomCover(qulonglong folderId, c
     if (sourceImagePath.isEmpty())
         return;
 
+    setCustomCover(folderId, libraryPath, sourceImagePath);
+}
+
+void FolderManagementCoordinator::setCustomCover(qulonglong folderId, const QString &imagePath)
+{
+    setCustomCover(folderId, libraryPathProvider(), imagePath);
+}
+
+void FolderManagementCoordinator::setCustomCover(qulonglong folderId, const QString &libraryPath, const QString &imagePath)
+{
+    if (imagePath.isEmpty())
+        return;
+
     const auto index = folderIndex(folderId, libraryPath);
     if (!index.isValid())
         return;
 
-    const QImage cover(sourceImagePath);
+    const QImage cover(imagePath);
     if (cover.isNull()) {
         QMessageBox::warning(dialogParent,
                              QCoreApplication::translate("LibraryWindow", "Invalid image"),

@@ -264,6 +264,10 @@ void LibraryWindowMenus::showComicsContextMenu(const QPoint &point, bool showFul
     menu->addAction(actions.resetComicRatingAction);
     menu->addSeparator();
     menu->addAction(actions.deleteMetadataAction);
+    if (comicManagementCoordinator->hasCustomCoverInSelection()) {
+        auto resetCustomCoverAction = menu->addAction(tr("Delete custom cover"));
+        connect(resetCustomCoverAction, &QAction::triggered, menu, [this] { comicManagementCoordinator->resetSelectedCustomCovers(); });
+    }
     menu->addSeparator();
     menu->addAction(actions.deleteComicsAction);
     menu->addSeparator();

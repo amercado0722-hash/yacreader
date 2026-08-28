@@ -4,6 +4,7 @@
 #include "comic.h"
 #include "comic_files_manager.h"
 #include "comic_model.h"
+#include "cover_utils.h"
 #include "yacreader_comic_info_helper.h"
 #include "yacreader_comics_selection_helper.h"
 
@@ -236,6 +237,11 @@ bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
     return false;
 }
 
+bool InfoComicsView::canDropImage(const QList<QUrl> &urls)
+{
+    return !YACReader::droppedImagePath(urls).isEmpty() && currentIndex().isValid();
+}
+
 void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
 {
     bool validAction = action == Qt::CopyAction; // TODO add move
@@ -244,6 +250,14 @@ void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);
         emit copyComicsToCurrentFolder(droppedFiles);
     }
+}
+
+void InfoComicsView::droppedImage(const QList<QUrl> &urls)
+{
+    const auto imagePath = YACReader::droppedImagePath(urls);
+    const auto index = currentIndex();
+    if (!imagePath.isEmpty() && index.isValid())
+        emit customComicCoverRequested(index.data(ComicModel::IdRole).toULongLong(), imagePath);
 }
 
 void InfoComicsView::requestedContextMenu(const QPoint &point)

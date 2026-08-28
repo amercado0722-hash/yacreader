@@ -33,6 +33,7 @@ public:
     void setFolderType(qulonglong folderId, const QString &libraryPath, YACReader::FileType type);
     void openFolder(qulonglong folderId, const QString &libraryPath);
     void selectAndSetCustomCover(qulonglong folderId, const QString &libraryPath);
+    void setCustomCover(qulonglong folderId, const QString &imagePath);
     void resetCustomCover(qulonglong folderId, const QString &libraryPath);
 
 public slots:
@@ -76,6 +77,7 @@ private:
     void deleteFolder(const QModelIndex &folder, const QString &folderPath);
     void showFolderDeletionError();
     QModelIndex folderIndex(qulonglong folderId, const QString &libraryPath) const;
+    void setCustomCover(qulonglong folderId, const QString &libraryPath, const QString &imagePath);
 
     FolderModel *foldersModel;
     QWidget *dialogParent;

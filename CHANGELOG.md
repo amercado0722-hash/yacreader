@@ -15,6 +15,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add reset rating to the comic context menu.
 * Add support for renaming folders inside the app. This preserves the folder and subfolders state (completed, read, dates, etc.) rather than creating a new folder like updating the library does if you rename the folder directly on the file system.
 * Add organizing fuctionalities for renaming files and create folder structures based on metadata. Highly experimental. 
+* Support for dropping images in folders and comics to change their coves.
 
 ### WebUI
 * Add per-library search.

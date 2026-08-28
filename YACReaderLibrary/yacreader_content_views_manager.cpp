@@ -75,6 +75,7 @@ void YACReaderContentViewsManager::setComicManagementCoordinator(ComicManagement
         disconnect(comicsView, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic);
         disconnect(comicsView, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder);
         disconnect(comicsView, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder);
+        disconnect(comicsView, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover);
     }
 
     comicManagementCoordinator = coordinator;
@@ -83,6 +84,7 @@ void YACReaderContentViewsManager::setComicManagementCoordinator(ComicManagement
         connect(comicsView, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic, Qt::UniqueConnection);
         connect(comicsView, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
         connect(comicsView, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover, Qt::UniqueConnection);
     }
 }
 
@@ -254,6 +256,7 @@ void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *w
         disconnect(widget, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic);
         disconnect(widget, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder);
         disconnect(widget, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder);
+        disconnect(widget, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover);
     }
     if (libraryWindowMenus != nullptr) {
         disconnect(widget, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu);
@@ -278,6 +281,7 @@ void YACReaderContentViewsManager::connectComicsViewConnections(ComicsView *view
         connect(view, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic, Qt::UniqueConnection);
         connect(view, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
         connect(view, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(view, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover, Qt::UniqueConnection);
     }
 }
 

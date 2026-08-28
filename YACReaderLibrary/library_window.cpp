@@ -515,6 +515,7 @@ void LibraryWindow::setupCoordinators()
             setRootIndex();
     });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
+    connect(contentViewsManager->gridView(), &ComicsView::customFolderCoverRequested, folderManagementCoordinator, qOverload<qulonglong, const QString &>(&FolderManagementCoordinator::setCustomCover));
     libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(
             libraries,
             this,
