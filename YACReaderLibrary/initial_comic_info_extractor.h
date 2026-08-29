@@ -7,6 +7,8 @@
 #include <QProcess>
 #include <QString>
 
+#include <atomic>
+
 namespace YACReader {
 class InitialComicInfoExtractor : public QObject
 {
@@ -26,7 +28,8 @@ private:
     int _coverPage;
     bool _fileSupported;
     int getXMLMetadata;
-    static bool crash;
+    // Set from library scanning worker threads, so it has to be atomic
+    static std::atomic<bool> crash;
     QByteArray _xmlInfoData;
     void saveCover(const QString &path, const QImage &cover);
 

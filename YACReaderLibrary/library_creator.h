@@ -16,6 +16,8 @@
 #include <QThread>
 #include <QtCore>
 
+#include <atomic>
+
 class LibraryCreator : public QThread
 {
     Q_OBJECT
@@ -49,8 +51,12 @@ private:
     void replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic);
     // qulonglong insertFolder(qulonglong parentId,const Folder & folder);
     // qulonglong insertComic(const Comic & comic);
-    bool stopRunning;
-    bool canceled;
+    // Written from the UI thread while the scan reads them on its own thread
+    std::atomic<bool> stopRunning;
+    std::atomic<bool> canceled;
+    // Canonical paths already walked in this run, so a symlink or a Windows junction
+    // pointing back up the tree cannot send the scan into infinite recursion
+    QSet<QString> _visitedFolders;
     // LibraryCreator está en modo creación si creation == true;
     bool creation;
     bool partialUpdate;

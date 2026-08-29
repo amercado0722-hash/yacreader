@@ -138,6 +138,8 @@ void LibraryCreator::run()
 {
     stopRunning = false;
     canceled = false;
+    _visitedFolders.clear();
+    QString commitError;
 #if !defined use_unarr && !defined use_libarchive
     auto sevenzLib = YACReader::load7zLibrary();
 
@@ -204,10 +206,23 @@ void LibraryCreator::run()
 
             DBHelper::updateChildrenInfo(_database);
 
-            _database.commit();
+            if (canceled) {
+                _database.rollback();
+            } else if (!_database.commit()) {
+                // Silently dropping a failed commit threw away the whole scan and
+                // still reported success.
+                commitError = _database.lastError().text();
+                QLOG_ERROR() << "Unable to commit the new library" << commitError;
+                _database.rollback();
+            }
             _database.close();
         }
         QSqlDatabase::removeDatabase(_databaseConnection);
+        if (!commitError.isEmpty()) {
+            emit failedCreatingDB(commitError);
+            creation = false;
+            return;
+        }
         emit created();
         QLOG_INFO() << "Create library END";
     } else {
@@ -265,11 +280,23 @@ void LibraryCreator::run()
                 }
             }
 
-            _database.commit();
+            if (canceled) {
+                // Cancelling has to discard the run's changes, which is what the
+                // rollback in cancel() was meant to do from the wrong thread.
+                _database.rollback();
+            } else if (!_database.commit()) {
+                commitError = _database.lastError().text();
+                QLOG_ERROR() << "Unable to commit the library update" << commitError;
+                _database.rollback();
+            }
             _database.close();
         }
 
         QSqlDatabase::removeDatabase(_databaseConnection);
+        if (!commitError.isEmpty()) {
+            emit failedOpeningDB(commitError);
+            return;
+        }
 
         // si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
         if (!partialUpdate) {
@@ -291,13 +318,15 @@ void LibraryCreator::run()
 
 void LibraryCreator::stop()
 {
-    QSqlDatabase::database(_databaseConnection).commit();
+    // Only raise the flag. The connection belongs to the scanning thread, and Qt
+    // refuses to use it from here, so the commit this used to attempt never happened.
     stopRunning = true;
 }
 
 void LibraryCreator::cancel()
 {
-    QSqlDatabase::database(_databaseConnection).rollback();
+    // Same as above: the rollback is performed by the scanning thread in run(),
+    // which is the only thread allowed to touch this connection.
     canceled = true;
     stopRunning = true;
 }
@@ -357,6 +386,17 @@ qulonglong LibraryCreator::insertFolders()
 
 void LibraryCreator::create(QDir dir)
 {
+    // A symlink (or a Windows junction) that points back up the tree turns this
+    // recursion into an infinite one, which ends as a stack overflow crash.
+    const QString canonicalPath = QFileInfo(dir.absolutePath()).canonicalFilePath();
+    if (!canonicalPath.isEmpty()) {
+        if (_visitedFolders.contains(canonicalPath)) {
+            QLOG_WARN() << "Skipping already visited folder (symlink loop?)" << dir.absolutePath();
+            return;
+        }
+        _visitedFolders.insert(canonicalPath);
+    }
+
     dir.setNameFilters(_nameFilter);
     dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
     QFileInfoList list = dir.entryInfoList();
@@ -394,11 +434,17 @@ bool LibraryCreator::checkCover(const QString &hash)
     return QFile::exists(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
 }
 
+// Returns an empty string when the file cannot be read. Hashing an unreadable file
+// used to yield the SHA1 of nothing plus its size, so every unreadable file of the
+// same size collided on one hash and they all shared a single cover and metadata row.
 QString pseudoHash(const QFileInfo &fileInfo)
 {
     QCryptographicHash crypto(QCryptographicHash::Sha1);
     QFile file(fileInfo.absoluteFilePath());
-    file.open(QFile::ReadOnly);
+    if (!file.open(QFile::ReadOnly)) {
+        QLOG_WARN() << "Unable to read" << fileInfo.absoluteFilePath() << file.errorString();
+        return { };
+    }
     crypto.addData(file.read(524288));
     file.close();
     // hash Sha1 del primer 0.5MB + filesize
@@ -410,6 +456,11 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
     auto _database = QSqlDatabase::database(_databaseConnection);
 
     QString hash = pseudoHash(fileInfo);
+    if (hash.isEmpty()) {
+        // Locked by another process, no permission, or an offline network share.
+        // Leaving it out of this scan lets a later scan pick it up properly.
+        return;
+    }
 
     ComicDB comic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
     int numPages = 0;
@@ -497,6 +548,17 @@ void LibraryCreator::update(QDir dirS)
 {
     if (stopRunning) {
         return;
+    }
+
+    // A symlink (or a Windows junction) that points back up the tree turns this
+    // recursion into an infinite one, which ends as a stack overflow crash.
+    const QString canonicalPath = QFileInfo(dirS.absolutePath()).canonicalFilePath();
+    if (!canonicalPath.isEmpty()) {
+        if (_visitedFolders.contains(canonicalPath)) {
+            QLOG_WARN() << "Skipping already visited folder (symlink loop?)" << dirS.absolutePath();
+            return;
+        }
+        _visitedFolders.insert(canonicalPath);
     }
 
     auto _database = QSqlDatabase::database(_databaseConnection);

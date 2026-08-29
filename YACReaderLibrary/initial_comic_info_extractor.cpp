@@ -9,11 +9,12 @@
 
 #include <QsLog.h>
 
+#include <memory>
 #include <utility>
 
 using namespace YACReader;
 
-bool InitialComicInfoExtractor::crash = false;
+std::atomic<bool> InitialComicInfoExtractor::crash { false };
 
 InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString target, int coverPage, bool getXMLMetadata)
     : _fileSource(fileSource), _target(target), _numPages(0), _coverSize(0, 0), _coverExtracted(false), _coverPage(coverPage), _fileSupported(true), getXMLMetadata(getXMLMetadata), _xmlInfoData()
@@ -63,7 +64,12 @@ void InitialComicInfoExtractor::extract()
 #if defined Q_OS_MACOS || defined USE_PDFIUM
             QImage p = pdfComic->getPage(_coverPage - 1); // TODO check if the page is valid
 #else
-            QImage p = pdfComic->page(_coverPage - 1)->renderToImage(72, 72);
+            std::unique_ptr<Poppler::Page> pdfPage(pdfComic->page(_coverPage - 1));
+            if (!pdfPage) {
+                QLOG_WARN() << "Extracting cover: unable to read PDF page " << _fileSource;
+                return;
+            }
+            QImage p = pdfPage->renderToImage(72, 72);
 #endif //
             if (!p.isNull()) {
                 _cover = p;
@@ -91,7 +97,14 @@ void InitialComicInfoExtractor::extract()
         return;
     }
     if (!archive.isValid()) {
+        // Truncated download, wrong extension, or a damaged archive. Reporting it as
+        // unsupported keeps it out of the library; carrying on used to leave a
+        // placeholder cover on disk, which the next scan then took as proof that the
+        // file had been imported, adding a permanent zero page entry.
         QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;
+        _fileSupported = false;
+        _cover.load(":/images/notCover.png");
+        return;
     }
 
     QList<QString> order = archive.getFileNames();
