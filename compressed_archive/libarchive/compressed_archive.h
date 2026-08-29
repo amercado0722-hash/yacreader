@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QObject>
 
+#include <cstdint>
+
 extern "C" {
 #include <archive.h>
 #include <archive_entry.h>
@@ -28,6 +30,9 @@ public slots:
     bool toolsLoaded() { return true; }
 
 private:
+    // An entry bigger than this is a corrupt size field, not a comic page
+    static constexpr int64_t kMaxEntrySize = 1024LL * 1024 * 1024;
+
     archive *a;
     QStringList entries;
     int num_entries;

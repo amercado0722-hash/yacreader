@@ -104,22 +104,28 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
 
         if (!filex.open(QIODevice::ReadOnly))
             return;
+        // A truncated download is shorter than the signature we are about to compare
+        // against, so every comparison has to be guarded by the bytes actually read.
+        const auto matchesSignature = [](const QByteArray &bytes, const unsigned char *signature, int length) {
+            return bytes.size() >= length && memcmp(bytes.constData(), signature, length) == 0;
+        };
+
         QByteArray magicNumber = filex.read(8); // read first 8 bytes
-        if (memcmp(magicNumber, rar, 6) == 0)
-            if (memcmp(magicNumber, rar5, 7) == 0)
+        if (matchesSignature(magicNumber, rar, 6)) {
+            if (matchesSignature(magicNumber, rar5, 7))
                 i = 5;
             else
                 i = 0;
-        else if (memcmp(magicNumber, zip, 2) == 0)
+        } else if (matchesSignature(magicNumber, zip, 2))
             i = 1;
-        else if (memcmp(magicNumber, sevenz, 6) == 0)
+        else if (matchesSignature(magicNumber, sevenz, 6))
             i = 3;
-        else if (memcmp(magicNumber, arj, 2) == 0)
+        else if (matchesSignature(magicNumber, arj, 2))
             i = 4;
         else {
             filex.seek(257);
             magicNumber = filex.read(8);
-            if (memcmp(magicNumber, tar, 5) == 0)
+            if (matchesSignature(magicNumber, tar, 5))
                 i = 2;
         }
         if (i == -1) // fallback code
@@ -178,9 +184,15 @@ bool CompressedArchive::loadFunctions()
         sevenzLib = YACReader::load7zLibrary();
     }
 
+    if (sevenzLib == nullptr) {
+        QLOG_ERROR() << "Unable to locate the 7z library" << Qt::endl;
+        return false;
+    }
+
     if (!sevenzLib->load()) {
+        // Report it and let the caller decide. Tearing the whole application down from
+        // whatever thread happened to open a comic loses the rest of the user's session.
         QLOG_ERROR() << "Error Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
-        QCoreApplication::exit(700); // TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
         return false;
     } else {
         qDebug() << "Loading functions" << Qt::endl;
@@ -267,6 +279,9 @@ int CompressedArchive::getNumFiles()
 
 int CompressedArchive::getNumEntries()
 {
+    if (!szInterface->archive)
+        return 0;
+
     quint32 numItems = 0;
     szInterface->archive->GetNumberOfItems(&numItems);
     return numItems;
@@ -274,6 +289,9 @@ int CompressedArchive::getNumEntries()
 
 QList<QByteArray> CompressedArchive::getAllData(const QVector<quint32> &indexes, ExtractDelegate *delegate)
 {
+    if (!szInterface->archive)
+        return QList<QByteArray>();
+
     YCArchiveExtractCallback *extractCallbackSpec = new YCArchiveExtractCallback(indexesToPages, true, delegate);
     CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
     extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
@@ -309,11 +327,14 @@ QByteArray CompressedArchive::getRawDataAtIndex(int index)
             indices[0] = index;
 
         HRESULT result = szInterface->archive->Extract(indices, 1, false, extractCallback);
-        if (result != S_OK) {
+        if (result != S_OK || !extractCallbackSpec->lastExtractionOk || extractCallbackSpec->data == nullptr) {
+            // Returning the buffer here would hand the caller either uninitialised
+            // memory or a half-decompressed page and call it a comic page.
             qDebug() << "Extract Error" << Qt::endl;
+            return QByteArray();
         }
 
-        return QByteArray((char *)extractCallbackSpec->data, extractCallbackSpec->newFileSize);
+        return QByteArray((char *)extractCallbackSpec->data, static_cast<qsizetype>(extractCallbackSpec->newFileSize));
     }
     return QByteArray();
 }

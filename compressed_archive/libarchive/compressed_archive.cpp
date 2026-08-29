@@ -119,9 +119,10 @@ void CompressedArchive::getAllData(const QVector<quint32> &indexes,
         if (bytes.size() > 0) {
             delegate->fileExtracted(index, bytes);
         } else {
+            // One damaged page is not a reason to abandon the other two hundred:
+            // report it and carry on with the rest of the comic.
             qWarning() << "getAllData error at index: [" << index << "]";
-            delegate->unknownError(index);
-            return;
+            delegate->crcError(index);
         }
     }
 }
@@ -133,8 +134,38 @@ QByteArray CompressedArchive::read_entry()
 
     if (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
         int64_t size = archive_entry_size(entry);
+
+        // A corrupt header can claim any size at all, and resize() would happily try
+        // to honour it and abort the process on bad_alloc.
+        if (size <= 0 || size > kMaxEntrySize) {
+            qWarning() << "refusing to read entry with implausible size:" << size;
+            idx++;
+            return bytes;
+        }
+
         bytes.resize(size);
-        archive_read_data(a, bytes.data(), size);
+
+        // archive_read_data returns short reads; a page assembled from a partial read
+        // is a corrupt image, so only a fully read entry is handed back.
+        int64_t totalRead = 0;
+        while (totalRead < size) {
+            const int64_t readBytes = archive_read_data(a, bytes.data() + totalRead, size - totalRead);
+            if (readBytes < 0) {
+                qWarning() << archive_error("error reading entry data");
+                idx++;
+                return QByteArray();
+            }
+            if (readBytes == 0) {
+                break;
+            }
+            totalRead += readBytes;
+        }
+
+        if (totalRead != size) {
+            qWarning() << "short read for entry, expected" << size << "got" << totalRead;
+            idx++;
+            return QByteArray();
+        }
     } else {
         qWarning() << archive_error("error reading entry");
     }
@@ -146,6 +177,11 @@ QByteArray CompressedArchive::read_entry()
 QByteArray CompressedArchive::getRawDataAtIndex(int index)
 {
     QByteArray bytes;
+    if (index < 0 || index >= num_entries) {
+        qWarning() << "getRawDataAtIndex called with out of range index:" << index;
+        return bytes;
+    }
+
     if (archive_seek(index)) {
         bytes = read_entry();
     } else {

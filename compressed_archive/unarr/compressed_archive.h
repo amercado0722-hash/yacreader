@@ -26,6 +26,9 @@ public slots:
     bool toolsLoaded();
 
 private:
+    // An entry bigger than this is a corrupt size field, not a comic page
+    static constexpr size_t kMaxEntrySize = 1024ULL * 1024 * 1024;
+
     bool tools;
     bool valid;
     QList<QString> fileNames;

@@ -94,14 +94,39 @@ void CompressedArchive::getAllData(const QVector<quint32> &indexes, ExtractDeleg
             return;
         }
 
+        const quint32 pageIndex = indexes.at(i);
+
+        // offsets.at() on an out of range index is undefined behaviour in a release
+        // build, so a bad index has to be rejected before it gets there.
+        if (pageIndex >= static_cast<quint32>(offsets.size())) {
+            qDebug() << "getAllData called with out of range index:" << pageIndex;
+            delegate->crcError(pageIndex);
+            i++;
+            continue;
+        }
+
         // use the offset list so we generated so we're not getting any non-page files
-        ar_parse_entry_at(ar, offsets.at(indexes.at(i))); // set ar_entry to start of indexes
-        buffer.resize(ar_entry_get_size(ar));
+        if (!ar_parse_entry_at(ar, offsets.at(pageIndex))) { // set ar_entry to start of indexes
+            qDebug() << "unable to parse entry at index:" << pageIndex;
+            delegate->crcError(pageIndex);
+            i++;
+            continue;
+        }
+
+        const size_t entrySize = ar_entry_get_size(ar);
+        if (entrySize == 0 || entrySize > kMaxEntrySize) {
+            qDebug() << "refusing to read entry with implausible size:" << entrySize;
+            delegate->crcError(pageIndex);
+            i++;
+            continue;
+        }
+
+        buffer.resize(static_cast<qsizetype>(entrySize));
         if (ar_entry_uncompress(ar, buffer.data(), buffer.size())) // did we extract it?
         {
-            delegate->fileExtracted(indexes.at(i), buffer); // return extracted file
+            delegate->fileExtracted(pageIndex, buffer); // return extracted file
         } else {
-            delegate->crcError(indexes.at(i)); // we could not extract it...
+            delegate->crcError(pageIndex); // we could not extract it...
         }
         i++;
     }
@@ -110,9 +135,19 @@ void CompressedArchive::getAllData(const QVector<quint32> &indexes, ExtractDeleg
 QByteArray CompressedArchive::getRawDataAtIndex(int index)
 {
     QByteArray buffer;
-    if (index >= 0 && index < getNumFiles()) {
-        ar_parse_entry_at(ar, offsets.at(index));
-        buffer.resize(ar_entry_get_size(ar));
+    if (index >= 0 && index < getNumFiles() && index < offsets.size()) {
+        if (!ar_parse_entry_at(ar, offsets.at(index))) {
+            qDebug() << "unable to parse entry at index:" << index;
+            return QByteArray();
+        }
+
+        const size_t entrySize = ar_entry_get_size(ar);
+        if (entrySize == 0 || entrySize > kMaxEntrySize) {
+            qDebug() << "refusing to read entry with implausible size:" << entrySize;
+            return QByteArray();
+        }
+
+        buffer.resize(static_cast<qsizetype>(entrySize));
         if (ar_entry_uncompress(ar, buffer.data(), buffer.size())) {
             return buffer;
         } else {

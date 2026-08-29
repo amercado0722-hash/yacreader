@@ -77,17 +77,44 @@ public:
     UString Password;
     Byte *data;
     UInt64 newFileSize;
+    // false as soon as any entry fails to extract, so callers can tell a real
+    // page from whatever happened to be left in the buffer
+    bool lastExtractionOk;
     QMap<qint32, qint32> indexesToPages;
 
+    // A single page larger than this is a corrupt size field, not a comic page.
+    // Trusting it would hand MidAlloc/QByteArray an absurd allocation.
+    static constexpr UInt64 kMaxEntrySize = 1024ULL * 1024 * 1024;
+
     YCArchiveExtractCallback(const QMap<qint32, qint32> &indexesToPages, bool c = false, ExtractDelegate *d = 0)
-        : PasswordIsDefined(false), all(c), delegate(d), indexesToPages(indexesToPages) { }
-    ~YCArchiveExtractCallback() { MidFree(data); }
+        : all(c), delegate(d), NumErrors(0), PasswordIsDefined(false), data(nullptr), newFileSize(0), lastExtractionOk(false), indexesToPages(indexesToPages) { }
+    ~YCArchiveExtractCallback()
+    {
+        MidFree(data);
+        data = nullptr;
+    }
+
+private:
+    void releaseBuffer()
+    {
+        MidFree(data);
+        data = nullptr;
+        newFileSize = 0;
+    }
 };
 
 void YCArchiveExtractCallback::Init(IInArchive *archiveHandler, const UString &directoryPath)
 {
     NumErrors = 0;
     _archiveHandler = archiveHandler;
+    _extractMode = false;
+    _index = 0;
+    _processedFileInfo.Attrib = 0;
+    _processedFileInfo.isDir = false;
+    _processedFileInfo.AttribDefined = false;
+    _processedFileInfo.MTimeDefined = false;
+    lastExtractionOk = false;
+    releaseBuffer();
     directoryPath; // unused
 }
 
@@ -202,12 +229,30 @@ Z7_COM7F_IMF(YCArchiveExtractCallback::GetStream(UInt32 index,
       }
       }*/
         if (newFileSizeDefined) {
+            // Whatever the previous entry left behind is dead now. Without this the
+            // buffer of every failed entry leaks, because only the success path frees it.
+            const UInt64 wantedSize = newFileSize;
+            releaseBuffer();
+
+            if (wantedSize > kMaxEntrySize) {
+                qDebug() << "Refusing to extract entry with implausible size" << wantedSize;
+                return E_OUTOFMEMORY;
+            }
+
+            data = (Byte *)MidAlloc(wantedSize);
+            if (data == nullptr) {
+                qDebug() << "Out of memory extracting entry of size" << wantedSize;
+                return E_OUTOFMEMORY;
+            }
+            newFileSize = wantedSize;
+
             CBufPtrSeqOutStream *outStreamSpec = new CBufPtrSeqOutStream;
             CMyComPtr<ISequentialOutStream> outStreamLocal(outStreamSpec);
-            data = (Byte *)MidAlloc(newFileSize);
             outStreamSpec->Init(data, newFileSize);
             *outStream = outStreamLocal.Detach();
         } else {
+            // No size means no buffer, so make sure a stale one is not mistaken for this entry
+            releaseBuffer();
         }
     }
     return S_OK;
@@ -235,10 +280,12 @@ Z7_COM7F_IMF(YCArchiveExtractCallback::SetOperationResult(Int32 operationResult)
 {
     switch (operationResult) {
     case NArchive::NExtract::NOperationResult::kOK:
+        lastExtractionOk = (data != nullptr) || _processedFileInfo.isDir;
         if (all && !_processedFileInfo.isDir) {
-            QByteArray rawData((char *)data, newFileSize);
-            MidFree(data);
-            data = 0;
+            QByteArray rawData;
+            if (data != nullptr)
+                rawData = QByteArray((char *)data, static_cast<qsizetype>(newFileSize));
+            releaseBuffer();
             if (delegate != 0)
                 delegate->fileExtracted(_index, rawData);
             else {
@@ -248,6 +295,10 @@ Z7_COM7F_IMF(YCArchiveExtractCallback::SetOperationResult(Int32 operationResult)
         break;
     default: {
         NumErrors++;
+        lastExtractionOk = false;
+        // The buffer holds a partially decompressed page at best. Drop it so no
+        // caller can mistake it for a good one, and so it is not leaked.
+        releaseBuffer();
         qDebug() << "     ";
         switch (operationResult) {
         case NArchive::NExtract::NOperationResult::kUnsupportedMethod:
