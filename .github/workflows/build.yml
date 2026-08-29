@@ -5,10 +5,12 @@ on:
     branches:
       - master
       - develop
+      - robustness-hardening
   pull_request:
     branches:
       - master
       - develop
+  workflow_dispatch:
 
 env:
   IS_ORIGINAL_REPO: ${{ github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop') }}
@@ -277,6 +279,16 @@ jobs:
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
           .\create_installer.cmd x64 7z ${{ needs.initialization.outputs.build_number }}
+
+      # Forks get no signed build, so without this step a fork's CI produces no
+      # downloadable installer at all and the build is only useful as a pass/fail.
+      - name: Upload installer (fork builds)
+        if: github.repository != 'YACReader/yacreader'
+        uses: actions/upload-artifact@v6
+        with:
+          name: YACReader-windows-x64-installer-${{ needs.initialization.outputs.build_number }}
+          path: ci/win/Output/YACReader*.exe
+          if-no-files-found: error
 
       - name: Verify installer was created
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
