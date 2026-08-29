@@ -3,6 +3,8 @@
 #include "comic_vine_all_volume_comics_retriever.h"
 #include "yacreader_global_gui.h"
 
+#include <QUrl>
+
 // this is the API key used by YACReader to access Comic Vine
 // please, do not use it in your own software, get one for free at Comic Vine
 static const QString CV_API_KEY = "%CV_API_KEY%"; // get from settings
@@ -68,11 +70,21 @@ ComicVineClient::~ComicVineClient()
     delete settings;
 }
 
+// Series titles routinely contain characters that mean something in a URL query
+// (&, +, #, spaces). Dropped in raw they silently truncate or corrupt the search.
+// Note: the two placeholders are filled with the multi argument arg() overload, which
+// substitutes in a single pass. Chained arg() calls would rescan the encoded text, and
+// a sequence such as %2C would then be mistaken for a placeholder.
+static QString encodedQuery(const QString &query)
+{
+    return QString::fromLatin1(QUrl::toPercentEncoding(query));
+}
+
 // CV_SEARCH
 void ComicVineClient::search(const QString &query, int page)
 {
     HttpWorker *search = new HttpWorker(
-            QString(CV_SEARCH).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(query).arg(page),
+            QString(CV_SEARCH).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(encodedQuery(query), QString::number(page)),
             userAgent);
     connect(search, &HttpWorker::dataReady, this, &ComicVineClient::proccessVolumesSearchData);
     connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut);
@@ -84,7 +96,7 @@ void ComicVineClient::search(const QString &query, int page)
 void ComicVineClient::searchExactVolume(const QString &query, int page)
 {
     HttpWorker *search = new HttpWorker(
-            QString(CV_EXACT_VOLUME_SEARCH).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(query).arg((page - 1) * 100),
+            QString(CV_EXACT_VOLUME_SEARCH).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(encodedQuery(query), QString::number((page - 1) * 100)),
             userAgent);
     connect(search, &HttpWorker::dataReady, this, &ComicVineClient::proccessVolumesSearchData);
     connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut);
