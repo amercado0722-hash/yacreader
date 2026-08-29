@@ -32,6 +32,7 @@
 #include <QsLog.h>
 
 #include <algorithm>
+#include <utility>
 
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
@@ -530,7 +531,7 @@ void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &c
 
     QList<QString> paths;
     paths.reserve(comics.size());
-    for (const auto &comic : comics) {
+    for (const auto &comic : std::as_const(comics)) {
         paths.append(source.libraryPath + comic.path);
         QLOG_TRACE() << comic.path;
         QLOG_TRACE() << comic.id;

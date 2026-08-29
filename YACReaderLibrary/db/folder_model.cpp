@@ -195,7 +195,8 @@ void FolderModel::reload()
     takeUpdatedChildrenInfo(rootItem, QModelIndex(), newModelData.rootItem);
 
     // copy items from newModelData to this model that are not in this model
-    for (const auto key : newModelData.items.keys()) {
+    const auto newItemKeys = newModelData.items.keys();
+    for (const auto key : newItemKeys) {
         if (!items.contains(key)) {
             items[key] = (newModelData.items[key]);
         }
@@ -636,7 +637,8 @@ void FolderModel::updateFolderType(const QModelIndexList &list, YACReader::FileT
             setType = [&setType](FolderItem *item, YACReader::FileType type) -> void {
                 item->setData(FolderModel::Type, QVariant::fromValue(type));
 
-                for (auto child : item->children()) {
+                const auto children = item->children();
+                for (auto child : children) {
                     setType(child, type);
                 }
             };
@@ -696,7 +698,8 @@ bool FolderModel::renameFolder(const QModelIndex &folder, const QString &name, Q
     const auto updatePath = [&oldPath, &newPath](auto &&self, FolderItem *folderItem) -> void {
         const auto path = folderItem->data(FolderModel::Path).toString();
         folderItem->setData(FolderModel::Path, newPath + path.mid(oldPath.size()));
-        for (auto child : folderItem->children())
+        const auto children = folderItem->children();
+        for (auto child : children)
             self(self, child);
     };
     updatePath(updatePath, item);
@@ -704,7 +707,8 @@ bool FolderModel::renameFolder(const QModelIndex &folder, const QString &name, Q
     auto parentItem = item->parent();
     const auto oldRow = item->row();
     auto newRow = 0;
-    for (auto sibling : parentItem->children()) {
+    const auto siblings = parentItem->children();
+    for (auto sibling : siblings) {
         if (sibling != item && !naturalSortLessThanCI(name, sibling->data(FolderModel::Name).toString()))
             ++newRow;
     }
@@ -735,7 +739,8 @@ void FolderModel::updateTreeType(YACReader::FileType type)
         setType = [&setType](FolderItem *item, YACReader::FileType type) -> void {
             item->setData(FolderModel::Type, QVariant::fromValue(type));
 
-            for (auto child : item->children()) {
+            const auto children = item->children();
+            for (auto child : children) {
                 setType(child, type);
             }
         };

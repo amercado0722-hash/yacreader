@@ -686,7 +686,7 @@ void OrganizeFilesDialog::planBuilt(const QList<OrganizeFiles::PlannedMove> &mov
     planIsStale = false;
 
     planDestinations.clear();
-    for (const auto &move : plan)
+    for (const auto &move : std::as_const(plan))
         planDestinations.insert(move.sourceAbsolute, move.destinationRelative);
 
     rebuildTree();

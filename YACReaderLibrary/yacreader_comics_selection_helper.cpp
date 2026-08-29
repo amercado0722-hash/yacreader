@@ -7,6 +7,7 @@
 #include <QVariantList>
 
 #include <algorithm>
+#include <utility>
 
 YACReaderComicsSelectionHelper::YACReaderComicsSelectionHelper(QObject *parent)
     : QObject(parent)
@@ -120,7 +121,7 @@ QVariantMap YACReaderComicsSelectionHelper::selectionInfo() const
     QSet<QString> series;
     QVariantList covers;
 
-    for (const auto &index : rows) {
+    for (const auto &index : std::as_const(rows)) {
         const bool read = index.data(ComicModel::ReadColumnRole).toBool();
         const bool inProgress = !read && index.data(ComicModel::HasBeenOpenedRole).toBool() && index.data(ComicModel::CurrentPageRole).toInt() > 0;
         readCount += read ? 1 : 0;

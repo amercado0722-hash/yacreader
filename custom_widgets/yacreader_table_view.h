@@ -26,18 +26,18 @@ public slots:
     void closeRatingEditor();
 protected slots:
 
-    virtual void closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint);
-    virtual void commitData(QWidget *editor);
+    void closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint) override;
+    void commitData(QWidget *editor) override;
 
 private:
-    void resizeEvent(QResizeEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void leaveEvent(QEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *event) override;
     void performDrag();
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
     bool editing;
     QModelIndex currentIndexEditing;

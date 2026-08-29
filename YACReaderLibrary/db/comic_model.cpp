@@ -15,6 +15,8 @@
 #include <QtDebug>
 #include <QtGui>
 
+#include <utility>
+
 #ifdef use_unarr
 #include <unarr.h>
 #endif
@@ -1272,7 +1274,7 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> &comicsList)
 
     QList<qulonglong> comicIds;
     comicIds.reserve(comics.size());
-    for (const auto &comic : comics)
+    for (const auto &comic : std::as_const(comics))
         comicIds.append(comic.id);
     emit favoritesChanged(comicIds);
 }
@@ -1327,7 +1329,7 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
 
     QList<qulonglong> comicIds;
     comicIds.reserve(comics.size());
-    for (const auto &comic : comics)
+    for (const auto &comic : std::as_const(comics))
         comicIds.append(comic.id);
     emit favoritesChanged(comicIds);
 

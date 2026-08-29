@@ -22,7 +22,7 @@ ComicsView::ComicsView(QWidget *parent)
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
             view, &QQuickWidget::statusChanged, this,
-            [=](QQuickWidget::Status status) {
+            [=, this](QQuickWidget::Status status) {
                 if (status == QQuickWidget::Error) {
                     QLOG_ERROR() << view->errors();
                 }

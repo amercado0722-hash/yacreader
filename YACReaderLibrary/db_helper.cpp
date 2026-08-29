@@ -1510,8 +1510,9 @@ void DBHelper::syncFolderAddedFromContents(const QList<qulonglong> &folderIds, Q
 
     for (const auto id : folderIds) {
         query.bindValue(":id", id);
-        if (!query.exec())
+        if (!query.exec()) {
             QLOG_ERROR() << "syncFolderAddedFromContents: update failed for folder" << id << query.lastError().text();
+        }
     }
 }
 
@@ -1561,8 +1562,9 @@ void DBHelper::removeEmptyFolderRows(const QList<qulonglong> &folderIds, QSqlDat
 
     for (const auto id : folderIds) {
         remove.bindValue(":id", id);
-        if (!remove.exec())
+        if (!remove.exec()) {
             QLOG_ERROR() << "removeEmptyFolderRows: delete failed for folder" << id << remove.lastError().text();
+        }
     }
 }
 

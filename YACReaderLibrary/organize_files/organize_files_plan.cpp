@@ -5,6 +5,8 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 
+#include <utility>
+
 namespace {
 
 using OrganizeFiles::ComicEntry;
@@ -438,7 +440,7 @@ QList<PlannedMove> PlanBuilder::build(const QString &pattern, const Overrides &o
 
     QSet<QString> claimed;
 
-    for (const auto &original : entries) {
+    for (const auto &original : std::as_const(entries)) {
         ComicEntry entry = original;
 
         // Resolved here and not when the entry is built, because the base can

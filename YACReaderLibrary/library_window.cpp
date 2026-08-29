@@ -74,6 +74,7 @@
 #include <QtCore>
 
 #include <algorithm>
+#include <utility>
 extern YACReaderHttpServer *httpServer;
 
 #include <KDSignalThrottler.h>
@@ -1028,7 +1029,7 @@ void LibraryWindow::setComicToolbarEntriesVisible(bool visible)
         return;
 
     const auto currentActions = editInfoToolBar->actions();
-    for (auto *action : comicToolbarEntries) {
+    for (auto *action : std::as_const(comicToolbarEntries)) {
         if (visible && !currentActions.contains(action))
             editInfoToolBar->insertAction(comicToolbarEndAnchor, action);
         else if (!visible && currentActions.contains(action))

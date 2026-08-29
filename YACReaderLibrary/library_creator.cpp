@@ -19,6 +19,7 @@
 #include <QSqlRecord>
 
 #include <algorithm>
+#include <utility>
 
 using namespace std;
 using namespace YACReader;
@@ -102,7 +103,7 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
 
         _currentPathFolders.append(rootFolder(db));
 
-        for (const auto &folderName : folders) {
+        for (const auto &folderName : std::as_const(folders)) {
             if (folderName.isEmpty()) {
                 break;
             }
@@ -363,7 +364,6 @@ void LibraryCreator::create(QDir dir)
         if (stopRunning)
             return;
         QFileInfo fileInfo = list.at(i);
-        QString fileName = fileInfo.fileName();
 #ifdef Q_OS_MACOS
         QStringList src = _source.split("/");
         QString filePath = fileInfo.absoluteFilePath();
