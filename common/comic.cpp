@@ -154,7 +154,9 @@ void Comic::setup()
     connect(this, errorOpeningPtr, l);
     connect(this, errorOpeningWithStringPtr, l);
 
-    connect(this, &Comic::crcErrorFound, l);
+    // A damaged page is deliberately not an error opening the comic. Marking the comic
+    // as failed here made the server answer 404 for every remaining page, so a single
+    // bad page anywhere in a volume made the whole volume unreadable remotely.
 }
 //-----------------------------------------------------------------------------
 int Comic::nextPage()
@@ -478,24 +480,34 @@ void FileComic::fileExtracted(int index, const QByteArray &rawData)
     }
 }
 
-void FileComic::crcError(int index)
+void FileComic::reportDamagedPages(int index, const QString &reason)
 {
     const QVector<int> pages = _archiveIndexToPages.value(index);
+
+    if (_pageErrorReported) {
+        return;
+    }
+    _pageErrorReported = true;
+
     QStringList pageNumbers;
     for (int page : pages) {
         pageNumbers.append(QString::number(page + 1));
     }
 
     const QString affectedPages = pageNumbers.isEmpty() ? QString::number(index + 1) : pageNumbers.join(QStringLiteral(", "));
-    emit crcErrorFound(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(affectedPages));
+    emit crcErrorFound(reason.arg(affectedPages));
 }
 
-// TODO: comprobar que si se produce uno de estos errores, la carga del c�mic es irrecuperable
+void FileComic::crcError(int index)
+{
+    reportDamagedPages(index, tr("CRC error on page (%1): some of the pages will not be displayed correctly"));
+}
+
 void FileComic::unknownError(int index)
 {
-    Q_UNUSED(index)
-    emit errorOpening(tr("Unknown error opening the file"));
-    // emit errorOpening();
+    // A page that cannot be extracted is not a reason to refuse the whole comic:
+    // the remaining pages are still perfectly readable.
+    reportDamagedPages(index, tr("Error reading page (%1): some of the pages will not be displayed correctly"));
 }
 
 bool FileComic::isCancelled()
@@ -598,6 +610,8 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
 
 void FileComic::process()
 {
+    _pageErrorReported = false;
+
     CompressedArchive archive(_path);
     if (!archive.toolsLoaded()) {
         moveToThread(QCoreApplication::instance()->thread());
@@ -661,7 +675,9 @@ void FileComic::process()
         _firstPage = bm->getLastPage();
     }
 
-    if (_firstPage >= _pages.length()) {
+    // A currentPage of 0 in the database yields -1 here, and a corrupt row can yield
+    // worse; either way indexing the page list with it is out of bounds.
+    if (_firstPage < 0 || _firstPage >= _pages.length()) {
         _firstPage = 0;
     }
 
@@ -768,10 +784,15 @@ void FolderComic::process()
             }
 
             QFile f(list.at(i).absoluteFilePath());
-            f.open(QIODevice::ReadOnly);
-            _pages[i] = f.readAll();
-            emit imageLoaded(i);
-            emit imageLoaded(i, _pages[i]);
+            if (f.open(QIODevice::ReadOnly)) {
+                _pages[i] = f.readAll();
+                emit imageLoaded(i);
+                emit imageLoaded(i, _pages[i]);
+            } else {
+                // Deleted mid-read, no permission, or an unreachable network share.
+                // Skipping keeps the rest of the folder readable.
+                QLOG_WARN() << "Unable to open page" << list.at(i).absoluteFilePath() << f.errorString();
+            }
             i++;
             if (i == nPages) {
                 i = 0;
@@ -878,6 +899,15 @@ void PDFComic::process()
 #endif
 
     int nPages = pdfComic->numPages();
+
+    // A PDF that opens but reports no pages is not readable, and pretending it loaded
+    // leaves the viewer indexing an empty page list.
+    if (nPages <= 0) {
+        moveToThread(QCoreApplication::instance()->thread());
+        emit errorOpening();
+        return;
+    }
+
     emit pageChanged(0); // this indicates new comic, index=0
     emit numPages(nPages);
     _loaded = true;
@@ -891,7 +921,9 @@ void PDFComic::process()
         _firstPage = bm->getLastPage();
     }
 
-    if (_firstPage >= _pages.length()) {
+    // A currentPage of 0 in the database yields -1 here, and a corrupt row can yield
+    // worse; either way indexing the page list with it is out of bounds.
+    if (_firstPage < 0 || _firstPage >= _pages.length()) {
         _firstPage = 0;
     }
 

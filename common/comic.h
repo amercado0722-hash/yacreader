@@ -120,8 +120,11 @@ class FileComic : public Comic, public ExtractDelegate
 
 private:
     QList<QVector<quint32>> getSections(int &sectionIndex);
+    void reportDamagedPages(int index, const QString &reason);
     QVector<quint32> _pageArchiveIndexes;
     QHash<quint32, QVector<int>> _archiveIndexToPages;
+    // A damaged file can fail on every single page; the reader only needs telling once
+    bool _pageErrorReported = false;
 
 public:
     FileComic();
