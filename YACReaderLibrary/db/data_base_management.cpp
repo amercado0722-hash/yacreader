@@ -412,10 +412,16 @@ QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
     return createDatabase(QDir::cleanPath(path) + "/" + name + ".ydb");
 }
 
+// A library scan holds one long write transaction, so the viewer, the server and the
+// library window all queue behind it. Two seconds was short enough that ordinary use
+// during a scan of a large library failed with "database is locked".
+static const QString kSqliteConnectOptions = QStringLiteral("QSQLITE_BUSY_TIMEOUT=30000");
+
 QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 {
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", dest + threadId);
+    db.setConnectOptions(kSqliteConnectOptions);
     db.setDatabaseName(dest);
     if (!db.open())
         qDebug() << db.lastError();
@@ -449,7 +455,7 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString libraryDataPath)
     QString connectionName = dbPath + threadId;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
-    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setConnectOptions(kSqliteConnectOptions);
     db.setDatabaseName(dbPath);
     if (!db.open()) {
         const QString error = db.lastError().text();
@@ -476,7 +482,7 @@ QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
     QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
     QString connectionName = dbPath + threadId;
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
-    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setConnectOptions(kSqliteConnectOptions);
     db.setDatabaseName(dbPath);
     if (!db.open()) {
         // se devuelve una base de datos vacía e inválida
