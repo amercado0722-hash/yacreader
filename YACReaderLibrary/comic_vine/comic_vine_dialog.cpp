@@ -1,7 +1,5 @@
 #include "comic_vine_dialog.h"
 
-#include "series_name_utils.h"
-
 #include "QsLog.h"
 #include "comic_vine_client.h"
 #include "comic_vine_json_parser.h"
@@ -14,6 +12,7 @@
 #include "select_comic.h"
 #include "select_volume.h"
 #include "selected_volume_info.h"
+#include "series_name_utils.h"
 #include "series_question.h"
 #include "sort_volume_comics.h"
 #include "title_header.h"
