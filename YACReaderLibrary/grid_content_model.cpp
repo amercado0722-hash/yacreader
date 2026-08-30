@@ -467,8 +467,7 @@ void GridContentModel::applyLayout(QVector<Entry> next)
         ++prefix;
 
     auto suffix = 0;
-    while (suffix < shorter - prefix
-           && layout.at(oldCount - 1 - suffix) == next.at(newCount - 1 - suffix))
+    while (suffix < shorter - prefix && layout.at(oldCount - 1 - suffix) == next.at(newCount - 1 - suffix))
         ++suffix;
 
     if (newCount > oldCount && oldCount - prefix - suffix == 0) {

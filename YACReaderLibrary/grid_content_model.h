@@ -99,8 +99,7 @@ private:
 
         bool operator==(const Entry &other) const
         {
-            return kind == other.kind && sourceRow == other.sourceRow
-                    && ownerFolderId == other.ownerFolderId && expandedIndex == other.expandedIndex;
+            return kind == other.kind && sourceRow == other.sourceRow && ownerFolderId == other.ownerFolderId && expandedIndex == other.expandedIndex;
         }
     };
 
