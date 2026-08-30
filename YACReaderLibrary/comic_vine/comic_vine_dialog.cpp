@@ -1,5 +1,7 @@
 #include "comic_vine_dialog.h"
 
+#include "series_name_utils.h"
+
 #include "QsLog.h"
 #include "comic_vine_client.h"
 #include "comic_vine_json_parser.h"
@@ -119,7 +121,7 @@ void ComicVineDialog::goNext()
     //
     if (content->currentWidget() == seriesQuestionWidget) {
         if (seriesQuestionWidget->getYes()) {
-            QString volumeSearchString = comics[0].getParentFolderName();
+            QString volumeSearchString = YACReader::cleanSeriesSearchName(comics[0].getParentFolderName());
             mode = ScraperMode::Volume;
 
             showSearchVolume(volumeSearchString);
@@ -524,9 +526,9 @@ QString ComicVineDialog::volumeSearchStringFromComic(const ComicDB &comic)
     if (!alternateSeries.isEmpty())
         return alternateSeries;
 
-    // extract information from file name
-    auto parentFolderName = comic.getParentFolderName();
-    return parentFolderName;
+    // Fall back to the folder name, minus the release tags a downloaded library carries.
+    // Searching for "A Bride's Story (Digital) (1r0n)" matches nothing.
+    return YACReader::cleanSeriesSearchName(comic.getParentFolderName());
 }
 
 void ComicVineDialog::goToNextComic()

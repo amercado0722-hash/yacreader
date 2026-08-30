@@ -61,6 +61,7 @@
 #include <QFileIconProvider>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
@@ -1128,6 +1129,19 @@ void LibraryWindow::toggleFullScreen()
 {
     fullscreen ? toNormal() : toFullScreen();
     fullscreen = !fullscreen;
+}
+
+void LibraryWindow::keyPressEvent(QKeyEvent *event)
+{
+    // Going fullscreen hides the toolbar, and the button for leaving it lives on that
+    // toolbar, so without this the only way back is a shortcut the user has to know.
+    if (event->key() == Qt::Key_Escape && fullscreen) {
+        toggleFullScreen();
+        event->accept();
+        return;
+    }
+
+    QMainWindow::keyPressEvent(event);
 }
 
 void LibraryWindow::toFullScreen()

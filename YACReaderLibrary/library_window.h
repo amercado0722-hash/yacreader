@@ -193,6 +193,7 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void applyTheme(const Theme &theme) override;
 

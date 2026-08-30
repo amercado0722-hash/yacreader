@@ -5,6 +5,7 @@
 #include "db_helper.h"
 #include "folder_model.h"
 #include "library_item.h"
+#include "series_name_utils.h"
 
 #include <QSqlDatabase>
 
@@ -38,6 +39,8 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
         case SourceIndexRole:
             return entry.sourceRow;
         case TitleRole:
+            // The tile shows the series, not the release group that packed it
+            return YACReader::cleanSeriesDisplayName(sourceIndex.data(FolderModel::FolderNameRole).toString());
         case FileNameRole:
             return sourceIndex.data(FolderModel::FolderNameRole);
         case IdRole:
