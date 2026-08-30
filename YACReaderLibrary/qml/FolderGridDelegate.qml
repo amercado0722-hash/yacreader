@@ -13,8 +13,10 @@ Rectangle {
     required property bool show_recent
     required property bool is_finished
     required property bool selected
+    required property bool is_expanded
 
     signal openRequested()
+    signal expandRequested()
     signal contextMenuRequested(point localPosition)
     signal focusRequested()
 
@@ -60,6 +62,39 @@ Rectangle {
         showRecentIndicator: (((new Date() / 1000) - cell.added_date) < cell.recent_range
                               || ((new Date() / 1000) - cell.updated) < cell.recent_range)
                              && cell.show_recent
+    }
+
+    // Disclosure control. Deliberately a separate hit target from the cover so that
+    // double-click-to-open keeps working exactly as it did.
+    Rectangle {
+        id: expander
+        z: 6
+        width: 26
+        height: 26
+        radius: 13
+        anchors { right: coverElement.right; bottom: coverElement.bottom; rightMargin: 6; bottomMargin: 6 }
+        color: expanderMouseArea.containsMouse ? "#e0000000" : "#a0000000"
+        border.width: 1
+        border.color: "#40ffffff"
+        opacity: mouseArea.containsMouse || expanderMouseArea.containsMouse || cell.is_expanded ? 1 : 0
+        visible: opacity > 0
+
+        Behavior on opacity { NumberAnimation { duration: 120 } }
+
+        Text {
+            anchors.centerIn: parent
+            text: cell.is_expanded ? "✕" : "▾"
+            color: "#ffffff"
+            font.pointSize: cell.is_expanded ? 9 : 12
+        }
+
+        MouseArea {
+            id: expanderMouseArea
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.LeftButton
+            onClicked: cell.expandRequested()
+        }
     }
 
     Text {

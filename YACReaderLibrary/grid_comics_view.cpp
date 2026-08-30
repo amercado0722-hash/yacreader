@@ -760,8 +760,13 @@ void GridComicsView::selectComicRange(int from, int to)
 
     const auto firstComic = qMax(from, contentModel->viewRowForComicRow(0));
     const auto lastComic = qMin(to, contentModel->rowCount() - 1);
-    for (auto row = firstComic; row <= lastComic; ++row)
-        selectionHelper->selectIndex(contentModel->sourceComicRow(row));
+    for (auto row = firstComic; row <= lastComic; ++row) {
+        // Spacers and comics shown inside an expanded folder have no row in the comic
+        // model, so they are skipped rather than selected as row -1.
+        const auto sourceRow = contentModel->sourceComicRow(row);
+        if (sourceRow >= 0)
+            selectionHelper->selectIndex(sourceRow);
+    }
 }
 
 int GridComicsView::viewRowForComicRow(int sourceRow) const
@@ -778,6 +783,15 @@ int GridComicsView::nearestSelectableRow(int viewRow, int direction) const
 {
     if (!contentModel->isSpacerRow(viewRow))
         return viewRow;
+
+    // Expanded folders put spacers in the middle of the grid rather than only between
+    // the folders and the comics, so walk to the nearest real item in the direction of
+    // travel instead of assuming where the blocks meet.
+    const auto step = direction < 0 ? -1 : 1;
+    for (auto row = viewRow + step; row >= 0 && row < contentModel->rowCount(); row += step) {
+        if (!contentModel->isSpacerRow(row))
+            return row;
+    }
 
     return direction < 0 ? contentModel->visibleFolderCount() - 1 : contentModel->viewRowForComicRow(0);
 }
@@ -1091,7 +1105,27 @@ void GridComicsView::activateItem(int viewRow)
         return;
     }
 
-    emit selected(contentModel->sourceComicRow(viewRow));
+    if (contentModel->isExpandedComicRow(viewRow)) {
+        openExpandedComic(viewRow);
+        return;
+    }
+
+    const auto sourceRow = contentModel->sourceComicRow(viewRow);
+    if (sourceRow >= 0)
+        emit selected(sourceRow);
+}
+
+void GridComicsView::toggleFolderExpansion(int viewRow)
+{
+    contentModel->toggleFolderExpansion(viewRow);
+}
+
+void GridComicsView::openExpandedComic(int viewRow)
+{
+    if (!contentModel->isExpandedComicRow(viewRow))
+        return;
+
+    emit openComic(contentModel->expandedComicAt(viewRow), ComicModel::Folder);
 }
 
 void GridComicsView::applyTheme(const Theme &theme)

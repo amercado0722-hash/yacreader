@@ -114,6 +114,8 @@ public:
     QStringList getPaths(const QString &_source);
     QString getComicPath(QModelIndex mi);
     QString getCurrentPath() { return QString(_databasePath).remove("/.yacreaderlibrary"); }
+    // The library data path, i.e. the folder holding library.ydb
+    QString getDatabasePath() const { return _databasePath; }
     ComicDB getComic(const QModelIndex &mi); //--> para la edición
     // ComicDB getComic(int row);
     QVector<YACReaderComicReadStatus> getReadList();

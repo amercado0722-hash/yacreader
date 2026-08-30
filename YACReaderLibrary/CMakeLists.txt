@@ -368,6 +368,7 @@ set_source_files_properties(
 set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ExpandedComicDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
@@ -398,6 +399,7 @@ set(yacreaderlibrary_qml_files
 set(yacreaderlibrary_qml_translation_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ExpandedComicDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml

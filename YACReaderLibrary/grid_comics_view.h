@@ -83,6 +83,8 @@ public:
     Q_INVOKABLE int viewRowForComicRow(int sourceRow) const;
     Q_INVOKABLE void setGridColumnCount(int columns);
     Q_INVOKABLE int nearestSelectableRow(int viewRow, int direction) const;
+    Q_INVOKABLE void toggleFolderExpansion(int viewRow);
+    Q_INVOKABLE void openExpandedComic(int viewRow);
     Q_INVOKABLE void openContinueReadingComic(int sourceRow);
     Q_INVOKABLE void requestContinueReadingComicContextMenu(const QPoint &point, int sourceRow);
 

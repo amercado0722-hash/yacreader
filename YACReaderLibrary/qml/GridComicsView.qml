@@ -74,6 +74,7 @@ SplitView {
                         grid.focusItemFromPointer(index)
                     }
                     onOpenRequested: currentIndexHelper.openFolder(index)
+                    onExpandRequested: currentIndexHelper.toggleFolderExpansion(index)
                     onContextMenuRequested: localPosition => {
                         var coordinates = main.mapFromItem(folderCell.interactionItem,
                                                            localPosition.x,
@@ -109,6 +110,22 @@ SplitView {
                         grid.setCurrentIndexFromPointer(currentIndexHelper.viewRowForComicRow(sourceRow))
                     }
                     onStartDragRequested: dragManager.startDrag()
+                }
+            }
+
+            DelegateChoice {
+                roleValue: GridContentModel.ExpandedComicItem
+
+                ExpandedComicDelegate {
+                    id: expandedCell
+                    width: grid.cellWidth
+                    height: grid.cellHeight
+
+                    onOpenRequested: currentIndexHelper.openExpandedComic(index)
+                    onFocusRequested: {
+                        comicsSelectionHelper.clear()
+                        currentIndexHelper.clearFolderFocus()
+                    }
                 }
             }
 
