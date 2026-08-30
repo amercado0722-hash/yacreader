@@ -96,14 +96,22 @@ private:
         // folder's loaded list
         qulonglong ownerFolderId = 0;
         int expandedIndex = -1;
+
+        bool operator==(const Entry &other) const
+        {
+            return kind == other.kind && sourceRow == other.sourceRow
+                    && ownerFolderId == other.ownerFolderId && expandedIndex == other.expandedIndex;
+        }
     };
 
     void reconnectModels();
     void resetFromSource();
     void rebuildLayout();
+    QVector<Entry> buildLayout() const;
+    void applyLayout(QVector<Entry> next);
     int sourceFolderCount() const;
     void loadExpandedComics(qulonglong folderId);
-    void appendRowPadding(int itemsInRow);
+    static void appendRowPadding(QVector<Entry> &target, int itemsInRow, int columns);
     QString databasePath() const;
 
     ComicModel *comicModel = nullptr;

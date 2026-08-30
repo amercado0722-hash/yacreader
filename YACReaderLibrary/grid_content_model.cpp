@@ -370,7 +370,6 @@ void GridContentModel::toggleFolderExpansion(int viewRow)
     if (folderId == 0)
         return;
 
-    beginResetModel();
     if (expandedFolders.contains(folderId)) {
         expandedFolders.remove(folderId);
         expandedComics.remove(folderId);
@@ -383,8 +382,12 @@ void GridContentModel::toggleFolderExpansion(int viewRow)
         else
             expandedComics.remove(folderId);
     }
-    rebuildLayout();
-    endResetModel();
+
+    applyLayout(buildLayout());
+
+    // The rows added or removed all sit below the folder, so its own row keeps its index.
+    // It still has to be repainted, because its chevron reflects the expansion state.
+    emit dataChanged(index(viewRow), index(viewRow));
 }
 
 void GridContentModel::collapseAllFolders()
@@ -392,11 +395,12 @@ void GridContentModel::collapseAllFolders()
     if (expandedFolders.isEmpty())
         return;
 
-    beginResetModel();
     expandedFolders.clear();
     expandedComics.clear();
-    rebuildLayout();
-    endResetModel();
+    applyLayout(buildLayout());
+
+    if (!layout.isEmpty())
+        emit dataChanged(index(0), index(layout.size() - 1));
 }
 
 QString GridContentModel::databasePath() const
@@ -431,9 +435,9 @@ void GridContentModel::loadExpandedComics(qulonglong folderId)
     expandedComics.insert(folderId, comics);
 }
 
-void GridContentModel::appendRowPadding(int itemsInRow)
+void GridContentModel::appendRowPadding(QVector<Entry> &target, int itemsInRow, int columns)
 {
-    const auto columns = qMax(1, gridColumnCount);
+    columns = qMax(1, columns);
     const auto remainder = itemsInRow % columns;
     if (remainder == 0)
         return;
@@ -441,12 +445,56 @@ void GridContentModel::appendRowPadding(int itemsInRow)
     Entry spacer;
     spacer.kind = SpacerItem;
     for (auto i = remainder; i < columns; ++i)
-        layout.append(spacer);
+        target.append(spacer);
 }
 
 void GridContentModel::rebuildLayout()
 {
-    layout.clear();
+    layout = buildLayout();
+}
+
+// Expanding or collapsing a folder inserts or removes one contiguous run of rows. Doing
+// that as a model reset would work, but it destroys every delegate and the grid loses the
+// user's scroll position, jumping back to the top on every click.
+void GridContentModel::applyLayout(QVector<Entry> next)
+{
+    const auto oldCount = layout.size();
+    const auto newCount = next.size();
+    const auto shorter = qMin(oldCount, newCount);
+
+    auto prefix = 0;
+    while (prefix < shorter && layout.at(prefix) == next.at(prefix))
+        ++prefix;
+
+    auto suffix = 0;
+    while (suffix < shorter - prefix
+           && layout.at(oldCount - 1 - suffix) == next.at(newCount - 1 - suffix))
+        ++suffix;
+
+    if (newCount > oldCount && oldCount - prefix - suffix == 0) {
+        beginInsertRows({ }, prefix, prefix + (newCount - oldCount) - 1);
+        layout = std::move(next);
+        endInsertRows();
+        return;
+    }
+
+    if (newCount < oldCount && newCount - prefix - suffix == 0) {
+        beginRemoveRows({ }, prefix, prefix + (oldCount - newCount) - 1);
+        layout = std::move(next);
+        endRemoveRows();
+        return;
+    }
+
+    // Anything the diff cannot express as one run falls back to a reset
+    beginResetModel();
+    layout = std::move(next);
+    endResetModel();
+}
+
+// Trailing return type so the private nested Entry is named from inside the class scope
+auto GridContentModel::buildLayout() const -> QVector<Entry>
+{
+    QVector<Entry> result;
 
     const auto folders = visibleFolderCount();
     const auto comics = comicModel ? comicModel->rowCount() : 0;
@@ -458,7 +506,7 @@ void GridContentModel::rebuildLayout()
         Entry folderEntry;
         folderEntry.kind = FolderItem;
         folderEntry.sourceRow = folderRow;
-        layout.append(folderEntry);
+        result.append(folderEntry);
         itemsInCurrentRow++;
 
         if (!folderModel)
@@ -474,7 +522,7 @@ void GridContentModel::rebuildLayout()
 
         // Start the group on a fresh row so it reads as belonging to the folder above it,
         // and close it off the same way so the following folders line up again.
-        appendRowPadding(itemsInCurrentRow);
+        appendRowPadding(result, itemsInCurrentRow, gridColumnCount);
         itemsInCurrentRow = 0;
 
         for (auto i = 0; i < expanded.size(); ++i) {
@@ -482,19 +530,19 @@ void GridContentModel::rebuildLayout()
             comicEntry.kind = ExpandedComicItem;
             comicEntry.ownerFolderId = folderId;
             comicEntry.expandedIndex = i;
-            layout.append(comicEntry);
+            result.append(comicEntry);
             itemsInCurrentRow++;
         }
 
-        appendRowPadding(itemsInCurrentRow);
+        appendRowPadding(result, itemsInCurrentRow, gridColumnCount);
         itemsInCurrentRow = 0;
     }
 
     if (comics == 0)
-        return;
+        return result;
 
     if (folders > 0 && startComicsOnNewRow) {
-        appendRowPadding(itemsInCurrentRow);
+        appendRowPadding(result, itemsInCurrentRow, gridColumnCount);
         itemsInCurrentRow = 0;
     }
 
@@ -502,8 +550,10 @@ void GridContentModel::rebuildLayout()
         Entry comicEntry;
         comicEntry.kind = ComicItem;
         comicEntry.sourceRow = comicRow;
-        layout.append(comicEntry);
+        result.append(comicEntry);
     }
+
+    return result;
 }
 
 void GridContentModel::reconnectModels()
