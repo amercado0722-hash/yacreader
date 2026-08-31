@@ -43,6 +43,7 @@ public:
     QAction *importLibraryAction;
 
     QAction *rescanLibraryForXMLInfoAction;
+    QAction *batchScrapeAction;
 
     QAction *updateLibraryAction;
     QAction *backupLibraryAction;

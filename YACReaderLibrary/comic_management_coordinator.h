@@ -63,6 +63,9 @@ public slots:
     void openComic(const ComicDB &comic, ComicModel::Mode mode);
     void openContainingFolderOfCurrentComic();
     void showComicVineScraper();
+    // Looks every series in the library up at once, unattended, and asks about the
+    // doubtful ones only when it has finished going through them all.
+    void showBatchScraper();
     void showProperties();
     void setSelectedComicsRead();
     void setSelectedComicsUnread();

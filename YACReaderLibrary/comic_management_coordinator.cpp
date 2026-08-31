@@ -9,6 +9,8 @@
 #include "folder_model.h"
 #include "initial_comic_info_extractor.h"
 #include "library_comic_opener.h"
+#include "metadata/batch_scraper.h"
+#include "metadata/batch_scraper_dialog.h"
 #include "properties_dialog.h"
 #include "reading_list_model.h"
 #include "yacreader_global_gui.h"
@@ -193,6 +195,29 @@ void ComicManagementCoordinator::showComicVineScraper()
 
     emit currentSourceRefreshStarted();
     comicVineDialog->show();
+}
+
+void ComicManagementCoordinator::showBatchScraper()
+{
+    const auto databasePath = foldersModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return;
+    }
+
+    const auto targets = YACReader::BatchScraper::targetsForLibrary(databasePath);
+    if (targets.isEmpty()) {
+        QMessageBox::information(window, tr("Download tags"), tr("There are no series in this library to look up."));
+        return;
+    }
+
+    // Built fresh each time rather than kept around: the set of folders changes whenever
+    // the library is updated, and a stale list would silently skip new series.
+    YACReader::BatchScraperDialog dialog(window);
+    dialog.setLibrary(databasePath);
+    dialog.setTargets(targets);
+    dialog.exec();
+
+    emit currentSourceRefreshStarted();
 }
 
 void ComicManagementCoordinator::copyAndImportComics(const QList<QPair<QString, QString>> &comics,
