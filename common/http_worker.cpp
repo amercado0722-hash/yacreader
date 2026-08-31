@@ -18,6 +18,15 @@ HttpWorker::HttpWorker(const QString &urlString, const QString &userAgent)
 
 void HttpWorker::get()
 {
+    _isPost = false;
+    this->start();
+}
+
+void HttpWorker::post(const QByteArray &body, const QString &contentType)
+{
+    _isPost = true;
+    _body = body;
+    _contentType = contentType;
     this->start();
 }
 
@@ -44,6 +53,11 @@ int HttpWorker::statusCode()
 QString HttpWorker::errorString()
 {
     return _errorString;
+}
+
+int HttpWorker::retryAfterSeconds()
+{
+    return _retryAfterSeconds;
 }
 
 bool HttpWorker::isWorthRetrying(int networkError, int httpStatus)
@@ -94,7 +108,14 @@ void HttpWorker::run()
         request.setHeader(QNetworkRequest::UserAgentHeader,
                           userAgent);
 
-        QNetworkReply *reply = manager.get(request);
+        QNetworkReply *reply = nullptr;
+        if (_isPost) {
+            request.setHeader(QNetworkRequest::ContentTypeHeader, _contentType);
+            request.setRawHeader("Accept", "application/json");
+            reply = manager.post(request, _body);
+        } else {
+            reply = manager.get(request);
+        }
 
         tT.start(kTimeoutMs);
         q.exec();
@@ -123,6 +144,18 @@ void HttpWorker::run()
         _statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         _errorString = _error ? reply->errorString() : QString();
         result = reply->readAll();
+
+        // A rate limited server says when to come back. Reading it here means the caller
+        // can wait exactly that long instead of guessing, or giving up on the rest of a
+        // library scrape because the next few requests were refused too.
+        _retryAfterSeconds = 0;
+        if (reply->hasRawHeader("Retry-After")) {
+            bool parsed = false;
+            const auto seconds = QString::fromLatin1(reply->rawHeader("Retry-After")).trimmed().toInt(&parsed);
+            if (parsed && seconds > 0) {
+                _retryAfterSeconds = seconds;
+            }
+        }
 
         if (_error && attempt < kMaxAttempts && isWorthRetrying(reply->error(), _statusCode)) {
             QThread::msleep(kRetryBaseDelayMs * attempt);

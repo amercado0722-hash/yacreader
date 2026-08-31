@@ -148,6 +148,14 @@ qt_add_executable(YACReaderLibrary WIN32
     grid_comics_view.cpp
     grid_content_model.h
     grid_content_model.cpp
+    metadata/series_metadata.h
+    metadata/series_match_scorer.h
+    metadata/anilist_client.h
+    metadata/anilist_client.cpp
+    metadata/batch_scraper.h
+    metadata/batch_scraper.cpp
+    metadata/batch_scraper_dialog.h
+    metadata/batch_scraper_dialog.cpp
     no_search_results_widget.h
     no_search_results_widget.cpp
     recent_visibility_coordinator.h

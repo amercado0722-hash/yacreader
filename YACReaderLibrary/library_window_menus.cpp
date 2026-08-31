@@ -140,6 +140,7 @@ void LibraryWindowMenus::setupMenus()
     selectedLibrary->addAction(typeMenu->menuAction());
     YACReader::addSperator(selectedLibrary);
 
+    selectedLibrary->addAction(actions.batchScrapeAction);
     selectedLibrary->addAction(actions.rescanLibraryForXMLInfoAction);
     selectedLibrary->addAction(actions.repairLibraryAction);
     YACReader::addSperator(selectedLibrary);
@@ -169,6 +170,7 @@ void LibraryWindowMenus::setupMenus()
     libraryMenu->addSeparator();
     libraryMenu->addMenu(typeMenu);
     libraryMenu->addSeparator();
+    libraryMenu->addAction(actions.batchScrapeAction);
     libraryMenu->addAction(actions.rescanLibraryForXMLInfoAction);
     libraryMenu->addAction(actions.repairLibraryAction);
     libraryMenu->addSeparator();

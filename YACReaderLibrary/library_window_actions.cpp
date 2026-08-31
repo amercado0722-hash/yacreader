@@ -367,6 +367,13 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     getInfoAction->setData(GET_INFO_ACTION_YL);
     getInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GET_INFO_ACTION_YL));
     getInfoAction->setText(tr("Download tags from Comic Vine"));
+
+    // The scraper above walks the user through one series at a time, which is fine for a
+    // handful and unusable for a library of hundreds. This one goes through them all
+    // without asking, and saves its questions for the end.
+    batchScrapeAction = new QAction(window);
+    batchScrapeAction->setText(tr("Download tags for every series..."));
+    batchScrapeAction->setToolTip(tr("Looks every series in this library up on AniList and tags them in one run"));
     //-------------------------------------------------------------------------
 
     focusSearchLineAction = new QAction(tr("Focus search line"), window);
@@ -577,6 +584,8 @@ void LibraryWindowActions::createConnections(
     QObject::connect(deleteComicsAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::deleteSelectedComics);
 
     QObject::connect(getInfoAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showComicVineScraper);
+
+    QObject::connect(batchScrapeAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showBatchScraper);
 
     QObject::connect(focusComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::focusComicsViewViaShortcut);
 
@@ -807,6 +816,7 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
+    batchScrapeAction->setDisabled(disabled);
     backupLibraryAction->setDisabled(disabled);
     restoreLibraryAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);
