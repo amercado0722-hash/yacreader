@@ -10,6 +10,8 @@
 
 #include <atomic>
 
+class ComicInfo;
+
 // Scraping a library one series at a time, unattended.
 //
 // The design rule throughout: a run must never need a person while it is going, and must
