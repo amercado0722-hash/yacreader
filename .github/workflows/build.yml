@@ -2,11 +2,11 @@ name: Build
 
 on:
   push:
+    # Every branch, rather than a list that has to be edited before each new one can
+    # build. Naming them one by one meant a push could look entirely successful and
+    # quietly produce nothing at all, which is worse than a busier Actions tab.
     branches:
-      - master
-      - develop
-      - robustness-hardening
-      - inline-series-expansion
+      - '**'
   pull_request:
     branches:
       - master
