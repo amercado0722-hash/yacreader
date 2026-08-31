@@ -3,6 +3,7 @@
 
 #include <QRegularExpression>
 #include <QString>
+#include <QStringList>
 
 // Folder names in a downloaded library usually carry release metadata that is noise to a
 // reader and poison to a metadata lookup: "A Bride's Story (Digital) (1r0n)" matches
@@ -16,9 +17,50 @@ namespace YACReader {
 
 namespace SeriesNameUtils {
 
-// Drops a trailing "[...]" group, unless it is the whole name: "[Oshi No Ko]" is a title,
-// while "Alfie [InCase]" carries a scanner tag.
+// Publishers and printings. A tag naming one of these is kept, because it is often the
+// only thing separating two real releases: a library can hold "The Ideal Sponger Life"
+// (the manga) next to "The Ideal Sponger Life [J-Novel Club]" (the light novel), and
+// folding them together loses a distinction the reader is relying on.
+inline bool isEditionTag(const QString &tag)
+{
+    static const QStringList hints = { QStringLiteral("edition"), QStringLiteral("manga up"), QStringLiteral("k manga"), QStringLiteral("comikey"), QStringLiteral("viz"), QStringLiteral("square enix"), QStringLiteral("seven seas"), QStringLiteral("j-novel"), QStringLiteral("kadokawa"), QStringLiteral("yen press"), QStringLiteral("full color"), QStringLiteral("remastered"), QStringLiteral("2-in-1"), QStringLiteral("omnibus"), QStringLiteral("deluxe"), QStringLiteral("colossal") };
+
+    const auto lowered = tag.toLower();
+    for (const auto &hint : hints) {
+        if (lowered.contains(hint)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Drops a trailing "[...]" group, unless it is the whole name ("[Oshi No Ko]" is a title),
+// it names a publisher, or it carries something meaningful like [Decensored]. Only an
+// anonymous scanner tag goes, as in "Alfie [InCase]".
 inline QString stripTrailingBracketGroup(const QString &name)
+{
+    const auto trimmed = name.trimmed();
+    if (!trimmed.endsWith(QLatin1Char(']'))) {
+        return trimmed;
+    }
+
+    const auto open = trimmed.lastIndexOf(QLatin1Char('['));
+    if (open <= 0) {
+        return trimmed;
+    }
+
+    const auto inner = trimmed.mid(open + 1, trimmed.length() - open - 2).trimmed();
+    if (isEditionTag(inner) || inner.contains(QStringLiteral("decensor"), Qt::CaseInsensitive)) {
+        return trimmed;
+    }
+
+    const auto remainder = trimmed.left(open).trimmed();
+    return remainder.isEmpty() ? trimmed : remainder;
+}
+
+// As above but indiscriminate, for building a search string: the provider is being asked
+// about the series, so the printing it was published under is noise there.
+inline QString stripAnyTrailingBracketGroup(const QString &name)
 {
     const auto trimmed = name.trimmed();
     if (!trimmed.endsWith(QLatin1Char(']'))) {
@@ -99,7 +141,7 @@ inline QString cleanSeriesSearchName(const QString &name)
     for (auto pass = 0; pass < 4; ++pass) {
         const auto before = cleaned;
         cleaned = SeriesNameUtils::stripTrailingParenGroup(cleaned);
-        cleaned = SeriesNameUtils::stripTrailingBracketGroup(cleaned);
+        cleaned = SeriesNameUtils::stripAnyTrailingBracketGroup(cleaned);
         if (cleaned == before) {
             break;
         }
