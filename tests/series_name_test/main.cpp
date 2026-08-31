@@ -53,6 +53,14 @@ void SeriesNameTest::displayNameKeepsEditionMarkers_data()
     QTest::newRow("square enix") << "Are You Okay with a Slightly Older Girlfriend (Square Enix) (Digital) (1r0n)" << "Are You Okay with a Slightly Older Girlfriend (Square Enix)";
     QTest::newRow("viz edition") << "Ayakashi Triangle (VIZ Edition) (Digital) (1r0n)" << "Ayakashi Triangle (VIZ Edition)";
     QTest::newRow("omnibus") << "Break of Dawn (Omnibus Edition) (Digital) (1r0n)" << "Break of Dawn (Omnibus Edition)";
+
+    // A publisher in brackets is the same kind of marker as one in parentheses. A library
+    // can hold the manga and the light novel of one series side by side, and the tag is
+    // the only thing telling them apart.
+    QTest::newRow("j-novel club") << "The Ideal Sponger Life [J-Novel Club]" << "The Ideal Sponger Life [J-Novel Club]";
+    QTest::newRow("yen press") << "Strike the Blood [Yen Press]" << "Strike the Blood [Yen Press]";
+    QTest::newRow("j-novel club tagged") << "The Ideal Sponger Life [J-Novel Club] (Digital) (1r0n)" << "The Ideal Sponger Life [J-Novel Club]";
+    QTest::newRow("decensored kept") << "Some Series [Decensored]" << "Some Series [Decensored]";
 }
 
 void SeriesNameTest::displayNameKeepsEditionMarkers()
@@ -92,6 +100,10 @@ void SeriesNameTest::searchNameStripsEverythingTrailing_data()
     QTest::newRow("edition dropped") << "Are You Okay with a Slightly Older Girlfriend (Manga UP!) (Digital) (1r0n)" << "Are You Okay with a Slightly Older Girlfriend";
     QTest::newRow("viz edition dropped") << "Ayakashi Triangle (VIZ Edition) (Digital) (1r0n)" << "Ayakashi Triangle";
     QTest::newRow("brackets unwrapped") << "[Oshi No Ko] (Digital) (1r0n)" << "Oshi No Ko";
+    // The display name keeps a publisher tag; the search name must not, or the provider
+    // is asked about one printing rather than about the series.
+    QTest::newRow("j-novel club dropped") << "The Ideal Sponger Life [J-Novel Club]" << "The Ideal Sponger Life";
+    QTest::newRow("yen press dropped") << "Strike the Blood [Yen Press]" << "Strike the Blood";
     QTest::newRow("plain title") << "A Bride's Story (Digital) (1r0n)" << "A Bride's Story";
     QTest::newRow("no tags") << "Akane-banashi" << "Akane-banashi";
     QTest::newRow("empty") << "" << "";
