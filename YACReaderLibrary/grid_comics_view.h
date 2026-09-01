@@ -32,7 +32,10 @@ const unsigned int YACREADER_MAX_GRID_ZOOM_WIDTH = 312;
 
 // GridView cells
 const unsigned int YACREADER_MIN_CELL_CUSTOM_HEIGHT = 295;
-const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 185;
+// Close to the cover width on purpose. Books on a shelf lean against each other, and a
+// wide margin of empty background around every cover is most of what makes a grid of
+// them read as a page of icons rather than a row of objects.
+const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 166;
 
 // Covers
 const unsigned int YACREADER_MAX_COVER_HEIGHT = 236;

@@ -178,11 +178,45 @@ Rectangle {
     // of a cover and a book, and it costs one rectangle.
     readonly property real pageEdge: 4
 
+    // Stable per title, so a book is the same height every time the library is opened.
+    readonly property real heightVariation: {
+        var name = String(cell.title)
+        var hash = 0
+        for (var i = 0; i < name.length; i++)
+            hash = (hash * 31 + name.charCodeAt(i)) % 9973
+        return 1 - (hash % 7) / 100
+    }
+
+    Item {
+        id: shelfLine
+        height: 0
+        anchors { left: realCell.left; right: realCell.right; top: realCell.top; topMargin: coverHeight }
+    }
+
+    ShelfBoard {
+        id: board
+        z: 3
+        height: 26
+        label: cell.title
+        anchors { left: parent.left; right: parent.right; top: shelfLine.top; topMargin: 3 }
+    }
+
+    Rectangle {
+        z: 4
+        height: 5
+        anchors { horizontalCenter: parent.horizontalCenter; top: shelfLine.top; topMargin: 3 }
+        width: coverWidth + 6
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#b0000000" }
+            GradientStop { position: 1.0; color: "#00000000" }
+        }
+    }
+
     Image {
         id: coverElement
         width: coverWidth - cell.pageEdge
-        height: coverHeight
-        anchors { horizontalCenter: parent.horizontalCenter; horizontalCenterOffset: -cell.pageEdge / 2; top: realCell.top }
+        height: Math.round(coverHeight * cell.heightVariation)
+        anchors { horizontalCenter: parent.horizontalCenter; horizontalCenterOffset: -cell.pageEdge / 2; bottom: shelfLine.top }
         source: cell.cover_path
         fillMode: Image.PreserveAspectCrop
         smooth: true
@@ -217,6 +251,11 @@ Rectangle {
         border { color: comicCoverBorderColor; width: 1 }
     }
 
+    CoverLighting {
+        z: 2
+        anchors.fill: coverElement
+    }
+
     Image {
         width: 23
         height: 23
@@ -226,53 +265,18 @@ Rectangle {
         asynchronous: true
     }
 
-    Text {
-        anchors { top: coverElement.bottom; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 4 }
-        width: itemWidth - 8
-        maximumLineCount: 2
-        wrapMode: Text.WordWrap
-        text: cell.title
-        elide: Text.ElideRight
-        color: itemTitleColor
-        clip: true
-        font.letterSpacing: fontSpacing
-        font.pointSize: fontSize
-        font.family: fontFamily
-    }
-
-    Text {
-        anchors { bottom: realCell.bottom; left: realCell.left; margins: 4 }
-        text: cell.number ? "<b>#</b>" + cell.number : ""
-        color: itemDetailsColor
-        font.letterSpacing: fontSpacing
-        font.pointSize: fontSize
-        font.family: fontFamily
-    }
-
-    ColorImage {
-        id: pageImage
-        anchors { bottom: realCell.bottom; right: realCell.right; bottomMargin: 6; rightMargin: 4; leftMargin: 4 }
-        source: "page.svg"
-        color: itemDetailsColor
-        width: 8
-        height: 10
-    }
-
-    Text {
-        id: pages
-        anchors { bottom: realCell.bottom; right: pageImage.left; margins: 4 }
-        text: cell.has_been_opened ? cell.current_page + "/" + cell.num_pages : cell.num_pages
-        color: itemDetailsColor
-        font.letterSpacing: fontSpacing
-        font.pointSize: fontSize
-        font.family: fontFamily
-    }
+    // The title, the issue number and the page count used to sit under the cover as three
+    // separate lines of text - a museum label under every object on the shelf. The title
+    // has moved onto the board; the rest is already in the info panel beside the grid,
+    // which is where you look when you want to read something rather than find something.
 
     ColorImage {
         id: ratingImage
-        anchors { bottom: realCell.bottom; right: pageImage.left; bottomMargin: 6.5; rightMargin: Math.floor(pages.width) + 12 }
+        z: 5
+        anchors { verticalCenter: board.verticalCenter; right: realCell.right; rightMargin: 6 }
         source: "star.svg"
         color: itemDetailsColor
+        opacity: cell.rating > 0 ? 0.9 : 0.35
         width: 11
         height: 11
 
@@ -322,8 +326,10 @@ Rectangle {
     }
 
     Text {
-        anchors { bottom: realCell.bottom; right: ratingImage.left; margins: 4 }
-        text: cell.rating > 0 ? cell.rating : "-"
+        z: 5
+        anchors { verticalCenter: board.verticalCenter; right: ratingImage.left; rightMargin: 3 }
+        text: cell.rating > 0 ? cell.rating : ""
         color: itemDetailsColor
+        font.pointSize: 8
     }
 }
