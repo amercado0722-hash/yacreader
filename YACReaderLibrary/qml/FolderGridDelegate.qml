@@ -52,18 +52,65 @@ Rectangle {
         }
     }
 
+    // Books stand on the shelf, so their bases line up and their tops do not. Six percent
+    // of variation is enough to break the ruled line across a row that makes a grid read
+    // as a spreadsheet. Derived from the title so a series is the same height every time
+    // the library is opened, rather than jumping about between sessions.
+    readonly property real heightVariation: {
+        var name = String(cell.title)
+        var hash = 0
+        for (var i = 0; i < name.length; i++)
+            hash = (hash * 31 + name.charCodeAt(i)) % 9973
+        return 1 - (hash % 7) / 100
+    }
+
+    // The line every book in the row stands on.
+    Item {
+        id: shelfLine
+        height: 0
+        anchors { left: realCell.left; right: realCell.right; top: realCell.top; topMargin: coverHeight }
+    }
+
+    ShelfBoard {
+        id: board
+        z: 3
+        height: 26
+        label: cell.title
+        anchors { left: parent.left; right: parent.right; top: shelfLine.top; topMargin: 3 }
+    }
+
+    // Where the book meets the board. Darkest at the join and gone within a few pixels,
+    // which is what stops it looking like it is hovering a little above the shelf.
+    Rectangle {
+        z: 4
+        height: 5
+        anchors { horizontalCenter: coverElement.horizontalCenter; top: shelfLine.top; topMargin: 3 }
+        width: coverElement.width + 6
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#b0000000" }
+            GradientStop { position: 1.0; color: "#00000000" }
+        }
+    }
+
     FolderCover {
         id: coverElement
         width: coverWidth
-        height: coverHeight
-        anchors { horizontalCenter: parent.horizontalCenter; top: realCell.top }
+        height: Math.round(coverHeight * cell.heightVariation)
+        anchors { horizontalCenter: parent.horizontalCenter; bottom: shelfLine.top }
         coverSource: cell.cover_path
         volumeCount: cell.num_children
         selected: cell.selected
+        showShelfShadow: false
         showFinishedMark: cell.is_finished && show_marks
         showRecentIndicator: (((new Date() / 1000) - cell.added_date) < cell.recent_range
                               || ((new Date() / 1000) - cell.updated) < cell.recent_range)
                              && cell.show_recent
+    }
+
+    CoverLighting {
+        z: 2
+        anchors.fill: coverElement
+        anchors.rightMargin: coverElement.coverInset
     }
 
     // Disclosure control. Deliberately a separate hit target from the cover so that
@@ -99,17 +146,4 @@ Rectangle {
         }
     }
 
-    Text {
-        z: 4
-        anchors { top: coverElement.bottom; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 10 }
-        width: itemWidth - 8
-        maximumLineCount: 2
-        wrapMode: Text.WordWrap
-        text: cell.title
-        elide: Text.ElideRight
-        color: itemTitleColor
-        font.letterSpacing: fontSpacing
-        font.pointSize: fontSize
-        font.family: fontFamily
-    }
 }

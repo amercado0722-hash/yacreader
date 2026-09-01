@@ -376,6 +376,8 @@ set_source_files_properties(
 set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/CoverLighting.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ShelfBoard.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ExpandedComicDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml

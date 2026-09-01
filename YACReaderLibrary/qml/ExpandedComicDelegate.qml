@@ -48,6 +48,40 @@ Rectangle {
     // as the same kind of object as the ones around it.
     readonly property real pageEdge: 4
 
+    readonly property real heightVariation: {
+        var name = String(cell.title)
+        var hash = 0
+        for (var i = 0; i < name.length; i++)
+            hash = (hash * 31 + name.charCodeAt(i)) % 9973
+        return 1 - (hash % 7) / 100
+    }
+
+    Item {
+        id: shelfLine
+        height: 0
+        anchors { left: realCell.left; right: realCell.right; top: realCell.top; topMargin: coverHeight }
+    }
+
+    ShelfBoard {
+        id: board
+        z: 3
+        height: 26
+        label: cell.title
+        labelColor: cell.read_column === true ? "#6d6862" : "#9a938a"
+        anchors { left: parent.left; right: parent.right; top: shelfLine.top; topMargin: 3 }
+    }
+
+    Rectangle {
+        z: 4
+        height: 5
+        anchors { horizontalCenter: parent.horizontalCenter; top: shelfLine.top; topMargin: 3 }
+        width: coverWidth + 6
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: "#b0000000" }
+            GradientStop { position: 1.0; color: "#00000000" }
+        }
+    }
+
     Rectangle {
         width: cell.pageEdge + 1
         anchors { left: coverElement.right; top: coverElement.top; bottom: coverElement.bottom; topMargin: 2; bottomMargin: 2 }
@@ -63,8 +97,8 @@ Rectangle {
     Item {
         id: coverElement
         width: coverWidth - cell.pageEdge
-        height: coverHeight
-        anchors { horizontalCenter: parent.horizontalCenter; horizontalCenterOffset: -cell.pageEdge / 2; top: realCell.top }
+        height: Math.round(coverHeight * cell.heightVariation)
+        anchors { horizontalCenter: parent.horizontalCenter; horizontalCenterOffset: -cell.pageEdge / 2; bottom: shelfLine.top }
 
         Image {
             id: coverImage
@@ -117,18 +151,11 @@ Rectangle {
         }
     }
 
-    Text {
-        z: 4
-        anchors { top: coverElement.bottom; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 10 }
-        width: itemWidth - 8
-        maximumLineCount: 2
-        wrapMode: Text.WordWrap
-        text: cell.title
-        elide: Text.ElideRight
-        color: itemTitleColor
-        opacity: 0.75
-        font.letterSpacing: fontSpacing
-        font.pointSize: fontSize
-        font.family: fontFamily
+    CoverLighting {
+        z: 2
+        anchors.fill: coverElement
+        // A read volume is already dimmed; lighting it as brightly as the rest would
+        // fight that.
+        highlightOpacity: cell.read_column === true ? 0.04 : 0.10
     }
 }
