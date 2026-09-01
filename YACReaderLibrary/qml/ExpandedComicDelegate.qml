@@ -44,11 +44,27 @@ Rectangle {
         }
     }
 
+    // Matches the fore edge on the tiles these sit among, so an expanded volume reads
+    // as the same kind of object as the ones around it.
+    readonly property real pageEdge: 4
+
+    Rectangle {
+        width: cell.pageEdge + 1
+        anchors { left: coverElement.right; top: coverElement.top; bottom: coverElement.bottom; topMargin: 2; bottomMargin: 2 }
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop { position: 0.0; color: "#e6ddc9" }
+            GradientStop { position: 0.4; color: "#cbc2ad" }
+            GradientStop { position: 1.0; color: "#8d8674" }
+        }
+        opacity: cell.read_column === true ? 0.5 : 1
+    }
+
     Item {
         id: coverElement
-        width: coverWidth
+        width: coverWidth - cell.pageEdge
         height: coverHeight
-        anchors { horizontalCenter: parent.horizontalCenter; top: realCell.top }
+        anchors { horizontalCenter: parent.horizontalCenter; horizontalCenterOffset: -cell.pageEdge / 2; top: realCell.top }
 
         Image {
             id: coverImage

@@ -59,6 +59,9 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
             return sourceIndex.data(FolderModel::UpdatedRole);
         case FinishedRole:
             return sourceIndex.data(FolderModel::FinishedRole);
+        case ChildCountRole:
+            // How thick the series is, which the tile draws as visible page edges
+            return sourceIndex.data(FolderModel::NumChildrenRole);
         case ExpandableRole:
             return true;
         case ExpandedRole:
@@ -192,6 +195,7 @@ QHash<int, QByteArray> GridContentModel::roleNames() const
         { ExpandedRole, "is_expanded" },
         { ExpandableRole, "is_expandable" },
         { VolumeLabelRole, "volume_label" },
+        { ChildCountRole, "num_children" },
     };
 }
 

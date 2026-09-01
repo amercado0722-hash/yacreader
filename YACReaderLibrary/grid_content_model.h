@@ -52,7 +52,8 @@ public:
         FinishedRole,
         ExpandedRole,
         ExpandableRole,
-        VolumeLabelRole
+        VolumeLabelRole,
+        ChildCountRole
     };
 
     explicit GridContentModel(QObject *parent = nullptr);

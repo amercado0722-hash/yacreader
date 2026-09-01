@@ -14,6 +14,7 @@ Rectangle {
     required property bool is_finished
     required property bool selected
     required property bool is_expanded
+    required property int num_children
 
     signal openRequested()
     signal expandRequested()
@@ -57,6 +58,7 @@ Rectangle {
         height: coverHeight
         anchors { horizontalCenter: parent.horizontalCenter; top: realCell.top }
         coverSource: cell.cover_path
+        volumeCount: cell.num_children
         selected: cell.selected
         showFinishedMark: cell.is_finished && show_marks
         showRecentIndicator: (((new Date() / 1000) - cell.added_date) < cell.recent_range
