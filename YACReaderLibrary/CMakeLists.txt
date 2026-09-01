@@ -148,8 +148,8 @@ qt_add_executable(YACReaderLibrary WIN32
     grid_comics_view.cpp
     grid_content_model.h
     grid_content_model.cpp
-    series_carousel_view.h
-    series_carousel_view.cpp
+    bookcase_view.h
+    bookcase_view.cpp
     metadata/series_metadata.h
     metadata/series_match_scorer.h
     metadata/anilist_client.h
@@ -376,6 +376,8 @@ set_source_files_properties(
     PROPERTIES QT_RESOURCE_ALIAS "helpYACReaderLibrary.html"
 )
 set(yacreaderlibrary_qml_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/Bookcase.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/BookSpine.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/CoverLighting.qml
@@ -409,6 +411,8 @@ set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/prerendered_cover_shadow.png
 )
 set(yacreaderlibrary_qml_translation_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/Bookcase.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/BookSpine.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ExpandedComicDelegate.qml

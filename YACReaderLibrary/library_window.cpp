@@ -2,6 +2,7 @@
 
 #include "QsLog.h"
 #include "add_library_dialog.h"
+#include "bookcase_view.h"
 #include "comic_db.h"
 #include "comic_management_coordinator.h"
 #include "comic_model.h"
@@ -36,7 +37,6 @@
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
 #include "search_syntax_dialog.h"
-#include "series_carousel_view.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "static.h"
@@ -522,7 +522,7 @@ void LibraryWindow::setupCoordinators()
 
     // Choosing a series in the carousel hands straight over to the navigation the folder
     // tree already uses, which lands in the comics view showing that series' volumes.
-    connect(contentViewsManager->seriesCarousel(), &SeriesCarouselView::folderSelected, this, [this](const QModelIndex &sourceIndex) {
+    connect(contentViewsManager->bookcase(), &BookcaseView::folderSelected, this, [this](const QModelIndex &sourceIndex) {
         navigationController->navigateToFolder(sourceIndex);
     });
     libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(

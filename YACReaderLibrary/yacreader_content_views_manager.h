@@ -23,7 +23,7 @@ class EmptyReadingListWidget;
 class EmptyFolderWidget;
 class NoSearchResultsWidget;
 class FolderModel;
-class SeriesCarouselView;
+class BookcaseView;
 class ComicManagementCoordinator;
 class LibraryWindowMenus;
 
@@ -37,8 +37,8 @@ public:
 
     QWidget *containerWidget();
     GridComicsView *gridView() const;
-    SeriesCarouselView *seriesCarousel() const;
-    bool isSeriesCarouselVisible() const;
+    BookcaseView *bookcase() const;
+    bool isBookcaseVisible() const;
     bool isComicsViewVisible() const;
     void prepareToClose();
     ContentViewState captureViewState() const;
@@ -64,7 +64,7 @@ protected:
     ClassicComicsView *classicComicsView;
     GridComicsView *gridComicsView;
     InfoComicsView *infoComicsView;
-    SeriesCarouselView *seriesCarouselView;
+    BookcaseView *bookcaseView;
     ComicsView *toolbarOwner;
     ComicManagementCoordinator *comicManagementCoordinator;
     LibraryWindowMenus *libraryWindowMenus;
@@ -82,10 +82,10 @@ public slots:
     void focusComicsViewViaShortcut();
 
     void showComicsView();
-    // Swaps the content area for a carousel of the library's series. Not one of the three
+    // Swaps the content area for the bookcase: the library's series as a wall of shelves. Not one of the three
     // comics views: those all read the comic model and this one reads the folder model,
     // so it sits beside them in the stack rather than among them.
-    void showSeriesCarousel();
+    void showBookcase();
     void showFoldersOnlyGrid();
     void showEmptyLabel(YACReader::LabelColors color);
     void showEmptySpecialList(ReadingListModel::TypeSpecialList type);
