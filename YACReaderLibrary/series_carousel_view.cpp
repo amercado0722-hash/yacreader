@@ -3,19 +3,35 @@
 #include "comic_flow_widget.h"
 #include "folder_model.h"
 #include "series_name_utils.h"
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include <QLabel>
+#include <QSettings>
+#include <QShowEvent>
 #include <QUrl>
 #include <QVBoxLayout>
 
 SeriesCarouselView::SeriesCarouselView(QWidget *parent)
     : QWidget(parent)
 {
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
+    settings->beginGroup("libraryConfig");
+
     flow = new ComicFlowWidget(this);
+    // Not optional. This is what hands the engine its performance mode and vsync setting;
+    // without it the flow is constructed but never animates, which looks exactly like a
+    // carousel that will not turn.
+    flow->updateConfig(settings);
+    flow->setShowMarks(false);
+    // After updateConfig, which chooses a preset of its own from the saved settings.
     // Roulette is the engine's own name for the presentation where the covers turn about
     // an axis rather than sliding past one another.
     flow->setFlowType(YACReader::Roulette);
+    // The engine reads the wheel and the arrow keys itself, but only once it can be
+    // focused and actually holds focus.
+    flow->setFocusPolicy(Qt::StrongFocus);
+    setFocusProxy(flow);
 
     titleLabel = new QLabel(this);
     titleLabel->setAlignment(Qt::AlignHCenter);
@@ -46,6 +62,12 @@ SeriesCarouselView::SeriesCarouselView(QWidget *parent)
     });
 
     initTheme(this);
+}
+
+void SeriesCarouselView::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    flow->setFocus(Qt::OtherFocusReason);
 }
 
 void SeriesCarouselView::applyTheme(const Theme &theme)
@@ -99,7 +121,8 @@ void SeriesCarouselView::reload()
         }
     }
 
-    flow->clear();
+    // setImagePaths replaces the list on its own; the classic view does not clear first
+    // and that path is the one known to work.
     flow->setImagePaths(coverPaths);
 
     if (!coverPaths.isEmpty()) {

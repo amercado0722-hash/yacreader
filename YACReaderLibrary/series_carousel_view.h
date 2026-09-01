@@ -11,6 +11,7 @@
 class ComicFlowWidget;
 class FolderModel;
 class QLabel;
+class QSettings;
 
 // A carousel of the series in a library, turning on its axis.
 //
@@ -42,11 +43,15 @@ signals:
 
 protected:
     void applyTheme(const Theme &theme) override;
+    // The engine only answers the keyboard while it holds focus, and a view living in a
+    // stack does not get it merely by being constructed.
+    void showEvent(QShowEvent *event) override;
 
 private:
     void showCaptionFor(int index);
 
     ComicFlowWidget *flow;
+    QSettings *settings;
     QLabel *titleLabel;
     QLabel *countLabel;
 
