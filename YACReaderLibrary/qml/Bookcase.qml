@@ -28,8 +28,10 @@ Item {
     // The radius of the cylinder in pixels, chosen so that one column of turn is exactly
     // one spine wide. Anything else leaves the books standing in gaps or overlapping.
     readonly property real focal: spineWidth / columnAngle
-    readonly property real spineHeight: 132
-    readonly property real shelfSpacing: 168
+    // Sized to the window rather than fixed, because the rows splay outwards and the
+    // outermost ones were running off the top and bottom of the view.
+    readonly property real shelfSpacing: Math.max(60, wall.height / (shelfCount + 1.2))
+    readonly property real spineHeight: shelfSpacing * 0.82
 
     // Assigned in reset() rather than bound. seriesCount() is a plain invokable with no
     // change signal behind it, so a binding on it is evaluated once - at load, when the
@@ -108,7 +110,7 @@ Item {
                 readonly property real squeeze: Math.max(0.05, cosTheta)
                 // Shelf lines splaying apart towards the edges, because at the sides you
                 // are looking along them.
-                readonly property real splay: 1 + 0.42 * (1 - cosTheta)
+                readonly property real splay: 1 + 0.25 * (1 - cosTheta)
 
                 visible: columnIndex >= 0 && columnIndex < wall.columnCount && cosTheta > 0.12
                 x: screenX - width / 2
@@ -135,11 +137,14 @@ Item {
                         x: 0
                         y: scene.height / 2 + rowOffset * wall.shelfSpacing * column.splay - wall.spineHeight / 2
 
+                        // Horizontal only. The splay moves the row this book stands on; it
+                        // must not stretch the book, which was making the ones at the edges
+                        // visibly taller than the ones in the middle.
                         transform: Scale {
                             origin.x: wall.spineWidth / 2
                             origin.y: wall.spineHeight / 2
                             xScale: column.squeeze
-                            yScale: column.splay
+                            yScale: 1
                         }
 
                         // The board this row of books stands on. Each column draws its own
