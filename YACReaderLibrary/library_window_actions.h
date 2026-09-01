@@ -62,6 +62,7 @@ public:
     QAction *optionsAction;
     QAction *serverConfigAction;
     QAction *toggleComicsViewAction;
+    QAction *seriesCarouselAction;
 
     // tree actions
     QAction *addFolderAction;

@@ -36,6 +36,7 @@
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
 #include "search_syntax_dialog.h"
+#include "series_carousel_view.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "static.h"
@@ -518,6 +519,12 @@ void LibraryWindow::setupCoordinators()
     });
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
     connect(contentViewsManager->gridView(), &ComicsView::customFolderCoverRequested, folderManagementCoordinator, qOverload<qulonglong, const QString &>(&FolderManagementCoordinator::setCustomCover));
+
+    // Choosing a series in the carousel hands straight over to the navigation the folder
+    // tree already uses, which lands in the comics view showing that series' volumes.
+    connect(contentViewsManager->seriesCarousel(), &SeriesCarouselView::folderSelected, this, [this](const QModelIndex &sourceIndex) {
+        navigationController->navigateToFolder(sourceIndex);
+    });
     libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(
             libraries,
             this,
@@ -693,6 +700,7 @@ void LibraryWindow::createToolBars()
 
     libraryToolBar->addSpace(10);
 
+    libraryToolBar->addAction(actions.seriesCarouselAction);
     libraryToolBar->addAction(actions.toggleComicsViewAction);
 
     libraryToolBar->addStretch();
