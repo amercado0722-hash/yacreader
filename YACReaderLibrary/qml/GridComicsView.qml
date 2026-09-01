@@ -585,6 +585,18 @@ SplitView {
                     currentIndexHelper.setGridColumnCount(wholeCells)
                 }
 
+                // Scrolling used to set contentY straight from the wheel, so the view
+                // jumped from one position to the next with nothing in between. Easing the
+                // move is most of what makes a long library feel like something you move
+                // through rather than page through.
+                NumberAnimation {
+                    id: scrollAnimation
+                    target: grid
+                    property: "contentY"
+                    duration: 260
+                    easing.type: Easing.OutCubic
+                }
+
                 MouseArea {
                     id: gridWheelArea
                     anchors.fill: parent
@@ -604,11 +616,21 @@ SplitView {
                         if (grid.contentHeight <= grid.height)
                             return
 
-                            var newValue = Math.min(
-                                (grid.contentHeight - grid.height + grid.originY),
-                                                    Math.max(grid.originY, grid.contentY - wheel.angleDelta.y)
-                            )
-                            grid.contentY = newValue
+                        // Measured from where the glide is heading rather than where it
+                        // has got to, so several quick flicks add up into one longer
+                        // movement instead of each one cancelling the last.
+                        var origin = scrollAnimation.running ? scrollAnimation.to : grid.contentY
+                        var target = Math.min(grid.contentHeight - grid.height + grid.originY,
+                                              Math.max(grid.originY, origin - wheel.angleDelta.y))
+
+                        scrollAnimation.stop()
+
+                        if (target === grid.contentY)
+                            return
+
+                        scrollAnimation.from = grid.contentY
+                        scrollAnimation.to = target
+                        scrollAnimation.start()
                     }
                 }
 
