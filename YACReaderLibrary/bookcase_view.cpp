@@ -97,9 +97,12 @@ QColor BookcaseView::spineColorAt(int index) const
         hash = (hash ^ ch.unicode()) * 16777619u;
     }
 
+    // A real shelf is mostly muted, with a wide spread of darks and a few bright ones,
+    // rather than every hue at the same strength - which is what made the first attempt
+    // look like a paint chart rather than a bookcase.
     const auto hue = static_cast<int>(hash % 360);
-    const auto saturation = 90 + static_cast<int>((hash >> 9) % 70);
-    const auto lightness = 78 + static_cast<int>((hash >> 17) % 46);
+    const auto saturation = 45 + static_cast<int>((hash >> 9) % 105);
+    const auto lightness = 42 + static_cast<int>((hash >> 17) % 108);
 
     return QColor::fromHsl(hue, saturation, lightness);
 }
