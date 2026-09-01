@@ -18,18 +18,24 @@ Item {
     // snapping from one column to the next.
     property real centreColumn: 0
     property int shelfCount: 4
-    property int columnsEitherSide: 11
+    property int columnsEitherSide: 26
 
-    // Radians between one column and the next around the cylinder.
-    readonly property real columnAngle: 0.115
-    // How much screen width one radian of turn is worth.
-    readonly property real focal: 640
+    // Radians between one column and the next around the cylinder. Small, because a wall
+    // wants a lot of columns across it.
+    readonly property real columnAngle: 0.055
 
     readonly property real spineWidth: 30
+    // The radius of the cylinder in pixels, chosen so that one column of turn is exactly
+    // one spine wide. Anything else leaves the books standing in gaps or overlapping.
+    readonly property real focal: spineWidth / columnAngle
     readonly property real spineHeight: 132
     readonly property real shelfSpacing: 168
 
-    readonly property int seriesCount: bookcase ? bookcase.seriesCount() : 0
+    // Assigned in reset() rather than bound. seriesCount() is a plain invokable with no
+    // change signal behind it, so a binding on it is evaluated once - at load, when the
+    // library has not been handed over yet and the answer is zero - and never again. That
+    // left the wall convinced it had no books.
+    property int seriesCount: 0
     readonly property int columnCount: Math.max(1, Math.ceil(seriesCount / shelfCount))
 
     property int hoveredIndex: -1
@@ -41,6 +47,7 @@ Item {
     }
 
     function reset() {
+        seriesCount = bookcase ? bookcase.seriesCount() : 0
         centreColumn = 0
         hoveredIndex = -1
         openedIndex = -1
@@ -92,9 +99,11 @@ Item {
                 readonly property real theta: (columnIndex - wall.centreColumn) * wall.columnAngle
                 readonly property real cosTheta: Math.cos(theta)
 
-                // Cylindrical placement: position is linear in the angle, which keeps the
-                // wall stable at wide angles where a flat projection would fly apart.
-                readonly property real screenX: scene.width / 2 + wall.focal * theta
+                // Placed around the circle, not along a line. Spacing between columns then
+                // closes up towards the edges at exactly the rate the books themselves
+                // narrow, which is what makes them crowd together instead of drifting
+                // apart into gaps.
+                readonly property real screenX: scene.width / 2 + wall.focal * Math.sin(theta)
                 // The surface turning away from the viewer.
                 readonly property real squeeze: Math.max(0.05, cosTheta)
                 // Shelf lines splaying apart towards the edges, because at the sides you
@@ -137,7 +146,9 @@ Item {
                         // slice, wide enough to meet its neighbours, so the shelf reads as
                         // one continuous plank curving away rather than a row of tiles.
                         Rectangle {
-                            width: wall.focal * wall.columnAngle / Math.max(0.2, column.squeeze) + 2
+                            // Unscaled: the slot's own transform applies the squeeze, and
+                            // the result then matches the gap to the next column exactly.
+                            width: wall.focal * wall.columnAngle + 2
                             height: 9
                             x: (wall.spineWidth - width) / 2
                             anchors.top: parent.bottom
