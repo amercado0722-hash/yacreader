@@ -173,17 +173,33 @@ Rectangle {
         }
     }
 
+    // A single volume is a thinner object than a series, but it is still an object.
+    // Four pixels of paper down the fore edge is the whole difference between a picture
+    // of a cover and a book, and it costs one rectangle.
+    readonly property real pageEdge: 4
+
     Image {
         id: coverElement
-        width: coverWidth
+        width: coverWidth - cell.pageEdge
         height: coverHeight
-        anchors { horizontalCenter: parent.horizontalCenter; top: realCell.top }
+        anchors { horizontalCenter: parent.horizontalCenter; horizontalCenterOffset: -cell.pageEdge / 2; top: realCell.top }
         source: cell.cover_path
         fillMode: Image.PreserveAspectCrop
         smooth: true
         mipmap: true
         asynchronous: true
         cache: false
+    }
+
+    Rectangle {
+        width: cell.pageEdge + 1
+        anchors { left: coverElement.right; top: coverElement.top; bottom: coverElement.bottom; topMargin: 2; bottomMargin: 2 }
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop { position: 0.0; color: "#e6ddc9" }
+            GradientStop { position: 0.4; color: "#cbc2ad" }
+            GradientStop { position: 1.0; color: "#8d8674" }
+        }
     }
 
     Rectangle {
@@ -196,9 +212,7 @@ Rectangle {
     }
 
     Rectangle {
-        width: coverElement.width
-        height: coverElement.height
-        anchors { horizontalCenter: parent.horizontalCenter; top: realCell.top }
+        anchors.fill: coverElement
         color: "transparent"
         border { color: comicCoverBorderColor; width: 1 }
     }
