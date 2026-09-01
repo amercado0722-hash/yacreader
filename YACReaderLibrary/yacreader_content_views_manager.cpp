@@ -1,5 +1,6 @@
 #include "yacreader_content_views_manager.h"
 
+#include "bookcase_view.h"
 #include "classic_comics_view.h"
 #include "comic_management_coordinator.h"
 #include "comics_view_transition.h"
@@ -13,14 +14,13 @@
 #include "library_window_menus.h"
 #include "no_search_results_widget.h"
 #include "options_dialog.h"
-#include "series_carousel_view.h"
 #include "yacreader_options_dialog.h"
 #include "yacreader_sidebar.h"
 
 #include <utility>
 
 YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent)
-    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), seriesCarouselView(nullptr), toolbarOwner(nullptr), comicManagementCoordinator(nullptr), libraryWindowMenus(nullptr)
+    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), bookcaseView(nullptr), toolbarOwner(nullptr), comicManagementCoordinator(nullptr), libraryWindowMenus(nullptr)
 {
     comicsViewStack = new QStackedWidget();
     gridComicsView = new GridComicsView();
@@ -57,7 +57,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
     comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
     comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
-    comicsViewStack->addWidget(seriesCarouselView = new SeriesCarouselView());
+    comicsViewStack->addWidget(bookcaseView = new BookcaseView());
 
     ensureInStack(comicsView);
     ensureInStack(gridComicsView);
@@ -122,26 +122,26 @@ bool YACReaderContentViewsManager::isComicsViewVisible() const
     return comicsViewStack->currentWidget() == comicsView;
 }
 
-SeriesCarouselView *YACReaderContentViewsManager::seriesCarousel() const
+BookcaseView *YACReaderContentViewsManager::bookcase() const
 {
-    return seriesCarouselView;
+    return bookcaseView;
 }
 
-bool YACReaderContentViewsManager::isSeriesCarouselVisible() const
+bool YACReaderContentViewsManager::isBookcaseVisible() const
 {
-    return comicsViewStack->currentWidget() == seriesCarouselView;
+    return comicsViewStack->currentWidget() == bookcaseView;
 }
 
-void YACReaderContentViewsManager::showSeriesCarousel()
+void YACReaderContentViewsManager::showBookcase()
 {
     // Rebuilt on the way in rather than kept in step with the model, because the set of
     // series changes whenever the library is updated and a stale carousel would quietly
     // open the wrong folder.
-    seriesCarouselView->setFolderModel(libraryWindow->foldersModel);
+    bookcaseView->setFolderModel(libraryWindow->foldersModel);
 
     // The view selector stays disabled: the three comics views all show the contents of a
     // folder, and there is no folder open while the carousel is choosing one.
-    showStackWidget(seriesCarouselView, false);
+    showStackWidget(bookcaseView, false);
 }
 
 void YACReaderContentViewsManager::prepareToClose()

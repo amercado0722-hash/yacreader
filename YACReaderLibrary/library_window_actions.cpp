@@ -227,10 +227,11 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     serverConfigAction->setData(SERVER_CONFIG_ACTION_YL);
     serverConfigAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SERVER_CONFIG_ACTION_YL));
 
-    // A carousel of the library's series, which is a different kind of thing from the
-    // three comics views and so gets its own control rather than joining their rotation.
-    seriesCarouselAction = new QAction(tr("Browse series"), window);
-    seriesCarouselAction->setToolTip(tr("Spin through the series in this library"));
+    // The bookcase is a different kind of thing from the three comics views - it chooses
+    // a series rather than showing one - so it gets its own control rather than joining
+    // their rotation.
+    seriesCarouselAction = new QAction(tr("Bookcase"), window);
+    seriesCarouselAction->setToolTip(tr("See this library as a wall of shelves"));
 
     toggleComicsViewAction = new QAction(tr("Change between comics views"), window);
     toggleComicsViewAction->setToolTip(tr("Change between comics views"));
@@ -642,7 +643,7 @@ void LibraryWindowActions::createConnections(
 #endif
     QObject::connect(toggleComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::toggleComicsView);
 
-    QObject::connect(seriesCarouselAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::showSeriesCarousel);
+    QObject::connect(seriesCarouselAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::showBookcase);
     QObject::connect(optionsAction, &QAction::triggered, optionsDialog, &QWidget::show);
 #ifdef SERVER_RELEASE
     QObject::connect(serverConfigAction, &QAction::triggered, serverConfigDialog, &QWidget::show);
