@@ -24,6 +24,7 @@ public:
     QToolButton *settingsButton;
     QToolButton *serverButton;
     QToolButton *helpButton;
+    QToolButton *seriesCarouselButton;
     QToolButton *toggleComicsViewButton;
     QToolButton *fullscreenButton;
 
