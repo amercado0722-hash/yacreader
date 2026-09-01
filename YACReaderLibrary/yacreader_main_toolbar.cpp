@@ -42,6 +42,10 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     helpButton->setStyleSheet(qToolButtonStyleSheet);
     helpButton->setIconSize(QSize(14, 25));
 
+    seriesCarouselButton = new QToolButton;
+    seriesCarouselButton->setStyleSheet(qToolButtonStyleSheet);
+    seriesCarouselButton->setIconSize(QSize(24, 24));
+
     toggleComicsViewButton = new QToolButton;
     toggleComicsViewButton->setStyleSheet(qToolButtonStyleSheet);
     toggleComicsViewButton->setIconSize(QSize(24, 24));
@@ -67,6 +71,8 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
 
     mainLayout->addStretch();
 
+    mainLayout->addWidget(seriesCarouselButton, 0, Qt::AlignVCenter);
+    addWideDivider();
     mainLayout->addWidget(toggleComicsViewButton, 0, Qt::AlignVCenter);
 #ifndef Q_OS_MACOS
     addWideDivider();

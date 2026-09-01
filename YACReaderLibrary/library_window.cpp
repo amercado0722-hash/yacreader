@@ -720,6 +720,7 @@ void LibraryWindow::createToolBars()
     libraryToolBar->settingsButton->setDefaultAction(actions.optionsAction);
     libraryToolBar->serverButton->setDefaultAction(actions.serverConfigAction);
     libraryToolBar->helpButton->setDefaultAction(actions.helpAboutAction);
+    libraryToolBar->seriesCarouselButton->setDefaultAction(actions.seriesCarouselAction);
     libraryToolBar->toggleComicsViewButton->setDefaultAction(actions.toggleComicsViewAction);
 #ifndef Q_OS_MACOS
     libraryToolBar->fullscreenButton->setDefaultAction(actions.toggleFullScreenAction);
