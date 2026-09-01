@@ -57,8 +57,11 @@ Item {
         columns.model = 2 * columnsEitherSide + 1
     }
 
-    function clampCentre(value) {
-        return Math.max(0, Math.min(columnCount - 1, value))
+    // A cylinder has no ends, so the wall wraps rather than stopping. Clamping it meant
+    // the first column sat in the middle of the view with nothing to its left, and half
+    // the screen was empty until you had spun some way in.
+    function wrapColumn(value) {
+        return ((value % columnCount) + columnCount) % columnCount
     }
 
     anchors.fill: parent
@@ -97,8 +100,11 @@ Item {
                 // Whole columns are placed, not individual books, because a vertical strip
                 // of the wall shares one angle and therefore one set of distortions.
                 readonly property int offset: index - wall.columnsEitherSide
-                readonly property real columnIndex: Math.round(wall.centreColumn) + offset
-                readonly property real theta: (columnIndex - wall.centreColumn) * wall.columnAngle
+                // The place on the wall, which runs on past both ends of the library...
+                readonly property real wallPosition: Math.round(wall.centreColumn) + offset
+                // ...and the series that is actually standing there, which wraps.
+                readonly property int columnIndex: wall.wrapColumn(wallPosition)
+                readonly property real theta: (wallPosition - wall.centreColumn) * wall.columnAngle
                 readonly property real cosTheta: Math.cos(theta)
 
                 // Placed around the circle, not along a line. Spacing between columns then
@@ -112,7 +118,7 @@ Item {
                 // are looking along them.
                 readonly property real splay: 1 + 0.25 * (1 - cosTheta)
 
-                visible: columnIndex >= 0 && columnIndex < wall.columnCount && cosTheta > 0.12
+                visible: cosTheta > 0.12
                 x: screenX - width / 2
                 y: 0
                 width: wall.spineWidth
@@ -259,12 +265,12 @@ Item {
                 return
             // Dragging turns the wall directly under the pointer.
             const turned = (pressX - mouse.x) / (wall.focal * wall.columnAngle)
-            wall.centreColumn = wall.clampCentre(pressCentre + turned)
+            wall.centreColumn = pressCentre + turned
         }
 
         onWheel: wheel => {
             const step = wheel.angleDelta.y > 0 ? -1 : 1
-            spin.to = wall.clampCentre(Math.round(wall.centreColumn) + step * 2)
+            spin.to = Math.round(wall.centreColumn) + step * 2
             spin.restart()
         }
     }
@@ -278,8 +284,8 @@ Item {
     }
 
     focus: true
-    Keys.onLeftPressed: { spin.to = wall.clampCentre(Math.round(wall.centreColumn) - 1); spin.restart() }
-    Keys.onRightPressed: { spin.to = wall.clampCentre(Math.round(wall.centreColumn) + 1); spin.restart() }
+    Keys.onLeftPressed: { spin.to = Math.round(wall.centreColumn) - 1; spin.restart() }
+    Keys.onRightPressed: { spin.to = Math.round(wall.centreColumn) + 1; spin.restart() }
     Keys.onEscapePressed: wall.openedIndex = -1
     Keys.onReturnPressed: if (wall.openedIndex >= 0 && bookcase) bookcase.openSeries(wall.openedIndex)
 }
