@@ -71,5 +71,8 @@ extern struct Preset presetYACReaderFlowStripeConfig;
 extern struct Preset presetYACReaderFlowOverlappedStripeConfig;
 extern struct Preset pressetYACReaderFlowUpConfig;
 extern struct Preset pressetYACReaderFlowDownConfig;
+// Covers curving away around an axis rather than sliding past one another. Reached
+// through FlowType::Roulette, which until now was a name with no preset behind it.
+extern struct Preset presetYACReaderFlowCarouselConfig;
 
 #endif // __YACREADER_FLOW_TYPES_H

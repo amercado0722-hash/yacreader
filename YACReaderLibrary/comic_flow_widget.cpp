@@ -126,6 +126,8 @@ void ComicFlowWidget::setFlowType(YACReader::FlowType flowType)
         flow->setPreset(presetYACReaderFlowStripeConfig);
     else if (flowType == YACReader::StripOverlapped)
         flow->setPreset(presetYACReaderFlowOverlappedStripeConfig);
+    else if (flowType == YACReader::Roulette)
+        flow->setPreset(presetYACReaderFlowCarouselConfig);
     else
         flow->setPreset(defaultYACReaderFlowConfig);
 }
