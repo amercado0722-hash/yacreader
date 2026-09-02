@@ -97,12 +97,22 @@ QColor BookcaseView::spineColorAt(int index) const
         hash = (hash ^ ch.unicode()) * 16777619u;
     }
 
-    // A real shelf is mostly muted, with a wide spread of darks and a few bright ones,
-    // rather than every hue at the same strength - which is what made the first attempt
-    // look like a paint chart rather than a bookcase.
+    // A real shelf is mostly muted and mostly dark, with a few bright ones, rather than
+    // every hue at the same strength - which is what made the first attempt look like a
+    // paint chart and the second like a bag of sweets.
     const auto hue = static_cast<int>(hash % 360);
-    const auto saturation = 45 + static_cast<int>((hash >> 9) % 105);
-    const auto lightness = 42 + static_cast<int>((hash >> 17) % 108);
+    auto saturation = 26 + static_cast<int>((hash >> 9) % 96);
+    // Squared, so the spread runs dark with occasional light rather than sitting in a
+    // uniform pastel band.
+    const auto level = static_cast<double>((hash >> 17) % 256) / 255.0;
+    auto lightness = static_cast<int>(34 + 104 * level * level);
+
+    // Roughly one book in five is plain cloth or board with no colour to speak of, which is
+    // what stops a shelf reading as a swatch card.
+    if ((hash >> 26) % 5 == 0) {
+        saturation /= 5;
+        lightness = 34 + lightness / 3;
+    }
 
     return QColor::fromHsl(hue, saturation, lightness);
 }

@@ -5,40 +5,54 @@ import QtQuick
 // There is no 3D engine here and no shaders. A cylinder seen from its own axis only does
 // two things to what is fixed to it: the surface turns away from you towards the edges, so
 // what is on it squeezes horizontally, and the shelf lines splay apart because you are
-// looking along them rather than at them. Both are per-column arithmetic, which is why
-// this is QML and not a new Qt module.
+// looking along them rather than at them. Both are arithmetic, which is why this is QML
+// and not a new Qt module.
 //
-// Only the columns that can be seen exist. The library behind this is nineteen hundred
-// series; the wall shows about ninety at a time, and asks the view for those by index
-// rather than binding a model and instantiating the lot.
+// The wall is measured in pixels along its own surface rather than in columns. Books are
+// not all the same thickness - a forty volume series is a fat spine and a one-shot is a
+// sliver - and a shelf of identical bars reads as a chart, not as books. Each shelf is
+// therefore its own run of books at its own widths, laid end to end, and the whole wall
+// turns by one shared distance.
+//
+// Only what can be seen exists. The library behind this is nineteen hundred series; the
+// wall shows perhaps a hundred at a time and asks the view for those by index rather than
+// binding a model and instantiating the lot.
 Item {
     id: wall
 
-    // Which column sits dead centre. Fractional, so spinning is continuous rather than
-    // snapping from one column to the next.
-    property real centreColumn: 0
+    // How far the wall has been turned, in pixels along the shelf surface. Continuous, so
+    // spinning does not snap from one book to the next.
+    property real wallOffset: 0
     property int shelfCount: 4
-    property int columnsEitherSide: 26
+    // Slots kept alive per shelf. Enough to reach the dark at both edges at ordinary book
+    // widths; a run of unusually thin ones simply stops short, in near black, unseen.
+    readonly property int slotsPerRow: 84
 
-    // Radians between one column and the next around the cylinder. Small, because a wall
-    // wants a lot of columns across it.
-    readonly property real columnAngle: 0.055
-
-    readonly property real spineWidth: 30
-    // The radius of the cylinder in pixels, chosen so that one column of turn is exactly
-    // one spine wide. Anything else leaves the books standing in gaps or overlapping.
-    readonly property real focal: spineWidth / columnAngle
+    // The radius of the cylinder in pixels. Tied to the width of the view so the wall
+    // reaches the edges of any window rather than only the one it was tuned in.
+    readonly property real focal: Math.max(360, width * 0.5)
     // Sized to the window rather than fixed, because the rows splay outwards and the
     // outermost ones were running off the top and bottom of the view.
-    readonly property real shelfSpacing: Math.max(60, wall.height / (shelfCount + 1.2))
-    readonly property real spineHeight: shelfSpacing * 0.82
+    readonly property real shelfSpacing: Math.max(60, height / (shelfCount + 0.9))
+    readonly property real spineHeight: shelfSpacing * 0.78
 
-    // Assigned in reset() rather than bound. seriesCount() is a plain invokable with no
-    // change signal behind it, so a binding on it is evaluated once - at load, when the
-    // library has not been handed over yet and the answer is zero - and never again. That
-    // left the wall convinced it had no books.
+    // How hard the shelf lines splay apart towards the edges. The true figure for this
+    // projection is 1/cos, which at the middle of the view is almost nothing; a wall that
+    // reads as flat across the centre is the honest answer and the wrong one, so the bend
+    // is exaggerated.
+    readonly property real splayStrength: 0.55
+
+    // Assigned rather than bound. seriesCount() is a plain invokable with no change signal
+    // behind it, so a binding on it is evaluated once - at load, when the library has not
+    // been handed over yet and the answer is zero - and never again. That left the wall
+    // convinced it had no books.
     property int seriesCount: 0
-    readonly property int columnCount: Math.max(1, Math.ceil(seriesCount / shelfCount))
+
+    // One entry per shelf: the series standing on it, their thicknesses, and the running
+    // distance to each one along the wall. Built once when the library changes, because
+    // finding what is in front of you is then a search over this rather than a walk over
+    // nineteen hundred series every frame.
+    property var shelves: []
 
     property int hoveredIndex: -1
     property int openedIndex: -1
@@ -48,20 +62,62 @@ Item {
         function onSeriesChanged() { wall.reset() }
     }
 
-    function reset() {
-        seriesCount = bookcase ? bookcase.seriesCount() : 0
-        centreColumn = 0
-        hoveredIndex = -1
-        openedIndex = -1
-        columns.model = 0
-        columns.model = 2 * columnsEitherSide + 1
+    // Thickness from the number of volumes, on a log curve: the library runs from single
+    // volumes to a couple of hundred, and a linear rule would leave almost everything at
+    // the thin end with a few absurd slabs.
+    function bookWidth(volumes) {
+        const v = Math.max(1, Math.min(60, volumes))
+        return 12 + 32 * (Math.log(v) / Math.log(60))
     }
 
-    // A cylinder has no ends, so the wall wraps rather than stopping. Clamping it meant
-    // the first column sat in the middle of the view with nothing to its left, and half
-    // the screen was empty until you had spun some way in.
-    function wrapColumn(value) {
-        return ((value % columnCount) + columnCount) % columnCount
+    function reset() {
+        seriesCount = bookcase ? bookcase.seriesCount() : 0
+        wallOffset = 0
+        hoveredIndex = -1
+        openedIndex = -1
+
+        const perShelf = Math.max(1, Math.ceil(seriesCount / shelfCount))
+        const built = []
+        for (let r = 0; r < shelfCount; ++r) {
+            const offsets = []
+            const widths = []
+            const first = r * perShelf
+            const last = Math.min(seriesCount, first + perShelf)
+            let run = 0
+            for (let i = first; i < last; ++i) {
+                const w = bookWidth(bookcase ? bookcase.volumesAt(i) : 1)
+                offsets.push(run)
+                widths.push(w)
+                run += w
+            }
+            built.push({ first: first, count: offsets.length, offsets: offsets, widths: widths, total: Math.max(1, run) })
+        }
+        shelves = built
+    }
+
+    // Where the wall has been turned to on one shelf, wrapped into that shelf's own length.
+    // A cylinder has no ends, so each run of books joins back to its own beginning.
+    function shelfPosition(shelf) {
+        if (!shelf || shelf.count === 0)
+            return 0
+        return ((wallOffset % shelf.total) + shelf.total) % shelf.total
+    }
+
+    // The book currently in front of the viewer on a shelf. Everything else on that shelf
+    // is placed by counting outwards from this one.
+    function centreBook(shelf, position) {
+        if (!shelf || shelf.count === 0)
+            return 0
+        let lo = 0
+        let hi = shelf.count - 1
+        while (lo < hi) {
+            const mid = (lo + hi + 1) >> 1
+            if (shelf.offsets[mid] <= position)
+                lo = mid
+            else
+                hi = mid - 1
+        }
+        return lo
     }
 
     anchors.fill: parent
@@ -79,7 +135,7 @@ Item {
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop { position: 0.0; color: "#000000" }
-            GradientStop { position: 0.5; color: "#1a1a1e" }
+            GradientStop { position: 0.5; color: "#1c1a19" }
             GradientStop { position: 1.0; color: "#000000" }
         }
     }
@@ -89,91 +145,95 @@ Item {
         anchors.fill: parent
 
         Repeater {
-            id: columns
-            model: 2 * wall.columnsEitherSide + 1
+            model: wall.shelfCount
 
             Item {
-                id: column
+                id: shelfRow
 
                 required property int index
 
-                // Whole columns are placed, not individual books, because a vertical strip
-                // of the wall shares one angle and therefore one set of distortions.
-                readonly property int offset: index - wall.columnsEitherSide
-                // The place on the wall, which runs on past both ends of the library...
-                readonly property real wallPosition: Math.round(wall.centreColumn) + offset
-                // ...and the series that is actually standing there, which wraps.
-                readonly property int columnIndex: wall.wrapColumn(wallPosition)
-                readonly property real theta: (wallPosition - wall.centreColumn) * wall.columnAngle
-                readonly property real cosTheta: Math.cos(theta)
+                readonly property var shelf: index < wall.shelves.length ? wall.shelves[index] : null
+                readonly property real position: wall.shelfPosition(shelf)
+                readonly property int centre: wall.centreBook(shelf, position)
+                readonly property real rowOffset: index - (wall.shelfCount - 1) / 2
 
-                // Placed around the circle, not along a line. Spacing between columns then
-                // closes up towards the edges at exactly the rate the books themselves
-                // narrow, which is what makes them crowd together instead of drifting
-                // apart into gaps.
-                readonly property real screenX: scene.width / 2 + wall.focal * Math.sin(theta)
-                // The surface turning away from the viewer.
-                readonly property real squeeze: Math.max(0.05, cosTheta)
-                // Shelf lines splaying apart towards the edges, because at the sides you
-                // are looking along them.
-                readonly property real splay: 1 + 0.25 * (1 - cosTheta)
-
-                visible: cosTheta > 0.12
-                x: screenX - width / 2
-                y: 0
-                width: wall.spineWidth
-                height: scene.height
-                z: Math.round(100 * cosTheta)
-                opacity: Math.max(0, Math.min(1, 0.35 + 0.65 * cosTheta))
+                anchors.fill: parent
 
                 Repeater {
-                    model: wall.shelfCount
+                    model: wall.slotsPerRow
 
                     Item {
                         id: slot
 
                         required property int index
 
-                        readonly property int seriesIndex: column.columnIndex * wall.shelfCount + index
-                        readonly property bool present: seriesIndex >= 0 && seriesIndex < wall.seriesCount
-                        readonly property real rowOffset: index - (wall.shelfCount - 1) / 2
+                        readonly property var shelf: shelfRow.shelf
+                        readonly property int step: index - Math.floor(wall.slotsPerRow / 2)
+                        readonly property bool present: shelf !== null && shelf.count > 0
+                        // Which book on this shelf, wrapping round the cylinder.
+                        readonly property int slotIndex: present ? ((shelfRow.centre + step) % shelf.count + shelf.count) % shelf.count : 0
+                        readonly property int seriesIndex: present ? shelf.first + slotIndex : -1
+                        readonly property real bookWidth: present ? shelf.widths[slotIndex] : 0
 
-                        width: wall.spineWidth
-                        height: wall.spineHeight
-                        x: 0
-                        y: scene.height / 2 + rowOffset * wall.shelfSpacing * column.splay - wall.spineHeight / 2
+                        // Distance from the viewer along the wall, wrapped into the shorter
+                        // way round so a book near the join appears on whichever side it is
+                        // actually nearest, rather than a whole lap away.
+                        readonly property real rawDistance: present ? shelf.offsets[slotIndex] + bookWidth / 2 - shelfRow.position : 0
+                        readonly property real distance: present ? rawDistance - shelf.total * Math.round(rawDistance / shelf.total) : 0
 
-                        // Horizontal only. The splay moves the row this book stands on; it
-                        // must not stretch the book, which was making the ones at the edges
-                        // visibly taller than the ones in the middle.
+                        readonly property real theta: distance / wall.focal
+                        readonly property real cosTheta: Math.cos(theta)
+                        // The surface turning away from the viewer.
+                        readonly property real squeeze: Math.max(0.04, cosTheta)
+                        // Shelf lines splaying apart towards the edges, because at the
+                        // sides you are looking along them rather than at them.
+                        readonly property real splay: 1 + wall.splayStrength * (1 - cosTheta)
+
+                        // Books are not milled to a common height either. A little variety,
+                        // fixed per series so it never shifts, and they stand on the board
+                        // rather than floating from a shared centre.
+                        readonly property real heightScale: present ? 0.84 + 0.16 * ((seriesIndex * 2654435761 % 997) / 997) : 1
+                        readonly property real bookHeight: wall.spineHeight * heightScale
+                        readonly property real shelfLine: scene.height / 2 + shelfRow.rowOffset * wall.shelfSpacing * splay + wall.spineHeight / 2
+
+                        visible: present && cosTheta > 0.1 && Math.abs(theta) < 1.45
+                        width: bookWidth
+                        height: bookHeight
+                        x: scene.width / 2 + wall.focal * Math.sin(theta) - width / 2
+                        y: shelfLine - bookHeight
+                        z: Math.round(200 * cosTheta)
+                        opacity: Math.max(0, Math.min(1, 0.25 + 0.75 * cosTheta))
+
                         transform: Scale {
-                            origin.x: wall.spineWidth / 2
-                            origin.y: wall.spineHeight / 2
-                            xScale: column.squeeze
+                            origin.x: slot.width / 2
+                            // Horizontal only. The splay moves the line this book stands
+                            // on; it must not stretch the book, which was making the ones
+                            // at the edges visibly taller than the ones in the middle.
+                            origin.y: slot.height
+                            xScale: slot.squeeze
                             yScale: 1
                         }
 
-                        // The board this row of books stands on. Each column draws its own
-                        // slice, wide enough to meet its neighbours, so the shelf reads as
-                        // one continuous plank curving away rather than a row of tiles.
+                        // The board this book stands on. Each book draws its own slice, a
+                        // shade wider than itself so the slices meet, and the whole reads
+                        // as one plank curving away rather than a row of tiles.
                         Rectangle {
-                            // Unscaled: the slot's own transform applies the squeeze, and
-                            // the result then matches the gap to the next column exactly.
-                            width: wall.focal * wall.columnAngle + 2
-                            height: 9
-                            x: (wall.spineWidth - width) / 2
+                            width: slot.bookWidth + 2
+                            height: 13
+                            x: -1
                             anchors.top: parent.bottom
                             gradient: Gradient {
-                                GradientStop { position: 0.0; color: "#6b6055" }
-                                GradientStop { position: 0.25; color: "#3a332c" }
-                                GradientStop { position: 1.0; color: "#16130f" }
+                                GradientStop { position: 0.0; color: "#7d6f60" }
+                                GradientStop { position: 0.14; color: "#4a4137" }
+                                GradientStop { position: 0.55; color: "#2a241d" }
+                                GradientStop { position: 1.0; color: "#100d0a" }
                             }
                         }
 
                         BookSpine {
                             anchors.fill: parent
-                            visible: slot.present
-                            seriesIndex: slot.seriesIndex
+                            visible: slot.seriesIndex >= 0
+                            seriesIndex: Math.max(0, slot.seriesIndex)
                             hovered: wall.hoveredIndex === slot.seriesIndex
 
                             onEntered: wall.hoveredIndex = slot.seriesIndex
@@ -252,11 +312,11 @@ Item {
         propagateComposedEvents: true
 
         property real pressX: 0
-        property real pressCentre: 0
+        property real pressOffset: 0
 
         onPressed: mouse => {
             pressX = mouse.x
-            pressCentre = wall.centreColumn
+            pressOffset = wall.wallOffset
             wall.forceActiveFocus()
         }
 
@@ -264,13 +324,12 @@ Item {
             if (!pressed)
                 return
             // Dragging turns the wall directly under the pointer.
-            const turned = (pressX - mouse.x) / (wall.focal * wall.columnAngle)
-            wall.centreColumn = pressCentre + turned
+            wall.wallOffset = pressOffset + (pressX - mouse.x)
         }
 
         onWheel: wheel => {
             const step = wheel.angleDelta.y > 0 ? -1 : 1
-            spin.to = Math.round(wall.centreColumn) + step * 2
+            spin.to = wall.wallOffset + step * 96
             spin.restart()
         }
     }
@@ -278,14 +337,14 @@ Item {
     NumberAnimation {
         id: spin
         target: wall
-        property: "centreColumn"
+        property: "wallOffset"
         duration: 260
         easing.type: Easing.OutCubic
     }
 
     focus: true
-    Keys.onLeftPressed: { spin.to = Math.round(wall.centreColumn) - 1; spin.restart() }
-    Keys.onRightPressed: { spin.to = Math.round(wall.centreColumn) + 1; spin.restart() }
+    Keys.onLeftPressed: { spin.to = wall.wallOffset - 32; spin.restart() }
+    Keys.onRightPressed: { spin.to = wall.wallOffset + 32; spin.restart() }
     Keys.onEscapePressed: wall.openedIndex = -1
     Keys.onReturnPressed: if (wall.openedIndex >= 0 && bookcase) bookcase.openSeries(wall.openedIndex)
 }
