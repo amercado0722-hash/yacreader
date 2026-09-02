@@ -204,10 +204,23 @@ void ComicManagementCoordinator::showBatchScraper()
         return;
     }
 
-    const auto targets = YACReader::BatchScraper::targetsForLibrary(databasePath);
+    auto targets = YACReader::BatchScraper::targetsForLibrary(databasePath);
     if (targets.isEmpty()) {
-        QMessageBox::information(window, tr("Download tags"), tr("There are no series in this library to look up."));
-        return;
+        // Nothing missing is the ordinary answer on a library that has been looked up once
+        // already, and offering to do the whole thing again is the only reason to be here.
+        const auto all = YACReader::BatchScraper::targetsForLibrary(databasePath, false);
+        if (all.isEmpty()) {
+            QMessageBox::information(window, tr("Download tags"), tr("There are no series in this library to look up."));
+            return;
+        }
+
+        const auto again = QMessageBox::question(window, tr("Download tags"),
+                                                 tr("Every series in this library already has tags.\n\nLook all %1 of them up again anyway?").arg(all.size()),
+                                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if (again != QMessageBox::Yes) {
+            return;
+        }
+        targets = all;
     }
 
     // Built fresh each time rather than kept around: the set of folders changes whenever

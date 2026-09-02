@@ -52,7 +52,9 @@ public:
     // Every folder in the library that actually holds comics, which is what a series is in
     // a downloaded library. Folders that only contain other folders are skipped: they are
     // shelves, not series, and looking them up would waste a request each.
-    static QList<ScrapeTarget> targetsForLibrary(const QString &databasePath);
+    // onlyMissing leaves out the series that already have a synopsis, which is what makes a
+    // second run cost seconds rather than the hour a first one takes.
+    static QList<ScrapeTarget> targetsForLibrary(const QString &databasePath, bool onlyMissing = true);
 
     void setTargets(const QList<ScrapeTarget> &targets);
     // Off by default: a library that has been tagged by hand should not have that work

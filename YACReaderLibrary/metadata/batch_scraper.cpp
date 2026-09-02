@@ -46,7 +46,18 @@ BatchScraper::BatchScraper(const QString &databasePath, QObject *parent)
 {
 }
 
-QList<ScrapeTarget> BatchScraper::targetsForLibrary(const QString &databasePath)
+// Only the series that still need it, unless asked for all of them.
+//
+// A run over a library this size takes an hour, because the provider is asked about one
+// series every two seconds and being polite about that is not optional. Asking again about
+// nineteen hundred series to find the four that arrived yesterday is an hour for nothing,
+// and it is the difference between a scrape you run when you remember to and one that can
+// follow every import without anybody thinking about it.
+//
+// "Still needs it" is a series with at least one volume that has no synopsis. Folders whose
+// name begins with an underscore are left alone throughout - those are the ones this
+// application's own housekeeping puts aside, and they are not series.
+QList<ScrapeTarget> BatchScraper::targetsForLibrary(const QString &databasePath, bool onlyMissing)
 {
     QList<ScrapeTarget> targets;
 
@@ -58,8 +69,19 @@ QList<ScrapeTarget> BatchScraper::targetsForLibrary(const QString &databasePath)
         }
         connectionName = db.connectionName();
 
+        const auto missingOnly = QStringLiteral(
+                " and exists (select 1 from comic c"
+                "   join comic_info ci on ci.id = c.comicInfoId"
+                "   where c.parentId = folder.id"
+                "     and (ci.synopsis is null or trim(ci.synopsis) = ''))");
+
         QSqlQuery query(db);
-        query.prepare("select id, name from folder where id <> 1 and id in (select distinct parentId from comic) order by name");
+        query.prepare(QStringLiteral("select id, name from folder"
+                                     " where id <> 1"
+                                     "   and name not like '\\_%' escape '\\'"
+                                     "   and id in (select distinct parentId from comic)")
+                      + (onlyMissing ? missingOnly : QString())
+                      + QStringLiteral(" order by name"));
         query.exec();
 
         while (query.next()) {
