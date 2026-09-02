@@ -15,17 +15,20 @@ Item {
     property string label: ""
     property color labelColor: "#9a938a"
     property real labelSize: 8
-    property real edgeHeight: 2
+    property real edgeHeight: 4
 
     // Lit front edge. A single brighter line along the top is most of what tells you a
-    // horizontal band is a surface you are looking slightly down at.
+    // horizontal band is a surface you are looking slightly down at - but it has to be
+    // bright enough to read as timber catching the light. Kept too close to the background
+    // it did the opposite, and the row of boards looked like the gaps between the rows.
     Rectangle {
         id: litEdge
         height: board.edgeHeight
         anchors { left: parent.left; right: parent.right; top: parent.top }
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#5a5047" }
-            GradientStop { position: 1.0; color: "#3a332c" }
+            GradientStop { position: 0.0; color: "#9a8a76" }
+            GradientStop { position: 0.45; color: "#6d6155" }
+            GradientStop { position: 1.0; color: "#463d33" }
         }
     }
 
@@ -33,9 +36,9 @@ Item {
     Rectangle {
         anchors { left: parent.left; right: parent.right; top: litEdge.bottom; bottom: parent.bottom }
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#2b2620" }
-            GradientStop { position: 0.6; color: "#1d1913" }
-            GradientStop { position: 1.0; color: "#14110d" }
+            GradientStop { position: 0.0; color: "#3b342b" }
+            GradientStop { position: 0.6; color: "#252019" }
+            GradientStop { position: 1.0; color: "#171310" }
         }
 
         Text {

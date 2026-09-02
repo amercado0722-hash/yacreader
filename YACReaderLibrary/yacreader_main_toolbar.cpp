@@ -108,18 +108,37 @@ void YACReaderMainToolBar::paintEvent(QPaintEvent *event)
 
 void YACReaderMainToolBar::resizeEvent(QResizeEvent *event)
 {
-    // 210px x 2 = 420px
-    int freeWidth = event->size().width() - 420;
-    int maxLabelWidth = freeWidth >= 0 ? freeWidth : 0;
-    currentFolder->setMaximumWidth(maxLabelWidth);
-    currentFolder->adjustSize();
+    Q_UNUSED(event);
 
-    QFontMetrics metrix(currentFolder->font());
-    QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
+    layoutFolderName();
+}
 
-    currentFolder->setText(clippedText);
+// The folder name is not in the layout - it is a free floating label - so it has to be told
+// where the buttons are. It used to be given a fixed 210px on each side, which stopped
+// being true as buttons were added to the right hand cluster and left the name printed
+// underneath them. Asking the layout where the two clusters actually ended costs nothing
+// and cannot drift again.
+void YACReaderMainToolBar::layoutFolderName()
+{
+    mainLayout->activate();
+
+    auto left = helpButton->geometry().right() + 16;
+    auto right = seriesCarouselButton->geometry().left() - 16;
+
+    if (right <= left) {
+        // Before the first layout pass the buttons have no geometry to ask about.
+        left = 210;
+        right = width() - 210;
+    }
+
+    const auto available = qMax(0, right - left);
+
+    currentFolder->setMaximumWidth(available);
+
+    const QFontMetrics metrics(currentFolder->font());
+    currentFolder->setText(metrics.elidedText(currentFolderName, Qt::ElideRight, available));
     currentFolder->adjustSize();
-    currentFolder->move((event->size().width() - currentFolder->width()) / 2, (event->size().height() - currentFolder->height()) / 2);
+    currentFolder->move(left + (available - currentFolder->width()) / 2, (height() - currentFolder->height()) / 2);
 }
 
 void YACReaderMainToolBar::addDivider()
@@ -142,20 +161,9 @@ void YACReaderMainToolBar::addWideDivider()
 
 void YACReaderMainToolBar::setCurrentFolderName(const QString &name)
 {
-    currentFolder->setText(name);
     currentFolderName = name;
-    currentFolder->adjustSize();
 
-    int freeWidth = size().width() - 420;
-    int maxLabelWidth = freeWidth >= 0 ? freeWidth : 0;
-    currentFolder->setMaximumWidth(maxLabelWidth);
-
-    QFontMetrics metrix(currentFolder->font());
-    QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
-
-    currentFolder->setText(clippedText);
-    currentFolder->adjustSize();
-    currentFolder->move((width() - currentFolder->width()) / 2, (height() - currentFolder->height()) / 2);
+    layoutFolderName();
 }
 
 void YACReaderMainToolBar::applyTheme(const Theme &theme)

@@ -47,6 +47,7 @@ private:
 
     void addDivider();
     void addWideDivider();
+    void layoutFolderName();
 
 protected:
     void applyTheme(const Theme &theme) override;
