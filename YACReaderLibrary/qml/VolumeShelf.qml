@@ -25,38 +25,6 @@ Item {
     anchors.fill: parent
     focus: visible
 
-    // A real hit target rather than bare text with a mouse area hung off it. Eight pixels of
-    // margin around a ten point label is something you have to aim at, and the hover
-    // background says plainly whether the pointer has found it - which bare text does not.
-    component ShelfAction: Rectangle {
-        id: actionButton
-
-        property string label: ""
-
-        signal triggered()
-
-        width: actionLabel.implicitWidth + 26
-        height: 32
-        radius: 4
-        color: actionArea.containsMouse ? "#2a241d" : "transparent"
-
-        Text {
-            id: actionLabel
-            anchors.centerIn: parent
-            text: actionButton.label
-            color: actionArea.containsMouse ? "#efe8dc" : "#8d857a"
-            font.pointSize: 10
-        }
-
-        MouseArea {
-            id: actionArea
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: actionButton.triggered()
-        }
-    }
-
     // The room, darkened. The wall is still there behind this and should read as still
     // there - dimmed rather than replaced, so closing the series puts you back where you
     // were rather than somewhere new.
@@ -90,14 +58,56 @@ Item {
             anchors { right: parent.right; rightMargin: 24; verticalCenter: parent.verticalCenter }
             spacing: 6
 
-            ShelfAction {
-                label: qsTr("Open in library")
-                onTriggered: if (bookcase) bookcase.showOpenedSeriesInLibrary()
+            // Written out twice rather than made into a component with a signal. The
+            // component version rendered its labels and then swallowed every click on them
+            // without acting, and this is the shape that is known to work in this file: a
+            // rectangle, a mouse area filling it, and the work done in the handler.
+            Rectangle {
+                width: libraryLabel.implicitWidth + 26
+                height: 32
+                radius: 4
+                border.width: 1
+                border.color: libraryArea.containsMouse ? "#6b6055" : "#332c24"
+                color: libraryArea.containsMouse ? "#2a241d" : "transparent"
+
+                Text {
+                    id: libraryLabel
+                    anchors.centerIn: parent
+                    text: qsTr("Open in library")
+                    color: libraryArea.containsMouse ? "#efe8dc" : "#a89e90"
+                    font.pointSize: 10
+                }
+
+                MouseArea {
+                    id: libraryArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: if (bookcase) bookcase.showOpenedSeriesInLibrary()
+                }
             }
 
-            ShelfAction {
-                label: qsTr("Back to the shelves")
-                onTriggered: shelf.closed()
+            Rectangle {
+                width: closeLabel.implicitWidth + 26
+                height: 32
+                radius: 4
+                border.width: 1
+                border.color: closeArea.containsMouse ? "#6b6055" : "#332c24"
+                color: closeArea.containsMouse ? "#2a241d" : "transparent"
+
+                Text {
+                    id: closeLabel
+                    anchors.centerIn: parent
+                    text: qsTr("Back to the shelves")
+                    color: closeArea.containsMouse ? "#efe8dc" : "#a89e90"
+                    font.pointSize: 10
+                }
+
+                MouseArea {
+                    id: closeArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: shelf.closed()
+                }
             }
         }
 
@@ -137,16 +147,10 @@ Item {
 
         model: shelf.volumeCount
 
-        // The wheel is handled here rather than left to the covers' own mouse areas to pass
-        // upwards. Forty two volumes is seven rows and only three fit on screen, so a wheel
-        // that goes anywhere else makes the shelf unusable - which is exactly what it did.
-        WheelHandler {
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onWheel: event => {
-                const limit = Math.max(0, grid.contentHeight - grid.height)
-                grid.contentY = Math.max(0, Math.min(limit, grid.contentY - event.angleDelta.y))
-            }
-        }
+        // No wheel handling here. A GridView reparents its declared children into its own
+        // moving content item, so a handler written inside it does not sit over the view at
+        // all - which is why the first attempt at this changed nothing. It is done by a
+        // plain mouse area laid over the grid instead, below.
 
         delegate: Item {
             id: cell
@@ -263,6 +267,22 @@ Item {
                 color: "#a89e90"
                 font.pointSize: 8
             }
+        }
+    }
+
+    // The wheel, taken over the grid by something that is unambiguously on top of it.
+    //
+    // NoButton means presses and releases are not accepted here at all and fall straight
+    // through to the covers underneath, so this steals the wheel and nothing else. Sixty one
+    // volumes is thirteen rows and three of them fit on screen; the wheel is not optional.
+    MouseArea {
+        anchors.fill: grid
+        acceptedButtons: Qt.NoButton
+
+        onWheel: wheel => {
+            const limit = Math.max(0, grid.contentHeight - grid.height)
+            grid.contentY = Math.max(0, Math.min(limit, grid.contentY - wheel.angleDelta.y))
+            wheel.accepted = true
         }
     }
 
