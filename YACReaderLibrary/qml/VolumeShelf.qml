@@ -41,14 +41,23 @@ Item {
         anchors.fill: parent
         color: "#e0080706"
 
+        // The wheel is done here, on the one area in this scene measured to receive
+        // everything reliably, rather than on something laid over the grid. Two attempts at
+        // that - a handler inside the view, then a mouse area anchored across it - both
+        // showed a wheel count of zero while the wall behind spun perfectly well. This sits
+        // underneath the grid, so it only ever sees what the grid did not take, which is
+        // everything.
         MouseArea {
             anchors.fill: parent
             onPressed: shelf.backdropPresses++
             onClicked: shelf.closed()
-            // Absorbed rather than left to fall through. Behind this sits the wall's own
-            // wheel handler, and a wheel that misses the shelf was silently spinning the
-            // wall underneath it.
-            onWheel: wheel => wheel.accepted = true
+
+            onWheel: wheel => {
+                shelf.wheels++
+                const limit = Math.max(0, grid.contentHeight - grid.height)
+                grid.contentY = Math.max(0, Math.min(limit, grid.contentY - wheel.angleDelta.y))
+                wheel.accepted = true
+            }
         }
     }
 
@@ -88,11 +97,15 @@ Item {
                     font.pointSize: 10
                 }
 
+                // On release, not on click. Measured: these buttons receive the press and
+                // the release - the counters said 1/1 - and never emit clicked. Whatever
+                // the reason for that, released is the event that actually arrives, and a
+                // button that works is worth more than the tidier handler that does not.
                 MouseArea {
                     id: libraryArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: if (bookcase) bookcase.showOpenedSeriesInLibrary()
+                    onReleased: if (bookcase) bookcase.showOpenedSeriesInLibrary()
                 }
             }
 
@@ -117,8 +130,10 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     onPressed: shelf.buttonPresses++
-                    onReleased: shelf.buttonReleases++
-                    onClicked: shelf.closed()
+                    onReleased: {
+                        shelf.buttonReleases++
+                        shelf.closed()
+                    }
                 }
             }
         }
@@ -288,25 +303,6 @@ Item {
     // NoButton means presses and releases are not accepted here at all and fall straight
     // through to the covers underneath, so this steals the wheel and nothing else. Sixty one
     // volumes is thirteen rows and three of them fit on screen; the wheel is not optional.
-    MouseArea {
-        anchors.fill: grid
-        // Accepting the left button and then refusing each press, rather than declaring
-        // NoButton. NoButton is the Qt 5 way to make an area that only wants the wheel, and
-        // in Qt 6 it can take the item out of mouse delivery altogether - which would leave
-        // this handler exactly as dead as the one it replaced.
-        acceptedButtons: Qt.LeftButton
-        propagateComposedEvents: true
-
-        onPressed: mouse => mouse.accepted = false
-
-        onWheel: wheel => {
-            shelf.wheels++
-            const limit = Math.max(0, grid.contentHeight - grid.height)
-            grid.contentY = Math.max(0, Math.min(limit, grid.contentY - wheel.angleDelta.y))
-            wheel.accepted = true
-        }
-    }
-
     // What is actually arriving, on screen, because three rounds of inferring it from
     // symptoms got the wrong answer three times.
     Rectangle {
