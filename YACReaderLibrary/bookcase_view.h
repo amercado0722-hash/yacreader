@@ -10,7 +10,9 @@
 #include <QQuickWidget>
 #include <QStringList>
 #include <QUrl>
+#include <QVariant>
 
+class ComicModel;
 class FolderModel;
 
 // The library as a wall of shelves curving away around you, books standing spine out.
@@ -42,18 +44,38 @@ public:
     // library - only covers - so the band of colour that makes a shelf look like a shelf
     // has to be invented, and inventing it from the title means it never changes.
     Q_INVOKABLE QColor spineColorAt(int index) const;
+
+    // Taking a series off the wall. The volumes are loaded here rather than in the scene,
+    // because a series is a folder in the library database and the scene has no business
+    // knowing that.
     Q_INVOKABLE void openSeries(int index);
+    Q_INVOKABLE void closeSeries();
+    Q_INVOKABLE QString openedSeriesTitle() const;
+
+    Q_INVOKABLE int volumeCount() const;
+    Q_INVOKABLE QString volumeTitleAt(int index) const;
+    Q_INVOKABLE QString volumeNumberAt(int index) const;
+    Q_INVOKABLE QUrl volumeCoverAt(int index) const;
+    Q_INVOKABLE bool volumeReadAt(int index) const;
+    Q_INVOKABLE void openVolume(int index);
+    // The way back to the ordinary folder view, for the things the shelf deliberately does
+    // not do: selecting several volumes, the context menu, editing metadata.
+    Q_INVOKABLE void showOpenedSeriesInLibrary();
 
 signals:
     void folderSelected(const QModelIndex &sourceIndex);
-    // The scene rebuilds itself on this rather than being poked by name through the
+    void volumeActivated(const QModelIndex &sourceIndex, qulonglong comicId);
+    // The scene rebuilds itself on these rather than being poked by name through the
     // metaobject, which is both type checked and one less string to get wrong.
     void seriesChanged();
+    void volumesChanged();
 
 protected:
     void applyTheme(const Theme &theme) override;
 
 private:
+    QVariant volumeData(int index, int role) const;
+
     FolderModel *folderModel = nullptr;
     QPersistentModelIndex parentFolder;
 
@@ -61,6 +83,12 @@ private:
     QStringList titles;
     QList<QUrl> covers;
     QList<int> counts;
+
+    // The series currently pulled off the wall, and its volumes. Its own model rather than
+    // the window's, so that opening a series on the shelf does not disturb whatever the
+    // ordinary comics view is showing.
+    ComicModel *volumes = nullptr;
+    int openedSeries = -1;
 };
 
 #endif // BOOKCASE_VIEW_H

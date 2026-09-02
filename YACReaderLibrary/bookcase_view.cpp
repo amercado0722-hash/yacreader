@@ -1,5 +1,6 @@
 #include "bookcase_view.h"
 
+#include "comic_model.h"
 #include "folder_model.h"
 #include "series_name_utils.h"
 
@@ -10,6 +11,8 @@ BookcaseView::BookcaseView(QWidget *parent)
     : QQuickWidget(parent)
 {
     setResizeMode(QQuickWidget::SizeRootObjectToView);
+
+    volumes = new ComicModel(this);
 
     // Every context property the scene reads has to exist before the QML is loaded. A
     // property added afterwards does not re-run the bindings that referred to it, so the
@@ -38,6 +41,10 @@ void BookcaseView::setFolderModel(FolderModel *model, const QModelIndex &parentI
 
 void BookcaseView::reload()
 {
+    // Whatever was pulled off the wall belongs to the old list of series and its index means
+    // nothing against the new one.
+    openedSeries = -1;
+
     series.clear();
     titles.clear();
     covers.clear();
@@ -119,11 +126,92 @@ QColor BookcaseView::spineColorAt(int index) const
 
 void BookcaseView::openSeries(int index)
 {
-    if (index < 0 || index >= series.size()) {
+    if (index < 0 || index >= series.size() || folderModel == nullptr) {
         return;
     }
 
     const auto folder = series.at(index);
+    if (!folder.isValid()) {
+        return;
+    }
+
+    openedSeries = index;
+    volumes->setupFolderModelData(folder.data(FolderModel::IdRole).toULongLong(), folderModel->getDatabase());
+
+    emit volumesChanged();
+}
+
+void BookcaseView::closeSeries()
+{
+    openedSeries = -1;
+    emit volumesChanged();
+}
+
+QString BookcaseView::openedSeriesTitle() const
+{
+    return titleAt(openedSeries);
+}
+
+int BookcaseView::volumeCount() const
+{
+    return openedSeries >= 0 ? volumes->rowCount() : 0;
+}
+
+// One index at a time, like the wall above it. A series of two hundred and twenty one
+// volumes is not unheard of in this library, and the shelf only ever shows the handful of
+// rows that are actually on screen.
+QVariant BookcaseView::volumeData(int index, int role) const
+{
+    if (openedSeries < 0 || index < 0 || index >= volumes->rowCount()) {
+        return { };
+    }
+    return volumes->index(index, 0).data(role);
+}
+
+QString BookcaseView::volumeTitleAt(int index) const
+{
+    return volumeData(index, ComicModel::ReadableTitle).toString();
+}
+
+QString BookcaseView::volumeNumberAt(int index) const
+{
+    return volumeData(index, ComicModel::NumberRole).toString();
+}
+
+QUrl BookcaseView::volumeCoverAt(int index) const
+{
+    return volumeData(index, ComicModel::CoverPathRole).toUrl();
+}
+
+bool BookcaseView::volumeReadAt(int index) const
+{
+    return volumeData(index, ComicModel::ReadColumnRole).toBool();
+}
+
+void BookcaseView::openVolume(int index)
+{
+    if (openedSeries < 0 || openedSeries >= series.size()) {
+        return;
+    }
+
+    const auto id = volumeData(index, ComicModel::IdRole).toULongLong();
+    if (id == 0) {
+        return;
+    }
+
+    const auto folder = series.at(openedSeries);
+    if (folder.isValid()) {
+        emit volumeActivated(folder, id);
+    }
+}
+
+void BookcaseView::showOpenedSeriesInLibrary()
+{
+    if (openedSeries < 0 || openedSeries >= series.size()) {
+        return;
+    }
+
+    const auto folder = series.at(openedSeries);
     if (folder.isValid()) {
         emit folderSelected(folder);
     }
