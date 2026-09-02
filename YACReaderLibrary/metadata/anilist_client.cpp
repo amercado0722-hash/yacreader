@@ -24,6 +24,7 @@ const QString kQuery = QStringLiteral(
         "      title { romaji english native }"
         "      synonyms"
         "      format"
+        "      popularity"
         "      status"
         "      description(asHtml: false)"
         "      startDate { year month day }"
@@ -137,6 +138,8 @@ SeriesMetadata parseMedia(const QJsonObject &media)
     metadata.title = english.isEmpty() ? metadata.romajiTitle : english;
 
     metadata.synonyms = jsonStringList(media, QStringLiteral("synonyms"));
+    metadata.format = jsonString(media, QStringLiteral("format"));
+    metadata.popularity = jsonInt(media, QStringLiteral("popularity"));
     metadata.synopsis = AniListClient::stripHtml(jsonString(media, QStringLiteral("description")));
     metadata.genres = jsonStringList(media, QStringLiteral("genres"));
     metadata.tags = relevantTags(media);
@@ -248,9 +251,17 @@ AniListClient::Response AniListClient::parseResponse(const QByteArray &json)
     const auto media = root.value(QStringLiteral("data")).toObject().value(QStringLiteral("Page")).toObject().value(QStringLiteral("media")).toArray();
     for (const auto &entry : media) {
         const auto metadata = parseMedia(entry.toObject());
-        if (metadata.isValid()) {
-            response.candidates.append(metadata);
+        if (!metadata.isValid()) {
+            continue;
         }
+        // A light novel is not what is in this library, and a novel sharing a manga's name
+        // is a standing source of wrong answers: searching "Case Closed" returns a Detective
+        // Conan novel that carries the English title outright, ahead of the manga that only
+        // lists it as a synonym.
+        if (metadata.format.compare(QStringLiteral("NOVEL"), Qt::CaseInsensitive) == 0) {
+            continue;
+        }
+        response.candidates.append(metadata);
     }
 
     return response;

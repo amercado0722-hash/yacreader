@@ -103,13 +103,33 @@ inline int scoreTitle(const QString &wanted, const QString &candidate)
 }
 
 // The best score any of a series' known titles achieves against the name we are looking up.
+//
+// A match on one of the names the series is published under counts for more than a match on
+// one of its synonyms. That is not a nicety: a spin-off's synonym list routinely contains
+// its parent series' title, so scoring the two the same made the real "My Hero Academia"
+// tie at 100 with a My Hero Academia side story - and to the rule below, a tie looks exactly
+// like genuine ambiguity. Synonyms still count, because plenty of series are only findable
+// by one, but they sit in a band of their own beneath the real names.
 inline int scoreSeries(const QString &wanted, const SeriesMetadata &series)
 {
+    static constexpr auto kSynonymExactScore = 92;
+
     auto best = 0;
-    const auto titles = series.allTitles();
-    for (const auto &title : titles) {
+    const auto primary = series.primaryTitles();
+    for (const auto &title : primary) {
         best = qMax(best, scoreTitle(wanted, title));
     }
+
+    for (const auto &synonym : series.synonyms) {
+        const auto score = scoreTitle(wanted, synonym);
+        // An exact synonym match is strong evidence, just not as strong as the real name.
+        // A partial one is word overlap and keeps the score it earned, which is well below
+        // anything that can be taken automatically - but the ranking is also what orders the
+        // list the user picks from when the scraper gives up, and a half-recognised name is
+        // worth more to them there than nothing at all.
+        best = qMax(best, score >= 95 ? kSynonymExactScore : score);
+    }
+
     return best;
 }
 
@@ -122,13 +142,31 @@ struct SeriesMatch {
 };
 
 // A match is taken automatically only when the winner is an all-but-exact name match and
-// nothing else is within reach of it. The gap matters as much as the score: a library
-// holds spin-offs, side stories and sequels whose names differ by a word, and two
-// candidates both scoring 100 means the name alone cannot tell them apart.
+// nothing else is within reach of it. The gap matters as much as the score: a library holds
+// spin-offs, side stories and sequels whose names differ by a word, and two candidates both
+// scoring 100 means the name alone cannot tell them apart.
+//
+// But "the name alone cannot tell them apart" is not the same as "nobody can". Measured
+// against the real library, requiring a clear lead rejected almost every famous series in
+// it - One Piece, Naruto, Bleach, My Hero Academia - because a famous series is precisely
+// the one with duplicate entries, parodies and side stories sharing its name. When two
+// candidates are named identically they are nearly always the same work listed twice, or a
+// well known work and something trading on its title, and readership separates those two
+// cases decisively: One Piece has two hundred thousand readers and the parody has two
+// hundred. So a tie on the name is settled by a wide margin in readership, and only a
+// genuine contest - two real series of the same name and comparable following - is still
+// handed to the user.
 inline QList<SeriesMatch> rankSeriesMatches(const QString &wanted, const QList<SeriesMetadata> &candidates)
 {
-    static constexpr auto kConfidentScore = 95;
+    // The synonym band sits just under this, so an exact synonym match with nothing else
+    // near it can still be taken.
+    static constexpr auto kConfidentScore = 92;
     static constexpr auto kRequiredLead = 15;
+    // Deliberately a multiple rather than a difference: what matters is that one candidate
+    // is in a different league, not that it is a fixed number of readers ahead.
+    static constexpr auto kRequiredPopularityRatio = 3;
+    // Below this, a provider's readership figures are too thin to mean anything.
+    static constexpr auto kMinimumPopularity = 300;
 
     QList<SeriesMatch> ranked;
     ranked.reserve(candidates.size());
@@ -140,13 +178,26 @@ inline QList<SeriesMatch> rankSeriesMatches(const QString &wanted, const QList<S
         ranked.append(match);
     }
 
+    // Sorted by score, then by readership, so that when the scores tie the candidate the
+    // tiebreak would choose is the one sitting at the front.
     std::stable_sort(ranked.begin(), ranked.end(), [](const SeriesMatch &a, const SeriesMatch &b) {
-        return a.score > b.score;
+        if (a.score != b.score) {
+            return a.score > b.score;
+        }
+        return a.series.popularity > b.series.popularity;
     });
 
     if (!ranked.isEmpty() && ranked.first().score >= kConfidentScore) {
-        const auto runnerUp = ranked.size() > 1 ? ranked.at(1).score : 0;
-        ranked.first().confident = (ranked.first().score - runnerUp) >= kRequiredLead;
+        const auto runnerUpScore = ranked.size() > 1 ? ranked.at(1).score : 0;
+        const auto runnerUpPopularity = ranked.size() > 1 ? ranked.at(1).series.popularity : 0;
+        const auto winnerPopularity = ranked.first().series.popularity;
+
+        const auto clearOnName = (ranked.first().score - runnerUpScore) >= kRequiredLead;
+        // One line because the project's clang-format has no column limit and joins a
+        // wrapped condition back up regardless of where it was broken.
+        const auto clearOnReaders = winnerPopularity >= kMinimumPopularity && winnerPopularity >= kRequiredPopularityRatio * qMax(runnerUpPopularity, 1);
+
+        ranked.first().confident = clearOnName || clearOnReaders;
     }
 
     return ranked;

@@ -224,19 +224,54 @@ void BatchScraper::run()
 
         emit progress(done, total, target.folderName);
 
-        auto response = client.searchSeries(target.searchName);
+        // A folder name that answers nothing is asked again with a little more of its tail
+        // cut off. Only a name that failed costs a second request, so a library of clean
+        // names still makes exactly one request per series.
+        const auto searchNames = seriesSearchNames(target.folderName);
 
-        // Being told to slow down is not a failure. Wait exactly as long as we were asked
-        // to and put the same series back through, rather than losing it from the run.
-        auto rateLimitRetries = 0;
-        while (response.rateLimited && rateLimitRetries < 3 && !cancelled) {
-            const auto seconds = qMax(1, response.retryAfterSeconds);
-            emit waiting(seconds, tr("waiting for the provider's rate limit"));
-            if (!sleepInterruptibly(seconds * 1000)) {
+        AniListClient::Response response;
+        QList<SeriesMatch> ranked;
+        auto usedName = target.searchName;
+
+        for (auto attemptIndex = 0; attemptIndex < searchNames.size(); ++attemptIndex) {
+            if (cancelled) {
                 break;
             }
-            response = client.searchSeries(target.searchName);
-            rateLimitRetries++;
+
+            const auto searchName = searchNames.at(attemptIndex);
+            usedName = searchName;
+            response = client.searchSeries(searchName);
+
+            // Being told to slow down is not a failure. Wait exactly as long as we were
+            // asked to and put the same series back through, rather than losing it from the
+            // run.
+            auto rateLimitRetries = 0;
+            while (response.rateLimited && rateLimitRetries < 3 && !cancelled) {
+                const auto seconds = qMax(1, response.retryAfterSeconds);
+                emit waiting(seconds, tr("waiting for the provider's rate limit"));
+                if (!sleepInterruptibly(seconds * 1000)) {
+                    break;
+                }
+                response = client.searchSeries(searchName);
+                rateLimitRetries++;
+            }
+
+            if (response.error) {
+                break;
+            }
+
+            const auto attempt = rankSeriesMatches(searchName, response.candidates);
+            if (!attempt.isEmpty() && (ranked.isEmpty() || attempt.first().score > ranked.first().score)) {
+                ranked = attempt;
+            }
+
+            if (!ranked.isEmpty() && ranked.first().confident) {
+                break;
+            }
+
+            if (attemptIndex + 1 < searchNames.size()) {
+                sleepInterruptibly(requestIntervalMs);
+            }
         }
 
         if (cancelled) {
@@ -250,15 +285,14 @@ void BatchScraper::run()
             outcome.result = ScrapeOutcome::Failed;
             outcome.message = response.errorString;
             failed++;
-        } else if (response.candidates.isEmpty()) {
+        } else if (ranked.isEmpty()) {
             outcome.result = ScrapeOutcome::NotFound;
-            outcome.message = tr("Nothing found for \"%1\"").arg(target.searchName);
+            outcome.message = tr("Nothing found for \"%1\"").arg(usedName);
             notFound++;
         } else {
-            const auto ranked = rankSeriesMatches(target.searchName, response.candidates);
             outcome.candidates = ranked;
 
-            if (!ranked.isEmpty() && ranked.first().confident) {
+            if (ranked.first().confident) {
                 auto writeOutcome = applyToFolder(target, ranked.first().series);
                 writeOutcome.candidates = ranked;
                 outcome = writeOutcome;

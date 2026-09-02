@@ -18,6 +18,9 @@ private slots:
     void displayNameNeverEmptiesATitle_data();
     void searchNameStripsEverythingTrailing();
     void searchNameStripsEverythingTrailing_data();
+    void searchNamesFallBackTowardsTheBareTitle();
+    void searchNamesFallBackTowardsTheBareTitle_data();
+    void searchNamesLeadWithTheCleanedName();
 };
 
 void SeriesNameTest::displayNameStripsReleaseTags_data()
@@ -115,6 +118,40 @@ void SeriesNameTest::searchNameStripsEverythingTrailing()
     QFETCH(QString, expected);
 
     QCOMPARE(YACReader::cleanSeriesSearchName(input), expected);
+}
+
+void SeriesNameTest::searchNamesFallBackTowardsTheBareTitle_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expected");
+
+    // All four of these were reported as "nothing found" against a library that holds
+    // them, because the folder name says what the scan is as well as what the series is.
+    QTest::newRow("volume range") << "Bleach - v01-v74 COMPLETE (VIZ Digital)" << "Bleach";
+    QTest::newRow("colour edition") << "Dragon Ball - Digital Colored Comics - Super Arc" << "Dragon Ball";
+    QTest::newRow("stacked nouns") << "Naruto Manga Volume" << "Naruto";
+    QTest::newRow("accent") << QString::fromUtf8("Polar Bear Caf\xC3\xA9") << "Polar Bear Cafe";
+}
+
+void SeriesNameTest::searchNamesFallBackTowardsTheBareTitle()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expected);
+
+    QVERIFY(YACReader::seriesSearchNames(input).contains(expected));
+}
+
+void SeriesNameTest::searchNamesLeadWithTheCleanedName()
+{
+    // A name that is already good must be asked first and, since the search stops at the
+    // first answer, must cost exactly one request.
+    const auto names = YACReader::seriesSearchNames("Akane-banashi");
+
+    QCOMPARE(names.size(), 1);
+    QCOMPARE(names.first(), QStringLiteral("Akane-banashi"));
+
+    const auto tagged = YACReader::seriesSearchNames("A Bride's Story (Digital) (1r0n)");
+    QCOMPARE(tagged.first(), QStringLiteral("A Bride's Story"));
 }
 
 QTEST_MAIN(SeriesNameTest)
