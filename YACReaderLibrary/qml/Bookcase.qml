@@ -315,6 +315,10 @@ Item {
         acceptedButtons: Qt.LeftButton
         z: -1
         propagateComposedEvents: true
+        // Off entirely while a series is open. It fills the whole view, and leaving it live
+        // under the shelf meant a wheel or a drag that the shelf did not take was turning
+        // the wall behind it, out of sight.
+        enabled: wall.openedIndex < 0
 
         property real pressX: 0
         property real pressOffset: 0

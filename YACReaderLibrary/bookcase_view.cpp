@@ -11,6 +11,10 @@ BookcaseView::BookcaseView(QWidget *parent)
     : QQuickWidget(parent)
 {
     setResizeMode(QQuickWidget::SizeRootObjectToView);
+    // Without this the widget never takes keyboard focus when it is clicked, and every
+    // Keys handler in the scene - Escape out of an opened series, the arrow keys along the
+    // wall - is dead code.
+    setFocusPolicy(Qt::StrongFocus);
 
     volumes = new ComicModel(this);
 

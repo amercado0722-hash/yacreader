@@ -25,6 +25,38 @@ Item {
     anchors.fill: parent
     focus: visible
 
+    // A real hit target rather than bare text with a mouse area hung off it. Eight pixels of
+    // margin around a ten point label is something you have to aim at, and the hover
+    // background says plainly whether the pointer has found it - which bare text does not.
+    component ShelfAction: Rectangle {
+        id: actionButton
+
+        property string label: ""
+
+        signal triggered()
+
+        width: actionLabel.implicitWidth + 26
+        height: 32
+        radius: 4
+        color: actionArea.containsMouse ? "#2a241d" : "transparent"
+
+        Text {
+            id: actionLabel
+            anchors.centerIn: parent
+            text: actionButton.label
+            color: actionArea.containsMouse ? "#efe8dc" : "#8d857a"
+            font.pointSize: 10
+        }
+
+        MouseArea {
+            id: actionArea
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: actionButton.triggered()
+        }
+    }
+
     // The room, darkened. The wall is still there behind this and should read as still
     // there - dimmed rather than replaced, so closing the series puts you back where you
     // were rather than somewhere new.
@@ -35,6 +67,10 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: shelf.closed()
+            // Absorbed rather than left to fall through. Behind this sits the wall's own
+            // wheel handler, and a wheel that misses the shelf was silently spinning the
+            // wall underneath it.
+            onWheel: wheel => wheel.accepted = true
         }
     }
 
@@ -44,53 +80,43 @@ Item {
         anchors { top: parent.top; left: parent.left; right: parent.right }
         height: 62
 
-        Text {
-            id: seriesName
-            anchors { left: parent.left; leftMargin: 28; verticalCenter: parent.verticalCenter }
-            width: parent.width - 320
-            text: shelf.seriesTitle
-            elide: Text.ElideRight
-            maximumLineCount: 1
-            color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ffffff"
-            font.pointSize: 15
+        // The two actions first, because everything to their left is sized from where they
+        // end. Laid out right to left like this, the title and the count cannot run
+        // underneath them, which is what a fixed width for the title allowed: a short series
+        // name left the count sitting on top of the first link.
+        Row {
+            id: actions
+
+            anchors { right: parent.right; rightMargin: 24; verticalCenter: parent.verticalCenter }
+            spacing: 6
+
+            ShelfAction {
+                label: qsTr("Open in library")
+                onTriggered: if (bookcase) bookcase.showOpenedSeriesInLibrary()
+            }
+
+            ShelfAction {
+                label: qsTr("Back to the shelves")
+                onTriggered: shelf.closed()
+            }
         }
 
         Text {
-            anchors { left: seriesName.right; leftMargin: 12; baseline: seriesName.baseline }
+            id: countLabel
+            anchors { right: actions.left; rightMargin: 18; verticalCenter: parent.verticalCenter }
             text: shelf.volumeCount === 1 ? qsTr("1 volume") : qsTr("%1 volumes").arg(shelf.volumeCount)
             color: "#8d857a"
             font.pointSize: 10
         }
 
-        // The way out to the folder view, for everything the shelf deliberately does not do.
         Text {
-            id: openInLibrary
-            anchors { right: closeButton.left; rightMargin: 22; verticalCenter: parent.verticalCenter }
-            text: qsTr("Open in library")
-            color: libraryArea.containsMouse ? "#e8e0d4" : "#8d857a"
-            font.pointSize: 10
-
-            MouseArea {
-                id: libraryArea
-                anchors { fill: parent; margins: -8 }
-                hoverEnabled: true
-                onClicked: if (bookcase) bookcase.showOpenedSeriesInLibrary()
-            }
-        }
-
-        Text {
-            id: closeButton
-            anchors { right: parent.right; rightMargin: 28; verticalCenter: parent.verticalCenter }
-            text: qsTr("Back to the shelves")
-            color: closeArea.containsMouse ? "#e8e0d4" : "#8d857a"
-            font.pointSize: 10
-
-            MouseArea {
-                id: closeArea
-                anchors { fill: parent; margins: -8 }
-                hoverEnabled: true
-                onClicked: shelf.closed()
-            }
+            id: seriesName
+            anchors { left: parent.left; leftMargin: 28; right: countLabel.left; rightMargin: 14; verticalCenter: parent.verticalCenter }
+            text: shelf.seriesTitle
+            elide: Text.ElideRight
+            maximumLineCount: 1
+            color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ffffff"
+            font.pointSize: 15
         }
     }
 
@@ -110,6 +136,17 @@ Item {
         cellHeight: 268
 
         model: shelf.volumeCount
+
+        // The wheel is handled here rather than left to the covers' own mouse areas to pass
+        // upwards. Forty two volumes is seven rows and only three fit on screen, so a wheel
+        // that goes anywhere else makes the shelf unusable - which is exactly what it did.
+        WheelHandler {
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onWheel: event => {
+                const limit = Math.max(0, grid.contentHeight - grid.height)
+                grid.contentY = Math.max(0, Math.min(limit, grid.contentY - event.angleDelta.y))
+            }
+        }
 
         delegate: Item {
             id: cell
