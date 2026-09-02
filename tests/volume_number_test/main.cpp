@@ -18,6 +18,8 @@ private slots:
     void ignoresPublicationYears_data();
     void returnsNothingForOneShots();
     void returnsNothingForOneShots_data();
+    void readsTheSeriesNameBackOut();
+    void readsTheSeriesNameBackOut_data();
     void normalizesLeadingZeros();
     void normalizesLeadingZeros_data();
 };
@@ -127,6 +129,31 @@ void VolumeNumberTest::normalizesLeadingZeros()
     QFETCH(QString, expected);
 
     QCOMPARE(YACReader::normalizedVolumeNumber(input), expected);
+}
+
+void VolumeNumberTest::readsTheSeriesNameBackOut_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expected");
+
+    // A loose volume dropped into the library has to find its own series folder, and the
+    // only thing it knows about itself is its file name.
+    QTest::newRow("volume marker") << "A Bride's Story v07 (2024)" << "A Bride's Story";
+    QTest::newRow("padded marker") << "Berserk - Deluxe Edition v03" << "Berserk - Deluxe Edition";
+    QTest::newRow("long marker") << "Some Series Vol. 3" << "Some Series";
+    QTest::newRow("bare chapter") << "One-Punch Man 207 (2025)" << "One-Punch Man";
+    QTest::newRow("no number at all") << "Sayuri" << "Sayuri";
+    // A title that is only a number must survive whole, or "86" files itself as nothing.
+    QTest::newRow("number is the title") << "86" << "86";
+    QTest::newRow("number starts the title") << "12 Beast" << "12 Beast";
+}
+
+void VolumeNumberTest::readsTheSeriesNameBackOut()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expected);
+
+    QCOMPARE(YACReader::seriesNameFromVolumeFileName(input), expected);
 }
 
 QTEST_MAIN(VolumeNumberTest)
