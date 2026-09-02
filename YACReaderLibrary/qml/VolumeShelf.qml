@@ -14,6 +14,15 @@ Item {
     property int volumeCount: 0
     property string seriesTitle: ""
 
+    // Counters behind the readout at the foot of the shelf. Three attempts at fixing this
+    // view failed because every one of them was a theory about which events were arriving,
+    // and there was no way to find out which were. These say so outright.
+    property int backdropPresses: 0
+    property int buttonPresses: 0
+    property int buttonReleases: 0
+    property int coverHovers: 0
+    property int wheels: 0
+
     signal closed()
 
     function reload() {
@@ -34,6 +43,7 @@ Item {
 
         MouseArea {
             anchors.fill: parent
+            onPressed: shelf.backdropPresses++
             onClicked: shelf.closed()
             // Absorbed rather than left to fall through. Behind this sits the wall's own
             // wheel handler, and a wheel that misses the shelf was silently spinning the
@@ -106,6 +116,8 @@ Item {
                     id: closeArea
                     anchors.fill: parent
                     hoverEnabled: true
+                    onPressed: shelf.buttonPresses++
+                    onReleased: shelf.buttonReleases++
                     onClicked: shelf.closed()
                 }
             }
@@ -252,6 +264,7 @@ Item {
                     id: hover
                     anchors.fill: parent
                     hoverEnabled: true
+                    onEntered: shelf.coverHovers++
                     onClicked: if (bookcase) bookcase.openVolume(cell.index)
                 }
             }
@@ -277,12 +290,46 @@ Item {
     // volumes is thirteen rows and three of them fit on screen; the wheel is not optional.
     MouseArea {
         anchors.fill: grid
-        acceptedButtons: Qt.NoButton
+        // Accepting the left button and then refusing each press, rather than declaring
+        // NoButton. NoButton is the Qt 5 way to make an area that only wants the wheel, and
+        // in Qt 6 it can take the item out of mouse delivery altogether - which would leave
+        // this handler exactly as dead as the one it replaced.
+        acceptedButtons: Qt.LeftButton
+        propagateComposedEvents: true
+
+        onPressed: mouse => mouse.accepted = false
 
         onWheel: wheel => {
+            shelf.wheels++
             const limit = Math.max(0, grid.contentHeight - grid.height)
             grid.contentY = Math.max(0, Math.min(limit, grid.contentY - wheel.angleDelta.y))
             wheel.accepted = true
+        }
+    }
+
+    // What is actually arriving, on screen, because three rounds of inferring it from
+    // symptoms got the wrong answer three times.
+    Rectangle {
+        anchors { left: parent.left; bottom: parent.bottom; leftMargin: 8; bottomMargin: 8 }
+        width: probe.implicitWidth + 16
+        height: probe.implicitHeight + 8
+        color: "#cc000000"
+        radius: 3
+        z: 999
+
+        Text {
+            id: probe
+            anchors.centerIn: parent
+            color: "#9a938a"
+            font.pointSize: 8
+            text: "grid " + Math.round(grid.width) + "x" + Math.round(grid.height)
+                    + " content " + Math.round(grid.contentHeight)
+                    + " cols " + grid.columns
+                    + " n " + shelf.volumeCount
+                    + "  |  backdrop " + shelf.backdropPresses
+                    + " btn " + shelf.buttonPresses + "/" + shelf.buttonReleases
+                    + " cover " + shelf.coverHovers
+                    + " wheel " + shelf.wheels
         }
     }
 
