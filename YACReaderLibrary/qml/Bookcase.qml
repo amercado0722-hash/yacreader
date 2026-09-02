@@ -373,6 +373,15 @@ Item {
     focus: true
     Keys.onLeftPressed: { spin.to = wall.wallOffset - 32; spin.restart() }
     Keys.onRightPressed: { spin.to = wall.wallOffset + 32; spin.restart() }
-    Keys.onEscapePressed: wall.openedIndex = -1
+    // Only taken when there is something to put back. Accepting it unconditionally swallowed
+    // the key the window uses to leave fullscreen, so from this view there was no way out.
+    Keys.onEscapePressed: event => {
+        if (wall.openedIndex >= 0) {
+            wall.openedIndex = -1
+            event.accepted = true
+        } else {
+            event.accepted = false
+        }
+    }
     Keys.onReturnPressed: if (wall.openedIndex >= 0 && bookcase) bookcase.openSeries(wall.openedIndex)
 }

@@ -84,7 +84,7 @@ extern YACReaderHttpServer *httpServer;
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), pendingAfterLaunchTasks(false)
+    : QMainWindow(), pendingAfterLaunchTasks(false)
 {
     createSettings();
 
@@ -245,6 +245,16 @@ void LibraryWindow::setupUI()
     if (settings->contains(MAIN_WINDOW_GEOMETRY)) {
         restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
         restoreState(settings->value(MAIN_WINDOW_STATE).toByteArray());
+        // Never come back up fullscreen. A saved geometry carries the window state with it,
+        // so closing the app in fullscreen meant reopening in it - but reopening does not
+        // run the code that hides the sidebar and toolbar and remembers that it did, so the
+        // window arrived filling the screen, with no title bar, holding a toolbar button
+        // that believed it was not in fullscreen and would therefore enter it again. There
+        // was no way out of that but the keyboard shortcut. Restoring maximized instead
+        // costs the user one keypress and cannot trap them.
+        if (windowState() & Qt::WindowFullScreen) {
+            setWindowState((windowState() & ~Qt::WindowFullScreen) | Qt::WindowMaximized);
+        }
         // Guard against the window landing off-screen when a monitor is unplugged
         // between sessions. Qt 6 tries to remap the geometry to the primary screen
         // when the saved screen is gone, but the result can still be off-screen.
@@ -1134,17 +1144,21 @@ void LibraryWindow::setRootIndex()
     }
 }
 
+// Asked of the window rather than of a flag we keep ourselves. A remembered bool only knows
+// about the times this class was the one that changed the state, and a window can become
+// fullscreen without passing through here - restoring a saved geometry is enough to do it.
+// Once the two disagree the window is fullscreen while the flag says it is not, so the
+// button meant to leave fullscreen enters it again, hiding the toolbar the button is on.
 void LibraryWindow::toggleFullScreen()
 {
-    fullscreen ? toNormal() : toFullScreen();
-    fullscreen = !fullscreen;
+    isFullScreen() ? toNormal() : toFullScreen();
 }
 
 void LibraryWindow::keyPressEvent(QKeyEvent *event)
 {
     // Going fullscreen hides the toolbar, and the button for leaving it lives on that
     // toolbar, so without this the only way back is a shortcut the user has to know.
-    if (event->key() == Qt::Key_Escape && fullscreen) {
+    if (event->key() == Qt::Key_Escape && isFullScreen()) {
         toggleFullScreen();
         event->accept();
         return;
