@@ -530,10 +530,24 @@ void LibraryWindow::setupCoordinators()
     connect(folderManagementCoordinator, &FolderManagementCoordinator::folderDeletionFinished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
     connect(contentViewsManager->gridView(), &ComicsView::customFolderCoverRequested, folderManagementCoordinator, qOverload<qulonglong, const QString &>(&FolderManagementCoordinator::setCustomCover));
 
-    // Choosing a series in the carousel hands straight over to the navigation the folder
-    // tree already uses, which lands in the comics view showing that series' volumes.
+    // Asking for a series in the ordinary folder view hands straight over to the navigation
+    // the folder tree already uses. This is the way out of the bookcase, not the way into a
+    // series - picking a series opens its shelf of volumes without leaving the bookcase.
     connect(contentViewsManager->bookcase(), &BookcaseView::folderSelected, this, [this](const QModelIndex &sourceIndex) {
         navigationController->navigateToFolder(sourceIndex);
+    });
+
+    // Opening a volume off the shelf. The reader is launched through the same coordinator
+    // the rest of the application uses, and that reads the window's own comics model for
+    // the source it hands over, so the folder has to be navigated to first. That is also
+    // what the reader's next and previous need in order to work.
+    connect(contentViewsManager->bookcase(), &BookcaseView::volumeActivated, this, [this](const QModelIndex &sourceIndex, qulonglong comicId) {
+        navigationController->navigateToFolder(sourceIndex);
+
+        const auto comicIndex = comicsModel->getIndexFromId(comicId);
+        if (comicIndex.isValid()) {
+            comicManagementCoordinator->openComic(comicsModel->getComic(comicIndex), comicsModel->getMode());
+        }
     });
     libraryDatabaseMaintenanceCoordinator = new LibraryDatabaseMaintenanceCoordinator(
             libraries,

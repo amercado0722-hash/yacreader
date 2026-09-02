@@ -63,6 +63,25 @@ Item {
     Connections {
         target: bookcase
         function onSeriesChanged() { wall.reset() }
+        // The volumes of the opened series arrive after the click, because loading them is
+        // a query against the library rather than something the scene already holds.
+        function onVolumesChanged() { shelf.reload() }
+    }
+
+    function open(index) {
+        if (index < 0 || index >= seriesCount)
+            return
+        openedIndex = index
+        if (bookcase)
+            bookcase.openSeries(index)
+        shelf.forceActiveFocus()
+    }
+
+    function close() {
+        openedIndex = -1
+        if (bookcase)
+            bookcase.closeSeries()
+        wall.forceActiveFocus()
     }
 
     // Thickness from the number of volumes, on a log curve: the library runs from single
@@ -266,7 +285,7 @@ Item {
 
                             onEntered: wall.hoveredIndex = slot.seriesIndex
                             onExited: if (wall.hoveredIndex === slot.seriesIndex) wall.hoveredIndex = -1
-                            onPicked: wall.openedIndex = slot.seriesIndex
+                            onPicked: wall.open(slot.seriesIndex)
                         }
                     }
                 }
@@ -274,63 +293,21 @@ Item {
         }
     }
 
-    // The book pulled out of the wall: the cover, face on, in front of everything.
-    Item {
-        id: pulled
-        anchors.centerIn: parent
-        width: 300
-        height: 440
+    // The series taken off the wall, opened out into its own shelf of volumes. It covers
+    // the wall rather than replacing it, and the wall keeps its position underneath, so
+    // closing the series puts you back exactly where you were rather than at the beginning.
+    VolumeShelf {
+        id: shelf
+
         visible: wall.openedIndex >= 0
         z: 500
-        scale: visible ? 1 : 0.85
         opacity: visible ? 1 : 0
+        scale: visible ? 1 : 1.04
 
-        Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
-        Behavior on opacity { NumberAnimation { duration: 180 } }
+        Behavior on opacity { NumberAnimation { duration: 160 } }
+        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: -26
-            color: "#c0000000"
-            radius: 6
-        }
-
-        Image {
-            id: pulledCover
-            anchors.fill: parent
-            source: wall.openedIndex >= 0 && bookcase ? bookcase.coverAt(wall.openedIndex) : ""
-            fillMode: Image.PreserveAspectFit
-            asynchronous: true
-        }
-
-        Text {
-            anchors { top: parent.bottom; topMargin: 12; horizontalCenter: parent.horizontalCenter }
-            width: parent.width + 60
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-            maximumLineCount: 2
-            elide: Text.ElideRight
-            text: wall.openedIndex >= 0 && bookcase ? bookcase.titleAt(wall.openedIndex) : ""
-            color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ffffff"
-            font.pointSize: 13
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                if (wall.openedIndex >= 0 && bookcase)
-                    bookcase.openSeries(wall.openedIndex)
-            }
-        }
-    }
-
-    Text {
-        anchors { bottom: parent.bottom; horizontalCenter: parent.horizontalCenter; bottomMargin: 14 }
-        visible: wall.openedIndex >= 0
-        z: 501
-        text: qsTr("Click the cover to open this series, or press Escape to put it back")
-        color: "#9a938a"
-        font.pointSize: 9
+        onClosed: wall.close()
     }
 
     MouseArea {
@@ -377,11 +354,20 @@ Item {
     // the key the window uses to leave fullscreen, so from this view there was no way out.
     Keys.onEscapePressed: event => {
         if (wall.openedIndex >= 0) {
-            wall.openedIndex = -1
+            wall.close()
             event.accepted = true
         } else {
             event.accepted = false
         }
     }
-    Keys.onReturnPressed: if (wall.openedIndex >= 0 && bookcase) bookcase.openSeries(wall.openedIndex)
+    Keys.onReturnPressed: if (wall.openedIndex < 0) wall.open(wall.hoveredIndex >= 0 ? wall.hoveredIndex : wall.centreSeries())
+
+    // Whichever series is dead centre on the middle shelf, for opening one from the keyboard.
+    function centreSeries() {
+        const middle = Math.floor(shelfCount / 2)
+        const s = middle < shelves.length ? shelves[middle] : null
+        if (!s || s.count === 0)
+            return -1
+        return s.first + centreBook(s, shelfPosition(s))
+    }
 }

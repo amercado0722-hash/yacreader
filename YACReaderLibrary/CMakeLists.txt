@@ -378,6 +378,7 @@ set_source_files_properties(
 set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/Bookcase.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/BookSpine.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/VolumeShelf.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/CoverLighting.qml
@@ -413,6 +414,7 @@ set(yacreaderlibrary_qml_files
 set(yacreaderlibrary_qml_translation_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/Bookcase.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/BookSpine.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/VolumeShelf.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/ExpandedComicDelegate.qml
