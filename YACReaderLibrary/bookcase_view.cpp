@@ -1,39 +1,64 @@
 #include "bookcase_view.h"
 
+#include "QsLog.h"
 #include "comic_model.h"
 #include "folder_model.h"
 #include "series_name_utils.h"
 
 #include <QColor>
 #include <QQmlContext>
+#include <QQuickWidget>
+#include <QVBoxLayout>
 
 BookcaseView::BookcaseView(QWidget *parent)
-    : QQuickWidget(parent)
+    : QWidget(parent)
 {
-    setResizeMode(QQuickWidget::SizeRootObjectToView);
-    // Without this the widget never takes keyboard focus when it is clicked, and every
-    // Keys handler in the scene - Escape out of an opened series, the arrow keys along the
-    // wall - is dead code.
+    // A QQuickWidget held inside a plain widget, rather than this class being one.
+    //
+    // That is not a style choice. As a QQuickWidget in the view stack, the scene received
+    // mouse presses and releases and nothing else: no hover, no wheel, no keys. Every other
+    // QML view in this application is a plain widget with a QQuickWidget laid out inside it
+    // and all three work there, so the difference is worth having even without an
+    // explanation for it.
+    view = new QQuickWidget(this);
+    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    view->setFocusPolicy(Qt::StrongFocus);
     setFocusPolicy(Qt::StrongFocus);
+    setFocusProxy(view);
+
+    // A QML error is otherwise completely silent: the scene loads as far as it got, the
+    // rest of it simply is not there, and nothing says so.
+    connect(view, &QQuickWidget::statusChanged, this, [this](QQuickWidget::Status status) {
+        if (status == QQuickWidget::Error) {
+            QLOG_ERROR() << view->errors();
+        }
+    });
 
     volumes = new ComicModel(this);
 
     // Every context property the scene reads has to exist before the QML is loaded. A
     // property added afterwards does not re-run the bindings that referred to it, so the
     // wall would come up with the fallback colours and stay that way.
-    rootContext()->setContextProperty("bookcase", this);
-    rootContext()->setContextProperty("bookcaseBackgroundColor", QColor(16, 16, 18));
-    rootContext()->setContextProperty("bookcaseTextColor", QColor(235, 235, 235));
+    view->rootContext()->setContextProperty("bookcase", this);
+    view->rootContext()->setContextProperty("bookcaseBackgroundColor", QColor(16, 16, 18));
+    view->rootContext()->setContextProperty("bookcaseTextColor", QColor(235, 235, 235));
 
-    setSource(QUrl("qrc:/qml/Bookcase.qml"));
+    view->setSource(QUrl("qrc:/qml/Bookcase.qml"));
+
+    auto *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(view);
+    setLayout(layout);
+    setContentsMargins(0, 0, 0, 0);
 
     initTheme(this);
 }
 
 void BookcaseView::applyTheme(const Theme &theme)
 {
-    rootContext()->setContextProperty("bookcaseBackgroundColor", theme.comicFlow.backgroundColor);
-    rootContext()->setContextProperty("bookcaseTextColor", theme.comicFlow.textColor);
+    view->rootContext()->setContextProperty("bookcaseBackgroundColor", theme.comicFlow.backgroundColor);
+    view->rootContext()->setContextProperty("bookcaseTextColor", theme.comicFlow.textColor);
 }
 
 void BookcaseView::setFolderModel(FolderModel *model, const QModelIndex &parentIndex)

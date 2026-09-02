@@ -7,13 +7,14 @@
 #include <QList>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
-#include <QQuickWidget>
 #include <QStringList>
 #include <QUrl>
 #include <QVariant>
+#include <QWidget>
 
 class ComicModel;
 class FolderModel;
+class QQuickWidget;
 
 // The library as a wall of shelves curving away around you, books standing spine out.
 //
@@ -26,7 +27,7 @@ class FolderModel;
 // it one index at a time, so the scene can build only the columns it can actually see;
 // binding the model directly would mean instantiating nineteen hundred books to show
 // ninety of them.
-class BookcaseView : public QQuickWidget, protected Themable
+class BookcaseView : public QWidget, protected Themable
 {
     Q_OBJECT
 
@@ -75,6 +76,8 @@ protected:
 
 private:
     QVariant volumeData(int index, int role) const;
+
+    QQuickWidget *view = nullptr;
 
     FolderModel *folderModel = nullptr;
     QPersistentModelIndex parentFolder;
