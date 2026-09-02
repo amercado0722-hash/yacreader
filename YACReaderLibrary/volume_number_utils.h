@@ -68,6 +68,37 @@ inline QString volumeNumberFromFileName(const QString &fileName)
     return last;
 }
 
+// The series a loose volume belongs to, read back out of its file name.
+//
+//     A Bride's Story v07 (2024).cbz          -> "A Bride's Story"
+//     One-Punch Man 207 (2025).cbz            -> "One-Punch Man"
+//     Berserk - Deluxe Edition v03.cbz        -> "Berserk - Deluxe Edition"
+//
+// Everything from the volume marker onwards goes, because that is where the title stops and
+// the bookkeeping starts. The caller is expected to run the result through the same series
+// name cleaning the metadata lookup uses, so that a file lands in the folder whose name that
+// lookup would have matched.
+inline QString seriesNameFromVolumeFileName(const QString &fileName)
+{
+    auto base = VolumeNumberUtils::withoutYearGroups(fileName.trimmed());
+
+    static const QRegularExpression volumeMarker(QStringLiteral("[\\s_#-]*\\bv(?:ol)?\\.?\\s*\\d+(?:\\.\\d+)?.*$"), QRegularExpression::CaseInsensitiveOption);
+    const auto atMarker = base.indexOf(volumeMarker);
+    if (atMarker > 0) {
+        return base.left(atMarker).trimmed();
+    }
+
+    // No explicit marker, so the number is a bare one - and only a bare number that is not
+    // the whole name, because "86" and "12 Beast" are titles rather than volume numbers.
+    static const QRegularExpression trailingNumber(QStringLiteral("[\\s_#-]+\\d+(?:\\.\\d+)?\\s*$"));
+    const auto atNumber = base.indexOf(trailingNumber);
+    if (atNumber > 0) {
+        return base.left(atNumber).trimmed();
+    }
+
+    return base.trimmed();
+}
+
 // "007" and "7" are the same volume, and a database full of the former sorts and reads
 // badly. Leading zeros go; a fractional part is kept as written.
 inline QString normalizedVolumeNumber(const QString &number)

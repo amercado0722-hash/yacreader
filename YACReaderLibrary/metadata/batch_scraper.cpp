@@ -79,9 +79,8 @@ QList<ScrapeTarget> BatchScraper::targetsForLibrary(const QString &databasePath,
         query.prepare(QStringLiteral("select id, name from folder"
                                      " where id <> 1"
                                      "   and name not like '\\_%' escape '\\'"
-                                     "   and id in (select distinct parentId from comic)")
-                      + (onlyMissing ? missingOnly : QString())
-                      + QStringLiteral(" order by name"));
+                                     "   and id in (select distinct parentId from comic)") +
+                      (onlyMissing ? missingOnly : QString()) + QStringLiteral(" order by name"));
         query.exec();
 
         while (query.next()) {

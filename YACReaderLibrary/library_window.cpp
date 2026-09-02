@@ -24,6 +24,7 @@
 #include "import_library_dialog.h"
 #include "import_widget.h"
 #include "library_database_maintenance_coordinator.h"
+#include "library_intake.h"
 #include "library_management_coordinator.h"
 #include "library_repair_coordinator.h"
 #include "library_search_coordinator.h"
@@ -671,6 +672,19 @@ void LibraryWindow::setupCoordinators()
 
     librariesUpdateCoordinator->init();
 
+    // Filing a dropped volume changes what is on disk and nothing else, so the library has
+    // to be told to look again before any of it appears. Whatever could not be placed
+    // confidently is named rather than left to be discovered.
+    libraryIntake = new LibraryIntake(this);
+    connect(libraryIntake, &LibraryIntake::imported, this, [this](int filed, int setAside) {
+        if (setAside > 0) {
+            QMessageBox::information(this, tr("New comics"),
+                                     tr("%n new item(s) filed.\n\n", "", filed) + tr("%n could not be placed and are waiting in \"%1\", with the reasons in _intake log.txt.", "", setAside).arg(LibraryIntake::quarantineFolderName()));
+        }
+
+        librariesUpdateCoordinator->updateSingleLibrary(libraries.getId(selectedLibrary->currentText()));
+    });
+
     connect(sideBar->librariesTitle, &YACReaderTitledToolBar::cancelOperationRequested, librariesUpdateCoordinator, &LibrariesUpdateCoordinator::cancel);
 }
 
@@ -979,6 +993,14 @@ void LibraryWindow::applyLoadedLibrary(const QString &libraryDataPath, bool read
 #endif
     }
     importedCovers = readOnly;
+
+    // Watch the top of the library for things dropped into it. Not on a read-only library:
+    // those are somebody else's, and nothing here should be moving their files about.
+    if (readOnly) {
+        libraryIntake->stop();
+    } else {
+        libraryIntake->watch(currentPath(), libraryDataPath);
+    }
 
     setRootIndex();
     clearSearchInput(true);

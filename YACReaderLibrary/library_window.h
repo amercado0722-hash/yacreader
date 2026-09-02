@@ -82,6 +82,7 @@ class LibraryRepairCoordinator;
 class LibraryManagementCoordinator;
 class LibraryWindowMenus;
 class LibrarySearchCoordinator;
+class LibraryIntake;
 
 namespace YACReader {
 class TrayIconController;
@@ -141,6 +142,8 @@ public:
 
     YACReaderLibraries libraries;
     LibrariesUpdateCoordinator *librariesUpdateCoordinator;
+    // Watches the top of the open library and files whatever is dropped there.
+    LibraryIntake *libraryIntake;
 
     QStackedWidget *mainWidget;
     NoLibrariesWidget *noLibrariesWidget;
