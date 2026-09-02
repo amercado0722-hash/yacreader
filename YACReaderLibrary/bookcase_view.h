@@ -51,6 +51,7 @@ public:
     // knowing that.
     Q_INVOKABLE void openSeries(int index);
     Q_INVOKABLE void closeSeries();
+    bool hasOpenedSeries() const;
     Q_INVOKABLE QString openedSeriesTitle() const;
 
     Q_INVOKABLE int volumeCount() const;
@@ -70,6 +71,10 @@ signals:
     // metaobject, which is both type checked and one less string to get wrong.
     void seriesChanged();
     void volumesChanged();
+    // So that a series can be put back from outside the scene - the window handles Escape,
+    // because whether the QML has keyboard focus depends on where the user last clicked and
+    // the way out of a view should not.
+    void seriesClosed();
 
 protected:
     void applyTheme(const Theme &theme) override;

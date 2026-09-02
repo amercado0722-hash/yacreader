@@ -66,6 +66,9 @@ Item {
         // The volumes of the opened series arrive after the click, because loading them is
         // a query against the library rather than something the scene already holds.
         function onVolumesChanged() { shelf.reload() }
+        // Closing can come from outside the scene - the window's Escape - so the wall
+        // follows the view rather than the view following the wall.
+        function onSeriesClosed() { wall.openedIndex = -1 }
     }
 
     function open(index) {
@@ -78,9 +81,10 @@ Item {
     }
 
     function close() {
-        openedIndex = -1
         if (bookcase)
             bookcase.closeSeries()
+        else
+            openedIndex = -1
         wall.forceActiveFocus()
     }
 

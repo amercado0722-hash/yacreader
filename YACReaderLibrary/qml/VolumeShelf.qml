@@ -14,15 +14,6 @@ Item {
     property int volumeCount: 0
     property string seriesTitle: ""
 
-    // Counters behind the readout at the foot of the shelf. Three attempts at fixing this
-    // view failed because every one of them was a theory about which events were arriving,
-    // and there was no way to find out which were. These say so outright.
-    property int backdropPresses: 0
-    property int buttonPresses: 0
-    property int buttonReleases: 0
-    property int coverHovers: 0
-    property int wheels: 0
-
     signal closed()
 
     function reload() {
@@ -41,19 +32,17 @@ Item {
         anchors.fill: parent
         color: "#e0080706"
 
-        // The wheel is done here, on the one area in this scene measured to receive
-        // everything reliably, rather than on something laid over the grid. Two attempts at
-        // that - a handler inside the view, then a mouse area anchored across it - both
-        // showed a wheel count of zero while the wall behind spun perfectly well. This sits
-        // underneath the grid, so it only ever sees what the grid did not take, which is
-        // everything.
+        // The wheel is caught here as a backstop only. The grid handles its own scrolling
+        // perfectly well once nothing is sitting on top of it stealing the event, which was
+        // the whole of what was wrong: first the wall's own wheel handler underneath, then
+        // two attempts to add one over the grid, each of which swallowed it in turn. This
+        // sits below the grid, so it sees the wheel only when the pointer is off the covers
+        // and would otherwise turn the wall behind.
         MouseArea {
             anchors.fill: parent
-            onPressed: shelf.backdropPresses++
             onClicked: shelf.closed()
 
             onWheel: wheel => {
-                shelf.wheels++
                 const limit = Math.max(0, grid.contentHeight - grid.height)
                 grid.contentY = Math.max(0, Math.min(limit, grid.contentY - wheel.angleDelta.y))
                 wheel.accepted = true
@@ -129,11 +118,7 @@ Item {
                     id: closeArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onPressed: shelf.buttonPresses++
-                    onReleased: {
-                        shelf.buttonReleases++
-                        shelf.closed()
-                    }
+                    onReleased: shelf.closed()
                 }
             }
         }
@@ -174,10 +159,9 @@ Item {
 
         model: shelf.volumeCount
 
-        // No wheel handling here. A GridView reparents its declared children into its own
-        // moving content item, so a handler written inside it does not sit over the view at
-        // all - which is why the first attempt at this changed nothing. It is done by a
-        // plain mouse area laid over the grid instead, below.
+        // Nothing here handles the wheel. The view does it itself, and every attempt to help
+        // it - a handler declared inside it, then a mouse area anchored across it - only
+        // took the event away from it.
 
         delegate: Item {
             id: cell
@@ -279,7 +263,6 @@ Item {
                     id: hover
                     anchors.fill: parent
                     hoverEnabled: true
-                    onEntered: shelf.coverHovers++
                     onClicked: if (bookcase) bookcase.openVolume(cell.index)
                 }
             }
@@ -303,32 +286,6 @@ Item {
     // NoButton means presses and releases are not accepted here at all and fall straight
     // through to the covers underneath, so this steals the wheel and nothing else. Sixty one
     // volumes is thirteen rows and three of them fit on screen; the wheel is not optional.
-    // What is actually arriving, on screen, because three rounds of inferring it from
-    // symptoms got the wrong answer three times.
-    Rectangle {
-        anchors { left: parent.left; bottom: parent.bottom; leftMargin: 8; bottomMargin: 8 }
-        width: probe.implicitWidth + 16
-        height: probe.implicitHeight + 8
-        color: "#cc000000"
-        radius: 3
-        z: 999
-
-        Text {
-            id: probe
-            anchors.centerIn: parent
-            color: "#9a938a"
-            font.pointSize: 8
-            text: "grid " + Math.round(grid.width) + "x" + Math.round(grid.height)
-                    + " content " + Math.round(grid.contentHeight)
-                    + " cols " + grid.columns
-                    + " n " + shelf.volumeCount
-                    + "  |  backdrop " + shelf.backdropPresses
-                    + " btn " + shelf.buttonPresses + "/" + shelf.buttonReleases
-                    + " cover " + shelf.coverHovers
-                    + " wheel " + shelf.wheels
-        }
-    }
-
     Text {
         anchors.centerIn: parent
         visible: shelf.volumeCount === 0
