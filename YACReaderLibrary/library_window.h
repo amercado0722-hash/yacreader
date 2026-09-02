@@ -111,9 +111,11 @@ public:
     PropertiesDialog *propertiesDialog;
     ComicVineDialog *comicVineDialog;
     EditShortcutsDialog *editShortcutsDialog;
-    bool fullscreen;
     bool importedCovers; // if true, the library is read only (not updates,open comic or properties)
-    bool fromMaximized;
+    // Whether leaving fullscreen should return to a maximized window. Defaults to true, so
+    // that a window which arrived in fullscreen by some route other than toFullScreen()
+    // still lands somewhere sensible on the way out.
+    bool fromMaximized = true;
 
     QSize slideSizeW;
     QSize slideSizeF;
