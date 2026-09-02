@@ -18,6 +18,12 @@ struct SeriesMetadata {
     QString nativeTitle;
     QStringList synonyms;
 
+    QString format;
+    // How many people have this on a list at the provider. Not interesting in itself, but
+    // it is the only thing that separates two entries with identical names, and it does so
+    // reliably: the famous series and the parody trading on its title are not close.
+    int popularity = 0;
+
     QString synopsis;
     QStringList genres;
     QStringList tags;
@@ -41,10 +47,8 @@ struct SeriesMetadata {
 
     bool isValid() const { return !providerId.isEmpty() && !title.isEmpty(); }
 
-    // Every title this series is known by, which is what a name coming off a folder has to
-    // be compared against: a library folder may carry the English name, the romaji one, or
-    // a synonym none of the official listings lead with.
-    QStringList allTitles() const
+    // The names this series is actually published under.
+    QStringList primaryTitles() const
     {
         QStringList titles;
         for (const auto &candidate : { title, romajiTitle, nativeTitle }) {
@@ -52,6 +56,20 @@ struct SeriesMetadata {
                 titles.append(candidate);
             }
         }
+        return titles;
+    }
+
+    // Every title this series is known by, which is what a name coming off a folder has to
+    // be compared against: a library folder may carry the English name, the romaji one, or
+    // a synonym none of the official listings lead with.
+    //
+    // Synonyms are worth less than the titles above and the matcher scores them separately.
+    // A spin-off routinely lists its parent series' title among its synonyms, so treating
+    // the two as equal made "My Hero Academia" tie exactly with a My Hero Academia side
+    // story - and a tie is indistinguishable from real ambiguity.
+    QStringList allTitles() const
+    {
+        auto titles = primaryTitles();
         for (const auto &synonym : synonyms) {
             if (!synonym.isEmpty() && !titles.contains(synonym)) {
                 titles.append(synonym);

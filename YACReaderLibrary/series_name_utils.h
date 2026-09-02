@@ -150,6 +150,61 @@ inline QString cleanSeriesSearchName(const QString &name)
     return cleaned.isEmpty() ? name : cleaned;
 }
 
+// Search names to try, in order, stopping at the first that answers.
+//
+// A folder name is not always a title. "Bleach - v01-v74 COMPLETE (VIZ Digital)" and
+// "Dragon Ball - Digital Colored Comics - Super Arc" and "Naruto Manga Volume" name a
+// series and then say something about the scan; searched whole they return nothing at all,
+// and the series is reported missing when it is one of the best known in print. Each step
+// here gives up a little more of the tail, so a name that was already good is asked first
+// and only a name that failed is cut back.
+inline QStringList seriesSearchNames(const QString &name)
+{
+    QStringList names;
+    const auto add = [&names](const QString &candidate) {
+        const auto trimmed = candidate.trimmed();
+        if (!trimmed.isEmpty() && !names.contains(trimmed, Qt::CaseInsensitive)) {
+            names.append(trimmed);
+        }
+    };
+
+    const auto base = cleanSeriesSearchName(name);
+    add(base);
+
+    // Accents that the folder carries and the provider's index does not. "Ôoku" and
+    // "Polar Bear Café" both find nothing spelled as they are on disk.
+    auto folded = base.normalized(QString::NormalizationForm_D);
+    static const QRegularExpression combining(QStringLiteral("[\\x{0300}-\\x{036F}]"));
+    folded.remove(combining);
+    add(folded);
+
+    // What a release group appends after a dash: the volume range, the scan's provenance,
+    // the fact that it is complete.
+    auto trimmedTail = folded;
+    static const QRegularExpression releaseTail(QStringLiteral("\\s+-\\s+(digital|colou?red|complete|official|viz|full[- ]colou?r|v\\d).*$"), QRegularExpression::CaseInsensitiveOption);
+    trimmedTail.remove(releaseTail);
+
+    // Words that describe the object rather than name the series, however many are stacked
+    // up: "Naruto Manga Volume" is two of them.
+    static const QRegularExpression trailingNouns(QStringLiteral("(?:\\s+(manga|volume|volumes|comics|edition|collection|complete))+$"), QRegularExpression::CaseInsensitiveOption);
+    trimmedTail.remove(trailingNouns);
+    add(trimmedTail);
+
+    // Last resort: whatever stands before the first dash. Enough of these folders are
+    // "Series - subtitle nobody indexed" that it is worth one request, and it is tried last
+    // because it is the step most likely to find the wrong thing.
+    const auto dash = trimmedTail.indexOf(QStringLiteral(" - "));
+    if (dash > 0) {
+        add(trimmedTail.left(dash));
+    }
+
+    if (names.isEmpty()) {
+        add(name);
+    }
+
+    return names;
+}
+
 }
 
 #endif // SERIES_NAME_UTILS_H

@@ -6,13 +6,14 @@ using YACReader::SeriesMetadata;
 
 namespace {
 
-SeriesMetadata series(const QString &id, const QString &english, const QString &romaji = { }, const QStringList &synonyms = { })
+SeriesMetadata series(const QString &id, const QString &english, const QString &romaji = { }, const QStringList &synonyms = { }, int popularity = 0)
 {
     SeriesMetadata metadata;
     metadata.providerId = id;
     metadata.title = english;
     metadata.romajiTitle = romaji;
     metadata.synonyms = synonyms;
+    metadata.popularity = popularity;
     return metadata;
 }
 
@@ -35,6 +36,10 @@ private slots:
     void refusesASpinOffOfTheSameSeries();
     void acceptsASpacingDifference();
     void handlesNoCandidates();
+    void prefersARealTitleOverAParentTitleUsedAsASynonym();
+    void takesTheOneMostPeopleReadWhenTheNamesAreIdentical();
+    void refusesWhenBothOfThemAreWidelyRead();
+    void takesAMatchFoundOnlyThroughASynonym();
 };
 
 void SeriesMatchTest::normalizesAwayPunctuationAndCase_data()
@@ -146,6 +151,76 @@ void SeriesMatchTest::handlesNoCandidates()
 {
     const auto ranked = YACReader::rankSeriesMatches("Anything", { });
     QVERIFY(ranked.isEmpty());
+}
+
+// Every one of these came from a real failure. The first scrape of a 1,910 series library
+// left 472 series unmatched, and the list was not the obscure ones - it was One Piece,
+// Naruto, Bleach, My Hero Academia, Case Closed. A famous series is exactly the one that
+// has a parody, a duplicate listing and three side stories sharing its name, so a rule that
+// refuses whenever two candidates score alike refuses precisely the titles it should find
+// most easily.
+void SeriesMatchTest::prefersARealTitleOverAParentTitleUsedAsASynonym()
+{
+    // AniList's entry for the My Hero Academia school-newspaper side story lists the parent
+    // series' English title among its synonyms. Scored as equals, the two tied at 100 and
+    // the whole series was handed back for review.
+    const QList<SeriesMetadata> candidates = {
+        series("spinoff", { }, "Boku no Hero Academia: Yuuei Hakusho", { "My Hero Academia" }, 2624),
+        series("parent", "My Hero Academia", "Boku no Hero Academia", { }, 177705),
+    };
+
+    const auto ranked = YACReader::rankSeriesMatches("My Hero Academia", candidates);
+
+    QCOMPARE(ranked.first().series.providerId, QStringLiteral("parent"));
+    QCOMPARE(ranked.first().score, 100);
+    QVERIFY(ranked.first().confident);
+}
+
+void SeriesMatchTest::takesTheOneMostPeopleReadWhenTheNamesAreIdentical()
+{
+    // A doujin parody carries "One Piece" as a synonym. The names cannot separate these
+    // two; two hundred thousand readers against two hundred can.
+    const QList<SeriesMetadata> candidates = {
+        series("parody", { }, "Wan Piece", { "One Piece" }, 213),
+        series("real", { }, "ONE PIECE", { }, 231905),
+    };
+
+    const auto ranked = YACReader::rankSeriesMatches("One Piece", candidates);
+
+    QCOMPARE(ranked.first().series.providerId, QStringLiteral("real"));
+    QVERIFY(ranked.first().confident);
+}
+
+void SeriesMatchTest::refusesWhenBothOfThemAreWidelyRead()
+{
+    // Two unrelated series really are called Wind Breaker - a Korean webtoon and a Japanese
+    // manga - and both have a large following. This is the case the rule exists for, and it
+    // must still refuse.
+    const QList<SeriesMetadata> candidates = {
+        series("webtoon", { }, "Wind Breaker", { }, 42195),
+        series("manga", { }, "WIND BREAKER", { }, 21624),
+    };
+
+    const auto ranked = YACReader::rankSeriesMatches("WIND BREAKER", candidates);
+
+    QCOMPARE(ranked.first().score, 100);
+    QVERIFY(!ranked.first().confident);
+}
+
+void SeriesMatchTest::takesAMatchFoundOnlyThroughASynonym()
+{
+    // The provider files Detective Conan under its romaji name and lists the English title
+    // it is sold under as a synonym. Demoting synonyms must not go so far that a series
+    // findable only by one becomes unmatchable.
+    const QList<SeriesMetadata> candidates = {
+        series("conan", { }, "Meitantei Conan", { "Case Closed" }, 18081),
+        series("shorts", { }, "Meitantei Conan: Tokubetsu-hen", { "Case Closed Short Stories" }, 447),
+    };
+
+    const auto ranked = YACReader::rankSeriesMatches("Case Closed", candidates);
+
+    QCOMPARE(ranked.first().series.providerId, QStringLiteral("conan"));
+    QVERIFY(ranked.first().confident);
 }
 
 QTEST_MAIN(SeriesMatchTest)
