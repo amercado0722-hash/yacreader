@@ -174,6 +174,12 @@ void BookcaseView::closeSeries()
 {
     openedSeries = -1;
     emit volumesChanged();
+    emit seriesClosed();
+}
+
+bool BookcaseView::hasOpenedSeries() const
+{
+    return openedSeries >= 0;
 }
 
 QString BookcaseView::openedSeriesTitle() const

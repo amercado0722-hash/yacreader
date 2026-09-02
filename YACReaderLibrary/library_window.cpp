@@ -1170,6 +1170,16 @@ void LibraryWindow::toggleFullScreen()
 
 void LibraryWindow::keyPressEvent(QKeyEvent *event)
 {
+    // Handled at the window rather than inside the bookcase's QML. Whether that scene holds
+    // the keyboard focus depends on where the user last clicked, and the way out of a view
+    // should not. Taken before fullscreen, because a series open on top of the wall is the
+    // nearer thing to be escaping from.
+    if (event->key() == Qt::Key_Escape && contentViewsManager->isBookcaseVisible() && contentViewsManager->bookcase()->hasOpenedSeries()) {
+        contentViewsManager->bookcase()->closeSeries();
+        event->accept();
+        return;
+    }
+
     // Going fullscreen hides the toolbar, and the button for leaving it lives on that
     // toolbar, so without this the only way back is a shortcut the user has to know.
     if (event->key() == Qt::Key_Escape && isFullScreen()) {
