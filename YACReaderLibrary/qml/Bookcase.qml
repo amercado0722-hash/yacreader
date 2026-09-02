@@ -32,8 +32,11 @@ Item {
     // reaches the edges of any window rather than only the one it was tuned in.
     readonly property real focal: Math.max(360, width * 0.5)
     // Sized to the window rather than fixed, because the rows splay outwards and the
-    // outermost ones were running off the top and bottom of the view.
-    readonly property real shelfSpacing: Math.max(60, height / (shelfCount + 0.9))
+    // outermost ones were running off the top and bottom of the view. The allowance has to
+    // cover the splay at its worst, not the spacing at the middle of the wall: the top and
+    // bottom shelves were sitting comfortably in the centre of the view and then walking
+    // off the top and bottom edges by the time they reached the sides.
+    readonly property real shelfSpacing: Math.max(60, height / (shelfCount + 1.45))
     readonly property real spineHeight: shelfSpacing * 0.78
 
     // How hard the shelf lines splay apart towards the edges. The true figure for this
@@ -196,7 +199,12 @@ Item {
                         readonly property real bookHeight: wall.spineHeight * heightScale
                         readonly property real shelfLine: scene.height / 2 + shelfRow.rowOffset * wall.shelfSpacing * splay + wall.spineHeight / 2
 
-                        visible: present && cosTheta > 0.1 && Math.abs(theta) < 1.45
+                        // Stopped short of the point where the wall turns edge on. The last
+                        // stretch of a cylinder contributes a few pixels of squeezed book at
+                        // a third opacity, and costs the splay that was throwing the outer
+                        // shelves off the screen. The wall now fades into the dark a little
+                        // before the frame, which is what one looks like anyway.
+                        visible: present && cosTheta > 0.3 && Math.abs(theta) < 1.25
                         width: bookWidth
                         height: bookHeight
                         x: scene.width / 2 + wall.focal * Math.sin(theta) - width / 2
@@ -212,6 +220,26 @@ Item {
                             origin.y: slot.height
                             xScale: slot.squeeze
                             yScale: 1
+                        }
+
+                        // The back of the case, standing behind this book and rising to the
+                        // shelf above. Without it the books hang in empty black and the wall
+                        // reads as rows of floating spines rather than as a piece of
+                        // furniture with depth to it. Drawn first, so the book covers it.
+                        Rectangle {
+                            width: slot.bookWidth + 2
+                            x: -1
+                            // Stops short of the shelf above by more than that shelf's board
+                            // is thick. Rows are drawn top down, so a panel that reached all
+                            // the way up would be painted over the underside of the board it
+                            // hangs from.
+                            height: wall.shelfSpacing * slot.splay - 18
+                            y: slot.height - height
+                            gradient: Gradient {
+                                GradientStop { position: 0.0; color: "#070605" }
+                                GradientStop { position: 0.72; color: "#130f0b" }
+                                GradientStop { position: 1.0; color: "#241d15" }
+                            }
                         }
 
                         // The board this book stands on. Each book draws its own slice, a
