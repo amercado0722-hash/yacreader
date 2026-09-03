@@ -68,13 +68,32 @@ inline QString volumeNumberFromFileName(const QString &fileName)
     return last;
 }
 
+// Everything from an explicit volume marker onwards.
+//
+//     A Bride's Story v07 (2024)              -> "A Bride's Story"
+//     A Silent Voice v01-07 (Digital)         -> "A Silent Voice"
+//     Berserk - Deluxe Edition v03            -> "Berserk - Deluxe Edition"
+//     Zom 100                                 -> "Zom 100"
+//
+// Only the marked form, and that is the point of having it separately: a series really can
+// be called "Zom 100" or "12 Beast" or "86", so a bare trailing number is not safe to
+// remove from a name that might be a title. A "v" in front of the number is never part of
+// one.
+inline QString withoutVolumeMarker(const QString &name)
+{
+    static const QRegularExpression volumeMarker(QStringLiteral("[\\s_#-]*\\bv(?:ol)?\\.?\\s*\\d+(?:\\.\\d+)?.*$"), QRegularExpression::CaseInsensitiveOption);
+    const auto trimmed = name.trimmed();
+    const auto at = trimmed.indexOf(volumeMarker);
+    return at > 0 ? trimmed.left(at).trimmed() : trimmed;
+}
+
 // The series a loose volume belongs to, read back out of its file name.
 //
 //     A Bride's Story v07 (2024).cbz          -> "A Bride's Story"
 //     One-Punch Man 207 (2025).cbz            -> "One-Punch Man"
 //     Berserk - Deluxe Edition v03.cbz        -> "Berserk - Deluxe Edition"
 //
-// Everything from the volume marker onwards goes, because that is where the title stops and
+// Everything from the volume number onwards goes, because that is where the title stops and
 // the bookkeeping starts. The caller is expected to run the result through the same series
 // name cleaning the metadata lookup uses, so that a file lands in the folder whose name that
 // lookup would have matched.
@@ -82,10 +101,9 @@ inline QString seriesNameFromVolumeFileName(const QString &fileName)
 {
     auto base = VolumeNumberUtils::withoutYearGroups(fileName.trimmed());
 
-    static const QRegularExpression volumeMarker(QStringLiteral("[\\s_#-]*\\bv(?:ol)?\\.?\\s*\\d+(?:\\.\\d+)?.*$"), QRegularExpression::CaseInsensitiveOption);
-    const auto atMarker = base.indexOf(volumeMarker);
-    if (atMarker > 0) {
-        return base.left(atMarker).trimmed();
+    const auto marked = withoutVolumeMarker(base);
+    if (marked != base) {
+        return marked;
     }
 
     // No explicit marker, so the number is a bare one - and only a bare number that is not

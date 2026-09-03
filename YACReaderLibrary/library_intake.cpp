@@ -250,7 +250,12 @@ void LibraryIntake::process()
                 continue;
             }
 
-            const auto tidied = cleanSeriesDisplayName(info.fileName());
+            // A volume range in the folder name is bookkeeping, not part of the title -
+            // "A Silent Voice v01-07" is the first seven volumes of A Silent Voice, and
+            // filing it as a series of its own is how you end up with two of them. Only the
+            // marked form is removed; a bare trailing number stays, because "Zom 100" and
+            // "12 Beast" are titles.
+            const auto tidied = cleanSeriesDisplayName(withoutVolumeMarker(info.fileName()));
 
             // The same series arriving again is how a series gets its next few volumes, and
             // it is the ordinary case rather than a problem - so the volumes are moved in
