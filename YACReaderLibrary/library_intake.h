@@ -49,11 +49,17 @@ private:
         bool isFolder = false;
     };
 
+    struct MergeResult {
+        int filed = 0;
+        int setAside = 0;
+    };
+
     QStringList seriesFolderNames() const;
     QList<Arrival> arrivalsAtTop() const;
     bool hasSettled(const Arrival &arrival);
     void process();
 
+    MergeResult mergeInto(const QString &folderPath, const QString &seriesFolder);
     bool fileInto(const QString &sourceFile, const QString &seriesFolder);
     bool setAside(const QString &path, const QString &reason);
     void note(const QString &line);

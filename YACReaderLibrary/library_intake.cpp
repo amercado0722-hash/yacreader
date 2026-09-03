@@ -44,11 +44,6 @@ bool holdsAComic(const QString &folderPath)
     return false;
 }
 
-// A whole library that has never been scanned looks exactly like a very large drop. This is
-// what tells the two apart: nobody drags twenty five series in at once, and getting it wrong
-// in that direction would rename the entire library on the first launch after opening it.
-constexpr auto kTooManyToBeADrop = 25;
-
 }
 
 LibraryIntake::LibraryIntake(QObject *parent)
@@ -238,40 +233,43 @@ void LibraryIntake::process()
     auto filed = 0;
     auto putAside = 0;
 
-    auto newFolders = 0;
-    for (const auto &arrival : arrivals) {
-        if (arrival.isFolder) {
-            newFolders++;
-        }
-    }
-
-    // A library that has never been scanned is indistinguishable from an enormous drop, and
-    // being wrong about that renames every series in it.
-    const auto tooMany = newFolders > kTooManyToBeADrop;
-    if (tooMany) {
-        QLOG_INFO() << "Library intake ignoring" << newFolders << "unscanned folders; that is a library, not a drop";
+    // A library with nothing in it yet is indistinguishable from an enormous drop, and being
+    // wrong about that renames every series in it. Once the library knows about even one
+    // series, an unknown folder is genuinely an arrival however many of them there are - so
+    // emptying a whole download folder in at once works, which counting them did not allow.
+    const auto libraryIsEmpty = series.isEmpty();
+    if (libraryIsEmpty) {
+        QLOG_INFO() << "Library intake leaving folders alone: this library has no series in it yet";
     }
 
     for (const auto &arrival : arrivals) {
         const QFileInfo info(arrival.path);
 
         if (arrival.isFolder) {
-            if (tooMany) {
+            if (libraryIsEmpty) {
                 continue;
             }
 
-            // A folder of a series that is not here yet is the ordinary way a series
-            // arrives. It stays where it is and keeps its own volumes; only its name is
-            // cleaned, which is the whole of what "sorting" means for something that is
-            // already a series folder.
             const auto tidied = cleanSeriesDisplayName(info.fileName());
+
+            // The same series arriving again is how a series gets its next few volumes, and
+            // it is the ordinary case rather than a problem - so the volumes are moved in
+            // rather than the whole folder being set aside for somebody to merge by hand.
+            if (QDir(libraryPath).exists(tidied) && tidied != info.fileName()) {
+                const auto moved = mergeInto(arrival.path, tidied);
+                filed += moved.filed;
+                putAside += moved.setAside;
+                continue;
+            }
+
+            // Otherwise it is a series that is not here yet. It stays where it is and keeps
+            // its own volumes; only its name is cleaned, which is the whole of what sorting
+            // means for something that is already a series folder.
             if (tidied == info.fileName()) {
                 continue;
             }
 
-            if (QDir(libraryPath).exists(tidied)) {
-                putAside += setAside(arrival.path, tr("\"%1\" is already a folder here").arg(tidied)) ? 1 : 0;
-            } else if (QDir(libraryPath).rename(info.fileName(), tidied)) {
+            if (QDir(libraryPath).rename(info.fileName(), tidied)) {
                 note(tr("%1  ->  %2").arg(info.fileName(), tidied));
                 filed++;
             } else {
@@ -318,6 +316,51 @@ void LibraryIntake::process()
         QLOG_INFO() << "Library intake filed" << filed << "and set aside" << putAside;
         emit imported(filed, putAside);
     }
+}
+
+// A second copy of a series that is already here: its volumes go in with the ones already
+// filed, and the empty folder it came in goes away.
+//
+// Only flat folders of comics. Anything with subfolders in it is a different shape from what
+// this library holds, and taking half of it apart and leaving the rest is worse than not
+// starting. Nothing is ever written over: a volume whose name is already in the destination
+// is a different scan of the same volume as often as it is the same file, and neither is
+// something to settle by overwriting.
+LibraryIntake::MergeResult LibraryIntake::mergeInto(const QString &folderPath, const QString &seriesFolder)
+{
+    MergeResult result;
+
+    const QDir source(folderPath);
+    if (!source.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot).isEmpty()) {
+        result.setAside = setAside(folderPath, tr("has folders inside it, so \"%1\" was left as it is").arg(seriesFolder)) ? 1 : 0;
+        return result;
+    }
+
+    const auto files = source.entryInfoList(QDir::Files);
+    QStringList collided;
+    for (const auto &file : files) {
+        if (!looksLikeAComic(file)) {
+            continue;
+        }
+        if (fileInto(file.absoluteFilePath(), seriesFolder)) {
+            result.filed++;
+        } else {
+            collided.append(file.fileName());
+        }
+    }
+
+    // rmdir only succeeds on an empty directory, so this can never take anything with it.
+    if (QDir(libraryPath).rmdir(source.dirName())) {
+        note(tr("%1  ->  emptied into %2").arg(source.dirName(), seriesFolder));
+        return result;
+    }
+
+    const auto reason = collided.isEmpty()
+            ? tr("what is left of it does not belong in \"%1\"").arg(seriesFolder)
+            : tr("%n volume(s) of it are already in \"%1\"", "", static_cast<int>(collided.size())).arg(seriesFolder);
+    result.setAside += setAside(folderPath, reason) ? 1 : 0;
+
+    return result;
 }
 
 bool LibraryIntake::fileInto(const QString &sourceFile, const QString &seriesFolder)
