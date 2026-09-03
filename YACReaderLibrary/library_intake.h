@@ -47,6 +47,10 @@ private:
     struct Arrival {
         QString path;
         bool isFolder = false;
+        // Whether the library already has this folder as a series. One that it does is only
+        // ever here because its name still carries a volume number, and it is treated more
+        // gently for it: a folder already filed is not put in quarantine over a failure.
+        bool alreadyFiled = false;
     };
 
     struct MergeResult {
