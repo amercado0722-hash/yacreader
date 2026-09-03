@@ -151,9 +151,30 @@ QList<LibraryIntake::Arrival> LibraryIntake::arrivalsAtTop() const
         }
 
         if (looksLikeAComic(entry)) {
-            arrivals.append({ entry.absoluteFilePath(), false });
-        } else if (entry.isDir() && !known.contains(entry.fileName()) && holdsAComic(entry.absoluteFilePath())) {
-            arrivals.append({ entry.absoluteFilePath(), true });
+            arrivals.append({ entry.absoluteFilePath(), false, false });
+            continue;
+        }
+
+        if (!entry.isDir()) {
+            continue;
+        }
+
+        const auto alreadyFiled = known.contains(entry.fileName());
+
+        // A folder whose name still carries a volume number is looked at again even when the
+        // library has already taken it in. Being filed once is not a reason to stay wrong:
+        // "A Silent Voice v01-07" was scanned in under that name by an earlier version of
+        // this, and skipping everything the library knows about meant nothing could ever put
+        // it right. The test is the marked form only, so it cannot fire on a title.
+        const auto stillMarked = withoutVolumeMarker(entry.fileName()) != entry.fileName();
+        if (alreadyFiled && !stillMarked) {
+            continue;
+        }
+
+        // Cheap tests first: this runs over every folder in the library, and looking inside
+        // nineteen hundred of them for a comic on every pass would not be cheap.
+        if (holdsAComic(entry.absoluteFilePath())) {
+            arrivals.append({ entry.absoluteFilePath(), true, alreadyFiled });
         }
     }
 
@@ -277,6 +298,10 @@ void LibraryIntake::process()
             if (QDir(libraryPath).rename(info.fileName(), tidied)) {
                 note(tr("%1  ->  %2").arg(info.fileName(), tidied));
                 filed++;
+            } else if (arrival.alreadyFiled) {
+                // Already a series in the library. Tidying its name is worth attempting and
+                // not worth taking it out of the library over.
+                note(tr("%1  ->  left alone (could not be renamed to \"%2\")").arg(info.fileName(), tidied));
             } else {
                 putAside += setAside(arrival.path, tr("could not be renamed to \"%1\"").arg(tidied)) ? 1 : 0;
             }
