@@ -20,6 +20,8 @@ private slots:
     void returnsNothingForOneShots_data();
     void readsTheSeriesNameBackOut();
     void readsTheSeriesNameBackOut_data();
+    void stripsOnlyMarkedVolumeNumbers();
+    void stripsOnlyMarkedVolumeNumbers_data();
     void normalizesLeadingZeros();
     void normalizesLeadingZeros_data();
 };
@@ -154,6 +156,30 @@ void VolumeNumberTest::readsTheSeriesNameBackOut()
     QFETCH(QString, expected);
 
     QCOMPARE(YACReader::seriesNameFromVolumeFileName(input), expected);
+}
+
+void VolumeNumberTest::stripsOnlyMarkedVolumeNumbers_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expected");
+
+    // Folder names get this rather than the full reading above, because a folder name that
+    // ends in a number is far more likely to be a title than a volume.
+    QTest::newRow("range") << "A Silent Voice v01-07 (Digital) (danke-Empire)" << "A Silent Voice";
+    QTest::newRow("single") << "A Bride's Story v07" << "A Bride's Story";
+    QTest::newRow("long form") << "Some Series Vol. 3" << "Some Series";
+    QTest::newRow("number is the title") << "Zom 100" << "Zom 100";
+    QTest::newRow("number starts the title") << "12 Beast" << "12 Beast";
+    QTest::newRow("bare trailing number kept") << "A Couple of Cuckoos 208" << "A Couple of Cuckoos 208";
+    QTest::newRow("no number") << "Berserk" << "Berserk";
+}
+
+void VolumeNumberTest::stripsOnlyMarkedVolumeNumbers()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expected);
+
+    QCOMPARE(YACReader::withoutVolumeMarker(input), expected);
 }
 
 QTEST_MAIN(VolumeNumberTest)
