@@ -58,14 +58,22 @@ private:
         int setAside = 0;
     };
 
-    QStringList seriesFolderNames() const;
+    // The series in the library, by the name they are filed under, against where they sit
+    // relative to the top of it. The path matters because the library folder may be arranged
+    // into section folders, in which case a series is a level down and "put this volume in
+    // the folder with the same name" is no longer enough to find it.
+    QHash<QString, QString> seriesFolders() const;
     QList<Arrival> arrivalsAtTop() const;
     bool hasSettled(const Arrival &arrival);
     void process();
 
-    MergeResult mergeInto(const QString &folderPath, const QString &seriesFolder);
-    bool ensureFolder(const QString &name);
-    bool fileInto(const QString &sourceFile, const QString &seriesFolder);
+    MergeResult mergeInto(const QString &folderPath, const QString &seriesPath);
+    // Returns where the folder is, relative to the top of the library, or an empty string if
+    // it could not be made. A new series goes into the section for things nothing is known
+    // about yet, when the library is arranged into sections - which is what a series that has
+    // only just arrived is, whatever it turns out to be once it has been looked up.
+    QString ensureFolder(const QString &name);
+    bool fileInto(const QString &sourceFile, const QString &seriesPath);
     bool setAside(const QString &path, const QString &reason);
     void note(const QString &line);
 
