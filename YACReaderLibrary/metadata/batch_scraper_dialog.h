@@ -45,7 +45,6 @@ private slots:
     void onFolderFinished(const YACReader::ScrapeOutcome &outcome);
     void onWaiting(int seconds, const QString &reason);
     void onFinished(int applied, int needsReview, int notFound, int failed);
-    void applyReviewChoices();
 
 private:
     void doLayout();
@@ -71,8 +70,6 @@ private:
 
     // review page
     QLabel *reviewHeadline = nullptr;
-    QTableWidget *reviewTable = nullptr;
-    QPushButton *applyButton = nullptr;
     QPushButton *reviewCloseButton = nullptr;
 
     BatchScraper *scraper = nullptr;
