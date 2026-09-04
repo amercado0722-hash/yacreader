@@ -2,12 +2,15 @@
 
 #include "QsLog.h"
 #include "comic_model.h"
+#include "data_base_management.h"
 #include "folder_model.h"
 #include "series_name_utils.h"
 
 #include <QColor>
 #include <QQmlContext>
 #include <QQuickWidget>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QVBoxLayout>
 
 BookcaseView::BookcaseView(QWidget *parent)
@@ -76,7 +79,7 @@ void BookcaseView::setFilter(const QString &text)
     }
 
     filter = trimmed;
-    reload();
+    rebuild();
 }
 
 QString BookcaseView::filterText() const
@@ -84,7 +87,59 @@ QString BookcaseView::filterText() const
     return filter;
 }
 
+// How far through each series the reader is, and whether anything is known about it, for
+// every folder in the library at once.
+//
+// Grouped in SQL rather than counted here: eighteen thousand rows returned and summed in C++
+// is the same answer for a great deal more work. Its result is kept between rebuilds, because
+// narrowing the wall to a search does not change how far through anything you are, and the
+// wall is rebuilt on every keystroke in the search box.
+QHash<qulonglong, BookcaseView::SeriesState> BookcaseView::loadSeriesState() const
+{
+    QHash<qulonglong, SeriesState> result;
+
+    if (folderModel == nullptr) {
+        return result;
+    }
+
+    const auto databasePath = folderModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return result;
+    }
+
+    QString connectionName;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery query(db);
+        query.prepare("SELECT c.parentId, COUNT(*), "
+                      "SUM(CASE WHEN ci.read = 1 THEN 1 ELSE 0 END), "
+                      "SUM(CASE WHEN ci.synopsis IS NOT NULL AND ci.synopsis <> '' THEN 1 ELSE 0 END) "
+                      "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                      "GROUP BY c.parentId");
+        query.exec();
+
+        while (query.next()) {
+            SeriesState state;
+            state.volumes = query.value(1).toInt();
+            state.read = query.value(2).toInt();
+            state.identified = query.value(3).toInt() > 0;
+            result.insert(query.value(0).toULongLong(), state);
+        }
+
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return result;
+}
+
 void BookcaseView::reload()
+{
+    states = loadSeriesState();
+    rebuild();
+}
+
+void BookcaseView::rebuild()
 {
     // Whatever was pulled off the wall belongs to the old list of series and its index means
     // nothing against the new one.
@@ -94,8 +149,8 @@ void BookcaseView::reload()
     titles.clear();
     covers.clear();
     counts.clear();
-    finished.clear();
-    complete.clear();
+    readStates.clear();
+    identified.clear();
 
     if (folderModel != nullptr) {
         const QModelIndex parent = parentFolder;
@@ -115,24 +170,37 @@ void BookcaseView::reload()
             titles.append(title);
             covers.append(index.data(FolderModel::CoverPathRole).toUrl());
             counts.append(index.data(FolderModel::NumChildrenRole).toInt());
-            finished.append(index.data(FolderModel::FinishedRole).toBool());
-            complete.append(index.data(FolderModel::CompletedRole).toBool());
+
+            const auto state = states.value(index.data(FolderModel::IdRole).toULongLong());
+            // The folder's own finished flag still counts, for anyone who does set it by
+            // hand, but it is no longer the only way a series can be marked as read.
+            if (state.volumes > 0 && state.read >= state.volumes) {
+                readStates.append(ReadState::Read);
+            } else if (index.data(FolderModel::FinishedRole).toBool()) {
+                readStates.append(ReadState::Read);
+            } else if (state.read > 0) {
+                readStates.append(ReadState::Started);
+            } else {
+                readStates.append(ReadState::Untouched);
+            }
+
+            identified.append(state.identified);
         }
     }
 
     emit seriesChanged();
 }
 
-bool BookcaseView::isFinishedAt(int index) const
+int BookcaseView::readStateAt(int index) const
 {
-    return (index >= 0 && index < finished.size()) ? finished.at(index) : false;
+    return static_cast<int>((index >= 0 && index < readStates.size()) ? readStates.at(index) : ReadState::Untouched);
 }
 
-// Defaults to complete when the index is out of range, so an unknown series is not marked as
-// missing volumes it may well have.
-bool BookcaseView::isCompleteAt(int index) const
+// Defaults to identified when the index is out of range, so a series the wall does not know
+// about is not accused of missing metadata it may well have.
+bool BookcaseView::isIdentifiedAt(int index) const
 {
-    return (index >= 0 && index < complete.size()) ? complete.at(index) : true;
+    return (index >= 0 && index < identified.size()) ? identified.at(index) : true;
 }
 
 int BookcaseView::seriesCount() const
