@@ -64,6 +64,7 @@ private:
     void process();
 
     MergeResult mergeInto(const QString &folderPath, const QString &seriesFolder);
+    bool ensureFolder(const QString &name);
     bool fileInto(const QString &sourceFile, const QString &seriesFolder);
     bool setAside(const QString &path, const QString &reason);
     void note(const QString &line);
