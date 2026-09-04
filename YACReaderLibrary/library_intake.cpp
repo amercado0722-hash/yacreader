@@ -44,6 +44,10 @@ bool holdsAComic(const QString &folderPath)
     return false;
 }
 
+// Two volumes agreeing on a series name is the bar for inventing a folder from loose files.
+// One is a guess; two independent file names producing the same title is not.
+constexpr auto kEnoughVolumesToNameASeries = 2;
+
 }
 
 LibraryIntake::LibraryIntake(QObject *parent)
@@ -263,6 +267,56 @@ void LibraryIntake::process()
         QLOG_INFO() << "Library intake leaving folders alone: this library has no series in it yet";
     }
 
+    const auto matchingSeries = [&series](const QString &wanted) {
+        QStringList exact;
+        for (const auto &candidate : series) {
+            if (SeriesMatchScorer::scoreTitle(wanted, cleanSeriesSearchName(candidate)) >= 95) {
+                exact.append(candidate);
+            }
+        }
+        return exact;
+    };
+
+    // Loose volumes naming a series the library does not have.
+    //
+    // One file is not enough to invent a folder from: read a series name off a single file
+    // name and it is wrong about as often as it is right, and a wrong one becomes a series
+    // nobody asked for. Several files agreeing on the same name is a different kind of
+    // evidence, and it is how a new series usually turns up - as its volumes, together.
+    QHash<QString, QString> foldersToCreate;
+    {
+        QHash<QString, int> volumesNaming;
+        QHash<QString, QString> folderNames;
+
+        for (const auto &arrival : arrivals) {
+            if (arrival.isFolder) {
+                continue;
+            }
+
+            const auto stem = seriesNameFromVolumeFileName(QFileInfo(arrival.path).completeBaseName());
+            const auto key = cleanSeriesSearchName(stem);
+            if (key.isEmpty()) {
+                continue;
+            }
+
+            volumesNaming[key]++;
+            if (!folderNames.contains(key)) {
+                folderNames.insert(key, cleanSeriesDisplayName(stem));
+            }
+        }
+
+        for (auto it = volumesNaming.cbegin(); it != volumesNaming.cend(); ++it) {
+            if (it.value() < kEnoughVolumesToNameASeries || !matchingSeries(it.key()).isEmpty()) {
+                continue;
+            }
+
+            const auto name = folderNames.value(it.key());
+            if (!name.isEmpty()) {
+                foldersToCreate.insert(it.key(), name);
+            }
+        }
+    }
+
     for (const auto &arrival : arrivals) {
         const QFileInfo info(arrival.path);
 
@@ -317,12 +371,7 @@ void LibraryIntake::process()
             continue;
         }
 
-        QStringList exact;
-        for (const auto &candidate : series) {
-            if (SeriesMatchScorer::scoreTitle(wanted, cleanSeriesSearchName(candidate)) >= 95) {
-                exact.append(candidate);
-            }
-        }
+        const auto exact = matchingSeries(wanted);
 
         if (exact.size() == 1) {
             if (fileInto(arrival.path, exact.first())) {
@@ -331,10 +380,16 @@ void LibraryIntake::process()
                 putAside += setAside(arrival.path, tr("could not be moved into \"%1\"").arg(exact.first())) ? 1 : 0;
             }
         } else if (exact.isEmpty()) {
-            // Not a series in this library. That is a new series rather than a mistake, but
-            // one loose file is not a series folder, and inventing one from a single volume
-            // gets the name wrong as often as not.
-            putAside += setAside(arrival.path, tr("no series here is called \"%1\"").arg(wanted)) ? 1 : 0;
+            // Not a series in this library, which is a new series rather than a mistake -
+            // but only when enough of its volumes arrived together to be sure of the name.
+            const auto newFolder = foldersToCreate.value(wanted);
+            if (newFolder.isEmpty()) {
+                putAside += setAside(arrival.path, tr("no series here is called \"%1\", and it is the only volume of it").arg(wanted)) ? 1 : 0;
+            } else if (ensureFolder(newFolder) && fileInto(arrival.path, newFolder)) {
+                filed++;
+            } else {
+                putAside += setAside(arrival.path, tr("could not be moved into a new folder for \"%1\"").arg(newFolder)) ? 1 : 0;
+            }
         } else {
             putAside += setAside(arrival.path, tr("\"%1\" matches %2 series here").arg(wanted).arg(exact.size())) ? 1 : 0;
         }
@@ -391,6 +446,21 @@ LibraryIntake::MergeResult LibraryIntake::mergeInto(const QString &folderPath, c
     result.setAside += setAside(folderPath, reason) ? 1 : 0;
 
     return result;
+}
+
+bool LibraryIntake::ensureFolder(const QString &name)
+{
+    QDir top(libraryPath);
+    if (top.exists(name)) {
+        return true;
+    }
+
+    if (!top.mkdir(name)) {
+        return false;
+    }
+
+    note(tr("made a new folder for %1").arg(name));
+    return true;
 }
 
 bool LibraryIntake::fileInto(const QString &sourceFile, const QString &seriesFolder)
