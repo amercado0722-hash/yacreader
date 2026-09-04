@@ -21,6 +21,13 @@ Item {
     readonly property int volumes: bookcase ? bookcase.volumesAt(seriesIndex) : 0
     readonly property bool light: baseColor.hslLightness > 0.52
 
+    // Read through, and held complete. The same two things the folder tree marks: a shelf
+    // where a series you have finished looks exactly like one you have never opened, and
+    // where one with volumes missing looks exactly like one without, is a picture of a
+    // library rather than one you use.
+    readonly property bool finished: bookcase ? bookcase.isFinishedAt(seriesIndex) : false
+    readonly property bool complete: bookcase ? bookcase.isCompleteAt(seriesIndex) : true
+
     Rectangle {
         id: board
         anchors.fill: parent
@@ -57,6 +64,35 @@ Item {
             anchors { left: parent.left; right: parent.right; bottom: parent.bottom; bottomMargin: 10 }
             height: 2
             color: spine.light ? "#33000000" : "#2effffff"
+        }
+
+        // A series you have finished is a book that has been off the shelf and back: it sits
+        // a shade further into the shadow than the ones either side of it, and carries the
+        // mark a reader would actually put on a book - a small pale label near the head of
+        // the spine. Two pixels of paint is all there is room for, and on a wall of nineteen
+        // hundred it is enough to pick out the ones you are done with.
+        Rectangle {
+            anchors.fill: parent
+            visible: spine.finished && !spine.hovered
+            color: "#59100e0c"
+        }
+        Rectangle {
+            anchors { horizontalCenter: parent.horizontalCenter; top: parent.top; topMargin: 16 }
+            visible: spine.finished
+            width: Math.max(3, spine.width - 8)
+            height: Math.max(4, Math.round(spine.width * 0.30))
+            radius: 1
+            color: spine.light ? "#cc2f2a22" : "#d9e8dfc6"
+        }
+
+        // A run with volumes missing, marked the way the folder tree marks it: a stripe down
+        // the leading edge, in the same amber it uses. This is the one thing a wall of spines
+        // is better at than a list - the gaps in a collection are visible all at once.
+        Rectangle {
+            anchors { left: parent.left; top: parent.top; bottom: parent.bottom; topMargin: 14; bottomMargin: 14 }
+            visible: !spine.complete
+            width: 2
+            color: "#b3edc518"
         }
 
         // The title runs up the spine, which is how it is printed and, usefully, the only
