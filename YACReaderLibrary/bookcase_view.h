@@ -147,6 +147,10 @@ private:
     // through anything you are - and rebuilding now happens on every keystroke.
     QHash<qulonglong, SeriesState> states;
     void rebuild();
+    // Walks down to the series, wherever they are. The library folder can be arranged into
+    // section folders, and a wall that showed only the immediate children of the top would
+    // then be nineteen empty sections and whatever had not been sorted yet.
+    void collect(const QModelIndex &parent);
 
     // The series currently pulled off the wall, and its volumes. Its own model rather than
     // the window's, so that opening a series on the shelf does not disturb whatever the
