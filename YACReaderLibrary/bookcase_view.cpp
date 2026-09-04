@@ -1,6 +1,7 @@
 #include "bookcase_view.h"
 
 #include "QsLog.h"
+#include "bookcase_sections.h"
 #include "comic_model.h"
 #include "data_base_management.h"
 #include "folder_model.h"
@@ -12,6 +13,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVBoxLayout>
+
+#include <algorithm>
 
 BookcaseView::BookcaseView(QWidget *parent)
     : QWidget(parent)
@@ -111,9 +114,14 @@ QHash<qulonglong, BookcaseView::SeriesState> BookcaseView::loadSeriesState() con
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery query(db);
+        // The genres come back as the distinct genre strings of the folder's volumes joined
+        // together. Each one is already a comma separated list and the join uses a comma
+        // too, so splitting the result on commas gives every genre the series carries
+        // without the query having to know how many that is.
         query.prepare("SELECT c.parentId, COUNT(*), "
                       "SUM(CASE WHEN ci.read = 1 THEN 1 ELSE 0 END), "
-                      "SUM(CASE WHEN ci.synopsis IS NOT NULL AND ci.synopsis <> '' THEN 1 ELSE 0 END) "
+                      "SUM(CASE WHEN ci.synopsis IS NOT NULL AND ci.synopsis <> '' THEN 1 ELSE 0 END), "
+                      "GROUP_CONCAT(DISTINCT ci.genere) "
                       "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                       "GROUP BY c.parentId");
         query.exec();
@@ -123,6 +131,15 @@ QHash<qulonglong, BookcaseView::SeriesState> BookcaseView::loadSeriesState() con
             state.volumes = query.value(1).toInt();
             state.read = query.value(2).toInt();
             state.identified = query.value(3).toInt() > 0;
+
+            const auto genres = query.value(4).toString();
+            if (!genres.isEmpty()) {
+                state.genres = genres.split(u',', Qt::SkipEmptyParts);
+                for (auto &genre : state.genres) {
+                    genre = genre.trimmed();
+                }
+            }
+
             result.insert(query.value(0).toULongLong(), state);
         }
 
@@ -145,12 +162,7 @@ void BookcaseView::rebuild()
     // nothing against the new one.
     openedSeries = -1;
 
-    series.clear();
-    titles.clear();
-    covers.clear();
-    counts.clear();
-    readStates.clear();
-    identified.clear();
+    entries.clear();
 
     if (folderModel != nullptr) {
         const QModelIndex parent = parentFolder;
@@ -166,82 +178,107 @@ void BookcaseView::rebuild()
                 continue;
             }
 
-            series.append(QPersistentModelIndex(index));
-            titles.append(title);
-            covers.append(index.data(FolderModel::CoverPathRole).toUrl());
-            counts.append(index.data(FolderModel::NumChildrenRole).toInt());
-
             const auto state = states.value(index.data(FolderModel::IdRole).toULongLong());
+
+            Series entry;
+            entry.folder = QPersistentModelIndex(index);
+            entry.title = title;
+            entry.cover = index.data(FolderModel::CoverPathRole).toUrl();
+            entry.volumes = index.data(FolderModel::NumChildrenRole).toInt();
+            entry.identified = state.identified;
+            entry.section = YACReader::bookcaseSectionFor(state.genres);
+
             // The folder's own finished flag still counts, for anyone who does set it by
             // hand, but it is no longer the only way a series can be marked as read.
-            if (state.volumes > 0 && state.read >= state.volumes) {
-                readStates.append(ReadState::Read);
-            } else if (index.data(FolderModel::FinishedRole).toBool()) {
-                readStates.append(ReadState::Read);
+            if ((state.volumes > 0 && state.read >= state.volumes) || index.data(FolderModel::FinishedRole).toBool()) {
+                entry.readState = ReadState::Read;
             } else if (state.read > 0) {
-                readStates.append(ReadState::Started);
-            } else {
-                readStates.append(ReadState::Untouched);
+                entry.readState = ReadState::Started;
             }
 
-            identified.append(state.identified);
+            entries.append(entry);
         }
     }
+
+    // Sections in the order they stand on the wall, and alphabetically within one. The
+    // unsorted section is numbered -1 so that it would sort first, and goes last instead:
+    // the end of the wall is where you put the things you have not dealt with yet.
+    std::sort(entries.begin(), entries.end(), [](const Series &a, const Series &b) {
+        const auto rankA = a.section < 0 ? YACReader::bookcaseSections().size() : a.section;
+        const auto rankB = b.section < 0 ? YACReader::bookcaseSections().size() : b.section;
+        if (rankA != rankB) {
+            return rankA < rankB;
+        }
+        return a.title.localeAwareCompare(b.title) < 0;
+    });
 
     emit seriesChanged();
 }
 
 int BookcaseView::readStateAt(int index) const
 {
-    return static_cast<int>((index >= 0 && index < readStates.size()) ? readStates.at(index) : ReadState::Untouched);
+    return static_cast<int>((index >= 0 && index < entries.size()) ? entries.at(index).readState : ReadState::Untouched);
 }
 
 // Defaults to identified when the index is out of range, so a series the wall does not know
 // about is not accused of missing metadata it may well have.
 bool BookcaseView::isIdentifiedAt(int index) const
 {
-    return (index >= 0 && index < identified.size()) ? identified.at(index) : true;
+    return (index >= 0 && index < entries.size()) ? entries.at(index).identified : true;
+}
+
+QString BookcaseView::sectionNameAt(int index) const
+{
+    return (index >= 0 && index < entries.size()) ? YACReader::bookcaseSectionName(entries.at(index).section) : QString();
+}
+
+// The first book of a section carries its sign. Index zero always does, so the wall opens
+// with one rather than with an unlabelled run.
+bool BookcaseView::startsSectionAt(int index) const
+{
+    if (index < 0 || index >= entries.size()) {
+        return false;
+    }
+    return index == 0 || entries.at(index - 1).section != entries.at(index).section;
 }
 
 int BookcaseView::seriesCount() const
 {
-    return static_cast<int>(series.size());
+    return static_cast<int>(entries.size());
 }
 
 QString BookcaseView::titleAt(int index) const
 {
-    return (index >= 0 && index < titles.size()) ? titles.at(index) : QString();
+    return (index >= 0 && index < entries.size()) ? entries.at(index).title : QString();
 }
 
 QUrl BookcaseView::coverAt(int index) const
 {
-    return (index >= 0 && index < covers.size()) ? covers.at(index) : QUrl();
+    return (index >= 0 && index < entries.size()) ? entries.at(index).cover : QUrl();
 }
 
 int BookcaseView::volumesAt(int index) const
 {
-    return (index >= 0 && index < counts.size()) ? counts.at(index) : 0;
+    return (index >= 0 && index < entries.size()) ? entries.at(index).volumes : 0;
 }
 
 QColor BookcaseView::spineColorAt(int index) const
 {
-    if (index < 0 || index >= titles.size()) {
+    if (index < 0 || index >= entries.size()) {
         return QColor(90, 90, 96);
     }
 
-    // Hue from the title, saturation and lightness kept in a narrow band. Free hue with
-    // fixed saturation is what gives a shelf of cloth bindings rather than a paint chart:
-    // the colours differ from each other without any of them shouting.
-    const auto name = titles.at(index);
+    // Everything but the hue comes from the title, so that no two books are quite the same
+    // and a series always looks the way it looked yesterday.
+    const auto &entry = entries.at(index);
     quint32 hash = 2166136261u;
-    for (const auto ch : name) {
+    for (const auto ch : entry.title) {
         hash = (hash ^ ch.unicode()) * 16777619u;
     }
 
     // A real shelf is mostly muted and mostly dark, with a few bright ones, rather than
     // every hue at the same strength - which is what made the first attempt look like a
     // paint chart and the second like a bag of sweets.
-    const auto hue = static_cast<int>(hash % 360);
     auto saturation = 26 + static_cast<int>((hash >> 9) % 96);
     // Squared, so the spread runs dark with occasional light rather than sitting in a
     // uniform pastel band.
@@ -255,16 +292,30 @@ QColor BookcaseView::spineColorAt(int index) const
         lightness = 34 + lightness / 3;
     }
 
+    // The hue is the section's, give or take. Taking it from the title instead - which is
+    // what this did before the wall was sorted - meant the colours carried no information at
+    // all; pinning it exactly to the section would turn each one into a single block, which
+    // is the bar chart this view started life as and had to be talked out of being. A band
+    // thirty degrees wide reads as one colour from across the room and as a shelf of
+    // different books up close.
+    if (entry.section < 0) {
+        // Nothing known about it, so nothing to say: plain board, no dye.
+        return QColor::fromHsl(28, 12, 34 + lightness / 3);
+    }
+
+    const auto base = YACReader::bookcaseSections().at(entry.section).hue;
+    const auto hue = (base + static_cast<int>((hash >> 3) % 31) - 15 + 360) % 360;
+
     return QColor::fromHsl(hue, saturation, lightness);
 }
 
 void BookcaseView::openSeries(int index)
 {
-    if (index < 0 || index >= series.size() || folderModel == nullptr) {
+    if (index < 0 || index >= entries.size() || folderModel == nullptr) {
         return;
     }
 
-    const auto folder = series.at(index);
+    const auto folder = entries.at(index).folder;
     if (!folder.isValid()) {
         return;
     }
@@ -330,7 +381,7 @@ bool BookcaseView::volumeReadAt(int index) const
 
 void BookcaseView::openVolume(int index)
 {
-    if (openedSeries < 0 || openedSeries >= series.size()) {
+    if (openedSeries < 0 || openedSeries >= entries.size()) {
         return;
     }
 
@@ -339,7 +390,7 @@ void BookcaseView::openVolume(int index)
         return;
     }
 
-    const auto folder = series.at(openedSeries);
+    const auto folder = entries.at(openedSeries).folder;
     if (folder.isValid()) {
         emit volumeActivated(folder, id);
     }
@@ -347,11 +398,11 @@ void BookcaseView::openVolume(int index)
 
 void BookcaseView::showOpenedSeriesInLibrary()
 {
-    if (openedSeries < 0 || openedSeries >= series.size()) {
+    if (openedSeries < 0 || openedSeries >= entries.size()) {
         return;
     }
 
-    const auto folder = series.at(openedSeries);
+    const auto folder = entries.at(openedSeries).folder;
     if (folder.isValid()) {
         emit folderSelected(folder);
     }

@@ -150,6 +150,7 @@ qt_add_executable(YACReaderLibrary WIN32
     grid_comics_view.cpp
     grid_content_model.h
     grid_content_model.cpp
+    bookcase_sections.h
     bookcase_view.h
     bookcase_view.cpp
     metadata/series_metadata.h

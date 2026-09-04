@@ -69,6 +69,12 @@ public:
     // this library is still unidentified after a scrape, and those are the ones worth being
     // able to pick out of a wall.
     Q_INVOKABLE bool isIdentifiedAt(int index) const;
+
+    // The wall is sorted into sections the way a bookshop is, rather than being one
+    // alphabetical run of nineteen hundred. These say which section a book is in, and which
+    // book is the first of one - that book carries the sign.
+    Q_INVOKABLE QString sectionNameAt(int index) const;
+    Q_INVOKABLE bool startsSectionAt(int index) const;
     // What the wall is currently narrowed to, so the scene can say so when nothing matches.
     Q_INVOKABLE QString filterText() const;
 
@@ -115,12 +121,18 @@ private:
 
     QString filter;
 
-    QList<QPersistentModelIndex> series;
-    QStringList titles;
-    QList<QUrl> covers;
-    QList<int> counts;
-    QList<ReadState> readStates;
-    QList<bool> identified;
+    // One entry per book on the wall, in the order they stand on it - which is by section
+    // and then alphabetically, not the order the folder model hands them over in.
+    struct Series {
+        QPersistentModelIndex folder;
+        QString title;
+        QUrl cover;
+        int volumes = 0;
+        ReadState readState = ReadState::Untouched;
+        bool identified = true;
+        int section = 0;
+    };
+    QList<Series> entries;
 
     // One query for the whole wall, keyed by folder id. Asking per series would be nineteen
     // hundred round trips to the database every time the view is rebuilt.
@@ -128,6 +140,7 @@ private:
         int volumes = 0;
         int read = 0;
         bool identified = false;
+        QStringList genres;
     };
     QHash<qulonglong, SeriesState> loadSeriesState() const;
     // Held between rebuilds, because narrowing the wall to a search does not change how far
