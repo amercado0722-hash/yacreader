@@ -1,9 +1,10 @@
 #include "batch_scraper_dialog.h"
 
+#include "series_review_dialog.h"
+
 #include <QAbstractItemView>
 #include <QCheckBox>
 #include <QCloseEvent>
-#include <QComboBox>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
@@ -46,21 +47,6 @@ QString matchedTitle(const ScrapeOutcome &outcome)
         return { };
     }
     return outcome.candidates.first().series.title;
-}
-
-QString candidateLabel(const SeriesMatch &match)
-{
-    auto label = match.series.title;
-    if (!match.series.romajiTitle.isEmpty() && match.series.romajiTitle != match.series.title) {
-        label += QStringLiteral(" / ") + match.series.romajiTitle;
-    }
-    if (match.series.startYear > 0) {
-        label += QStringLiteral(" (") + QString::number(match.series.startYear) + QStringLiteral(")");
-    }
-    if (match.series.volumes > 0) {
-        label += QObject::tr(" - %n volume(s)", "", match.series.volumes);
-    }
-    return label;
 }
 
 }
@@ -140,26 +126,17 @@ void BatchScraperDialog::doLayout()
     reviewHeadline = new QLabel;
     reviewHeadline->setWordWrap(true);
 
-    reviewTable = new QTableWidget(0, 2);
-    reviewTable->setHorizontalHeaderLabels({ tr("Folder"), tr("Series") });
-    reviewTable->horizontalHeader()->setStretchLastSection(true);
-    reviewTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    reviewTable->verticalHeader()->setVisible(false);
-    reviewTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    applyButton = new QPushButton(tr("Apply choices"));
     reviewCloseButton = new QPushButton(tr("Close"));
-
-    connect(applyButton, &QAbstractButton::clicked, this, &BatchScraperDialog::applyReviewChoices);
     connect(reviewCloseButton, &QAbstractButton::clicked, this, &QDialog::accept);
 
     auto *reviewButtons = new QHBoxLayout;
     reviewButtons->addStretch();
-    reviewButtons->addWidget(applyButton);
     reviewButtons->addWidget(reviewCloseButton);
 
+    // Only a summary now. The reviewing itself happens in its own dialog, one series at a
+    // time, and has already written its choices to the library by the time this is shown.
     reviewLayout->addWidget(reviewHeadline);
-    reviewLayout->addWidget(reviewTable);
+    reviewLayout->addStretch();
     reviewLayout->addLayout(reviewButtons);
 
     pages->addWidget(runningPage);
@@ -184,7 +161,6 @@ void BatchScraperDialog::setTargets(const QList<ScrapeTarget> &targets)
     this->targets = targets;
     unresolved.clear();
     resultsTable->setRowCount(0);
-    reviewTable->setRowCount(0);
     pages->setCurrentIndex(0);
 
     progressBar->setRange(0, qMax(1, static_cast<int>(targets.size())));
@@ -286,71 +262,21 @@ void BatchScraperDialog::onFinished(int applied, int needsReview, int notFound, 
     }
 }
 
+// Handed to a dialog that asks one question at a time.
+//
+// This used to build a table with a drop-down of candidate names per row. Against a real
+// library that left four hundred and ninety one series unidentified, which is the honest
+// measure of the idea: the name is the one thing already known to be inconclusive here, so a
+// list of names is a question nobody can answer four hundred times.
 void BatchScraperDialog::showReview()
 {
-    reviewTable->setRowCount(0);
+    SeriesReviewDialog review(databasePath, this);
+    review.setOverwriteExisting(overwriteCheck->isChecked());
+    review.setOutcomes(unresolved);
+    review.exec();
 
-    for (const auto &outcome : std::as_const(unresolved)) {
-        const auto row = reviewTable->rowCount();
-        reviewTable->insertRow(row);
-
-        auto *nameItem = new QTableWidgetItem(outcome.target.folderName);
-        nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
-        reviewTable->setItem(row, 0, nameItem);
-
-        auto *chooser = new QComboBox;
-        // Leaving it alone is the default, so working down the list and only touching the
-        // ones you recognise does nothing to the rest.
-        chooser->addItem(tr("Leave alone"), -1);
-        for (auto index = 0; index < outcome.candidates.size(); ++index) {
-            chooser->addItem(candidateLabel(outcome.candidates.at(index)), index);
-        }
-        if (outcome.candidates.isEmpty()) {
-            chooser->setEnabled(false);
-            chooser->setItemText(0, tr("Nothing found - rename the folder and try again"));
-        }
-        reviewTable->setCellWidget(row, 1, chooser);
-    }
-
-    reviewHeadline->setText(tr("%n series could not be matched on their own. Pick the right one where you recognise it and leave the rest alone.", "", static_cast<int>(unresolved.size())));
-    reviewTable->resizeRowsToContents();
+    reviewHeadline->setText(tr("%n series identified.", "", review.identifiedCount()));
     pages->setCurrentIndex(1);
-}
-
-void BatchScraperDialog::applyReviewChoices()
-{
-    if (databasePath.isEmpty()) {
-        return;
-    }
-
-    BatchScraper applier(databasePath);
-    applier.setOverwriteExisting(overwriteCheck->isChecked());
-
-    auto applied = 0;
-    for (auto row = 0; row < reviewTable->rowCount() && row < unresolved.size(); ++row) {
-        auto *chooser = qobject_cast<QComboBox *>(reviewTable->cellWidget(row, 1));
-        if (chooser == nullptr) {
-            continue;
-        }
-
-        const auto choice = chooser->currentData().toInt();
-        if (choice < 0) {
-            continue;
-        }
-
-        const auto &outcome = unresolved.at(row);
-        if (choice >= outcome.candidates.size()) {
-            continue;
-        }
-
-        const auto result = applier.applyToFolder(outcome.target, outcome.candidates.at(choice).series);
-        if (result.result == ScrapeOutcome::Applied) {
-            applied++;
-            chooser->setEnabled(false);
-        }
-    }
-
-    reviewHeadline->setText(tr("%n series tagged. Anything still listed was left alone.", "", applied));
 }
 
 void BatchScraperDialog::teardownWorker()

@@ -160,6 +160,8 @@ qt_add_executable(YACReaderLibrary WIN32
     metadata/batch_scraper.h
     metadata/batch_scraper.cpp
     metadata/batch_scraper_dialog.h
+    metadata/series_review_dialog.h
+    metadata/series_review_dialog.cpp
     metadata/batch_scraper_dialog.cpp
     no_search_results_widget.h
     no_search_results_widget.cpp
