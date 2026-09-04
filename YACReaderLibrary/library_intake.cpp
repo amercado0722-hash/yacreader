@@ -1,6 +1,7 @@
 #include "library_intake.h"
 
 #include "QsLog.h"
+#include "bookcase_sections.h"
 #include "data_base_management.h"
 #include "metadata/series_match_scorer.h"
 #include "series_name_utils.h"
@@ -106,34 +107,40 @@ void LibraryIntake::onDirectoryChanged()
     debounce.start();
 }
 
-// The series already in the library, by the name they are filed under. Read from the folder
-// table rather than from disk, so a folder that exists but has not been scanned in yet is
-// not mistaken for a series that is ready to receive volumes.
-QStringList LibraryIntake::seriesFolderNames() const
+// The series already in the library, by the name they are filed under, against where they
+// sit. Read from the folder table rather than from disk, so a folder that exists but has not
+// been scanned in yet is not mistaken for a series that is ready to receive volumes.
+QHash<QString, QString> LibraryIntake::seriesFolders() const
 {
-    QStringList names;
+    QHash<QString, QString> folders;
     if (databasePath.isEmpty()) {
-        return names;
+        return folders;
     }
 
     QString connectionName;
     {
         auto db = DataBaseManagement::loadDatabase(databasePath);
         if (!db.open()) {
-            return names;
+            return folders;
         }
         connectionName = db.connectionName();
 
         QSqlQuery query(db);
-        query.prepare("select name from folder where id <> 1 and id in (select distinct parentId from comic)");
+        query.prepare("select name, path from folder where id <> 1 and id in (select distinct parentId from comic)");
         query.exec();
         while (query.next()) {
-            names.append(query.value(0).toString());
+            // Stored with a leading slash and relative to the top of the library. Everything
+            // here works in paths relative to that, so the slash comes off once, here.
+            auto path = query.value(1).toString();
+            while (path.startsWith(QLatin1Char('/'))) {
+                path.remove(0, 1);
+            }
+            folders.insert(query.value(0).toString(), path);
         }
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    return names;
+    return folders;
 }
 
 // What is sitting at the top of the library that is not already a series: loose comic files,
@@ -144,13 +151,23 @@ QList<LibraryIntake::Arrival> LibraryIntake::arrivalsAtTop() const
 {
     QList<Arrival> arrivals;
 
-    const auto known = seriesFolderNames();
+    const auto known = seriesFolders();
+    const auto sections = bookcaseSectionFolderNames();
 
     QDir top(libraryPath);
     const auto entries = top.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
     for (const auto &entry : entries) {
         // The library's own housekeeping, and this application's own working folders.
         if (entry.fileName().startsWith(QLatin1Char('_')) || entry.fileName().startsWith(QLatin1Char('.'))) {
+            continue;
+        }
+
+        // A section of the library, not something that has arrived in it. This has to come
+        // before every other test: a section holds series, which hold comics, so every check
+        // below for "does this folder have a comic in it" says yes about a section, and the
+        // one called Romance would be taken for a series of four hundred loose volumes and
+        // renamed accordingly.
+        if (entry.isDir() && sections.contains(entry.fileName())) {
             continue;
         }
 
@@ -253,7 +270,8 @@ void LibraryIntake::settle()
 void LibraryIntake::process()
 {
     const auto arrivals = arrivalsAtTop();
-    const auto series = seriesFolderNames();
+    const auto seriesPaths = seriesFolders();
+    const auto series = seriesPaths.keys();
 
     auto filed = 0;
     auto putAside = 0;
@@ -335,8 +353,14 @@ void LibraryIntake::process()
             // The same series arriving again is how a series gets its next few volumes, and
             // it is the ordinary case rather than a problem - so the volumes are moved in
             // rather than the whole folder being set aside for somebody to merge by hand.
-            if (QDir(libraryPath).exists(tidied) && tidied != info.fileName()) {
-                const auto moved = mergeInto(arrival.path, tidied);
+            //
+            // Asked of the library rather than of the top of the folder: once the library is
+            // arranged into sections, the series this belongs with is a level down, and
+            // looking for a folder of that name beside this one finds nothing and files a
+            // second copy of a series that is already here.
+            const auto existing = seriesPaths.value(tidied);
+            if (!existing.isEmpty() && tidied != info.fileName()) {
+                const auto moved = mergeInto(arrival.path, existing);
                 filed += moved.filed;
                 putAside += moved.setAside;
                 continue;
@@ -374,7 +398,7 @@ void LibraryIntake::process()
         const auto exact = matchingSeries(wanted);
 
         if (exact.size() == 1) {
-            if (fileInto(arrival.path, exact.first())) {
+            if (fileInto(arrival.path, seriesPaths.value(exact.first()))) {
                 filed++;
             } else {
                 putAside += setAside(arrival.path, tr("could not be moved into \"%1\"").arg(exact.first())) ? 1 : 0;
@@ -383,9 +407,10 @@ void LibraryIntake::process()
             // Not a series in this library, which is a new series rather than a mistake -
             // but only when enough of its volumes arrived together to be sure of the name.
             const auto newFolder = foldersToCreate.value(wanted);
+            const auto madeAt = newFolder.isEmpty() ? QString() : ensureFolder(newFolder);
             if (newFolder.isEmpty()) {
                 putAside += setAside(arrival.path, tr("no series here is called \"%1\", and it is the only volume of it").arg(wanted)) ? 1 : 0;
-            } else if (ensureFolder(newFolder) && fileInto(arrival.path, newFolder)) {
+            } else if (!madeAt.isEmpty() && fileInto(arrival.path, madeAt)) {
                 filed++;
             } else {
                 putAside += setAside(arrival.path, tr("could not be moved into a new folder for \"%1\"").arg(newFolder)) ? 1 : 0;
@@ -411,9 +436,13 @@ void LibraryIntake::process()
 // starting. Nothing is ever written over: a volume whose name is already in the destination
 // is a different scan of the same volume as often as it is the same file, and neither is
 // something to settle by overwriting.
-LibraryIntake::MergeResult LibraryIntake::mergeInto(const QString &folderPath, const QString &seriesFolder)
+LibraryIntake::MergeResult LibraryIntake::mergeInto(const QString &folderPath, const QString &seriesPath)
 {
     MergeResult result;
+
+    // The name is what goes in the log; the path is what the files are moved along. They are
+    // the same thing only while the library is one flat run of series folders.
+    const auto seriesFolder = QFileInfo(seriesPath).fileName();
 
     const QDir source(folderPath);
     if (!source.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot).isEmpty()) {
@@ -427,7 +456,7 @@ LibraryIntake::MergeResult LibraryIntake::mergeInto(const QString &folderPath, c
         if (!looksLikeAComic(file)) {
             continue;
         }
-        if (fileInto(file.absoluteFilePath(), seriesFolder)) {
+        if (fileInto(file.absoluteFilePath(), seriesPath)) {
             result.filed++;
         } else {
             collided.append(file.fileName());
@@ -448,25 +477,38 @@ LibraryIntake::MergeResult LibraryIntake::mergeInto(const QString &folderPath, c
     return result;
 }
 
-bool LibraryIntake::ensureFolder(const QString &name)
+QString LibraryIntake::ensureFolder(const QString &name)
 {
     QDir top(libraryPath);
-    if (top.exists(name)) {
-        return true;
+
+    // Into the section for things nothing is known about yet, when the library is arranged
+    // into sections - because that is exactly what a series that has just turned up is. Once
+    // its metadata has been looked up it can be sorted with the rest; putting it in a genre
+    // now would mean guessing the genre from a file name, which is not a thing this does.
+    const auto unsorted = YACReader::bookcaseSectionName(YACReader::kUnsortedSection);
+    const auto parent = top.exists(unsorted) ? unsorted : QString();
+    const auto relative = parent.isEmpty() ? name : parent + QLatin1Char('/') + name;
+
+    if (top.exists(relative)) {
+        return relative;
     }
 
-    if (!top.mkdir(name)) {
+    if (!top.mkpath(relative)) {
+        return { };
+    }
+
+    note(tr("made a new folder for %1").arg(relative));
+    return relative;
+}
+
+bool LibraryIntake::fileInto(const QString &sourceFile, const QString &seriesPath)
+{
+    if (seriesPath.isEmpty()) {
         return false;
     }
 
-    note(tr("made a new folder for %1").arg(name));
-    return true;
-}
-
-bool LibraryIntake::fileInto(const QString &sourceFile, const QString &seriesFolder)
-{
     const QFileInfo source(sourceFile);
-    const QDir destination(QDir(libraryPath).absoluteFilePath(seriesFolder));
+    const QDir destination(QDir(libraryPath).absoluteFilePath(seriesPath));
 
     if (!destination.exists()) {
         return false;
@@ -484,7 +526,7 @@ bool LibraryIntake::fileInto(const QString &sourceFile, const QString &seriesFol
         return false;
     }
 
-    note(tr("%1  ->  %2").arg(source.fileName(), seriesFolder));
+    note(tr("%1  ->  %2").arg(source.fileName(), seriesPath));
     return true;
 }
 

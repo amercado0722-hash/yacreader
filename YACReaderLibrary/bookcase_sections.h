@@ -83,6 +83,23 @@ inline QString bookcaseSectionName(int section)
     return QString::fromLatin1(sections.at(section).genre);
 }
 
+// Every section name, for anything that has to recognise one of these as a folder on disk
+// rather than as a shelf on the wall.
+//
+// The library folder can be arranged into these same sections, one folder per section with
+// the series inside them. Whatever walks that folder has to know the difference between a
+// section and a series, because they are both just directories: without this, the drop
+// folder sees "Romance" as nineteen hundred unfiled volumes that have just arrived.
+inline QStringList bookcaseSectionFolderNames()
+{
+    QStringList names;
+    for (const auto &section : bookcaseSections()) {
+        names.append(QString::fromLatin1(section.genre));
+    }
+    names.append(bookcaseSectionName(kUnsortedSection));
+    return names;
+}
+
 }
 
 #endif // BOOKCASE_SECTIONS_H
