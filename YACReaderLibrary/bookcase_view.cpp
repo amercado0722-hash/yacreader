@@ -156,6 +156,66 @@ void BookcaseView::reload()
     rebuild();
 }
 
+// A series is a folder with comics in it. Everything else is a shelf that holds them.
+//
+// That distinction is the whole of this: the library folder can be arranged into section
+// folders, one per genre, with the series inside them - and then the top level is nineteen
+// sections holding no comics at all, so a wall built from the immediate children of the top
+// is nineteen empty spines and whatever has not been sorted yet. Which is what it was.
+//
+// A folder that does hold comics is not descended into. Series do sometimes have a subfolder
+// - a "Chapters" or a "Replaced" - and those are parts of the series rather than series of
+// their own.
+void BookcaseView::collect(const QModelIndex &parent)
+{
+    const auto rows = folderModel->rowCount(parent);
+    for (auto row = 0; row < rows; ++row) {
+        const auto index = folderModel->index(row, 0, parent);
+        if (!index.isValid()) {
+            continue;
+        }
+
+        const auto name = index.data(FolderModel::FolderNameRole).toString();
+        // The library's own housekeeping - what the drop folder set aside, what the
+        // duplicate finder pulled out. Real folders holding real comics, and not shelves.
+        if (name.startsWith(QLatin1Char('_')) || name.startsWith(QLatin1Char('.'))) {
+            continue;
+        }
+
+        const auto state = states.value(index.data(FolderModel::IdRole).toULongLong());
+
+        if (state.volumes == 0) {
+            collect(index);
+            continue;
+        }
+
+        // The filter narrows which series are shown, never which folders are looked inside:
+        // searching has to reach a series wherever it is filed.
+        const auto title = YACReader::cleanSeriesDisplayName(name);
+        if (!filter.isEmpty() && !title.contains(filter, Qt::CaseInsensitive)) {
+            continue;
+        }
+
+        Series entry;
+        entry.folder = QPersistentModelIndex(index);
+        entry.title = title;
+        entry.cover = index.data(FolderModel::CoverPathRole).toUrl();
+        entry.volumes = state.volumes;
+        entry.identified = state.identified;
+        entry.section = YACReader::bookcaseSectionFor(state.genres);
+
+        // The folder's own finished flag still counts, for anyone who does set it by hand,
+        // but it is no longer the only way a series can be marked as read.
+        if (state.read >= state.volumes || index.data(FolderModel::FinishedRole).toBool()) {
+            entry.readState = ReadState::Read;
+        } else if (state.read > 0) {
+            entry.readState = ReadState::Started;
+        }
+
+        entries.append(entry);
+    }
+}
+
 void BookcaseView::rebuild()
 {
     // Whatever was pulled off the wall belongs to the old list of series and its index means
@@ -165,39 +225,7 @@ void BookcaseView::rebuild()
     entries.clear();
 
     if (folderModel != nullptr) {
-        const QModelIndex parent = parentFolder;
-        const auto rows = folderModel->rowCount(parent);
-        for (auto row = 0; row < rows; ++row) {
-            const auto index = folderModel->index(row, 0, parent);
-            if (!index.isValid()) {
-                continue;
-            }
-
-            const auto title = YACReader::cleanSeriesDisplayName(index.data(FolderModel::FolderNameRole).toString());
-            if (!filter.isEmpty() && !title.contains(filter, Qt::CaseInsensitive)) {
-                continue;
-            }
-
-            const auto state = states.value(index.data(FolderModel::IdRole).toULongLong());
-
-            Series entry;
-            entry.folder = QPersistentModelIndex(index);
-            entry.title = title;
-            entry.cover = index.data(FolderModel::CoverPathRole).toUrl();
-            entry.volumes = index.data(FolderModel::NumChildrenRole).toInt();
-            entry.identified = state.identified;
-            entry.section = YACReader::bookcaseSectionFor(state.genres);
-
-            // The folder's own finished flag still counts, for anyone who does set it by
-            // hand, but it is no longer the only way a series can be marked as read.
-            if ((state.volumes > 0 && state.read >= state.volumes) || index.data(FolderModel::FinishedRole).toBool()) {
-                entry.readState = ReadState::Read;
-            } else if (state.read > 0) {
-                entry.readState = ReadState::Started;
-            }
-
-            entries.append(entry);
-        }
+        collect(parentFolder);
     }
 
     // Sections in the order they stand on the wall, and alphabetically within one. The
