@@ -4,6 +4,7 @@
 #include "themable.h"
 
 #include <QColor>
+#include <QHash>
 #include <QList>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
@@ -50,13 +51,24 @@ public:
     // library - only covers - so the band of colour that makes a shelf look like a shelf
     // has to be invented, and inventing it from the title means it never changes.
     Q_INVOKABLE QColor spineColorAt(int index) const;
-    // Whether the reader has finished the series, and whether the library holds a complete
-    // run of it. These are the two things the folder tree already tracks, and a shelf where
-    // a series you have read through looks exactly like one you have never opened - and
-    // where one with volumes missing looks exactly like one without - is a picture of a
-    // library rather than one you use.
-    Q_INVOKABLE bool isFinishedAt(int index) const;
-    Q_INVOKABLE bool isCompleteAt(int index) const;
+    // What state a series is in, counted from its volumes rather than taken from the two
+    // flags the folder tree keeps.
+    //
+    // Those flags are hand-set and default to "not finished, complete", so in a library
+    // nobody has hand-marked they say the same thing about all nineteen hundred series and
+    // the marks drawn from them never appear. Counting how many volumes have been read
+    // costs one query and is true the moment a book is read.
+    enum class ReadState {
+        Untouched,
+        Started,
+        Read,
+    };
+    Q_ENUM(ReadState)
+    Q_INVOKABLE int readStateAt(int index) const;
+    // Whether anything is known about the series beyond its file names. Roughly a quarter of
+    // this library is still unidentified after a scrape, and those are the ones worth being
+    // able to pick out of a wall.
+    Q_INVOKABLE bool isIdentifiedAt(int index) const;
     // What the wall is currently narrowed to, so the scene can say so when nothing matches.
     Q_INVOKABLE QString filterText() const;
 
@@ -107,8 +119,21 @@ private:
     QStringList titles;
     QList<QUrl> covers;
     QList<int> counts;
-    QList<bool> finished;
-    QList<bool> complete;
+    QList<ReadState> readStates;
+    QList<bool> identified;
+
+    // One query for the whole wall, keyed by folder id. Asking per series would be nineteen
+    // hundred round trips to the database every time the view is rebuilt.
+    struct SeriesState {
+        int volumes = 0;
+        int read = 0;
+        bool identified = false;
+    };
+    QHash<qulonglong, SeriesState> loadSeriesState() const;
+    // Held between rebuilds, because narrowing the wall to a search does not change how far
+    // through anything you are - and rebuilding now happens on every keystroke.
+    QHash<qulonglong, SeriesState> states;
+    void rebuild();
 
     // The series currently pulled off the wall, and its volumes. Its own model rather than
     // the window's, so that opening a series on the shelf does not disturb whatever the
