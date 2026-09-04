@@ -156,19 +156,45 @@ void BookcaseView::reload()
     rebuild();
 }
 
-// A series is a folder with comics in it. Everything else is a shelf that holds them.
+BookcaseView::SeriesState BookcaseView::aggregate(const QModelIndex &folder) const
+{
+    auto total = states.value(folder.data(FolderModel::IdRole).toULongLong());
+
+    const auto rows = folderModel->rowCount(folder);
+    for (auto row = 0; row < rows; ++row) {
+        const auto child = folderModel->index(row, 0, folder);
+        if (!child.isValid()) {
+            continue;
+        }
+
+        const auto part = aggregate(child);
+        total.volumes += part.volumes;
+        total.read += part.read;
+        total.identified = total.identified || part.identified;
+        for (const auto &genre : part.genres) {
+            if (!total.genres.contains(genre)) {
+                total.genres.append(genre);
+            }
+        }
+    }
+
+    return total;
+}
+
+// The sections are shelves; everything under them is a series.
 //
-// That distinction is the whole of this: the library folder can be arranged into section
-// folders, one per genre, with the series inside them - and then the top level is nineteen
-// sections holding no comics at all, so a wall built from the immediate children of the top
-// is nineteen empty spines and whatever has not been sorted yet. Which is what it was.
-//
-// A folder that does hold comics is not descended into. Series do sometimes have a subfolder
-// - a "Chapters" or a "Replaced" - and those are parts of the series rather than series of
-// their own.
+// The library folder can be arranged into one folder per genre with the series inside them,
+// and then the top level holds no comics at all - so a wall built from the immediate children
+// of the top is nineteen empty spines and whatever has not been sorted yet, which is what it
+// was. Only a section is descended into. Below that, the first folder is a series, and it is
+// a series even when its volumes are in a subfolder rather than loose in its own: three
+// series here keep them in a "Chapters", a "Replaced" or a "- Decensored", and taking the
+// subfolder for the series put those three names on the wall instead of the titles.
 void BookcaseView::collect(const QModelIndex &parent)
 {
+    const auto sections = YACReader::bookcaseSectionFolderNames();
     const auto rows = folderModel->rowCount(parent);
+
     for (auto row = 0; row < rows; ++row) {
         const auto index = folderModel->index(row, 0, parent);
         if (!index.isValid()) {
@@ -182,10 +208,20 @@ void BookcaseView::collect(const QModelIndex &parent)
             continue;
         }
 
-        const auto state = states.value(index.data(FolderModel::IdRole).toULongLong());
+        auto state = states.value(index.data(FolderModel::IdRole).toULongLong());
+
+        // A section: named like one and holding no comics of its own. Both halves matter -
+        // a series actually called Romance would hold its volumes, and is not a shelf.
+        if (state.volumes == 0 && sections.contains(name)) {
+            collect(index);
+            continue;
+        }
 
         if (state.volumes == 0) {
-            collect(index);
+            state = aggregate(index);
+        }
+
+        if (state.volumes == 0) {
             continue;
         }
 

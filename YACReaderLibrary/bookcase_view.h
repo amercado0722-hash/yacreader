@@ -151,6 +151,9 @@ private:
     // section folders, and a wall that showed only the immediate children of the top would
     // then be nineteen empty sections and whatever had not been sorted yet.
     void collect(const QModelIndex &parent);
+    // Everything below a folder added together, for a series that keeps its volumes in a
+    // subfolder rather than loose in its own.
+    SeriesState aggregate(const QModelIndex &folder) const;
 
     // The series currently pulled off the wall, and its volumes. Its own model rather than
     // the window's, so that opening a series on the shelf does not disturb whatever the
