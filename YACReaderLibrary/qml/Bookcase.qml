@@ -243,12 +243,19 @@ Item {
                         // a third opacity, and costs the splay that was throwing the outer
                         // shelves off the screen. The wall now fades into the dark a little
                         // before the frame, which is what one looks like anyway.
+                        // The first book of a section carries the sign for it, and the sign
+                        // is wider than the book. Lifting that slot above the rest is what
+                        // lets it hang over its neighbours: z applies between siblings, so a
+                        // label inside an ordinary slot would be painted over by the next
+                        // book along however high its own z was.
+                        readonly property bool sectionStart: present && bookcase ? bookcase.startsSectionAt(seriesIndex) : false
+
                         visible: present && cosTheta > 0.3 && Math.abs(theta) < 1.25
                         width: bookWidth
                         height: bookHeight
                         x: scene.width / 2 + wall.focal * Math.sin(theta) - width / 2
                         y: shelfLine - bookHeight
-                        z: Math.round(200 * cosTheta)
+                        z: Math.round(200 * cosTheta) + (sectionStart ? 400 : 0)
                         opacity: Math.max(0, Math.min(1, 0.25 + 0.75 * cosTheta))
 
                         transform: Scale {
@@ -297,6 +304,49 @@ Item {
                             }
                         }
 
+                        // The sign for a section, on the back of the case above the books
+                        // where a shelf talker goes. Only near the middle of the view: the
+                        // wall squeezes what is on it towards the edges, and a name squeezed
+                        // to a tenth of its width is a smear rather than a label.
+                        Item {
+                            visible: slot.sectionStart && slot.cosTheta > 0.72
+                            height: 15
+                            // Hung from the top of the back panel rather than measured up
+                            // from the books, because the gap between the two is whatever
+                            // the window height leaves it and a sign measured from below
+                            // rises through the shelf above in a short window.
+                            y: slot.height - (wall.shelfSpacing * slot.splay - 18) + 2
+                            x: -1
+                            width: Math.max(60, sectionLabel.implicitWidth + 16)
+
+                            Rectangle {
+                                anchors.fill: parent
+                                color: "#d8c9a8"
+                                radius: 2
+                            }
+
+                            Text {
+                                id: sectionLabel
+                                anchors.centerIn: parent
+                                text: slot.sectionStart && bookcase ? bookcase.sectionNameAt(slot.seriesIndex) : ""
+                                color: "#241d15"
+                                font.pointSize: 7
+                                font.bold: true
+                                font.capitalization: Font.AllUppercase
+                                font.letterSpacing: 0.8
+                            }
+                        }
+
+                        // And a divider standing at the start of the section, so the join is
+                        // visible even when the sign is too far round the wall to read.
+                        Rectangle {
+                            visible: slot.sectionStart
+                            width: 2
+                            x: -2
+                            anchors { top: parent.top; bottom: parent.bottom; topMargin: -6 }
+                            color: "#a08a5e"
+                        }
+
                         BookSpine {
                             anchors.fill: parent
                             visible: slot.seriesIndex >= 0
@@ -342,23 +392,24 @@ Item {
         font.pointSize: 13
     }
 
-    // Where you are in the alphabet, while the wall is moving.
+    // Which section you are passing through, while the wall is moving.
     //
     // Turning a wall of nineteen hundred books by dragging it is fast enough that the spine
-    // lettering is unreadable while it happens, so there is no way to tell whether you have
-    // gone a shelf or half the library. A single large letter can be read at any speed the
-    // wall will turn at, and it fades out the moment you stop, so it costs nothing when you
-    // are looking at the books rather than travelling past them.
+    // lettering is unreadable while it happens, so there is no way to tell how far you have
+    // gone. The section name can be read at any speed the wall will turn at, and it fades
+    // out the moment you stop, so it costs nothing when you are looking at the books rather
+    // than travelling past them.
     Item {
         anchors.fill: parent
         z: 400
         visible: wall.openedIndex < 0 && wall.seriesCount > 0
 
         readonly property bool turning: dragArea.pressed || spin.running
-        // Re-evaluated as the wall turns: centreSeries reads wallOffset, so the binding
-        // follows it without having to be poked.
-        readonly property string centreTitle: bookcase ? bookcase.titleAt(wall.centreSeries()) : ""
-        readonly property string letter: centreTitle.length > 0 ? centreTitle.charAt(0).toUpperCase() : ""
+        // Re-evaluated as the wall turns: centreSeries reads wallOffset, so these bindings
+        // follow it without having to be poked.
+        readonly property int centre: wall.centreSeries()
+        readonly property string centreTitle: bookcase ? bookcase.titleAt(centre) : ""
+        readonly property string section: bookcase ? bookcase.sectionNameAt(centre) : ""
 
         opacity: turning ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 320; easing.type: Easing.OutCubic } }
@@ -366,11 +417,13 @@ Item {
         Text {
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -parent.height * 0.06
-            text: parent.letter
+            text: parent.section
             color: "#ffffff"
-            opacity: 0.13
-            font.pointSize: Math.max(48, Math.round(parent.height * 0.34))
+            opacity: 0.12
+            font.pointSize: Math.max(28, Math.round(parent.height * 0.13))
             font.bold: true
+            font.capitalization: Font.AllUppercase
+            font.letterSpacing: Math.round(parent.height * 0.012)
         }
 
         Text {
