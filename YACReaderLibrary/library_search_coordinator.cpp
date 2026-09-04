@@ -1,5 +1,6 @@
 #include "library_search_coordinator.h"
 
+#include "bookcase_view.h"
 #include "comic_item.h"
 #include "comic_model.h"
 #include "comics_view.h"
@@ -41,6 +42,19 @@ bool LibrarySearchCoordinator::exitSearchMode()
 
 void LibrarySearchCoordinator::search(const QString &filter)
 {
+    // In the bookcase, searching means "narrow the wall to these series" rather than "find
+    // these comics". Running the comic query there would answer by leaving the bookcase for
+    // the comics view, which is why wiring the search box to the wall was not enough on its
+    // own: the box worked and the view it filtered was no longer the one on screen.
+    if (contentViewsManager->isBookcaseVisible()) {
+        contentViewsManager->bookcase()->setFilter(filter);
+        // Still a search as far as the rest of the window is concerned. Without this, Escape
+        // has nothing to leave and the wall stays narrowed with no way back but emptying the
+        // box by hand.
+        searching = !filter.isEmpty();
+        return;
+    }
+
     if (!filter.isEmpty()) {
         folderQueryResultProcessor->createModelData(filter);
         comicQueryResultProcessor.createModelData(filter, foldersModel->getDatabase());
@@ -75,6 +89,12 @@ void LibrarySearchCoordinator::applyFolderResults(QMap<unsigned long long, Folde
 
 void LibrarySearchCoordinator::clearResults()
 {
+    // The wall has its own filter rather than a model proxy, so clearing the search has to
+    // reach it explicitly.
+    if (contentViewsManager->isBookcaseVisible()) {
+        contentViewsManager->bookcase()->setFilter(QString());
+    }
+
     foldersModelProxy->clear();
     contentViewsManager->comicsView->enableFilterMode(false);
     foldersView->collapseAll();

@@ -31,6 +31,9 @@ Item {
     // The radius of the cylinder in pixels. Tied to the width of the view so the wall
     // reaches the edges of any window rather than only the one it was tuned in.
     readonly property real focal: Math.max(360, width * 0.5)
+    // How much of the wall's surface is on screen at once, in those same pixels. Slots stop
+    // being drawn at about 1.25 radians either side of centre, so this is that arc.
+    readonly property real visibleArc: focal * 2.4
     // Sized to the window rather than fixed, because the rows splay outwards and the
     // outermost ones were running off the top and bottom of the view. The allowance has to
     // cover the splay at its worst, not the spacing at the middle of the wall: the top and
@@ -50,6 +53,10 @@ Item {
     // been handed over yet and the answer is zero - and never again. That left the wall
     // convinced it had no books.
     property int seriesCount: 0
+
+    // Assigned in reset() for the same reason as seriesCount: it comes from a plain
+    // invokable, so a binding on it would answer once, at load, and never again.
+    property string filterText: ""
 
     // One entry per shelf: the series standing on it, their thicknesses, and the running
     // distance to each one along the wall. Built once when the library changes, because
@@ -98,6 +105,7 @@ Item {
 
     function reset() {
         seriesCount = bookcase ? bookcase.seriesCount() : 0
+        filterText = bookcase ? bookcase.filterText() : ""
         wallOffset = 0
         hoveredIndex = -1
         openedIndex = -1
@@ -179,7 +187,13 @@ Item {
                 required property int index
 
                 readonly property var shelf: index < wall.shelves.length ? wall.shelves[index] : null
-                readonly property real position: wall.shelfPosition(shelf)
+
+                // A run only joins back to its own beginning if it is longer than the arc
+                // you can see. Searching narrows the wall to a handful of series, and a
+                // shelf of four books wrapped round a cylinder is the same four books
+                // repeated twenty times - which is what it looked like.
+                readonly property bool wraps: shelf !== null && shelf.total > wall.visibleArc
+                readonly property real position: shelf === null ? 0 : (wraps ? wall.shelfPosition(shelf) : shelf.total / 2)
                 readonly property int centre: wall.centreBook(shelf, position)
                 readonly property real rowOffset: index - (wall.shelfCount - 1) / 2
 
@@ -195,9 +209,11 @@ Item {
 
                         readonly property var shelf: shelfRow.shelf
                         readonly property int step: index - Math.floor(wall.slotsPerRow / 2)
-                        readonly property bool present: shelf !== null && shelf.count > 0
-                        // Which book on this shelf, wrapping round the cylinder.
-                        readonly property int slotIndex: present ? ((shelfRow.centre + step) % shelf.count + shelf.count) % shelf.count : 0
+                        readonly property int rawIndex: shelfRow.centre + step
+                        readonly property bool present: shelf !== null && shelf.count > 0 && (shelfRow.wraps || (rawIndex >= 0 && rawIndex < shelf.count))
+                        // Which book on this shelf, wrapping round the cylinder - or, on a
+                        // run too short to wrap, simply nothing beyond the ends.
+                        readonly property int slotIndex: present ? (shelfRow.wraps ? ((rawIndex % shelf.count) + shelf.count) % shelf.count : rawIndex) : 0
                         readonly property int seriesIndex: present ? shelf.first + slotIndex : -1
                         readonly property real bookWidth: present ? shelf.widths[slotIndex] : 0
 
@@ -205,7 +221,7 @@ Item {
                         // way round so a book near the join appears on whichever side it is
                         // actually nearest, rather than a whole lap away.
                         readonly property real rawDistance: present ? shelf.offsets[slotIndex] + bookWidth / 2 - shelfRow.position : 0
-                        readonly property real distance: present ? rawDistance - shelf.total * Math.round(rawDistance / shelf.total) : 0
+                        readonly property real distance: present ? (shelfRow.wraps ? rawDistance - shelf.total * Math.round(rawDistance / shelf.total) : rawDistance) : 0
 
                         readonly property real theta: distance / wall.focal
                         readonly property real cosTheta: Math.cos(theta)
@@ -314,7 +330,63 @@ Item {
         onClosed: wall.close()
     }
 
+    // A search that matches nothing otherwise empties the wall to plain black, which looks
+    // like a view that has broken rather than an answer.
+    Text {
+        anchors.centerIn: parent
+        z: 400
+        visible: wall.seriesCount === 0
+        text: wall.filterText.length > 0 ? qsTr("No series matching \"%1\"").arg(wall.filterText) : qsTr("No series here")
+        color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ebebeb"
+        opacity: 0.5
+        font.pointSize: 13
+    }
+
+    // Where you are in the alphabet, while the wall is moving.
+    //
+    // Turning a wall of nineteen hundred books by dragging it is fast enough that the spine
+    // lettering is unreadable while it happens, so there is no way to tell whether you have
+    // gone a shelf or half the library. A single large letter can be read at any speed the
+    // wall will turn at, and it fades out the moment you stop, so it costs nothing when you
+    // are looking at the books rather than travelling past them.
+    Item {
+        anchors.fill: parent
+        z: 400
+        visible: wall.openedIndex < 0 && wall.seriesCount > 0
+
+        readonly property bool turning: dragArea.pressed || spin.running
+        // Re-evaluated as the wall turns: centreSeries reads wallOffset, so the binding
+        // follows it without having to be poked.
+        readonly property string centreTitle: bookcase ? bookcase.titleAt(wall.centreSeries()) : ""
+        readonly property string letter: centreTitle.length > 0 ? centreTitle.charAt(0).toUpperCase() : ""
+
+        opacity: turning ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 320; easing.type: Easing.OutCubic } }
+
+        Text {
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -parent.height * 0.06
+            text: parent.letter
+            color: "#ffffff"
+            opacity: 0.13
+            font.pointSize: Math.max(48, Math.round(parent.height * 0.34))
+            font.bold: true
+        }
+
+        Text {
+            anchors { horizontalCenter: parent.horizontalCenter; bottom: parent.bottom; bottomMargin: 28 }
+            width: parent.width * 0.6
+            text: parent.centreTitle
+            color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ebebeb"
+            opacity: 0.55
+            elide: Text.ElideRight
+            horizontalAlignment: Text.AlignHCenter
+            font.pointSize: 11
+        }
+    }
+
     MouseArea {
+        id: dragArea
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton
         z: -1
@@ -376,6 +448,8 @@ Item {
         const s = middle < shelves.length ? shelves[middle] : null
         if (!s || s.count === 0)
             return -1
-        return s.first + centreBook(s, shelfPosition(s))
+        // Same rule the shelves themselves use: a run too short to wrap is simply centred.
+        const position = s.total > visibleArc ? shelfPosition(s) : s.total / 2
+        return s.first + centreBook(s, position)
     }
 }

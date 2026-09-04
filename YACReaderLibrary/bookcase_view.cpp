@@ -68,6 +68,22 @@ void BookcaseView::setFolderModel(FolderModel *model, const QModelIndex &parentI
     reload();
 }
 
+void BookcaseView::setFilter(const QString &text)
+{
+    const auto trimmed = text.trimmed();
+    if (trimmed == filter) {
+        return;
+    }
+
+    filter = trimmed;
+    reload();
+}
+
+QString BookcaseView::filterText() const
+{
+    return filter;
+}
+
 void BookcaseView::reload()
 {
     // Whatever was pulled off the wall belongs to the old list of series and its index means
@@ -78,6 +94,8 @@ void BookcaseView::reload()
     titles.clear();
     covers.clear();
     counts.clear();
+    finished.clear();
+    complete.clear();
 
     if (folderModel != nullptr) {
         const QModelIndex parent = parentFolder;
@@ -88,14 +106,33 @@ void BookcaseView::reload()
                 continue;
             }
 
+            const auto title = YACReader::cleanSeriesDisplayName(index.data(FolderModel::FolderNameRole).toString());
+            if (!filter.isEmpty() && !title.contains(filter, Qt::CaseInsensitive)) {
+                continue;
+            }
+
             series.append(QPersistentModelIndex(index));
-            titles.append(YACReader::cleanSeriesDisplayName(index.data(FolderModel::FolderNameRole).toString()));
+            titles.append(title);
             covers.append(index.data(FolderModel::CoverPathRole).toUrl());
             counts.append(index.data(FolderModel::NumChildrenRole).toInt());
+            finished.append(index.data(FolderModel::FinishedRole).toBool());
+            complete.append(index.data(FolderModel::CompletedRole).toBool());
         }
     }
 
     emit seriesChanged();
+}
+
+bool BookcaseView::isFinishedAt(int index) const
+{
+    return (index >= 0 && index < finished.size()) ? finished.at(index) : false;
+}
+
+// Defaults to complete when the index is out of range, so an unknown series is not marked as
+// missing volumes it may well have.
+bool BookcaseView::isCompleteAt(int index) const
+{
+    return (index >= 0 && index < complete.size()) ? complete.at(index) : true;
 }
 
 int BookcaseView::seriesCount() const

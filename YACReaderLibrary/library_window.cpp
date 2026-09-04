@@ -1202,6 +1202,13 @@ void LibraryWindow::keyPressEvent(QKeyEvent *event)
         return;
     }
 
+    // Then the search that narrowed the wall. The search box clears itself on Escape, but
+    // only while it has the focus, and turning the wall takes the focus away from it.
+    if (event->key() == Qt::Key_Escape && contentViewsManager->isBookcaseVisible() && librarySearchCoordinator->exitSearchMode()) {
+        event->accept();
+        return;
+    }
+
     // Going fullscreen hides the toolbar, and the button for leaving it lives on that
     // toolbar, so without this the only way back is a shortcut the user has to know.
     if (event->key() == Qt::Key_Escape && isFullScreen()) {

@@ -137,6 +137,10 @@ void YACReaderContentViewsManager::showBookcase()
     // Rebuilt on the way in rather than kept in step with the model, because the set of
     // series changes whenever the library is updated and a stale carousel would quietly
     // open the wrong folder.
+    // The search box keeps whatever was typed in it across a change of view, so the wall
+    // comes up narrowed to match rather than showing everything under a filter that says
+    // otherwise.
+    bookcaseView->setFilter(libraryWindow->searchText());
     bookcaseView->setFolderModel(libraryWindow->foldersModel);
 
     // The view selector stays disabled: the three comics views all show the contents of a

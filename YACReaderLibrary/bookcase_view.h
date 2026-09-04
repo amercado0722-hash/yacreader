@@ -37,6 +37,11 @@ public:
     void setFolderModel(FolderModel *model, const QModelIndex &parentIndex = QModelIndex());
     void reload();
 
+    // Narrows the wall to the series whose name contains this. Plain substring rather than
+    // the library's query language: the wall is a way of looking for a series by its name,
+    // and nineteen hundred of them is far too many to reach by turning.
+    void setFilter(const QString &text);
+
     Q_INVOKABLE int seriesCount() const;
     Q_INVOKABLE QString titleAt(int index) const;
     Q_INVOKABLE QUrl coverAt(int index) const;
@@ -45,6 +50,15 @@ public:
     // library - only covers - so the band of colour that makes a shelf look like a shelf
     // has to be invented, and inventing it from the title means it never changes.
     Q_INVOKABLE QColor spineColorAt(int index) const;
+    // Whether the reader has finished the series, and whether the library holds a complete
+    // run of it. These are the two things the folder tree already tracks, and a shelf where
+    // a series you have read through looks exactly like one you have never opened - and
+    // where one with volumes missing looks exactly like one without - is a picture of a
+    // library rather than one you use.
+    Q_INVOKABLE bool isFinishedAt(int index) const;
+    Q_INVOKABLE bool isCompleteAt(int index) const;
+    // What the wall is currently narrowed to, so the scene can say so when nothing matches.
+    Q_INVOKABLE QString filterText() const;
 
     // Taking a series off the wall. The volumes are loaded here rather than in the scene,
     // because a series is a folder in the library database and the scene has no business
@@ -87,10 +101,14 @@ private:
     FolderModel *folderModel = nullptr;
     QPersistentModelIndex parentFolder;
 
+    QString filter;
+
     QList<QPersistentModelIndex> series;
     QStringList titles;
     QList<QUrl> covers;
     QList<int> counts;
+    QList<bool> finished;
+    QList<bool> complete;
 
     // The series currently pulled off the wall, and its volumes. Its own model rather than
     // the window's, so that opening a series on the shelf does not disturb whatever the
