@@ -349,26 +349,34 @@ QColor BookcaseView::spineColorAt(int index) const
     const auto level = static_cast<double>((hash >> 17) % 256) / 255.0;
     auto lightness = static_cast<int>(34 + 104 * level * level);
 
-    // Roughly one book in five is plain cloth or board with no colour to speak of, which is
-    // what stops a shelf reading as a swatch card.
-    if ((hash >> 26) % 5 == 0) {
+    // Roughly one book in four is plain cloth or board with no colour to speak of, which is
+    // what stops a shelf reading as a swatch card. Raised from one in five once the wall was
+    // sorted: a section is one family of colours now, and an undyed book every few inches is
+    // most of what breaks that family up into individual books.
+    if ((hash >> 26) % 4 == 0) {
         saturation /= 5;
         lightness = 34 + lightness / 3;
     }
 
-    // The hue is the section's, give or take. Taking it from the title instead - which is
-    // what this did before the wall was sorted - meant the colours carried no information at
-    // all; pinning it exactly to the section would turn each one into a single block, which
-    // is the bar chart this view started life as and had to be talked out of being. A band
-    // thirty degrees wide reads as one colour from across the room and as a shelf of
-    // different books up close.
+    // The hue is the section's, give or take. Taking it from the title instead - which is what
+    // this did before the wall was sorted - meant the colours carried no information at all;
+    // pinning it exactly to the section would turn each one into a single block, which is the
+    // bar chart this view started life as and had to be talked out of being.
+    //
+    // The band was thirty degrees wide, and that was too timid. Seen against a real library
+    // it was fine where a shelf crossed two or three sections and flat wherever it did not:
+    // Romance is four hundred and seventy four series, and four hundred and seventy four
+    // books within fifteen degrees of each other is one long stripe of pink rather than a
+    // shelf. Fifty six degrees still reads as one family from across the room - the sections
+    // either side of it are seventy five degrees away at the very closest - and reads as
+    // different books when you are standing at it.
     if (entry.section < 0) {
         // Nothing known about it, so nothing to say: plain board, no dye.
         return QColor::fromHsl(28, 12, 34 + lightness / 3);
     }
 
     const auto base = YACReader::bookcaseSections().at(entry.section).hue;
-    const auto hue = (base + static_cast<int>((hash >> 3) % 31) - 15 + 360) % 360;
+    const auto hue = (base + static_cast<int>((hash >> 3) % 57) - 28 + 360) % 360;
 
     return QColor::fromHsl(hue, saturation, lightness);
 }

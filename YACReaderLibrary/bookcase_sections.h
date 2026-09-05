@@ -23,8 +23,18 @@ namespace YACReader {
 struct BookcaseSection {
     const char *genre;
     // Fixed rather than generated, so a section is always the same colour, and chosen so that
-    // neighbouring sections never come out the same shade - the join between two sections has
-    // to be visible from across the room, which is the whole point of sorting the wall.
+    // NEIGHBOURING sections never come out the same shade - the join between two of them has
+    // to be visible from across the room, which is the whole point of sorting the wall. The
+    // closest two neighbours here are seventy five degrees apart.
+    //
+    // Deliberately not unique across the whole list, because it cannot be: nineteen sections
+    // each occupying a band fifty six degrees wide need a thousand degrees of colour wheel and
+    // there are three hundred and sixty. Music and Supernatural are five degrees apart and
+    // that is fine - they are eight sections away from each other, so the two are never in
+    // view together. Colour marks the transitions; the sign on the case and the plate in the
+    // corner are what name a section. An optimiser will happily produce nineteen evenly spaced
+    // hues that satisfy every constraint at once, and it puts Horror in pink and Romance in
+    // yellow, which is a worse wall than this one.
     int hue;
 };
 
