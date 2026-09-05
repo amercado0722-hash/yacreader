@@ -392,6 +392,41 @@ Item {
         font.pointSize: 13
     }
 
+    // Which section you are standing in front of, at all times.
+    //
+    // The signs are on the case itself, which is right - it is where a sign belongs - but it
+    // means you can only see one when the start of a section happens to be in view. Romance
+    // here is four hundred and seventy four series, so you can travel a long way through it
+    // with no sign in sight and nothing on screen saying where you are. This is small and out
+    // of the way and always true.
+    Rectangle {
+        id: sectionPlate
+
+        readonly property string section: bookcase && wall.seriesCount > 0 ? bookcase.sectionNameAt(wall.centreSeries()) : ""
+
+        anchors { left: parent.left; top: parent.top; leftMargin: 14; topMargin: 12 }
+        width: sectionPlateLabel.implicitWidth + 20
+        height: 22
+        radius: 3
+        z: 401
+        visible: wall.openedIndex < 0 && section.length > 0
+        color: "#8c1a1713"
+        border.width: 1
+        border.color: "#26ffffff"
+
+        Text {
+            id: sectionPlateLabel
+            anchors.centerIn: parent
+            text: sectionPlate.section
+            color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ebebeb"
+            opacity: 0.72
+            font.pointSize: 8
+            font.bold: true
+            font.capitalization: Font.AllUppercase
+            font.letterSpacing: 1.2
+        }
+    }
+
     // Which section you are passing through, while the wall is moving.
     //
     // Turning a wall of nineteen hundred books by dragging it is fast enough that the spine
