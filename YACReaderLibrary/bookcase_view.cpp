@@ -325,6 +325,18 @@ void BookcaseView::rebuild()
         }
         // Two sections the folders named sort against each other by name, so the wall runs
         // A, B, C rather than in whatever order the library happened to hand them over.
+        //
+        // A section whose name does not start with a letter - "#", where the digits and the
+        // symbols and the names in other scripts go - is put first, deliberately, rather
+        // than left to the collation rules. Locale aware comparison is right for names and
+        // has no defensible answer for "#" against "A": it lands somewhere that depends on
+        // the machine, and on this library it put the numbers between H and I. Where a
+        // section sits on the wall should not be a property of the computer showing it.
+        const auto aIsSymbol = !a.section.isEmpty() && !a.section.at(0).isLetter();
+        const auto bIsSymbol = !b.section.isEmpty() && !b.section.at(0).isLetter();
+        if (aIsSymbol != bIsSymbol) {
+            return aIsSymbol;
+        }
         const auto byName = a.section.localeAwareCompare(b.section);
         if (byName != 0) {
             return byName < 0;
