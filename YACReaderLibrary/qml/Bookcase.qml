@@ -57,6 +57,9 @@ Item {
     // Assigned in reset() for the same reason as seriesCount: it comes from a plain
     // invokable, so a binding on it would answer once, at load, and never again.
     property string filterText: ""
+    // 0 is by folder, 1 is by magazine - matching BookcaseView::Arrangement.
+    property int arrangement: 0
+    property bool magazinesAvailable: false
 
     // One entry per shelf: the series standing on it, their thicknesses, and the running
     // distance to each one along the wall. Built once when the library changes, because
@@ -106,6 +109,8 @@ Item {
     function reset() {
         seriesCount = bookcase ? bookcase.seriesCount() : 0
         filterText = bookcase ? bookcase.filterText() : ""
+        arrangement = bookcase ? bookcase.arrangement() : 0
+        magazinesAvailable = bookcase ? bookcase.canArrangeByMagazine() : false
         wallOffset = 0
         hoveredIndex = -1
         openedIndex = -1
@@ -390,6 +395,66 @@ Item {
         color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ebebeb"
         opacity: 0.5
         font.pointSize: 13
+    }
+
+    // How the wall is arranged, and the way to change it.
+    //
+    // Two walls out of the same library: by artist, which is how the folders are laid out, and
+    // by magazine, which only the tags know. Neither is the right one - they answer different
+    // questions - so this is a switch and not a setting buried somewhere, and it sits in the
+    // corner opposite the sign because that is the other thing you look at while walking.
+    //
+    // It appears only when the library has magazines in it at all. A shelf of ordinary series
+    // has nothing to offer here and gets no control it cannot use.
+    Row {
+        id: arrangementSwitch
+
+        anchors { right: parent.right; top: parent.top; rightMargin: 14; topMargin: 12 }
+        spacing: 0
+        z: 402
+        visible: wall.openedIndex < 0 && wall.magazinesAvailable
+
+        Repeater {
+            model: [qsTr("By artist"), qsTr("By magazine")]
+
+            Rectangle {
+                required property int index
+                required property string modelData
+
+                readonly property bool current: wall.arrangement === index
+
+                width: optionLabel.implicitWidth + 22
+                height: 22
+                radius: 3
+                color: current ? "#d92f2823" : "#8c1a1713"
+                border.width: 1
+                border.color: current ? "#40ffffff" : "#1affffff"
+
+                Text {
+                    id: optionLabel
+                    anchors.centerIn: parent
+                    text: parent.modelData
+                    color: typeof bookcaseTextColor !== "undefined" ? bookcaseTextColor : "#ebebeb"
+                    opacity: parent.current ? 0.92 : 0.5
+                    font.pointSize: 8
+                    font.bold: true
+                    font.capitalization: Font.AllUppercase
+                    font.letterSpacing: 1.2
+                }
+
+                // Released rather than clicked, for the reason recorded in VolumeShelf: the
+                // buttons in this scene receive press and release and never emit clicked.
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onReleased: {
+                        if (bookcase && wall.arrangement !== parent.index) {
+                            bookcase.setArrangement(parent.index)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Which section you are standing in front of, at all times.

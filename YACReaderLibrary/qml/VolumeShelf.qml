@@ -13,12 +13,15 @@ Item {
 
     property int volumeCount: 0
     property string seriesTitle: ""
+    // A magazine issue is not a folder, so there is nowhere for "open in library" to go.
+    property bool canOpenInLibrary: true
 
     signal closed()
 
     function reload() {
         volumeCount = bookcase ? bookcase.volumeCount() : 0
         seriesTitle = bookcase ? bookcase.openedSeriesTitle() : ""
+        canOpenInLibrary = bookcase ? bookcase.openedSeriesIsAFolder() : true
         grid.contentY = 0
     }
 
@@ -96,6 +99,10 @@ Item {
                     hoverEnabled: true
                     onReleased: if (bookcase) bookcase.showOpenedSeriesInLibrary()
                 }
+
+                // Set when the series is opened rather than bound to a call, which would
+                // never be re-evaluated: there is no change signal behind it.
+                visible: shelf.canOpenInLibrary
             }
 
             Rectangle {

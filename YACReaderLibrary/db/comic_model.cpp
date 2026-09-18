@@ -189,6 +189,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
             DBHelper::reasignOrderToComicsInReadingList(sourceId, allComicIds, db);
             break;
         case Folder:
+        case Issue:
         case Reading:
         case Recent:
         case SearchResult:
@@ -542,6 +543,50 @@ QList<ComicItem *> ComicModel::createFolderModelData(unsigned long long folderId
     QSqlDatabase::removeDatabase(connectionName);
 
     return modelData;
+}
+
+QList<ComicItem *> ComicModel::createIssueModelData(const QString &storyArc, const QString &databasePath) const
+{
+    QList<ComicItem *> modelData;
+
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery selectQuery(db);
+        // Across the whole library rather than within a folder: an issue's contributors are
+        // filed under their own names, which is the point of being able to open the issue.
+        selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE ci.storyArc = :storyArc "
+                            "ORDER BY ci.writer, ci.title");
+        selectQuery.bindValue(":storyArc", storyArc);
+        selectQuery.exec();
+
+        modelData = createModelData(selectQuery);
+
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return modelData;
+}
+
+void ComicModel::setupIssueModelData(const QString &storyArc, const QString &databasePath)
+{
+    enableResorting = false;
+    mode = Issue;
+    sourceId = 0;
+    sourceStoryArc = storyArc;
+
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+
+    takeData(createIssueModelData(storyArc, databasePath));
+
+    endResetModel();
 }
 
 void ComicModel::setupFolderModelData(unsigned long long int folderId, const QString &databasePath)
@@ -1167,6 +1212,9 @@ void ComicModel::reload()
     switch (mode) {
     case Folder:
         takeUpdatedData(createFolderModelData(sourceId, _databasePath), defaultFolderContentSortFunction);
+        break;
+    case Issue:
+        setupIssueModelData(sourceStoryArc, _databasePath);
         break;
     case Favorites:
         setupFavoritesModelData(_databasePath); // TODO we need a comparator

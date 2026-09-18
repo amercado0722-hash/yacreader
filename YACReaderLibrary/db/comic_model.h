@@ -76,6 +76,10 @@ public:
 
     enum Mode {
         Folder,
+        // Every comic that names the same magazine issue, wherever it is filed. A library of
+        // one-shots has no series folders worth opening, and the issue is the thing a reader
+        // of one actually wants to see whole.
+        Issue,
         Favorites,
         Reading,
         Recent,
@@ -104,6 +108,7 @@ public:
     QStringList mimeTypes() const override;
 
     void setupFolderModelData(unsigned long long int parentFolder, const QString &databasePath);
+    void setupIssueModelData(const QString &storyArc, const QString &databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString &databasePath);
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString &databasePath);
     void setupFavoritesModelData(const QString &databasePath);
@@ -181,6 +186,7 @@ private:
     QList<ComicItem *> createModelDataForList(QSqlQuery &sqlquery) const;
 
     QList<ComicItem *> createFolderModelData(unsigned long long parentLabel, const QString &databasePath) const;
+    QList<ComicItem *> createIssueModelData(const QString &storyArc, const QString &databasePath) const;
     QList<ComicItem *> createLabelModelData(unsigned long long parentLabel, const QString &databasePath) const;
     QList<ComicItem *> createReadingListData(unsigned long long parentReadingList, const QString &databasePath, bool &enableResorting) const;
     QList<ComicItem *> createFavoritesModelData(const QString &databasePath) const;
@@ -198,6 +204,8 @@ private:
     bool enableResorting;
     Mode mode;
     qulonglong sourceId;
+    // The magazine issue this model is showing, when the mode is Issue.
+    QString sourceStoryArc;
     QString localizedDate(const QString &dbDate) const;
 
     bool showRecent;

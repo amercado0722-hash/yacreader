@@ -1,6 +1,7 @@
 #include "bookcase_view.h"
 
 #include "QsLog.h"
+#include "bookcase_magazines.h"
 #include "bookcase_sections.h"
 #include "comic_model.h"
 #include "data_base_management.h"
@@ -154,9 +155,42 @@ QHash<qulonglong, BookcaseView::SeriesState> BookcaseView::loadSeriesState() con
     return result;
 }
 
+// Whether this library records magazines at all. Asked once per reload and not per repaint:
+// the wall offers the magazine arrangement only when there is one to offer, so a library of
+// ordinary series never sees a toggle that would empty it.
+bool BookcaseView::hasMagazines() const
+{
+    if (folderModel == nullptr) {
+        return false;
+    }
+
+    const auto databasePath = folderModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return false;
+    }
+
+    auto found = false;
+    QString connectionName;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery query(db);
+        query.prepare("SELECT 1 FROM comic_info WHERE storyArc IS NOT NULL AND TRIM(storyArc) <> '' LIMIT 1");
+        query.exec();
+        found = query.next();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return found;
+}
+
 void BookcaseView::reload()
 {
     states = loadSeriesState();
+    magazinesPresent = hasMagazines();
+    if (!magazinesPresent) {
+        wallArrangement = Arrangement::ByFolder;
+    }
     rebuild();
 }
 
@@ -248,6 +282,7 @@ void BookcaseView::collect(const QModelIndex &parent, const QString &shelf)
 
         Series entry;
         entry.folder = QPersistentModelIndex(index);
+        entry.folderId = index.data(FolderModel::IdRole).toULongLong();
         entry.title = title;
         entry.cover = index.data(FolderModel::CoverPathRole).toUrl();
         entry.volumes = state.volumes;
@@ -287,6 +322,175 @@ void BookcaseView::collect(const QModelIndex &parent, const QString &shelf)
     }
 }
 
+int BookcaseView::arrangement() const
+{
+    return static_cast<int>(wallArrangement);
+}
+
+void BookcaseView::setArrangement(int arrangement)
+{
+    const auto wanted = static_cast<Arrangement>(arrangement);
+    if (wanted == wallArrangement) {
+        return;
+    }
+    wallArrangement = wanted;
+    rebuild();
+}
+
+bool BookcaseView::canArrangeByMagazine() const
+{
+    return magazinesPresent;
+}
+
+// The wall as magazines, built from the comics rather than from the folder tree.
+//
+// A section is a magazine, a spine is one issue of it, and its thickness is how many pieces
+// ran in that issue. That is a different question from the folder wall - not "what else did
+// this artist draw" but "what else was in that issue" - and it is the only one of the two a
+// collection of one-shots can answer, because its folders are artists and its artists are
+// mostly one book deep.
+//
+// Everything that names no magazine still has to appear. Half of this library is doujin and
+// one-off releases that never ran in one, and a view that quietly dropped nine thousand books
+// would be lying about the library - so they keep their artist folders and stand together in
+// a section at the end.
+void BookcaseView::collectMagazines()
+{
+    if (folderModel == nullptr) {
+        return;
+    }
+
+    const auto databasePath = folderModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return;
+    }
+
+    struct IssueRow {
+        QString storyArc;
+        QString magazine;
+        int works = 0;
+        int read = 0;
+        QString hash;
+    };
+    QList<IssueRow> issues;
+    QHash<QString, int> titleCounts;
+
+    struct RestRow {
+        qulonglong folderId = 0;
+        QString name;
+        int works = 0;
+        int read = 0;
+        QString hash;
+    };
+    QList<RestRow> rest;
+
+    QString connectionName;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+
+        // One row per issue. The hash is any one of the issue's comics, only ever used to
+        // find a cover for the spine, so which one it is does not matter as long as it is
+        // the same one every time the wall is built.
+        QSqlQuery query(db);
+        query.prepare("SELECT ci.storyArc, COUNT(*), "
+                      "SUM(CASE WHEN ci.read = 1 THEN 1 ELSE 0 END), MIN(ci.hash) "
+                      "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                      "WHERE ci.storyArc IS NOT NULL AND TRIM(ci.storyArc) <> '' "
+                      "GROUP BY ci.storyArc");
+        query.exec();
+
+        while (query.next()) {
+            IssueRow row;
+            row.storyArc = query.value(0).toString();
+            row.magazine = YACReader::magazineTitleFrom(row.storyArc);
+            row.works = query.value(1).toInt();
+            row.read = query.value(2).toInt();
+            row.hash = query.value(3).toString();
+            if (row.magazine.isEmpty()) {
+                row.magazine = row.storyArc;
+            }
+            titleCounts[row.magazine] += row.works;
+            issues.append(row);
+        }
+
+        QSqlQuery restQuery(db);
+        restQuery.prepare("SELECT f.id, f.name, COUNT(*), "
+                          "SUM(CASE WHEN ci.read = 1 THEN 1 ELSE 0 END), MIN(ci.hash) "
+                          "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                          "INNER JOIN folder f ON (f.id = c.parentId) "
+                          "WHERE (ci.storyArc IS NULL OR TRIM(ci.storyArc) = '') "
+                          "  AND f.id <> 1 AND f.name NOT LIKE '\\_%' ESCAPE '\\' "
+                          "GROUP BY f.id");
+        restQuery.exec();
+
+        while (restQuery.next()) {
+            RestRow row;
+            row.folderId = restQuery.value(0).toULongLong();
+            row.name = restQuery.value(1).toString();
+            row.works = restQuery.value(2).toInt();
+            row.read = restQuery.value(3).toInt();
+            row.hash = restQuery.value(4).toString();
+            rest.append(row);
+        }
+
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    const auto canonical = YACReader::canonicalMagazineTitles(titleCounts);
+
+    const auto matchesFilter = [this](const QString &title, const QString &section) {
+        if (filter.isEmpty()) {
+            return true;
+        }
+        // The magazine counts as well as the issue: typing a magazine's name should bring
+        // back its run, and nobody searches for "2016-08".
+        return title.contains(filter, Qt::CaseInsensitive) || section.contains(filter, Qt::CaseInsensitive);
+    };
+
+    for (const auto &row : std::as_const(issues)) {
+        const auto section = canonical.value(row.magazine, row.magazine);
+        const auto issueLabel = YACReader::magazineIssueFrom(row.storyArc);
+        const auto title = issueLabel.isEmpty() ? row.storyArc : issueLabel;
+
+        if (!matchesFilter(title, section)) {
+            continue;
+        }
+
+        Series entry;
+        entry.issue = row.storyArc;
+        entry.title = title;
+        entry.section = section;
+        entry.sortKey = YACReader::magazineIssueSortKey(row.storyArc);
+        entry.cover = folderModel->getCoverUrlPathForComicHash(row.hash);
+        entry.volumes = row.works;
+        // An issue is as identified as it gets: it is only here because its comics carry the
+        // tag that named it.
+        entry.identified = true;
+        entry.readState = row.read == 0 ? ReadState::Untouched : (row.read >= row.works ? ReadState::Read : ReadState::Started);
+        entries.append(entry);
+    }
+
+    const auto restSection = YACReader::noMagazineSectionName();
+    for (const auto &row : std::as_const(rest)) {
+        const auto title = YACReader::cleanSeriesDisplayName(row.name);
+        if (!matchesFilter(title, restSection)) {
+            continue;
+        }
+
+        Series entry;
+        entry.folderId = row.folderId;
+        entry.title = title;
+        entry.section = restSection;
+        // Sorted by name like the rest of the wall, not by an issue it does not have.
+        entry.cover = folderModel->getCoverUrlPathForComicHash(row.hash);
+        entry.volumes = row.works;
+        entry.identified = true;
+        entry.readState = row.read == 0 ? ReadState::Untouched : (row.read >= row.works ? ReadState::Read : ReadState::Started);
+        entries.append(entry);
+    }
+}
+
 void BookcaseView::rebuild()
 {
     // Whatever was pulled off the wall belongs to the old list of series and its index means
@@ -297,7 +501,11 @@ void BookcaseView::rebuild()
     sectionHues.clear();
 
     if (folderModel != nullptr) {
-        collect(parentFolder, QString());
+        if (wallArrangement == Arrangement::ByMagazine) {
+            collectMagazines();
+        } else {
+            collect(parentFolder, QString());
+        }
     }
 
     // Genres keep the hues chosen for them; anything the folders named gets one worked out
@@ -332,6 +540,14 @@ void BookcaseView::rebuild()
         // has no defensible answer for "#" against "A": it lands somewhere that depends on
         // the machine, and on this library it put the numbers between H and I. Where a
         // section sits on the wall should not be a property of the computer showing it.
+        // The catch-all section is last wherever its name would otherwise sort it. It is
+        // where the works that name no magazine go, and that is the end of the wall.
+        const auto noMagazine = YACReader::noMagazineSectionName();
+        const auto aIsRest = a.section == noMagazine;
+        const auto bIsRest = b.section == noMagazine;
+        if (aIsRest != bIsRest) {
+            return bIsRest;
+        }
         const auto aIsSymbol = !a.section.isEmpty() && !a.section.at(0).isLetter();
         const auto bIsSymbol = !b.section.isEmpty() && !b.section.at(0).isLetter();
         if (aIsSymbol != bIsSymbol) {
@@ -340,6 +556,14 @@ void BookcaseView::rebuild()
         const auto byName = a.section.localeAwareCompare(b.section);
         if (byName != 0) {
             return byName < 0;
+        }
+        // Inside a magazine the issues stand in publication order, which is what makes the
+        // shelf worth walking; everywhere else it is alphabetical by name.
+        if (!a.sortKey.isEmpty() || !b.sortKey.isEmpty()) {
+            const auto byKey = a.sortKey.compare(b.sortKey);
+            if (byKey != 0) {
+                return byKey < 0;
+            }
         }
         return a.title.localeAwareCompare(b.title) < 0;
     });
@@ -459,13 +683,24 @@ void BookcaseView::openSeries(int index)
         return;
     }
 
-    const auto folder = entries.at(index).folder;
-    if (!folder.isValid()) {
+    const auto &entry = entries.at(index);
+
+    // A spine is either a folder or a magazine issue, and an issue's contributors are filed
+    // under their own names all over the library - so it is loaded by the tag that named it
+    // rather than by where its comics happen to sit.
+    if (!entry.issue.isEmpty()) {
+        openedSeries = index;
+        volumes->setupIssueModelData(entry.issue, folderModel->getDatabase());
+        emit volumesChanged();
+        return;
+    }
+
+    if (entry.folderId == 0) {
         return;
     }
 
     openedSeries = index;
-    volumes->setupFolderModelData(folder.data(FolderModel::IdRole).toULongLong(), folderModel->getDatabase());
+    volumes->setupFolderModelData(entry.folderId, folderModel->getDatabase());
 
     emit volumesChanged();
 }
@@ -538,6 +773,14 @@ void BookcaseView::openVolume(int index)
     if (folder.isValid()) {
         emit volumeActivated(folder, id);
     }
+}
+
+bool BookcaseView::openedSeriesIsAFolder() const
+{
+    if (openedSeries < 0 || openedSeries >= entries.size()) {
+        return false;
+    }
+    return entries.at(openedSeries).folder.isValid();
 }
 
 void BookcaseView::showOpenedSeriesInLibrary()

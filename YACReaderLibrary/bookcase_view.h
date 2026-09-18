@@ -43,6 +43,20 @@ public:
     // and nineteen hundred of them is far too many to reach by turning.
     void setFilter(const QString &text);
 
+    // How the wall is arranged. By folder is what a library of series wants; by magazine is
+    // for a library of one-shots, where the folders are artists and the thing worth reading
+    // in order is the magazine an issue came out of.
+    enum class Arrangement {
+        ByFolder,
+        ByMagazine,
+    };
+    Q_ENUM(Arrangement)
+    Q_INVOKABLE int arrangement() const;
+    Q_INVOKABLE void setArrangement(int arrangement);
+    // Whether there is anything to arrange by. A library whose comics name no magazine gets
+    // no toggle, rather than a toggle that empties the wall.
+    Q_INVOKABLE bool canArrangeByMagazine() const;
+
     Q_INVOKABLE int seriesCount() const;
     Q_INVOKABLE QString titleAt(int index) const;
     Q_INVOKABLE QUrl coverAt(int index) const;
@@ -95,6 +109,9 @@ public:
     // The way back to the ordinary folder view, for the things the shelf deliberately does
     // not do: selecting several volumes, the context menu, editing metadata.
     Q_INVOKABLE void showOpenedSeriesInLibrary();
+    // Whether there is anywhere to show it. A magazine issue is not a folder, so the way back
+    // into the ordinary view does not exist for one and the button should not either.
+    Q_INVOKABLE bool openedSeriesIsAFolder() const;
 
 signals:
     void folderSelected(const QModelIndex &sourceIndex);
@@ -125,6 +142,14 @@ private:
     // and then alphabetically, not the order the folder model hands them over in.
     struct Series {
         QPersistentModelIndex folder;
+        // Kept alongside the index because a magazine issue is not a folder and still has to
+        // be openable; for an issue this is the folder its "no magazine" spine stands for.
+        qulonglong folderId = 0;
+        // The story arc that identifies this issue, empty for a spine that is a folder.
+        QString issue;
+        // What this sorts by inside its section: the issue in publication order, so a run of
+        // a magazine reads left to right the way it was published.
+        QString sortKey;
         QString title;
         QUrl cover;
         int volumes = 0;
@@ -149,6 +174,7 @@ private:
         QStringList genres;
     };
     QHash<qulonglong, SeriesState> loadSeriesState() const;
+    bool hasMagazines() const;
     // Held between rebuilds, because narrowing the wall to a search does not change how far
     // through anything you are - and rebuilding now happens on every keystroke.
     QHash<qulonglong, SeriesState> states;
@@ -159,6 +185,9 @@ private:
     // shelf is the name of the folder this level sits under, empty at the top of a library
     // that is not arranged into folders.
     void collect(const QModelIndex &parent, const QString &shelf);
+    // The wall as magazines and their issues, read from the comics' tags rather than from
+    // the folder tree.
+    void collectMagazines();
     // Everything below a folder added together, for a series that keeps its volumes in a
     // subfolder rather than loose in its own.
     SeriesState aggregate(const QModelIndex &folder) const;
@@ -168,6 +197,10 @@ private:
     // ordinary comics view is showing.
     ComicModel *volumes = nullptr;
     int openedSeries = -1;
+
+    Arrangement wallArrangement = Arrangement::ByFolder;
+    // Worked out once per reload rather than per repaint: it is a query over every comic.
+    bool magazinesPresent = false;
 };
 
 #endif // BOOKCASE_VIEW_H
