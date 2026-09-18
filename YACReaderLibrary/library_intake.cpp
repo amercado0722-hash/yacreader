@@ -485,8 +485,24 @@ QString LibraryIntake::ensureFolder(const QString &name)
     // into sections - because that is exactly what a series that has just turned up is. Once
     // its metadata has been looked up it can be sorted with the rest; putting it in a genre
     // now would mean guessing the genre from a file name, which is not a thing this does.
+    //
+    // The folder is made if it is missing rather than quietly falling back to the top of the
+    // library. It only has to be empty once for somebody to tidy it away, and the old
+    // behaviour then dropped new series in among the section folders, where they read as
+    // sections themselves - a silent change of arrangement caused by deleting an empty
+    // folder. Whether the library is arranged into sections at all is decided by whether any
+    // section folder exists, not by whether this particular one does.
     const auto unsorted = YACReader::bookcaseSectionName(YACReader::kUnsortedSection);
-    const auto parent = top.exists(unsorted) ? unsorted : QString();
+    auto arrangedIntoSections = top.exists(unsorted);
+    if (!arrangedIntoSections) {
+        for (const auto &section : YACReader::bookcaseSectionFolderNames()) {
+            if (section != unsorted && top.exists(section)) {
+                arrangedIntoSections = true;
+                break;
+            }
+        }
+    }
+    const auto parent = arrangedIntoSections ? unsorted : QString();
     const auto relative = parent.isEmpty() ? name : parent + QLatin1Char('/') + name;
 
     if (top.exists(relative)) {

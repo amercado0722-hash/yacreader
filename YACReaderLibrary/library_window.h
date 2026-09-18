@@ -144,6 +144,13 @@ public:
     LibrariesUpdateCoordinator *librariesUpdateCoordinator;
     // Watches the top of the open library and files whatever is dropped there.
     LibraryIntake *libraryIntake;
+    // What the last intake did, and whether the update it asked for should be followed by
+    // looking the new series up and shelving them.
+    bool finishIntakeAfterUpdate = false;
+    int lastIntakeFiled = 0;
+    int lastIntakeSetAside = 0;
+    void tagAndSortNewSeries();
+    void sortNewSeries();
 
     QStackedWidget *mainWidget;
     NoLibrariesWidget *noLibrariesWidget;

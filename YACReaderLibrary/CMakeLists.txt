@@ -151,6 +151,8 @@ qt_add_executable(YACReaderLibrary WIN32
     grid_content_model.h
     grid_content_model.cpp
     bookcase_magazines.h
+    series_sorter.h
+    series_sorter.cpp
     bookcase_sections.h
     bookcase_view.h
     bookcase_view.cpp

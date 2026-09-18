@@ -2,6 +2,7 @@
 
 #include "QsLog.h"
 #include "add_library_dialog.h"
+#include "bookcase_sections.h"
 #include "bookcase_view.h"
 #include "comic_db.h"
 #include "comic_management_coordinator.h"
@@ -29,6 +30,7 @@
 #include "library_repair_coordinator.h"
 #include "library_search_coordinator.h"
 #include "library_window_menus.h"
+#include "metadata/batch_scraper.h"
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
 #include "organize_files_coordinator.h"
@@ -38,6 +40,7 @@
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
 #include "search_syntax_dialog.h"
+#include "series_sorter.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "static.h"
@@ -72,6 +75,7 @@
 #include <QSplitter>
 #include <QSqlError>
 #include <QStackedWidget>
+#include <QThread>
 #include <QToolBar>
 #include <QToolButton>
 #include <QtCore>
@@ -677,12 +681,27 @@ void LibraryWindow::setupCoordinators()
     // confidently is named rather than left to be discovered.
     libraryIntake = new LibraryIntake(this);
     connect(libraryIntake, &LibraryIntake::imported, this, [this](int filed, int setAside) {
-        if (setAside > 0) {
-            QMessageBox::information(this, tr("New comics"),
-                                     tr("%n new item(s) filed.\n\n", "", filed) + tr("%n could not be placed and are waiting in \"%1\", with the reasons in _intake log.txt.", "", setAside).arg(LibraryIntake::quarantineFolderName()));
-        }
+        lastIntakeFiled = filed;
+        lastIntakeSetAside = setAside;
+        // The tags have to be looked up before anything can be shelved by genre, and the
+        // look-up needs the new comics to be in the database - so the whole of the rest of
+        // this happens after the update, not here.
+        finishIntakeAfterUpdate = filed > 0;
 
         librariesUpdateCoordinator->updateSingleLibrary(libraries.getId(selectedLibrary->currentText()));
+    });
+
+    // Drop a folder in and have it end up on the right shelf. Three things have to happen and
+    // only the first of them used to: the files are filed, then their tags are looked up, then
+    // the series is moved into the folder for its genre. The middle step is what the last one
+    // waits on - a genre cannot be read off a file name, which is why a new series lands in
+    // "Not yet identified" first and moves out once something is actually known about it.
+    connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, this, [this]() {
+        if (!finishIntakeAfterUpdate) {
+            return;
+        }
+        finishIntakeAfterUpdate = false;
+        tagAndSortNewSeries();
     });
 
     connect(sideBar->librariesTitle, &YACReaderTitledToolBar::cancelOperationRequested, librariesUpdateCoordinator, &LibrariesUpdateCoordinator::cancel);
@@ -1004,6 +1023,90 @@ void LibraryWindow::applyLoadedLibrary(const QString &libraryDataPath, bool read
 
     setRootIndex();
     clearSearchInput(true);
+}
+
+// Looking up what just arrived, then shelving it.
+//
+// Unattended on purpose: this runs because a folder was dropped in, which is not a moment
+// anybody is waiting at the screen for a dialog. Anything the matcher cannot settle is left
+// untagged and therefore unsorted, which is the same outcome as before this existed rather
+// than a wrong one.
+void LibraryWindow::tagAndSortNewSeries()
+{
+    const auto databasePath = foldersModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return;
+    }
+
+    // Only what just arrived. The menu action is still there for looking up the whole
+    // library on purpose; a drop should not quietly turn into one.
+    const auto loose = YACReader::SeriesSorter::looseFolderIds(databasePath);
+    auto targets = YACReader::BatchScraper::targetsForLibrary(databasePath);
+    targets.removeIf([&loose](const YACReader::ScrapeTarget &target) {
+        return !loose.contains(target.folderId);
+    });
+
+    if (targets.isEmpty()) {
+        sortNewSeries();
+        return;
+    }
+
+    auto *scraper = new YACReader::BatchScraper(databasePath);
+    scraper->setTargets(targets);
+
+    auto *thread = new QThread;
+    scraper->moveToThread(thread);
+
+    connect(thread, &QThread::started, scraper, &YACReader::BatchScraper::run);
+    connect(scraper, &YACReader::BatchScraper::finished, this, [this, scraper, thread](int, int, int, int) {
+        thread->quit();
+        thread->wait();
+        scraper->deleteLater();
+        thread->deleteLater();
+
+        sortNewSeries();
+    });
+
+    thread->start();
+}
+
+void LibraryWindow::sortNewSeries()
+{
+    YACReader::SeriesSorter sorter(currentPath(), foldersModel->getDatabase());
+    const auto moved = sorter.sort();
+    const auto problems = sorter.problems();
+
+    QStringList lines;
+    lines.append(tr("%n new item(s) filed.", "", lastIntakeFiled));
+
+    if (!moved.isEmpty()) {
+        QStringList sections;
+        for (const auto &series : moved) {
+            if (!sections.contains(series.section)) {
+                sections.append(series.section);
+            }
+        }
+        sections.sort();
+        lines.append(tr("%n series tagged and shelved under %1.", "", static_cast<int>(moved.size())).arg(sections.join(QStringLiteral(", "))));
+    }
+
+    if (lastIntakeSetAside > 0) {
+        lines.append(tr("%n could not be placed and are waiting in \"%1\", with the reasons in _intake log.txt.", "", lastIntakeSetAside).arg(LibraryIntake::quarantineFolderName()));
+    }
+
+    if (!problems.isEmpty()) {
+        lines.append(tr("%n series could not be shelved and are still in \"%1\":", "", static_cast<int>(problems.size())).arg(YACReader::bookcaseSectionName(YACReader::kUnsortedSection)));
+        lines.append(problems.join(QStringLiteral("\n")));
+    }
+
+    QMessageBox::information(this, tr("New comics"), lines.join(QStringLiteral("\n\n")));
+
+    if (!moved.isEmpty()) {
+        // The folders on disk have changed again, so the library has to be told once more.
+        // finishIntakeAfterUpdate is already false, so this update does not start the cycle
+        // over - which it would, and which would be a loop with no end to it.
+        librariesUpdateCoordinator->updateSingleLibrary(libraries.getId(selectedLibrary->currentText()));
+    }
 }
 
 void LibraryWindow::showLibraryManagementOnly()
