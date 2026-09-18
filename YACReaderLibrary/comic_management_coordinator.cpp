@@ -11,6 +11,7 @@
 #include "library_comic_opener.h"
 #include "metadata/batch_scraper.h"
 #include "metadata/batch_scraper_dialog.h"
+#include "metadata/filename_tagger_dialog.h"
 #include "properties_dialog.h"
 #include "reading_list_model.h"
 #include "yacreader_global_gui.h"
@@ -228,6 +229,23 @@ void ComicManagementCoordinator::showBatchScraper()
     YACReader::BatchScraperDialog dialog(window);
     dialog.setLibrary(databasePath);
     dialog.setTargets(targets);
+    dialog.exec();
+
+    emit currentSourceRefreshStarted();
+}
+
+void ComicManagementCoordinator::showFilenameTagger()
+{
+    const auto databasePath = foldersModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return;
+    }
+
+    // No emptiness check before opening it, unlike the online scraper: this dialog's whole
+    // job is to show what it would do before it does anything, and "nothing to do" is one of
+    // the things worth seeing.
+    FilenameTaggerDialog dialog(window);
+    dialog.setLibrary(databasePath);
     dialog.exec();
 
     emit currentSourceRefreshStarted();

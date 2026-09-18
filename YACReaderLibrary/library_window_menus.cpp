@@ -142,6 +142,7 @@ void LibraryWindowMenus::setupMenus()
 
     selectedLibrary->addAction(actions.seriesCarouselAction);
     selectedLibrary->addAction(actions.batchScrapeAction);
+    selectedLibrary->addAction(actions.filenameTagAction);
     selectedLibrary->addAction(actions.rescanLibraryForXMLInfoAction);
     selectedLibrary->addAction(actions.repairLibraryAction);
     YACReader::addSperator(selectedLibrary);
@@ -173,6 +174,7 @@ void LibraryWindowMenus::setupMenus()
     libraryMenu->addSeparator();
     libraryMenu->addAction(actions.seriesCarouselAction);
     libraryMenu->addAction(actions.batchScrapeAction);
+    libraryMenu->addAction(actions.filenameTagAction);
     libraryMenu->addAction(actions.rescanLibraryForXMLInfoAction);
     libraryMenu->addAction(actions.repairLibraryAction);
     libraryMenu->addSeparator();

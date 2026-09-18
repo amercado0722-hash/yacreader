@@ -159,6 +159,11 @@ qt_add_executable(YACReaderLibrary WIN32
     metadata/anilist_client.cpp
     metadata/batch_scraper.h
     metadata/batch_scraper.cpp
+    metadata/filename_metadata.h
+    metadata/filename_tagger.h
+    metadata/filename_tagger.cpp
+    metadata/filename_tagger_dialog.h
+    metadata/filename_tagger_dialog.cpp
     metadata/batch_scraper_dialog.h
     metadata/series_review_dialog.h
     metadata/series_review_dialog.cpp

@@ -118,9 +118,13 @@ QHash<qulonglong, BookcaseView::SeriesState> BookcaseView::loadSeriesState() con
         // together. Each one is already a comma separated list and the join uses a comma
         // too, so splitting the result on commas gives every genre the series carries
         // without the query having to know how many that is.
+        // A synopsis is the sign of a series looked up online, and a writer the sign of one
+        // tagged from its file names. Either counts: a library of one-shots that no provider
+        // indexes will never have a synopsis, and marking all eighteen thousand of its books
+        // unidentified for ever would say something false about them.
         query.prepare("SELECT c.parentId, COUNT(*), "
                       "SUM(CASE WHEN ci.read = 1 THEN 1 ELSE 0 END), "
-                      "SUM(CASE WHEN ci.synopsis IS NOT NULL AND ci.synopsis <> '' THEN 1 ELSE 0 END), "
+                      "SUM(CASE WHEN (ci.synopsis IS NOT NULL AND ci.synopsis <> '') OR (ci.writer IS NOT NULL AND ci.writer <> '') THEN 1 ELSE 0 END), "
                       "GROUP_CONCAT(DISTINCT ci.genere) "
                       "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                       "GROUP BY c.parentId");
