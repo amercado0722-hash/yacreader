@@ -1,9 +1,12 @@
 #ifndef BOOKCASE_SECTIONS_H
 #define BOOKCASE_SECTIONS_H
 
+#include <QHash>
 #include <QList>
 #include <QString>
 #include <QStringList>
+
+#include <algorithm>
 
 namespace YACReader {
 
@@ -91,6 +94,66 @@ inline QString bookcaseSectionName(int section)
         return QStringLiteral("Not yet identified");
     }
     return QString::fromLatin1(sections.at(section).genre);
+}
+
+// Where a section named by a folder rather than by a genre sorts, and what colour it gets.
+//
+// A library does not have to be arranged by genre. One collection here is seventeen thousand
+// one-shots filed by artist under A to Z, and there is no metadata provider on earth that
+// will tell you the genre of those - but the shelf the reader put them on is right there in
+// the path. So a top level folder that holds no comics of its own is a section whatever it
+// is called, and the wall reads the arrangement rather than insisting on its own.
+inline int bookcaseSectionRank(const QString &label)
+{
+    const auto &sections = bookcaseSections();
+    for (auto i = 0; i < sections.size(); ++i) {
+        if (label.compare(QString::fromLatin1(sections.at(i).genre), Qt::CaseInsensitive) == 0) {
+            return i;
+        }
+    }
+    // After every genre, in the order the folders sort in. Unsorted stays last of all.
+    return label.isEmpty() ? sections.size() + 1 : sections.size();
+}
+
+// Hues for a set of sections the folder named, spread evenly round the wheel and then
+// stepped so that two sections next to each other on the wall are never near each other in
+// colour. Alphabetical neighbours - A and B, or K and L - are exactly the pairs a reader
+// travels between, and they are the pairs this pushes furthest apart.
+inline QHash<QString, int> bookcaseHuesFor(QStringList labels)
+{
+    QHash<QString, int> hues;
+
+    labels.removeAll(QString());
+    labels.removeDuplicates();
+    std::sort(labels.begin(), labels.end());
+
+    const auto count = labels.size();
+    if (count == 0) {
+        return hues;
+    }
+
+    // The largest stride under half the ring that shares no factor with it: coprime means
+    // every section still gets its own hue, and near half means consecutive ones land on
+    // opposite sides. For twenty six letters that is eleven, so A and B end up 152 apart.
+    auto stride = qMax<qsizetype>(1, count / 2);
+    const auto gcd = [](qsizetype a, qsizetype b) {
+        while (b != 0) {
+            const auto t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
+    };
+    while (stride > 1 && gcd(stride, count) != 1) {
+        stride--;
+    }
+
+    for (qsizetype i = 0; i < count; ++i) {
+        const auto slot = (i * stride) % count;
+        hues.insert(labels.at(i), static_cast<int>(slot * 360 / count));
+    }
+
+    return hues;
 }
 
 // Every section name, for anything that has to recognise one of these as a folder on disk

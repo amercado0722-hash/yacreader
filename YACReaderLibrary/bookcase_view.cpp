@@ -183,16 +183,22 @@ BookcaseView::SeriesState BookcaseView::aggregate(const QModelIndex &folder) con
 
 // The sections are shelves; everything under them is a series.
 //
-// The library folder can be arranged into one folder per genre with the series inside them,
+// The library folder can be arranged into one folder per section with the series inside them,
 // and then the top level holds no comics at all - so a wall built from the immediate children
-// of the top is nineteen empty spines and whatever has not been sorted yet, which is what it
-// was. Only a section is descended into. Below that, the first folder is a series, and it is
-// a series even when its volumes are in a subfolder rather than loose in its own: three
-// series here keep them in a "Chapters", a "Replaced" or a "- Decensored", and taking the
-// subfolder for the series put those three names on the wall instead of the titles.
-void BookcaseView::collect(const QModelIndex &parent)
+// of the top is empty spines and whatever has not been sorted yet, which is what it was.
+//
+// A section used to have to be named after one of the genres. That was too narrow. A library
+// does not have to be arranged by genre and one here is not: seventeen thousand one-shots
+// filed by artist under A to Z, which no metadata provider will ever put a genre on. But the
+// shelf the reader put them on is in the path. So any top level folder holding no comics of
+// its own is a section, named for itself.
+//
+// Only the top level. Below it the first folder is a series, and it is a series even when its
+// volumes sit in a subfolder rather than loose in its own: three series here keep them in a
+// "Chapters", a "Replaced" or a "- Decensored", and taking the subfolder for the series put
+// those three words on the wall instead of the titles.
+void BookcaseView::collect(const QModelIndex &parent, const QString &shelf)
 {
-    const auto sections = YACReader::bookcaseSectionFolderNames();
     const auto rows = folderModel->rowCount(parent);
 
     for (auto row = 0; row < rows; ++row) {
@@ -210,11 +216,15 @@ void BookcaseView::collect(const QModelIndex &parent)
 
         auto state = states.value(index.data(FolderModel::IdRole).toULongLong());
 
-        // A section: named like one and holding no comics of its own. Both halves matter -
-        // a series actually called Romance would hold its volumes, and is not a shelf.
-        if (state.volumes == 0 && sections.contains(name)) {
-            collect(index);
-            continue;
+        // A shelf: at the top of the library, holding no comics of its own, and holding
+        // something that does. Both halves matter - a series that keeps its volumes in a
+        // subfolder also has no comics of its own, and is not a shelf.
+        if (shelf.isEmpty() && state.volumes == 0) {
+            const auto beneath = aggregate(index);
+            if (beneath.volumes > 0) {
+                collect(index, name);
+                continue;
+            }
         }
 
         if (state.volumes == 0) {
@@ -238,7 +248,20 @@ void BookcaseView::collect(const QModelIndex &parent)
         entry.cover = index.data(FolderModel::CoverPathRole).toUrl();
         entry.volumes = state.volumes;
         entry.identified = state.identified;
-        entry.section = YACReader::bookcaseSectionFor(state.genres);
+        // The shelf it is actually on wins over the genre it claims. Somebody who filed a
+        // series under Horror by hand meant it, and a wall that argued with the folder would
+        // be telling them their own library is wrong.
+        if (!shelf.isEmpty()) {
+            entry.section = shelf;
+        } else {
+            // Left empty rather than named when the genres say nothing, so that it falls
+            // through to plain board instead of being handed a colour as though the wall
+            // knew where it belonged.
+            const auto genreSection = YACReader::bookcaseSectionFor(state.genres);
+            if (genreSection != YACReader::kUnsortedSection) {
+                entry.section = YACReader::bookcaseSectionName(genreSection);
+            }
+        }
 
         // The folder's own finished flag still counts, for anyone who does set it by hand,
         // but it is no longer the only way a series can be marked as read.
@@ -259,19 +282,40 @@ void BookcaseView::rebuild()
     openedSeries = -1;
 
     entries.clear();
+    sectionHues.clear();
 
     if (folderModel != nullptr) {
-        collect(parentFolder);
+        collect(parentFolder, QString());
     }
 
-    // Sections in the order they stand on the wall, and alphabetically within one. The
-    // unsorted section is numbered -1 so that it would sort first, and goes last instead:
-    // the end of the wall is where you put the things you have not dealt with yet.
+    // Genres keep the hues chosen for them; anything the folders named gets one worked out
+    // from how many of them there turned out to be, which is the only way to colour a set
+    // of sections nobody knew about until the library was read.
+    QStringList named;
+    for (const auto &entry : std::as_const(entries)) {
+        if (!entry.section.isEmpty() && YACReader::bookcaseSectionRank(entry.section) >= YACReader::bookcaseSections().size()) {
+            named.append(entry.section);
+        }
+    }
+    sectionHues = YACReader::bookcaseHuesFor(named);
+    for (const auto &section : YACReader::bookcaseSections()) {
+        sectionHues.insert(QString::fromLatin1(section.genre), section.hue);
+    }
+
+    // Sections in the order they stand on the wall, and alphabetically within one. Whatever
+    // has no section at all goes last: the end of the wall is where you put the things you
+    // have not dealt with yet.
     std::sort(entries.begin(), entries.end(), [](const Series &a, const Series &b) {
-        const auto rankA = a.section < 0 ? YACReader::bookcaseSections().size() : a.section;
-        const auto rankB = b.section < 0 ? YACReader::bookcaseSections().size() : b.section;
+        const auto rankA = YACReader::bookcaseSectionRank(a.section);
+        const auto rankB = YACReader::bookcaseSectionRank(b.section);
         if (rankA != rankB) {
             return rankA < rankB;
+        }
+        // Two sections the folders named sort against each other by name, so the wall runs
+        // A, B, C rather than in whatever order the library happened to hand them over.
+        const auto byName = a.section.localeAwareCompare(b.section);
+        if (byName != 0) {
+            return byName < 0;
         }
         return a.title.localeAwareCompare(b.title) < 0;
     });
@@ -293,7 +337,11 @@ bool BookcaseView::isIdentifiedAt(int index) const
 
 QString BookcaseView::sectionNameAt(int index) const
 {
-    return (index >= 0 && index < entries.size()) ? YACReader::bookcaseSectionName(entries.at(index).section) : QString();
+    if (index < 0 || index >= entries.size()) {
+        return { };
+    }
+    const auto &section = entries.at(index).section;
+    return section.isEmpty() ? YACReader::bookcaseSectionName(YACReader::kUnsortedSection) : section;
 }
 
 // The first book of a section carries its sign. Index zero always does, so the wall opens
@@ -370,12 +418,12 @@ QColor BookcaseView::spineColorAt(int index) const
     // shelf. Fifty six degrees still reads as one family from across the room - the sections
     // either side of it are seventy five degrees away at the very closest - and reads as
     // different books when you are standing at it.
-    if (entry.section < 0) {
+    if (entry.section.isEmpty() || !sectionHues.contains(entry.section)) {
         // Nothing known about it, so nothing to say: plain board, no dye.
         return QColor::fromHsl(28, 12, 34 + lightness / 3);
     }
 
-    const auto base = YACReader::bookcaseSections().at(entry.section).hue;
+    const auto base = sectionHues.value(entry.section);
     const auto hue = (base + static_cast<int>((hash >> 3) % 57) - 28 + 360) % 360;
 
     return QColor::fromHsl(hue, saturation, lightness);

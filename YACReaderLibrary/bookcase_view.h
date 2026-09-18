@@ -130,9 +130,15 @@ private:
         int volumes = 0;
         ReadState readState = ReadState::Untouched;
         bool identified = true;
-        int section = 0;
+        // What the wall shelves this under. A folder name when the library is arranged into
+        // folders, the genre otherwise, and empty when nothing is known either way.
+        QString section;
     };
     QList<Series> entries;
+
+    // The hue for each section on this wall. Fixed for the genres, worked out from however
+    // many folder-named sections there turn out to be for everything else.
+    QHash<QString, int> sectionHues;
 
     // One query for the whole wall, keyed by folder id. Asking per series would be nineteen
     // hundred round trips to the database every time the view is rebuilt.
@@ -150,7 +156,9 @@ private:
     // Walks down to the series, wherever they are. The library folder can be arranged into
     // section folders, and a wall that showed only the immediate children of the top would
     // then be nineteen empty sections and whatever had not been sorted yet.
-    void collect(const QModelIndex &parent);
+    // shelf is the name of the folder this level sits under, empty at the top of a library
+    // that is not arranged into folders.
+    void collect(const QModelIndex &parent, const QString &shelf);
     // Everything below a folder added together, for a series that keeps its volumes in a
     // subfolder rather than loose in its own.
     SeriesState aggregate(const QModelIndex &folder) const;
