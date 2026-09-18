@@ -251,8 +251,16 @@ void BookcaseView::collect(const QModelIndex &parent, const QString &shelf)
         // The shelf it is actually on wins over the genre it claims. Somebody who filed a
         // series under Horror by hand meant it, and a wall that argued with the folder would
         // be telling them their own library is wrong.
+        //
+        // With one exception, which is the folder the unidentified series sit in. That is a
+        // real folder and it would otherwise become a section like any other, and be handed a
+        // colour off the wheel - so the shelf that means "nothing is known about these" would
+        // come out looking like a genre somebody chose. It stays plain undyed board.
+        const auto unsorted = YACReader::bookcaseSectionName(YACReader::kUnsortedSection);
         if (!shelf.isEmpty()) {
-            entry.section = shelf;
+            if (shelf != unsorted) {
+                entry.section = shelf;
+            }
         } else {
             // Left empty rather than named when the genres say nothing, so that it falls
             // through to plain board instead of being handed a colour as though the wall
