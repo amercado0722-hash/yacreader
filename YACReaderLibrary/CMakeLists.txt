@@ -162,6 +162,8 @@ qt_add_executable(YACReaderLibrary WIN32
     metadata/anilist_client.cpp
     metadata/batch_scraper.h
     metadata/batch_scraper.cpp
+    metadata/comic_vine_series_client.h
+    metadata/comic_vine_series_client.cpp
     metadata/filename_metadata.h
     metadata/filename_tagger.h
     metadata/filename_tagger.cpp

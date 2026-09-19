@@ -41,6 +41,9 @@ struct SeriesMetadata {
 
     QString writer;
     QString penciller;
+    // Who published it. Empty from AniList, which does not report one; the only thing a
+    // western comic can be shelved by, because Comic Vine has no genres.
+    QString publisher;
 
     QString siteUrl;
     QString coverUrl;

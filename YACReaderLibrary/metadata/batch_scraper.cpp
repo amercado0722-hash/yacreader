@@ -2,6 +2,7 @@
 
 #include "anilist_client.h"
 #include "comic_db.h"
+#include "comic_vine_series_client.h"
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "series_name_utils.h"
@@ -157,6 +158,7 @@ void BatchScraper::writeInfo(ComicInfo &info, const SeriesMetadata &series, cons
     set(info.tags, series.tags.join(QStringLiteral(", ")));
     set(info.writer, series.writer);
     set(info.penciller, series.penciller);
+    set(info.publisher, series.publisher);
     set(info.languageISO, languageForCountry(series.countryOfOrigin));
 
     if (series.volumes > 0) {
@@ -297,6 +299,44 @@ void BatchScraper::run()
 
         if (cancelled) {
             break;
+        }
+
+        // Nothing on AniList is not the end of the question, because AniList only answers
+        // about manga. A library with western comics in it has series AniList will never
+        // have heard of however the name is trimmed, and before this they stayed
+        // unidentified through every run of the scrape.
+        //
+        // Only when AniList found nothing at all - never to overrule a manga it did find.
+        // Comic Vine carries plenty of manga too, under different names and without the
+        // synonyms that make a folder name match, so asking it second is what keeps it from
+        // taking series that were already correctly identified.
+        if (!response.error && ranked.isEmpty() && !cancelled) {
+            sleepInterruptibly(requestIntervalMs);
+
+            ComicVineSeriesClient comicVine;
+            auto fallback = comicVine.searchSeries(usedName);
+
+            auto rateLimitRetries = 0;
+            while (fallback.rateLimited && rateLimitRetries < 2 && !cancelled) {
+                const auto seconds = qMax(1, fallback.retryAfterSeconds);
+                emit waiting(seconds, tr("waiting for Comic Vine's rate limit"));
+                if (!sleepInterruptibly(seconds * 1000)) {
+                    break;
+                }
+                fallback = comicVine.searchSeries(usedName);
+                rateLimitRetries++;
+            }
+
+            if (!fallback.error) {
+                ranked = rankSeriesMatches(usedName, fallback.candidates);
+
+                // The description costs a second request, so it is fetched only for a match
+                // that is actually going to be written.
+                if (!ranked.isEmpty() && ranked.first().confident && ranked.first().series.synopsis.isEmpty()) {
+                    sleepInterruptibly(requestIntervalMs);
+                    ranked.first().series.synopsis = comicVine.fetchDescription(ranked.first().series.providerId);
+                }
+            }
         }
 
         ScrapeOutcome outcome;

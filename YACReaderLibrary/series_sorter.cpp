@@ -34,7 +34,8 @@ QList<SortedSeries> SeriesSorter::pending() const
         // already a comma separated list and the join uses a comma too, so splitting the
         // result on commas gives every genre the series carries.
         QSqlQuery query(db);
-        query.prepare("SELECT f.name, f.path, GROUP_CONCAT(DISTINCT ci.genere) "
+        query.prepare("SELECT f.name, f.path, GROUP_CONCAT(DISTINCT ci.genere), "
+                      "MAX(CASE WHEN ci.publisher IS NOT NULL AND TRIM(ci.publisher) <> '' THEN ci.publisher END) "
                       "FROM folder f "
                       "INNER JOIN comic c ON (c.parentId = f.id) "
                       "INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -52,26 +53,32 @@ QList<SortedSeries> SeriesSorter::pending() const
             }
 
             const auto joined = query.value(2).toString();
-            if (joined.isEmpty()) {
-                continue;
-            }
+            const auto publisher = query.value(3).toString().trimmed();
 
             auto genres = joined.split(QLatin1Char(','), Qt::SkipEmptyParts);
             for (auto &genre : genres) {
                 genre = genre.trimmed();
             }
 
+            SortedSeries entry;
+            entry.name = query.value(0).toString();
+
             const auto section = bookcaseSectionFor(genres);
-            if (section == kUnsortedSection) {
-                // Tagged, but with nothing any section is named after. It stays where it is:
+            if (section != kUnsortedSection) {
+                entry.section = bookcaseSectionName(section);
+            } else if (!publisher.isEmpty()) {
+                // A genre is what a manga is shelved by and a publisher is what a comic is
+                // shelved by, because Comic Vine - the only source that knows these - has no
+                // genres at all. Dark Horse, Zenescope and DC are as real a shelf as Horror,
+                // and they come off the data rather than out of a guess.
+                entry.section = publisher;
+            } else {
+                // Nothing known that any shelf could be named after. It stays where it is:
                 // the wall shows it as unidentified, which is honest, and a wrong shelf is
                 // worse than an unsorted one.
                 continue;
             }
 
-            SortedSeries entry;
-            entry.name = query.value(0).toString();
-            entry.section = bookcaseSectionName(section);
             ready.append(entry);
         }
     }

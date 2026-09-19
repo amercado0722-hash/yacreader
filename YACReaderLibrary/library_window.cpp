@@ -70,6 +70,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QSet>
 #include <QSettings>
 #include <QShowEvent>
 #include <QSplitter>
@@ -683,25 +684,21 @@ void LibraryWindow::setupCoordinators()
     connect(libraryIntake, &LibraryIntake::imported, this, [this](int filed, int setAside) {
         lastIntakeFiled = filed;
         lastIntakeSetAside = setAside;
-        // The tags have to be looked up before anything can be shelved by genre, and the
-        // look-up needs the new comics to be in the database - so the whole of the rest of
-        // this happens after the update, not here.
-        finishIntakeAfterUpdate = filed > 0;
 
         librariesUpdateCoordinator->updateSingleLibrary(libraries.getId(selectedLibrary->currentText()));
     });
 
     // Drop a folder in and have it end up on the right shelf. Three things have to happen and
     // only the first of them used to: the files are filed, then their tags are looked up, then
-    // the series is moved into the folder for its genre. The middle step is what the last one
-    // waits on - a genre cannot be read off a file name, which is why a new series lands in
-    // "Not yet identified" first and moves out once something is actually known about it.
+    // the series is moved into the folder for its genre or its publisher.
+    //
+    // Hung on the library having series nobody has looked up yet, NOT on the intake reporting
+    // that it did something - which is what the first version of this did, and why it never
+    // ran. Intake reports what it CHANGED, and a folder dropped in with a tidy name needs no
+    // renaming, so twenty three series arrived, were scanned into the library, and told
+    // nobody. What matters is that there are unshelved series now, however they got here.
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, this, [this]() {
-        if (!finishIntakeAfterUpdate) {
-            return;
-        }
-        finishIntakeAfterUpdate = false;
-        tagAndSortNewSeries();
+        followUpAfterUpdate();
     });
 
     connect(sideBar->librariesTitle, &YACReaderTitledToolBar::cancelOperationRequested, librariesUpdateCoordinator, &LibrariesUpdateCoordinator::cancel);
@@ -1031,10 +1028,45 @@ void LibraryWindow::applyLoadedLibrary(const QString &libraryDataPath, bool read
 // anybody is waiting at the screen for a dialog. Anything the matcher cannot settle is left
 // untagged and therefore unsorted, which is the same outcome as before this existed rather
 // than a wrong one.
+// Whether there is anything to do, and the guard against doing it for ever.
+//
+// Shelving a series changes the folders, which triggers another update, which arrives back
+// here - so a series that cannot be shelved has to be remembered as tried, or every update
+// would look it up again. Once per series per session is the right number: enough to pick up
+// anything that arrives while the application is open, and never a loop.
+void LibraryWindow::followUpAfterUpdate()
+{
+    if (followUpRunning) {
+        return;
+    }
+
+    const auto databasePath = foldersModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return;
+    }
+
+    auto fresh = false;
+    const auto loose = YACReader::SeriesSorter::looseFolderIds(databasePath);
+    for (const auto id : loose) {
+        if (!attemptedFolders.contains(id)) {
+            attemptedFolders.insert(id);
+            fresh = true;
+        }
+    }
+
+    if (!fresh) {
+        return;
+    }
+
+    followUpRunning = true;
+    tagAndSortNewSeries();
+}
+
 void LibraryWindow::tagAndSortNewSeries()
 {
     const auto databasePath = foldersModel->getDatabase();
     if (databasePath.isEmpty()) {
+        followUpRunning = false;
         return;
     }
 
@@ -1072,12 +1104,17 @@ void LibraryWindow::tagAndSortNewSeries()
 
 void LibraryWindow::sortNewSeries()
 {
+    followUpRunning = false;
+
     YACReader::SeriesSorter sorter(currentPath(), foldersModel->getDatabase());
     const auto moved = sorter.sort();
     const auto problems = sorter.problems();
 
     QStringList lines;
-    lines.append(tr("%n new item(s) filed.", "", lastIntakeFiled));
+    if (lastIntakeFiled > 0) {
+        lines.append(tr("%n new item(s) filed.", "", lastIntakeFiled));
+    }
+    lastIntakeFiled = 0;
 
     if (!moved.isEmpty()) {
         QStringList sections;
@@ -1099,12 +1136,18 @@ void LibraryWindow::sortNewSeries()
         lines.append(problems.join(QStringLiteral("\n")));
     }
 
+    // Silence when nothing happened. This now runs after any update that turned up an
+    // unshelved series, so a run that shelves none of them must not put a box on screen.
+    if (lines.isEmpty()) {
+        return;
+    }
+
     QMessageBox::information(this, tr("New comics"), lines.join(QStringLiteral("\n\n")));
 
     if (!moved.isEmpty()) {
         // The folders on disk have changed again, so the library has to be told once more.
-        // finishIntakeAfterUpdate is already false, so this update does not start the cycle
-        // over - which it would, and which would be a loop with no end to it.
+        // The series just moved are already in attemptedFolders and are no longer loose, so
+        // the update this starts finds nothing fresh and the cycle stops here.
         librariesUpdateCoordinator->updateSingleLibrary(libraries.getId(selectedLibrary->currentText()));
     }
 }

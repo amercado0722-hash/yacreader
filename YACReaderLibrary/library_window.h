@@ -13,6 +13,7 @@
 
 #include <QMainWindow>
 #include <QModelIndex>
+#include <QSet>
 
 #ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"
@@ -146,9 +147,13 @@ public:
     LibraryIntake *libraryIntake;
     // What the last intake did, and whether the update it asked for should be followed by
     // looking the new series up and shelving them.
-    bool finishIntakeAfterUpdate = false;
     int lastIntakeFiled = 0;
     int lastIntakeSetAside = 0;
+    // Series already looked up this session, so an update caused by shelving one does not
+    // start the whole thing again.
+    QSet<qulonglong> attemptedFolders;
+    bool followUpRunning = false;
+    void followUpAfterUpdate();
     void tagAndSortNewSeries();
     void sortNewSeries();
 
