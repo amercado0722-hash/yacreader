@@ -154,6 +154,8 @@ public:
     QSet<qulonglong> attemptedFolders;
     bool followUpRunning = false;
     void followUpAfterUpdate();
+    // Runs the shelving on demand and reports, whatever the answer.
+    void shelveSeriesNow();
     void tagAndSortNewSeries();
     void sortNewSeries();
 

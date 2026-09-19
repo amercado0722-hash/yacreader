@@ -387,6 +387,15 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     filenameTagAction = new QAction(window);
     filenameTagAction->setText(tr("Read tags from file names..."));
     filenameTagAction->setToolTip(tr("Fills in titles, artists and magazines from what the file names already say. Nothing is downloaded."));
+
+    // The same shelving the drop does on its own, on demand and out loud.
+    //
+    // It exists because the automatic one is invisible when it does nothing: it runs after an
+    // update, says nothing when it moves nothing, and there is then no way to tell whether it
+    // decided against moving a series or never ran at all. This always says which it was.
+    shelveSeriesAction = new QAction(window);
+    shelveSeriesAction->setText(tr("Shelve identified series..."));
+    shelveSeriesAction->setToolTip(tr("Moves any series that has been identified into the folder for its genre, or its publisher, and says what it did."));
     //-------------------------------------------------------------------------
 
     focusSearchLineAction = new QAction(tr("Focus search line"), window);
@@ -600,6 +609,7 @@ void LibraryWindowActions::createConnections(
 
     QObject::connect(batchScrapeAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showBatchScraper);
     QObject::connect(filenameTagAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showFilenameTagger);
+    QObject::connect(shelveSeriesAction, &QAction::triggered, window, &LibraryWindow::shelveSeriesNow);
 
     QObject::connect(focusComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::focusComicsViewViaShortcut);
 
@@ -834,6 +844,7 @@ void LibraryWindowActions::disableLibrariesActions(bool disabled)
     updateLibraryAction->setDisabled(disabled);
     batchScrapeAction->setDisabled(disabled);
     filenameTagAction->setDisabled(disabled);
+    shelveSeriesAction->setDisabled(disabled);
     backupLibraryAction->setDisabled(disabled);
     restoreLibraryAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);

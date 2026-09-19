@@ -30,21 +30,23 @@ QList<SortedSeries> SeriesSorter::pending() const
         }
         connectionName = db.connectionName();
 
-        // The genres of a folder are the genres of its volumes, joined. Each volume's is
-        // already a comma separated list and the join uses a comma too, so splitting the
-        // result on commas gives every genre the series carries.
-        QSqlQuery query(db);
-        query.prepare("SELECT f.name, f.path, GROUP_CONCAT(DISTINCT ci.genere), "
-                      "MAX(CASE WHEN ci.publisher IS NOT NULL AND TRIM(ci.publisher) <> '' THEN ci.publisher END) "
-                      "FROM folder f "
-                      "INNER JOIN comic c ON (c.parentId = f.id) "
-                      "INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                      "WHERE f.id <> 1 "
-                      "GROUP BY f.id");
-        query.exec();
+        struct Loose {
+            QString name;
+            SeriesTally tally;
+        };
+        QHash<qulonglong, Loose> loose;
 
-        while (query.next()) {
-            auto path = query.value(1).toString();
+        // Which folders are in play, and how many volumes each has to agree with itself
+        // about. Narrowed here so the two counting queries below are read for these only.
+        QSqlQuery folders(db);
+        folders.prepare("SELECT f.id, f.name, f.path, COUNT(*) "
+                        "FROM folder f "
+                        "INNER JOIN comic c ON (c.parentId = f.id) "
+                        "WHERE f.id <> 1 "
+                        "GROUP BY f.id");
+        folders.exec();
+        while (folders.next()) {
+            auto path = folders.value(2).toString();
             while (path.startsWith(QLatin1Char('/'))) {
                 path.remove(0, 1);
             }
@@ -52,31 +54,77 @@ QList<SortedSeries> SeriesSorter::pending() const
                 continue;
             }
 
-            const auto joined = query.value(2).toString();
-            const auto publisher = query.value(3).toString().trimmed();
+            Loose entry;
+            entry.name = folders.value(1).toString();
+            entry.tally.volumes = folders.value(3).toInt();
+            loose.insert(folders.value(0).toULongLong(), entry);
+        }
 
-            auto genres = joined.split(QLatin1Char(','), Qt::SkipEmptyParts);
-            for (auto &genre : genres) {
-                genre = genre.trimmed();
+        if (loose.isEmpty()) {
+            QSqlDatabase::removeDatabase(connectionName);
+            return ready;
+        }
+
+        // One row per folder and genre string, with how many volumes carry it. A volume's
+        // genre field is itself a comma separated list, so each one is split and every genre
+        // in it credited with that row's count.
+        QSqlQuery genres(db);
+        genres.prepare("SELECT c.parentId, ci.genere, COUNT(*) "
+                       "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                       "WHERE ci.genere IS NOT NULL AND TRIM(ci.genere) <> '' "
+                       "GROUP BY c.parentId, ci.genere");
+        genres.exec();
+        while (genres.next()) {
+            const auto folderId = genres.value(0).toULongLong();
+            if (!loose.contains(folderId)) {
+                continue;
             }
+            const auto count = genres.value(2).toInt();
+            const auto parts = genres.value(1).toString().split(QLatin1Char(','), Qt::SkipEmptyParts);
+            for (const auto &part : parts) {
+                const auto genre = part.trimmed();
+                if (!genre.isEmpty()) {
+                    loose[folderId].tally.genreCounts[genre] += count;
+                }
+            }
+        }
+
+        QSqlQuery publishers(db);
+        publishers.prepare("SELECT c.parentId, TRIM(ci.publisher), COUNT(*) "
+                           "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                           "WHERE ci.publisher IS NOT NULL AND TRIM(ci.publisher) <> '' "
+                           "GROUP BY c.parentId, TRIM(ci.publisher)");
+        publishers.exec();
+        while (publishers.next()) {
+            const auto folderId = publishers.value(0).toULongLong();
+            if (!loose.contains(folderId)) {
+                continue;
+            }
+            loose[folderId].tally.publisherCounts[publishers.value(1).toString()] += publishers.value(2).toInt();
+        }
+
+        for (auto it = loose.constBegin(); it != loose.constEnd(); ++it) {
+            const auto &tally = it.value().tally;
 
             SortedSeries entry;
-            entry.name = query.value(0).toString();
+            entry.name = it.value().name;
 
-            const auto section = bookcaseSectionFor(genres);
+            const auto section = bookcaseSectionFor(agreedGenres(tally));
             if (section != kUnsortedSection) {
                 entry.section = bookcaseSectionName(section);
-            } else if (!publisher.isEmpty()) {
+            } else {
                 // A genre is what a manga is shelved by and a publisher is what a comic is
                 // shelved by, because Comic Vine - the only source that knows these - has no
-                // genres at all. Dark Horse, Zenescope and DC are as real a shelf as Horror,
-                // and they come off the data rather than out of a guess.
+                // genres at all. Dark Horse and Zenescope are as real a shelf as Horror, and
+                // they come off the data rather than out of a guess.
+                const auto publisher = agreedPublisher(tally);
+                if (publisher.isEmpty()) {
+                    // Nothing the volumes agree on. It stays where it is: the wall shows it
+                    // as unidentified, which is honest, and a wrong shelf is worse than an
+                    // unsorted one.
+                    continue;
+                }
                 entry.section = publisher;
-            } else {
-                // Nothing known that any shelf could be named after. It stays where it is:
-                // the wall shows it as unidentified, which is honest, and a wrong shelf is
-                // worse than an unsorted one.
-                continue;
             }
 
             ready.append(entry);

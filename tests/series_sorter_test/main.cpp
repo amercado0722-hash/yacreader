@@ -18,6 +18,9 @@ private slots:
     void leavesAFolderThatIsNotAGenreAlone();
     void leavesADeeplyNestedVolumeFolderAlone();
     void copesWithALeadingSlashOrAnEmptyPath();
+    void needsMostVolumesToAgreeOnAGenre();
+    void needsMostVolumesToAgreeOnAPublisher();
+    void takesTheCommonestPublisherWhenSeveralAreNamed();
 };
 
 void SeriesSorterTest::movesASeriesLooseAtTheTop()
@@ -58,6 +61,63 @@ void SeriesSorterTest::copesWithALeadingSlashOrAnEmptyPath()
     QVERIFY(isLooseSeriesPath(QStringLiteral("/Some New Series")));
     QVERIFY(!isLooseSeriesPath(QString()));
     QVERIFY(!isLooseSeriesPath(QStringLiteral("/")));
+}
+
+// One volume of fourteen carrying "Slice of Life" from an embedded ComicInfo.xml is not
+// fourteen volumes of Hellboy being a slice of life story. Measured against the real
+// library, sampling any volume's tags shelved it there.
+void SeriesSorterTest::needsMostVolumesToAgreeOnAGenre()
+{
+    SeriesTally hellboy;
+    hellboy.volumes = 14;
+    hellboy.genreCounts.insert(QStringLiteral("Slice of Life"), 1);
+    QVERIFY(agreedGenres(hellboy).isEmpty());
+
+    SeriesTally scraped;
+    scraped.volumes = 14;
+    scraped.genreCounts.insert(QStringLiteral("Horror"), 14);
+    scraped.genreCounts.insert(QStringLiteral("Slice of Life"), 1);
+    QCOMPARE(agreedGenres(scraped), QStringList { QStringLiteral("Horror") });
+
+    // Exactly half is agreement: a series split down the middle between two genres should
+    // still be shelved under the more specific of them rather than left out.
+    SeriesTally halved;
+    halved.volumes = 10;
+    halved.genreCounts.insert(QStringLiteral("Action"), 5);
+    QCOMPARE(agreedGenres(halved), QStringList { QStringLiteral("Action") });
+}
+
+void SeriesSorterTest::needsMostVolumesToAgreeOnAPublisher()
+{
+    SeriesTally specials;
+    specials.volumes = 71;
+    specials.publisherCounts.insert(QStringLiteral("Zenescope Entertainment"), 1);
+    QVERIFY(agreedPublisher(specials).isEmpty());
+
+    SeriesTally scraped;
+    scraped.volumes = 17;
+    scraped.publisherCounts.insert(QStringLiteral("Magic Press"), 17);
+    QCOMPARE(agreedPublisher(scraped), QStringLiteral("Magic Press"));
+
+    SeriesTally nothing;
+    nothing.volumes = 9;
+    QVERIFY(agreedPublisher(nothing).isEmpty());
+}
+
+void SeriesSorterTest::takesTheCommonestPublisherWhenSeveralAreNamed()
+{
+    SeriesTally mixed;
+    mixed.volumes = 20;
+    mixed.publisherCounts.insert(QStringLiteral("Dark Horse Comics"), 15);
+    mixed.publisherCounts.insert(QStringLiteral("Magic Press"), 3);
+    QCOMPARE(agreedPublisher(mixed), QStringLiteral("Dark Horse Comics"));
+
+    // Neither reaches half, so neither speaks for the series.
+    SeriesTally split;
+    split.volumes = 20;
+    split.publisherCounts.insert(QStringLiteral("Dark Horse Comics"), 6);
+    split.publisherCounts.insert(QStringLiteral("Magic Press"), 5);
+    QVERIFY(agreedPublisher(split).isEmpty());
 }
 
 QTEST_MAIN(SeriesSorterTest)

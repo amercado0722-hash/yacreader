@@ -1102,6 +1102,50 @@ void LibraryWindow::tagAndSortNewSeries()
     thread->start();
 }
 
+void LibraryWindow::shelveSeriesNow()
+{
+    const auto databasePath = foldersModel->getDatabase();
+    if (databasePath.isEmpty()) {
+        return;
+    }
+
+    YACReader::SeriesSorter sorter(currentPath(), databasePath);
+
+    // Asked before moving anything, so that "nothing to shelve" can be told apart from
+    // "tried and failed" - which is exactly the distinction that was missing when this
+    // silently did nothing.
+    const auto waiting = sorter.pending();
+    if (waiting.isEmpty()) {
+        QMessageBox::information(this, tr("Shelve series"),
+                                 tr("Nothing to shelve.\n\nEvery series is either already in a section, or nothing is yet known about it that a shelf could be named after - no genre on most of its volumes, and no publisher."));
+        return;
+    }
+
+    const auto moved = sorter.sort();
+    const auto problems = sorter.problems();
+
+    QStringList lines;
+    if (!moved.isEmpty()) {
+        QStringList named;
+        for (const auto &series : moved) {
+            named.append(tr("%1 -> %2").arg(series.name, series.section));
+        }
+        lines.append(tr("%n series shelved:", "", static_cast<int>(moved.size())));
+        lines.append(named.join(QStringLiteral("\n")));
+    }
+
+    if (!problems.isEmpty()) {
+        lines.append(tr("%n could not be moved:", "", static_cast<int>(problems.size())));
+        lines.append(problems.join(QStringLiteral("\n")));
+    }
+
+    QMessageBox::information(this, tr("Shelve series"), lines.join(QStringLiteral("\n\n")));
+
+    if (!moved.isEmpty()) {
+        librariesUpdateCoordinator->updateSingleLibrary(libraries.getId(selectedLibrary->currentText()));
+    }
+}
+
 void LibraryWindow::sortNewSeries()
 {
     followUpRunning = false;

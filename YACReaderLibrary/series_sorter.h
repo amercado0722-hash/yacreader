@@ -3,6 +3,7 @@
 
 #include "bookcase_sections.h"
 
+#include <QHash>
 #include <QList>
 #include <QString>
 #include <QStringList>
@@ -28,6 +29,48 @@ inline bool isLooseSeriesPath(const QString &relativePath)
         return parts.first() == bookcaseSectionName(kUnsortedSection);
     }
     return false;
+}
+
+// What a series' volumes say between them, and what that makes it.
+//
+// Counted rather than sampled. The first version of this took ANY volume's genre and any
+// volume's publisher, which on a real library shelved fourteen volumes of Hellboy under
+// Slice of Life because one of them carried that tag from an embedded ComicInfo.xml, and
+// filed seventy one Grimm Fairy Tales specials by a publisher named on exactly one of them.
+//
+// A value has to be on at least half the volumes to speak for the series. That is not a
+// tuning knob, it is the definition of the series agreeing with itself: below half, the
+// volumes disagree, and the honest answer is to leave the series where it is.
+struct SeriesTally {
+    int volumes = 0;
+    QHash<QString, int> genreCounts;
+    QHash<QString, int> publisherCounts;
+};
+
+// The genres a majority of the volumes carry.
+inline QStringList agreedGenres(const SeriesTally &tally)
+{
+    QStringList agreed;
+    for (auto it = tally.genreCounts.constBegin(); it != tally.genreCounts.constEnd(); ++it) {
+        if (it.value() * 2 >= tally.volumes) {
+            agreed.append(it.key());
+        }
+    }
+    return agreed;
+}
+
+// The publisher a majority of the volumes name, or nothing when they do not agree on one.
+inline QString agreedPublisher(const SeriesTally &tally)
+{
+    QString best;
+    auto bestCount = 0;
+    for (auto it = tally.publisherCounts.constBegin(); it != tally.publisherCounts.constEnd(); ++it) {
+        if (it.value() > bestCount || (it.value() == bestCount && it.key() < best)) {
+            best = it.key();
+            bestCount = it.value();
+        }
+    }
+    return bestCount * 2 >= tally.volumes ? best : QString();
 }
 
 // One series that has just been given a home.

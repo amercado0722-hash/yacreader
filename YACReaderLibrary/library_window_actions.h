@@ -45,6 +45,7 @@ public:
     QAction *rescanLibraryForXMLInfoAction;
     QAction *batchScrapeAction;
     QAction *filenameTagAction;
+    QAction *shelveSeriesAction;
 
     QAction *updateLibraryAction;
     QAction *backupLibraryAction;
