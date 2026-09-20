@@ -209,15 +209,28 @@ jobs:
           architecture: 'x64'
 
       - name: Install dependencies
-        shell: cmd
+        shell: pwsh
         run: |
           pip install -U pip
           pip install aqtinstall
-          mkdir C:\Qt
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech || exit /b 1
-          dir C:\Qt\6.9.3\msvc2022_64\bin
-          curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.x64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.x64.exe"
-          where iscc
+          New-Item -ItemType Directory -Force -Path C:\Qt | Out-Null
+          # aqtinstall unpacks Qt's modules with a pool of workers, and two of them racing on
+          # the same folder makes py7zr refuse a path it has just watched appear. It has failed
+          # twice on qtshadertools - a different file each time - and gone through on a plain
+          # retry both times, so retry it here rather than by hand.
+          function Install-Qt([string]$arch) {
+            for ($attempt = 1; $attempt -le 3; $attempt++) {
+              python -m aqt install-qt windows desktop 6.9.3 $arch -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
+              if ($LASTEXITCODE -eq 0) { return }
+              Write-Host "aqt failed for $arch on attempt $attempt, trying again"
+              Start-Sleep -Seconds 15
+            }
+            throw "aqt could not install $arch"
+          }
+          Install-Qt win64_msvc2022_64
+          Get-ChildItem C:\Qt\6.9.3\msvc2022_64\bin | Select-Object -First 5
+          curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.x64.exe" -o "$env:GITHUB_WORKSPACE\vc_redist.x64.exe"
+          Get-Command iscc
 
       - name: Build
         shell: cmd
@@ -364,15 +377,28 @@ jobs:
           architecture: 'x64'
 
       - name: Install dependencies
-        shell: cmd
+        shell: pwsh
         run: |
           pip install aqtinstall
-          mkdir C:\Qt
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech || exit /b 1
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_arm64_cross_compiled -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech || exit /b 1
-          dir C:\Qt\6.9.3\msvc2022_arm64\bin
-          curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.arm64.exe"
-          where iscc
+          New-Item -ItemType Directory -Force -Path C:\Qt | Out-Null
+          # aqtinstall unpacks Qt's modules with a pool of workers, and two of them racing on
+          # the same folder makes py7zr refuse a path it has just watched appear. It has failed
+          # twice on qtshadertools - a different file each time - and gone through on a plain
+          # retry both times, so retry it here rather than by hand.
+          function Install-Qt([string]$arch) {
+            for ($attempt = 1; $attempt -le 3; $attempt++) {
+              python -m aqt install-qt windows desktop 6.9.3 $arch -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
+              if ($LASTEXITCODE -eq 0) { return }
+              Write-Host "aqt failed for $arch on attempt $attempt, trying again"
+              Start-Sleep -Seconds 15
+            }
+            throw "aqt could not install $arch"
+          }
+          Install-Qt win64_msvc2022_64
+          Install-Qt win64_msvc2022_arm64_cross_compiled
+          Get-ChildItem C:\Qt\6.9.3\msvc2022_arm64\bin | Select-Object -First 5
+          curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -o "$env:GITHUB_WORKSPACE\vc_redist.arm64.exe"
+          Get-Command iscc
 
       - name: Build
         shell: cmd
