@@ -6,8 +6,74 @@
 #include <QDir>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QThread>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 using namespace YACReader;
+
+namespace {
+
+// Moving a series folder is one call, but on Windows it is not always one attempt.
+//
+// The same renames that failed from inside the application went through instantly from
+// PowerShell a few minutes later, which is what a transient lock looks like: the sort runs
+// straight after a scrape or a library update has just read every volume in those folders,
+// and antivirus and the search indexer follow a burst of reads by holding the folder for a
+// few seconds. So a folder that answers "access denied" or "in use" is tried again, with a
+// growing pause, before it is reported.
+//
+// What used to come back was only false, which is why five builds went into this without
+// learning anything. Whatever Windows says now goes into the report, by name and number, so
+// a failure that survives the retries says what is holding it.
+bool moveFolder(const QString &from, const QString &to, int &retryBudgetMs, QString &why)
+{
+#ifdef Q_OS_WIN
+    // Past 260 characters the plain form is refused outright, and a manga library gets there.
+    const auto native = [](const QString &path) {
+        auto result = QDir::toNativeSeparators(QDir::cleanPath(path));
+        if (result.size() >= MAX_PATH - 12 && !result.startsWith(QStringLiteral("\\\\?\\"))) {
+            result.prepend(QStringLiteral("\\\\?\\"));
+        }
+        return result;
+    };
+    const auto source = native(from);
+    const auto target = native(to);
+
+    DWORD error = ERROR_SUCCESS;
+    for (auto attempt = 1;; ++attempt) {
+        if (MoveFileExW(reinterpret_cast<LPCWSTR>(source.utf16()), reinterpret_cast<LPCWSTR>(target.utf16()), 0)) {
+            return true;
+        }
+        error = GetLastError();
+
+        const auto busy = error == ERROR_ACCESS_DENIED || error == ERROR_SHARING_VIOLATION || error == ERROR_LOCK_VIOLATION;
+        const auto pause = 250 * attempt;
+        // One budget for the whole run, not per folder: if something holds every folder for
+        // good, the first few use it up and the rest are reported without the application
+        // sitting frozen for minutes.
+        if (!busy || attempt >= 6 || pause > retryBudgetMs) {
+            break;
+        }
+        retryBudgetMs -= pause;
+        QThread::msleep(pause);
+    }
+
+    why = QStringLiteral("%1 (Windows error %2)").arg(qt_error_string(static_cast<int>(error)).trimmed()).arg(error);
+    return false;
+#else
+    Q_UNUSED(retryBudgetMs);
+    if (QDir().rename(from, to)) {
+        return true;
+    }
+    why = QStringLiteral("the rename was refused");
+    return false;
+#endif
+}
+
+}
 
 SeriesSorter::SeriesSorter(const QString &libraryPath, const QString &databasePath)
     : libraryPath(libraryPath), databasePath(databasePath)
@@ -182,6 +248,7 @@ QList<SortedSeries> SeriesSorter::sort()
 
     QDir top(libraryPath);
     const auto unsorted = bookcaseSectionName(kUnsortedSection);
+    auto retryBudgetMs = 15000;
 
     for (const auto &entry : ready) {
         // Wherever it currently is of the two places it can be.
@@ -207,9 +274,10 @@ QList<SortedSeries> SeriesSorter::sort()
             continue;
         }
 
-        if (!QDir().rename(from, to)) {
-            lastProblems.append(QStringLiteral("%1: could not be moved into %2").arg(entry.name, entry.section));
-            QLOG_WARN() << "SeriesSorter could not move" << from << "to" << to;
+        QString why;
+        if (!moveFolder(from, to, retryBudgetMs, why)) {
+            lastProblems.append(QStringLiteral("%1: could not be moved into %2 - %3").arg(entry.name, entry.section, why));
+            QLOG_WARN() << "SeriesSorter could not move" << from << "to" << to << "-" << why;
             continue;
         }
 
