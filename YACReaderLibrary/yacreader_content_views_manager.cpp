@@ -8,12 +8,14 @@
 #include "empty_label_widget.h"
 #include "empty_reading_list_widget.h"
 #include "empty_special_list.h"
+#include "folder_model.h"
 #include "grid_comics_view.h"
 #include "info_comics_view.h"
 #include "library_window.h"
 #include "library_window_menus.h"
 #include "no_search_results_widget.h"
 #include "options_dialog.h"
+#include "yacreader_folders_view.h"
 #include "yacreader_options_dialog.h"
 #include "yacreader_sidebar.h"
 
@@ -141,7 +143,16 @@ void YACReaderContentViewsManager::showBookcase()
     // comes up narrowed to match rather than showing everything under a filter that says
     // otherwise.
     bookcaseView->setFilter(libraryWindow->searchText());
-    bookcaseView->setFolderModel(libraryWindow->foldersModel);
+
+    // The wall shows whatever folder the reader is standing in, not always the whole library.
+    //
+    // A library used to be genre folders at the top with the series inside them, so the two
+    // were the same thing. They are not any more: a library can be Manga and Comics at the
+    // top, each with its own shelves inside, and a wall built from the top of that one is
+    // three sections deep with the genres standing on them as if they were books. Opening
+    // Manga and asking for the wall now builds the wall of Manga.
+    const auto selectedFolder = libraryWindow->foldersModelProxy->mapToSource(libraryWindow->foldersView->currentIndex());
+    bookcaseView->setFolderModel(libraryWindow->foldersModel, selectedFolder);
 
     // The view selector stays disabled: the three comics views all show the contents of a
     // folder, and there is no folder open while the carousel is choosing one.

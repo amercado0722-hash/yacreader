@@ -235,7 +235,43 @@ BookcaseView::SeriesState BookcaseView::aggregate(const QModelIndex &folder) con
 // volumes sit in a subfolder rather than loose in its own: three series here keep them in a
 // "Chapters", a "Replaced" or a "- Decensored", and taking the subfolder for the series put
 // those three words on the wall instead of the titles.
-void BookcaseView::collect(const QModelIndex &parent, const QString &shelf)
+// A folder with no comics of its own is either a shelf or a series that keeps its volumes in
+// subfolders, and below the first level the difference has to be argued for.
+//
+// Directly under whatever the wall is showing, comic-less means shelf, as it always did. One
+// level further down it also has to be big - a dozen children or more, most of them holding
+// comics - because that is what tells "Action" with its five hundred series apart from
+// "Naruto Manga Specials" with its five, or from a series split into Chapters and Extras.
+// Deeper than that nothing is a shelf: at that point the folders are the reader's own filing
+// inside a series, and a wall built from them would be a wall of "Volume 2".
+bool BookcaseView::looksLikeShelf(const QModelIndex &index, int depth) const
+{
+    if (depth == 0) {
+        return true;
+    }
+    if (depth > 1) {
+        return false;
+    }
+
+    const auto rows = folderModel->rowCount(index);
+    if (rows < 12) {
+        return false;
+    }
+
+    auto holdingComics = 0;
+    for (auto row = 0; row < rows; ++row) {
+        const auto child = folderModel->index(row, 0, index);
+        if (!child.isValid()) {
+            continue;
+        }
+        if (aggregate(child).volumes > 0) {
+            ++holdingComics;
+        }
+    }
+    return holdingComics * 2 >= rows;
+}
+
+void BookcaseView::collect(const QModelIndex &parent, const QString &shelf, int depth)
 {
     const auto rows = folderModel->rowCount(parent);
 
@@ -257,10 +293,10 @@ void BookcaseView::collect(const QModelIndex &parent, const QString &shelf)
         // A shelf: at the top of the library, holding no comics of its own, and holding
         // something that does. Both halves matter - a series that keeps its volumes in a
         // subfolder also has no comics of its own, and is not a shelf.
-        if (shelf.isEmpty() && state.volumes == 0) {
+        if (state.volumes == 0 && looksLikeShelf(index, depth)) {
             const auto beneath = aggregate(index);
             if (beneath.volumes > 0) {
-                collect(index, name);
+                collect(index, name, depth + 1);
                 continue;
             }
         }

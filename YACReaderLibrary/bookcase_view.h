@@ -184,7 +184,10 @@ private:
     // then be nineteen empty sections and whatever had not been sorted yet.
     // shelf is the name of the folder this level sits under, empty at the top of a library
     // that is not arranged into folders.
-    void collect(const QModelIndex &parent, const QString &shelf);
+    void collect(const QModelIndex &parent, const QString &shelf, int depth = 0);
+    // Whether a folder that holds no comics of its own is a shelf rather than a series whose
+    // volumes live in subfolders.
+    bool looksLikeShelf(const QModelIndex &index, int depth) const;
     // The wall as magazines and their issues, read from the comics' tags rather than from
     // the folder tree.
     void collectMagazines();
